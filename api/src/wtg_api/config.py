@@ -1,0 +1,56 @@
+from __future__ import annotations
+
+from functools import lru_cache
+from typing import Literal
+
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=None, extra="ignore")
+
+    environment: Literal["dev", "test", "prod"] = "dev"
+
+    database_url: str = "postgresql+asyncpg://wtg:wtg@localhost/wtg"
+    redis_url: str = "redis://localhost:6379/0"
+
+    session_secret: str = "dev-session-secret-change-me"
+    tile_signing_secret: str = "dev-tile-signing-secret-change-me"
+    paddle_webhook_secret: str = "dev-paddle-webhook-secret-change-me"
+
+    tile_signature_ttl_seconds: int = 15 * 60
+    magic_link_ttl_seconds: int = 15 * 60
+    session_cookie_name: str = "wtg_session"
+    session_ttl_seconds: int = 30 * 24 * 3600
+
+    cdn_url: str = "https://wtg.b-cdn.net"
+    public_web_origin: str = "http://localhost:3000"
+
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_redirect_uri: str = "http://localhost:8000/api/auth/google/callback"
+
+    email_provider: Literal["sendgrid", "postmark", "console"] = "console"
+    sendgrid_api_key: str = ""
+    postmark_token: str = ""
+    email_from: str = "hello@wheretogoforgreatweather.com"
+
+    paddle_api_key: str = ""
+    paddle_sandbox: bool = True
+
+    rate_limit_anonymous: str = "100/minute"
+    rate_limit_authenticated: str = "600/minute"
+
+    cors_origins: list[str] = Field(
+        default_factory=lambda: [
+            "http://localhost:3000",
+            "https://v2.wheretogoforgreatweather.com",
+            "https://wheretogoforgreatweather.com",
+        ]
+    )
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    return Settings()
