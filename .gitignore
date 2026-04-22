@@ -1,0 +1,61 @@
+# Env
+.env
+.env.*
+!.env.example
+
+# Secrets / keys
+keys/
+*.pem
+*.key
+
+# Pipeline data (large)
+pipeline/data/
+
+# Tile artifacts
+tiles/*.pmtiles
+*.pmtiles
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Node / Next
+node_modules/
+.next/
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude Code per-user
+.claude/settings.local.json
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+
+# uv
+uv.lock.tmp

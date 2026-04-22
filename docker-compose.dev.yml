@@ -1,0 +1,7 @@
+services:
+  caddy:
+    volumes:
+      - ./infra/caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+      - ./tiles:/var/tiles:ro
