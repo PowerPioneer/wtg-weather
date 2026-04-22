@@ -67,7 +67,8 @@ def build_command(job: TippecanoeJob, *, tippecanoe_bin: str = "tippecanoe") -> 
 
 def run(job: TippecanoeJob, *, tippecanoe_bin: str = "tippecanoe") -> Path:
     """Shell out to tippecanoe. Returns the output mbtiles path."""
-    if shutil.which(tippecanoe_bin) is None:
+    resolved = shutil.which(tippecanoe_bin)
+    if resolved is None:
         raise RuntimeError(
             f"{tippecanoe_bin} not found on PATH. Install via `brew install tippecanoe` "
             "or `apt install tippecanoe`."
@@ -76,7 +77,7 @@ def run(job: TippecanoeJob, *, tippecanoe_bin: str = "tippecanoe") -> Path:
         if not inp.exists():
             raise FileNotFoundError(inp)
     job.output.parent.mkdir(parents=True, exist_ok=True)
-    cmd = build_command(job, tippecanoe_bin=tippecanoe_bin)
+    cmd = build_command(job, tippecanoe_bin=resolved)
     log.info("running: %s", " ".join(cmd))
     subprocess.run(cmd, check=True)
     if not job.output.exists():

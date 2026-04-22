@@ -305,11 +305,19 @@ def run_build_pmtiles(*, tier: str) -> Path:
     if tier_typed not in {"free", "premium"}:
         raise ValueError(f"unknown tier: {tier!r}")
 
+    required = ("country", "admin1") if tier_typed == "free" else ("country", "admin1")
+    optional = () if tier_typed == "free" else ("admin2",)
     layers: list[tuple[str, Path]] = []
-    for lv in ("country", "admin1") if tier_typed == "free" else ("country", "admin1", "admin2"):
+    for lv in required:
         path = gpath(tier=tier_typed, level=lv)  # type: ignore[arg-type]
         if not path.exists():
             raise FileNotFoundError(path)
+        layers.append((lv, path))
+    for lv in optional:
+        path = gpath(tier=tier_typed, level=lv)  # type: ignore[arg-type]
+        if not path.exists():
+            log.warning("missing %s; building %s tier without it", path.name, tier_typed)
+            continue
         layers.append((lv, path))
 
     ensure_dir(TILE_DIR)

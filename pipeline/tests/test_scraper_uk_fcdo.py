@@ -6,6 +6,7 @@ from wtg_pipeline.sources.advisories.uk_fcdo import (
     UKFCDOScraper,
     classify_detail_text,
     classify_from_detail,
+    extract_regional_carveouts,
 )
 
 
@@ -79,7 +80,7 @@ def test_parses_two_stage() -> None:
     index_html = (FIXTURES / "index.html").read_text(encoding="utf-8")
     scraper = UKFCDOScraper(client=_StubClient(_routes()), request_delay_s=0.0)
     out = scraper.parse(index_html)
-    by_iso = {a.country_iso2: a for a in out}
+    by_iso = {a.country_iso2: a for a in out if a.region_code is None}
     assert by_iso["AF"].level == 4
     # Ukraine: "all but essential" country-wide → 3.
     assert by_iso["UA"].level == 3
@@ -108,12 +109,46 @@ def test_source_urls_absolute() -> None:
         assert a.source_url.startswith("https://www.gov.uk/")
 
 
-def test_country_only_never_sets_region() -> None:
+def test_country_rows_have_null_region() -> None:
     index_html = (FIXTURES / "index.html").read_text(encoding="utf-8")
     scraper = UKFCDOScraper(client=_StubClient(_routes()), request_delay_s=0.0)
     out = scraper.parse(index_html)
-    for a in out:
-        assert a.region_code is None
+    country_rows = [a for a in out if a.region_code is None]
+    # One country row per mapped country present in the index fixture.
+    assert {a.country_iso2 for a in country_rows} == {"AF", "UA", "TR", "EG", "FR", "JP"}
+
+
+def test_extract_regional_carveouts_levels() -> None:
+    turkey_html = (FIXTURES / "turkey.html").read_text(encoding="utf-8")
+    carveouts = extract_regional_carveouts(turkey_html)
+    levels = {lvl for lvl, _ in carveouts}
+    assert 4 in levels  # "Areas where FCDO advises against all travel"
+    assert 3 in levels  # "Areas ... all but essential travel"
+
+
+def test_regional_rows_emitted_for_parts_of_countries() -> None:
+    index_html = (FIXTURES / "index.html").read_text(encoding="utf-8")
+    scraper = UKFCDOScraper(client=_StubClient(_routes()), request_delay_s=0.0)
+    out = scraper.parse(index_html)
+    regional = [a for a in out if a.region_code is not None]
+    # Turkey country=L3; only L4 carveout (> country) surfaces.
+    # Egypt country=L2; L3 carveout surfaces.
+    tr_regional = [a for a in regional if a.country_iso2 == "TR"]
+    eg_regional = [a for a in regional if a.country_iso2 == "EG"]
+    assert {a.level for a in tr_regional} == {4}
+    assert {a.level for a in eg_regional} == {3}
+    # Region-code carries the level discriminator.
+    assert all(a.region_code and a.region_code.startswith("regional-L") for a in regional)
+
+
+def test_no_regional_rows_for_plain_countries() -> None:
+    index_html = (FIXTURES / "index.html").read_text(encoding="utf-8")
+    scraper = UKFCDOScraper(client=_StubClient(_routes()), request_delay_s=0.0)
+    out = scraper.parse(index_html)
+    regional = {a.country_iso2 for a in out if a.region_code is not None}
+    assert "FR" not in regional
+    assert "JP" not in regional
+    assert "AF" not in regional  # L4 country-wide: no separate carveout section
 
 
 def test_max_countries_caps_detail_fetches() -> None:
@@ -122,4 +157,7 @@ def test_max_countries_caps_detail_fetches() -> None:
         client=_StubClient(_routes()), request_delay_s=0.0, max_countries=2
     )
     out = scraper.parse(index_html)
-    assert len(out) <= 2
+    # max_countries caps detail fetches; regional rows may still expand the
+    # row count for countries that have carveout sections.
+    country_rows = {a.country_iso2 for a in out if a.region_code is None}
+    assert len(country_rows) <= 2

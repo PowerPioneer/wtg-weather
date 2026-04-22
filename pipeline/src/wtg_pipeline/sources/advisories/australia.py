@@ -28,6 +28,7 @@ from __future__ import annotations
 import html
 import json
 import logging
+import re
 from datetime import datetime
 from typing import Protocol
 
@@ -54,6 +55,42 @@ _LEVEL_TEXT: dict[str, int] = {
 def classify(level_text: str) -> int | None:
     """Map a Smartraveller overall-advice-level string onto 1..4."""
     return _LEVEL_TEXT.get(level_text.strip().lower())
+
+
+# Markers used by Smartraveller inside ``field_advice_levels`` prose to
+# introduce sub-national carveouts. Each marker triggers a new block
+# capturing the regions named after it, terminated by the next marker.
+_CARVEOUT_MARKERS: tuple[tuple[re.Pattern[str], int], ...] = (
+    (re.compile(r"do\s+not\s+travel\s+to\s*:", re.IGNORECASE), 4),
+    (re.compile(r"reconsider\s+your\s+need\s+to\s+travel\s+to\s*:", re.IGNORECASE), 3),
+    (re.compile(r"exercise\s+a\s+high\s+degree\s+of\s+caution\s+in\s*:", re.IGNORECASE), 2),
+)
+
+
+def extract_regional_carveouts(advice_levels_text: str) -> list[tuple[int, str]]:
+    """Parse ``field_advice_levels`` prose into (level, prose) blocks.
+
+    Smartraveller prose uses phrases like *"Do not travel to:"* followed by
+    a list of regions. Each marker starts a block that runs until the next
+    marker or end of text.
+    """
+    if not advice_levels_text:
+        return []
+    text = re.sub(r"\s+", " ", advice_levels_text).strip()
+    hits: list[tuple[int, int, int]] = []  # (level, start, end-of-marker)
+    for pattern, level in _CARVEOUT_MARKERS:
+        for m in pattern.finditer(text):
+            hits.append((level, m.start(), m.end()))
+    if not hits:
+        return []
+    hits.sort(key=lambda h: h[1])
+    out: list[tuple[int, str]] = []
+    for idx, (level, _start, end) in enumerate(hits):
+        next_start = hits[idx + 1][1] if idx + 1 < len(hits) else len(text)
+        prose = text[end:next_start].strip(" .,;")
+        if prose:
+            out.append((level, prose))
+    return out
 
 
 class _Response(Protocol):
@@ -132,6 +169,23 @@ class AustraliaScraper(AdvisoryScraper):
                     fetched_at=when,
                 )
             )
+            advice_levels = entry.get("field_advice_levels") or ""
+            if isinstance(advice_levels, str):
+                seen_regional: set[int] = set()
+                for region_level, prose in extract_regional_carveouts(advice_levels):
+                    if region_level <= level or region_level in seen_regional:
+                        continue
+                    seen_regional.add(region_level)
+                    out.append(
+                        Advisory(
+                            country_iso2=iso2,
+                            region_code=f"regional-L{region_level}",
+                            level=region_level,
+                            summary=prose[:500],
+                            source_url=url,
+                            fetched_at=when,
+                        )
+                    )
         return out
 
 

@@ -142,6 +142,25 @@ class UKFCDOScraper(AdvisoryScraper):
                     fetched_at=when,
                 )
             )
+            # Sub-national carveouts: emit one aggregate regional row per
+            # distinct carveout level strictly greater than the country
+            # level (same-or-lower carveouts are already covered by the
+            # country row).
+            seen_regional: set[int] = set()
+            for region_level, prose in extract_regional_carveouts(detail_html):
+                if region_level <= level or region_level in seen_regional:
+                    continue
+                seen_regional.add(region_level)
+                out.append(
+                    Advisory(
+                        country_iso2=iso2,
+                        region_code=f"regional-L{region_level}",
+                        level=region_level,
+                        summary=prose[:500],
+                        source_url=url,
+                        fetched_at=when,
+                    )
+                )
             now = time.monotonic()
             if now >= next_progress:
                 log.info("uk_fcdo: %d/%d countries processed", idx, total)
@@ -159,6 +178,11 @@ class UKFCDOScraper(AdvisoryScraper):
 _BOILERPLATE_HEADING = re.compile(
     r"cookies?\s+on\s+gov\.uk|navigation\s+menu|feedback|is\s+this\s+page\s+useful"
     r"|accept\s+additional\s+cookies|reject\s+additional\s+cookies|view\s+cookies",
+    re.IGNORECASE,
+)
+
+_AREAS_HEADING = re.compile(
+    r"areas?\s+where\s+FCDO\s+advises?\s+against\s+(?:all\s+)?travel",
     re.IGNORECASE,
 )
 
@@ -185,6 +209,44 @@ def classify_from_detail(detail_html: str, *, country: str) -> tuple[int, str]:
         meaningful[0] if meaningful else country,
     )
     return level, preferred
+
+
+def extract_regional_carveouts(detail_html: str) -> list[tuple[int, str]]:
+    """Return a list of (level, prose) pairs for sub-national carveouts.
+
+    FCDO detail pages group regional guidance under an *"Areas where FCDO
+    advises against travel"* heading. The paragraphs below it each carry
+    their own phrasing — *"FCDO advises against all travel to ..."* for
+    L4 pockets or *"... all but essential travel to ..."* for L3 pockets.
+    Sub-regions are separated by ``<h3>`` region labels; each paragraph
+    under the section becomes one (level, prose) pair, optionally prefixed
+    by the preceding region label.
+    """
+    soup = BeautifulSoup(detail_html, "lxml")
+    out: list[tuple[int, str]] = []
+    for h in soup.select("h2"):
+        heading = h.get_text(" ", strip=True)
+        if not _AREAS_HEADING.search(heading):
+            continue
+        current_region = ""
+        for sibling in h.next_siblings:
+            name = getattr(sibling, "name", None)
+            if name in {"h1", "h2"}:
+                break
+            if name == "h3":
+                current_region = sibling.get_text(" ", strip=True)
+                continue
+            if name != "p":
+                continue
+            prose = sibling.get_text(" ", strip=True)
+            if not prose:
+                continue
+            level = classify_detail_text(prose)
+            if level <= 1:
+                continue
+            labelled = f"{current_region}: {prose}" if current_region else prose
+            out.append((level, labelled))
+    return out
 
 
 def fetch() -> list[Advisory]:

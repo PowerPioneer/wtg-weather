@@ -2,27 +2,32 @@
   {
     "title": "Afghanistan",
     "field_overall_advice_level": "Do not travel",
-    "field_url": "https://www.smartraveller.gov.au/destinations/asia/afghanistan"
+    "field_url": "https://www.smartraveller.gov.au/destinations/asia/afghanistan",
+    "field_advice_levels": "Do not travel to Afghanistan overall due to the volatile security situation and the threat of terrorist attack."
   },
   {
     "title": "Colombia",
     "field_overall_advice_level": "Reconsider your need to travel",
-    "field_url": "https://www.smartraveller.gov.au/destinations/americas/colombia"
+    "field_url": "https://www.smartraveller.gov.au/destinations/americas/colombia",
+    "field_advice_levels": "Reconsider your need to travel to Colombia overall. Do not travel to: the departments of Arauca, Cauca (excluding Popayan), Norte de Santander (excluding Cucuta), and Narino (excluding Pasto and Ipiales). Reconsider your need to travel to: the city of Buenaventura and the Pacific coast."
   },
   {
     "title": "Mexico",
     "field_overall_advice_level": "Exercise a high degree of caution",
-    "field_url": "https://www.smartraveller.gov.au/destinations/americas/mexico"
+    "field_url": "https://www.smartraveller.gov.au/destinations/americas/mexico",
+    "field_advice_levels": "Exercise a high degree of caution in Mexico overall. Do not travel to: the states of Colima, Guerrero, Michoacan, Sinaloa, Tamaulipas and Zacatecas. Reconsider your need to travel to: the states of Chiapas, Chihuahua, Durango, Guanajuato, Jalisco, Morelos and Sonora."
   },
   {
     "title": "Japan",
     "field_overall_advice_level": "Exercise normal safety precautions",
-    "field_url": "https://www.smartraveller.gov.au/destinations/asia/japan"
+    "field_url": "https://www.smartraveller.gov.au/destinations/asia/japan",
+    "field_advice_levels": "Exercise normal safety precautions in Japan overall."
   },
   {
     "title": "C\u00f4te d&#039;Ivoire (Ivory Coast)",
     "field_overall_advice_level": "Exercise a high degree of caution",
-    "field_url": "https://www.smartraveller.gov.au/destinations/africa/cote-divoire"
+    "field_url": "https://www.smartraveller.gov.au/destinations/africa/cote-divoire",
+    "field_advice_levels": "Exercise a high degree of caution in C\u00f4te d'Ivoire overall."
   },
   {
     "title": "Antarctica",
