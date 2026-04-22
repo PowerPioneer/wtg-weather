@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>WTG PMTiles smoke test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" />
+  <style>
+    body, html, #map { margin: 0; height: 100%; }
+    .legend { position: absolute; top: 10px; left: 10px; background: white;
+              padding: 6px 10px; font: 12px sans-serif; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="legend">
+    <strong>April default-score</strong><br/>
+    <span style="color:#7a0">3 — perfect</span> ·
+    <span style="color:#bb0">2 — close</span> ·
+    <span style="color:#c80">1 — partial</span> ·
+    <span style="color:#a00">0 — miss</span>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/pmtiles@3/dist/pmtiles.js"></script>
+  <script>
+    // Start a static server in this directory:
+    //   cd pipeline/demo && python -m http.server 8000
+    // Then drop free.pmtiles or premium.pmtiles next to index.html.
+    const protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
+
+    const TIER = new URLSearchParams(location.search).get('tier') || 'free';
+    const PMTILES_URL = `pmtiles://${TIER}.pmtiles`;
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: {
+          wtg: { type: 'vector', url: PMTILES_URL },
+          basemap: {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256, attribution: '© OpenStreetMap',
+          },
+        },
+        layers: [
+          { id: 'basemap', type: 'raster', source: 'basemap' },
+          {
+            id: 'country-fill', type: 'fill', source: 'wtg',
+            'source-layer': 'country',
+            paint: {
+              'fill-color': [
+                'match', ['get', 'score_04'],
+                3, '#7a0', 2, '#bb0', 1, '#c80', 0, '#a00', '#888',
+              ],
+              'fill-opacity': 0.55,
+            },
+          },
+          {
+            id: 'admin1-fill', type: 'fill', source: 'wtg',
+            'source-layer': 'admin1',
+            minzoom: 3,
+            paint: {
+              'fill-color': [
+                'match', ['get', 'score_04'],
+                3, '#7a0', 2, '#bb0', 1, '#c80', 0, '#a00', '#888',
+              ],
+              'fill-opacity': 0.55,
+            },
+          },
+        ],
+      },
+      center: [10, 30], zoom: 1.6,
+    });
+
+    map.on('error', (e) => console.error('map error', e));
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "response": {
+    "1": {
+      "countryCode": "AF",
+      "countryName": "Afghanistan",
+      "title": "Reisewarnung",
+      "warning": true,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "2": {
+      "countryCode": "EG",
+      "countryName": "Egypt",
+      "title": "Teilreisewarnung",
+      "warning": false,
+      "partialWarning": true,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "3": {
+      "countryCode": "MX",
+      "countryName": "Mexico",
+      "title": "Sicherheitshinweis",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": true,
+      "situationPartWarning": false
+    },
+    "4": {
+      "countryCode": "JP",
+      "countryName": "Japan",
+      "title": "Landesinformation",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "5": {
+      "countryCode": "co",
+      "countryName": "Colombia",
+      "title": "Teilsituation",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": true
+    },
+    "6": {
+      "countryName": "Atlantis",
+      "title": "Reisewarnung",
+      "warning": true
+    },
+    "timestamp": "2026-04-22T00:00:00Z"
+  }
+}

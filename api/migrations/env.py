@@ -8,6 +8,9 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from wtg_api import models  # noqa: F401 — register models on Base.metadata
+from wtg_api.db import Base
+
 config = context.config
 
 if config.config_file_name is not None:
@@ -17,7 +20,7 @@ database_url = os.getenv("DATABASE_URL")
 if database_url:
     config.set_main_option("sqlalchemy.url", database_url)
 
-target_metadata = None
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:

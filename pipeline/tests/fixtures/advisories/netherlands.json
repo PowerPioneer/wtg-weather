@@ -1,0 +1,55 @@
+[
+  {
+    "id": "AFG",
+    "type": "reisadvies",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/afghanistan",
+    "title": "Reisadvies Afghanistan",
+    "introduction": "<h2>In het kort</h2><p>De kleurcode van het reisadvies voor Afghanistan is rood. Reis er niet heen.</p>",
+    "location": "Afghanistan",
+    "isocode": "AFG",
+    "lastmodified": "2026-03-15T08:00:00.000Z"
+  },
+  {
+    "id": "UKR",
+    "type": "reisadvies",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/oekraine",
+    "title": "Reisadvies Oekraïne",
+    "introduction": "<p>De kleurcode van het reisadvies voor Oekraïne is oranje. Reis alleen als het echt moet.</p>",
+    "location": "Oekraïne",
+    "isocode": "UKR",
+    "lastmodified": "2026-03-10T10:00:00.000Z"
+  },
+  {
+    "id": "MEX",
+    "type": "reisadvies",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/mexico",
+    "title": "Reisadvies Mexico",
+    "introduction": "<p>De kleurcode van het reisadvies voor Mexico is geel. Let op veiligheidsrisico's.</p>",
+    "location": "Mexico",
+    "isocode": "MEX",
+    "lastmodified": "2026-03-05T10:00:00.000Z"
+  },
+  {
+    "id": "JPN",
+    "type": "reisadvies",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/japan",
+    "title": "Reisadvies Japan",
+    "introduction": "<p>De kleurcode van het reisadvies voor Japan is groen. U kunt erheen reizen.</p>",
+    "location": "Japan",
+    "isocode": "JPN",
+    "lastmodified": "2026-02-20T10:00:00.000Z"
+  },
+  {
+    "id": "NOCODE",
+    "type": "reisadvies",
+    "location": "Atlantis",
+    "introduction": "<p>De kleurcode van het reisadvies voor Atlantis is rood.</p>"
+  },
+  {
+    "id": "ATA",
+    "type": "reisadvies",
+    "location": "Antarctica",
+    "isocode": "ATA",
+    "introduction": "<h2>In het kort</h2><p>Geen reisadvies beschikbaar voor Antarctica.</p>"
+  }
+]
