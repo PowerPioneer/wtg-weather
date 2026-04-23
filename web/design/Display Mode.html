@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WTG · Display Mode — Refined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #1a1a1c; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #e4e4e7; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script src="map/layers.js"></script>
+<script src="display-mode/variables.js"></script>
+<script type="text/babel" src="display-mode/Legends.jsx"></script>
+<script type="text/babel" src="display-mode/DisplayModal.jsx"></script>
+<script type="text/babel" src="display-mode/MapDemo.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+const { DesignCanvas, DCSection, DCArtboard } = window;
+const { DisplayModeModal, Legend, CrossfadeMap, MapCanvas } = window;
+
+// ─── Artboard 1: Desktop modal (Free user) ──────────────────────────────
+function A1_DesktopFree() {
+  const [active, setActive] = useState('preferences');
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', position: 'relative', overflow: 'hidden' }}>
+      {/* Map backdrop, dimmed */}
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.55 }}>
+        <CrossfadeMap variableId={active} />
+      </div>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,27,45,0.08)' }} />
+
+      {/* Floating top-center legend */}
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>
+        <Legend variableId={active} />
+      </div>
+
+      {/* Modal floating left */}
+      <div style={{
+        position: 'absolute', top: 80, left: 40, width: 460,
+        background: '#FFFFFF', border: '1px solid #D9D5C8', borderRadius: 10,
+        boxShadow: '0 12px 32px rgba(15,27,45,0.12), 0 24px 64px rgba(15,27,45,0.08)',
+        maxHeight: 790, overflowY: 'auto',
+      }}>
+        <DisplayModeModal
+          activeId={active}
+          onChange={setActive}
+          isPremium={false}
+          layout="desktop"
+          subtitle="Choose what the map shows"
+        />
+      </div>
+
+      {/* Label pin */}
+      <div style={{ position: 'absolute', top: 20, right: 24, background: '#0F1B2D', color: '#E0C98A', padding: '6px 10px', borderRadius: 4, fontSize: 10, letterSpacing: '0.14em', fontWeight: 600, textTransform: 'uppercase', fontFamily: "'IBM Plex Mono'" }}>
+        Free user · Desktop
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 2: Inline upgrade popover open ───────────────────────────
+function A2_UpgradePopover() {
+  const [active, setActive] = useState('preferences');
+  const [popover, setPopover] = useState('snow');
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.55 }}>
+        <MapCanvas variableId={active} />
+      </div>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,27,45,0.08)' }} />
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>
+        <Legend variableId={active} />
+      </div>
+      <div style={{
+        position: 'absolute', top: 80, left: 40, width: 460,
+        background: '#FFFFFF', border: '1px solid #D9D5C8', borderRadius: 10,
+        boxShadow: '0 12px 32px rgba(15,27,45,0.12), 0 24px 64px rgba(15,27,45,0.08)',
+        maxHeight: 820, overflowY: 'visible',
+      }}>
+        <DisplayModeModal
+          activeId={active}
+          onChange={setActive}
+          isPremium={false}
+          layout="desktop"
+        />
+      </div>
+      <div style={{ position: 'absolute', top: 20, right: 24, background: '#B8763E', color: '#FFFFFF', padding: '6px 10px', borderRadius: 4, fontSize: 10, letterSpacing: '0.14em', fontWeight: 600, textTransform: 'uppercase', fontFamily: "'IBM Plex Mono'" }}>
+        Tap a locked variable → inline upgrade
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 3: Premium user (all unlocked) ──────────────────────────
+function A3_PremiumUnlocked() {
+  const [active, setActive] = useState('sst');
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.8 }}>
+        <CrossfadeMap variableId={active} />
+      </div>
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>
+        <Legend variableId={active} />
+      </div>
+      <div style={{
+        position: 'absolute', top: 80, left: 40, width: 460,
+        background: '#FFFFFF', border: '1px solid #D9D5C8', borderRadius: 10,
+        boxShadow: '0 12px 32px rgba(15,27,45,0.12), 0 24px 64px rgba(15,27,45,0.08)',
+        maxHeight: 790, overflowY: 'auto',
+      }}>
+        <DisplayModeModal
+          activeId={active}
+          onChange={setActive}
+          isPremium={true}
+          layout="desktop"
+        />
+      </div>
+      <div style={{ position: 'absolute', top: 20, right: 24, background: '#0B6E5F', color: '#FFFFFF', padding: '6px 10px', borderRadius: 4, fontSize: 10, letterSpacing: '0.14em', fontWeight: 600, textTransform: 'uppercase', fontFamily: "'IBM Plex Mono'" }}>
+        Premium user · Sea Surface Temp selected
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 4: All 10 legends side-by-side ──────────────────────────
+function A4_LegendGallery() {
+  const ids = ['preferences','temperature','rainfall','sunshine','wind','safety','snow','sst','heat','humidity'];
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', padding: 40, overflow: 'hidden', fontFamily: "'IBM Plex Sans'" }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.14em', color: '#4A5568', fontWeight: 500, textTransform: 'uppercase', marginBottom: 6 }}>
+        Legend gallery
+      </div>
+      <div style={{ fontFamily: "'IBM Plex Serif'", fontSize: 26, fontWeight: 500, color: '#0F1B2D', lineHeight: 1.2, marginBottom: 6 }}>
+        Ten variables, three legend shapes
+      </div>
+      <div style={{ fontSize: 13, color: '#4A5568', marginBottom: 24, maxWidth: 720, lineHeight: 1.5 }}>
+        Qualitative pills for preferences · continuous ramp with info icon for climate variables · discrete hatched swatches for safety (the diagonal pattern keeps Match colours and Safety colours visually distinct even when hues overlap).
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        {ids.map(id => {
+          const v = window.VARIABLES[id];
+          return (
+            <div key={id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 18, height: 18, borderRadius: 3, background: '#ECEAE3', color: '#0F1B2D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {window.renderIcon(v.icon, 12)}
+                </div>
+                <div style={{ fontSize: 12.5, fontWeight: 500, color: '#0F1B2D' }}>{v.label}</div>
+                <div style={{ fontSize: 10, letterSpacing: '0.1em', color: v.tier === 'premium' ? '#B8763E' : '#6B7280', fontWeight: 600, textTransform: 'uppercase' }}>
+                  {v.tier === 'premium' ? 'Premium' : 'Free'}
+                </div>
+              </div>
+              <Legend variableId={id} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 5: Crossfade before / mid / after ──────────────────────
+function A5_Crossfade() {
+  // three static frames: Temperature (before) → in-transit → Rainfall (after)
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', padding: 40, fontFamily: "'IBM Plex Sans'" }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.14em', color: '#4A5568', fontWeight: 500, textTransform: 'uppercase', marginBottom: 6 }}>
+        Switching behaviour
+      </div>
+      <div style={{ fontFamily: "'IBM Plex Serif'", fontSize: 26, fontWeight: 500, color: '#0F1B2D', lineHeight: 1.2, marginBottom: 6 }}>
+        Crossfade — 250ms, ease-standard
+      </div>
+      <div style={{ fontSize: 13, color: '#4A5568', marginBottom: 24, maxWidth: 820, lineHeight: 1.5 }}>
+        When the display mode changes, country fills and the top-centre legend crossfade together. No hard cut — the previous paint holds at 100% opacity while the new paint ramps from 0→100%. At the halfway point both layers sit at 50%. Legend fades out then back in with a small ‑4px slide.
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 18 }}>
+        {[
+          { t: 0, label: 'T = 0ms · Temperature', id: 'temperature' },
+          { t: 0.5, label: 'T = 125ms · crossfade', id: 'mix' },
+          { t: 1, label: 'T = 250ms · Rainfall', id: 'rainfall' },
+        ].map((f, i) => (
+          <div key={i} style={{ border: '1px solid #D9D5C8', borderRadius: 6, overflow: 'hidden', background: '#FFFFFF' }}>
+            <div style={{ height: 320, position: 'relative' }}>
+              {f.id === 'mix' ? (
+                <>
+                  <div style={{ position: 'absolute', inset: 0, opacity: 0.5 }}><MapCanvas variableId="temperature" /></div>
+                  <div style={{ position: 'absolute', inset: 0, opacity: 0.5 }}><MapCanvas variableId="rainfall" /></div>
+                </>
+              ) : (
+                <MapCanvas variableId={f.id} />
+              )}
+              <div style={{ position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)', opacity: f.t === 0.5 ? 0.4 : 1, transition: 'opacity 250ms' }}>
+                <Legend variableId={f.id === 'mix' ? 'temperature' : f.id} />
+              </div>
+            </div>
+            <div style={{ padding: '10px 14px', borderTop: '1px solid #ECEAE3', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ fontFamily: "'IBM Plex Mono'", fontSize: 11, color: '#4A5568' }}>{f.label}</div>
+              <div style={{ width: 60, height: 4, background: '#ECEAE3', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${f.t * 100}%`, background: '#0F1B2D' }} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: '12px 14px', background: '#FFFFFF', border: '1px solid #D9D5C8', borderRadius: 4, fontSize: 12, color: '#4A5568', lineHeight: 1.5, display: 'flex', gap: 12 }}>
+        <div style={{ color: '#B8763E', fontWeight: 600 }}>Dev note</div>
+        <div>
+          Use <code style={{ background: '#F7F6F2', padding: '1px 4px', borderRadius: 2, fontFamily: "'IBM Plex Mono'" }}>transition: fill 250ms cubic-bezier(0.4,0,0.2,1)</code> on country polygons, OR animate a second GL layer's opacity if paint properties are fixed. For the legend: <code style={{ background: '#F7F6F2', padding: '1px 4px', borderRadius: 2, fontFamily: "'IBM Plex Mono'" }}>opacity + translateY(-4px)</code>, same duration.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 6: Live interactive crossfade ─────────────────────────
+function A6_Live() {
+  const [active, setActive] = useState('temperature');
+  const all = ['preferences','temperature','rainfall','sunshine','wind','safety','snow','sst','heat','humidity'];
+  return (
+    <div style={{ width: 1440, height: 900, background: '#F7F6F2', position: 'relative', overflow: 'hidden', fontFamily: "'IBM Plex Sans'" }}>
+      <div style={{ position: 'absolute', inset: 0 }}>
+        <CrossfadeMap variableId={active} />
+      </div>
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 5 }}>
+        <Legend variableId={active} />
+      </div>
+      {/* Tabs bottom */}
+      <div style={{ position: 'absolute', bottom: 30, left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: 6, background: '#FFFFFF', border: '1px solid #D9D5C8', borderRadius: 30, padding: 6, boxShadow: '0 4px 12px rgba(15,27,45,0.08)' }}>
+        {all.map(id => {
+          const v = window.VARIABLES[id];
+          const isActive = active === id;
+          return (
+            <button key={id} onClick={() => setActive(id)} style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '8px 12px', borderRadius: 24,
+              background: isActive ? '#0F1B2D' : 'transparent',
+              color: isActive ? '#FFFFFF' : '#0F1B2D',
+              border: 'none', cursor: 'pointer',
+              fontSize: 12, fontWeight: 500,
+            }}>
+              {window.renderIcon(v.icon, 14)}
+              {v.label}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ position: 'absolute', top: 20, right: 24, background: '#0F1B2D', color: '#E0C98A', padding: '6px 10px', borderRadius: 4, fontSize: 10, letterSpacing: '0.14em', fontWeight: 600, textTransform: 'uppercase', fontFamily: "'IBM Plex Mono'" }}>
+        Click any chip · live crossfade
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 7: Mobile bottom sheet ────────────────────────────────
+function A7_MobileSheet() {
+  const [active, setActive] = useState('preferences');
+  return (
+    <div style={{ width: 420, height: 860, background: '#0F1B2D', position: 'relative', overflow: 'hidden', borderRadius: 36, border: '8px solid #0F1B2D' }}>
+      {/* iOS status bar */}
+      <div style={{ height: 44, background: '#F7F6F2', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', fontSize: 13, fontWeight: 600, color: '#0F1B2D' }}>
+        <span>10:44</span>
+        <span style={{ fontFamily: "'IBM Plex Mono'" }}>●●● 71%</span>
+      </div>
+      {/* Map backdrop */}
+      <div style={{ position: 'absolute', top: 44, left: 0, right: 0, bottom: 0, background: '#E4E8EC' }}>
+        <MapCanvas variableId={active} />
+      </div>
+      {/* Top legend pill */}
+      <div style={{ position: 'absolute', top: 60, left: 16, right: 16, zIndex: 5 }}>
+        <window.Legend variableId={active} />
+      </div>
+      {/* Bottom sheet */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        background: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20,
+        boxShadow: '0 -8px 32px rgba(15,27,45,0.16)',
+        maxHeight: '75%', overflowY: 'auto',
+        paddingBottom: 24,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D9D5C8' }} />
+        </div>
+        <DisplayModeModal activeId={active} onChange={setActive} isPremium={false} layout="mobile" subtitle="Choose what the map shows" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Artboard 8: Mobile sheet · upgrade popover ─────────────────────
+function A8_MobileUpgrade() {
+  const [active, setActive] = useState('preferences');
+  useEffect(() => {
+    // auto-open popover on 'snow' after mount
+    const btns = document.querySelectorAll('[data-artboard="mobile-upgrade"] button[aria-pressed="false"]');
+    // we'll just statically show it via JSX instead
+  }, []);
+  return (
+    <div data-artboard="mobile-upgrade" style={{ width: 420, height: 860, background: '#0F1B2D', position: 'relative', overflow: 'hidden', borderRadius: 36, border: '8px solid #0F1B2D' }}>
+      <div style={{ height: 44, background: '#F7F6F2', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', fontSize: 13, fontWeight: 600, color: '#0F1B2D' }}>
+        <span>10:44</span>
+        <span style={{ fontFamily: "'IBM Plex Mono'" }}>●●● 71%</span>
+      </div>
+      <div style={{ position: 'absolute', top: 44, left: 0, right: 0, bottom: 0, background: '#E4E8EC' }}>
+        <MapCanvas variableId="snow" />
+      </div>
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        background: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20,
+        boxShadow: '0 -8px 32px rgba(15,27,45,0.16)',
+        maxHeight: '85%', overflowY: 'auto',
+        paddingBottom: 24,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D9D5C8' }} />
+        </div>
+        <DisplayModeModal activeId={active} onChange={setActive} isPremium={false} layout="mobile" subtitle="Choose what the map shows" />
+      </div>
+      <div style={{ position: 'absolute', top: 56, left: 12, background: '#B8763E', color: '#FFFFFF', padding: '4px 8px', borderRadius: 3, fontSize: 9, letterSpacing: '0.14em', fontWeight: 600, textTransform: 'uppercase', fontFamily: "'IBM Plex Mono'", zIndex: 6 }}>
+        Tap "Snow depth" →
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="overview"
+        title="Display Mode — expanded to 10 variables"
+        subtitle="One refined variation. Free tier: My Preferences + Temp + Rain + Sun + Wind + Safety. Premium tier: Snow depth + SST + Heat index + Humidity. Grouped as Hero / Climate / Advisory / Premium — the separators make 10 options feel like 4 sets of ≤4."
+      >
+        <DCArtboard id="desktop-free" label="01 · Desktop, Free user (default)" width={1440} height={900}>
+          <A1_DesktopFree />
+        </DCArtboard>
+        <DCArtboard id="desktop-upgrade" label="02 · Inline upgrade popover on locked variable" width={1440} height={900}>
+          <A2_UpgradePopover />
+        </DCArtboard>
+        <DCArtboard id="desktop-premium" label="03 · Premium user · SST with ocean-only paint" width={1440} height={900}>
+          <A3_PremiumUnlocked />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="legends" title="Per-variable legends + palettes" subtitle="All 10 legends at once, showing the three legend shapes (qualitative pills / continuous ramp / safety swatches) and every palette.">
+        <DCArtboard id="legend-gallery" label="04 · Legend gallery" width={1440} height={900}>
+          <A4_LegendGallery />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="switching" title="Switching behaviour" subtitle="Crossfade the paint, not hard-cut. 250ms, ease-standard from tokens.md. Legend fades + 4px slide.">
+        <DCArtboard id="crossfade-frames" label="05 · Before · mid · after (static frames)" width={1440} height={900}>
+          <A5_Crossfade />
+        </DCArtboard>
+        <DCArtboard id="crossfade-live" label="06 · Live interactive · click any chip" width={1440} height={900}>
+          <A6_Live />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="mobile" title="Mobile bottom sheet" subtitle="Same modal, 2-column grid, 44px+ hit targets, drag handle at top.">
+        <DCArtboard id="mobile-default" label="07 · Mobile default" width={420} height={860}>
+          <A7_MobileSheet />
+        </DCArtboard>
+        <DCArtboard id="mobile-upgrade" label="08 · Mobile · locked variable tapped" width={420} height={860}>
+          <A8_MobileUpgrade />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

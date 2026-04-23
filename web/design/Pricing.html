@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WTG · Pricing — 3 Variations</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  html, body { margin: 0; padding: 0; background: #1a1a1c; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #e4e4e7; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Canvas -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<!-- Data + shared components -->
+<script src="pricing/tierData.js"></script>
+<script type="text/babel" src="pricing/PricingKit.jsx"></script>
+
+<!-- Variations -->
+<script type="text/babel" src="pricing/VariationCredibility.jsx"></script>
+<script type="text/babel" src="pricing/VariationAspirational.jsx"></script>
+<script type="text/babel" src="pricing/VariationUtilitarian.jsx"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard } = window;
+const { VariationCredibility, VariationAspirational, VariationUtilitarian } = window;
+
+function App() {
+  return (
+    <DesignCanvas defaultZoom={0.55}>
+      <DCSection
+        id="pricing"
+        title="Pricing page — three variations"
+        subtitle="All three use the Atlas tokens (IBM Plex family, deep navy ink, brass accent, bone paper). They differ in tone, not style system. 5 tiers · Premium emphasised · premium headline + bullets appear on the Premium card across all three. Click an artboard to expand fullscreen."
+      >
+        <DCArtboard id="v1-credibility" label="A · Credibility — methodology + citations on the page" width={1440} height={3760}>
+          <VariationCredibility />
+        </DCArtboard>
+        <DCArtboard id="v2-aspirational" label="B · Aspirational — mood-first, Premium as the hero" width={1440} height={3840}>
+          <VariationAspirational />
+        </DCArtboard>
+        <DCArtboard id="v3-utilitarian" label="C · Utilitarian — Linear-grade density, comparison dominates" width={1440} height={2640}>
+          <VariationUtilitarian />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

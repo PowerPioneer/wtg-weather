@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Design System — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Surfaces */
+    --background: #F7F6F2;
+    --surface: #FFFFFF;
+    --surface-2: #ECEAE3;
+    --surface-sunken: #E3DFD2;
+    --border: #D9D5C8;
+    --border-strong: #B3AE9E;
+    --overlay: rgba(15, 27, 45, 0.48);
+    /* Text */
+    --text: #0F1B2D;
+    --text-muted: #4A5568;
+    --text-subtle: #6B7280;
+    --text-inverse: #FFFFFF;
+    --text-link: #8A4A1E;
+    /* Brand / action */
+    --primary: #0F1B2D;
+    --primary-hover: #1C2A44;
+    --primary-pressed: #060B15;
+    --primary-foreground: #FFFFFF;
+    --primary-subtle: #E6E9EF;
+    --accent: #B8763E;
+    --accent-subtle: #F3E8D9;
+    --destructive: #7A2E2E;
+    --destructive-subtle: #F4E3E3;
+    --focus-ring: #0072B2;
+    /* Status */
+    --success: #0B6E5F;
+    --warning: #B8763E;
+    --info: #0072B2;
+    /* Score */
+    --score-perfect: #0B6E5F;
+    --score-perfect-subtle: #DDEBE7;
+    --score-good: #0072B2;
+    --score-good-subtle: #D7E4EF;
+    --score-acceptable: #B8610E;
+    --score-acceptable-subtle: #EFDFC9;
+    --score-avoid: #7A2E2E;
+    --score-avoid-subtle: #EFD8D8;
+    /* Advisory */
+    --advisory-normal: #4A5568;
+    --advisory-caution: #B8763E;
+    --advisory-reconsider: #B8610E;
+    --advisory-dnt: #7A2E2E;
+    /* Fonts */
+    --font-display: 'IBM Plex Serif', ui-serif, Georgia, serif;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    /* Radii */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-full: 9999px;
+    /* Shadows */
+    --shadow-xs: 0 1px 0 rgba(15, 27, 45, 0.04);
+    --shadow-sm: 0 1px 2px rgba(15, 27, 45, 0.06), 0 1px 3px rgba(15, 27, 45, 0.06);
+    --shadow-md: 0 4px 8px rgba(15, 27, 45, 0.06), 0 8px 16px rgba(15, 27, 45, 0.06);
+    --shadow-lg: 0 12px 24px rgba(15, 27, 45, 0.08), 0 24px 48px rgba(15, 27, 45, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--background);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  code, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ───── Page shell ───── */
+  .shell {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 72px 48px 120px;
+  }
+
+  .sheet-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 72px;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 18px;
+    height: 1px;
+    background: var(--border-strong);
+  }
+  .sheet-head h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 72px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-top: 14px;
+  }
+  .sheet-head .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .sheet-head .meta b { color: var(--text); font-weight: 500; }
+
+  .lede {
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: 780px;
+    margin-top: 28px;
+    font-style: italic;
+  }
+
+  /* ───── Section ───── */
+  section.chapter {
+    margin-top: 96px;
+  }
+  section.chapter > header {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  section.chapter > header .num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-subtle);
+    letter-spacing: 0.12em;
+  }
+  section.chapter > header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  section.chapter > header .desc {
+    grid-column: 2;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 68ch;
+    margin-top: 8px;
+  }
+
+  h3.block-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin: 40px 0 16px;
+    padding-left: 12px;
+    border-left: 2px solid var(--primary);
+  }
+
+  /* ───── 1 · Colour swatches ───── */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .swatch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .swatch .chip {
+    height: 104px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 12px 14px;
+  }
+  .swatch .chip span {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    background: rgba(255,255,255,0.9);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+  }
+  .swatch .chip.dark span { background: rgba(15,27,45,0.85); color: var(--text-inverse); }
+  .swatch .meta {
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .swatch .meta .tok {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .swatch .meta .val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .swatch .meta .note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+
+  /* ───── 2 · Typography ───── */
+  .type-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+  }
+  .type-row:first-of-type { border-top: none; padding-top: 0; }
+  .type-row .left {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .type-row .left .tok { color: var(--text); font-weight: 500; letter-spacing: 0.04em; }
+  .type-row .sample { color: var(--text); }
+
+  .t-display-xl { font-family: var(--font-display); font-weight: 500; font-size: 72px; line-height: 1.05; letter-spacing: -0.015em; }
+  .t-display-lg { font-family: var(--font-display); font-weight: 500; font-size: 56px; line-height: 1.06; letter-spacing: -0.01em; }
+  .t-h1 { font-family: var(--font-display); font-weight: 500; font-size: 40px; line-height: 1.15; letter-spacing: -0.005em; }
+  .t-h2 { font-family: var(--font-display); font-weight: 500; font-size: 28px; line-height: 1.25; }
+  .t-h3 { font-family: var(--font-sans); font-weight: 600; font-size: 20px; line-height: 1.4; }
+  .t-h4 { font-family: var(--font-sans); font-weight: 600; font-size: 16px; line-height: 1.4; letter-spacing: 0.01em; }
+  .t-body { font-family: var(--font-sans); font-weight: 400; font-size: 16px; line-height: 1.55; }
+  .t-body-sm { font-family: var(--font-sans); font-weight: 400; font-size: 14px; line-height: 1.5; }
+  .t-caption { font-family: var(--font-sans); font-weight: 500; font-size: 13px; line-height: 1.45; letter-spacing: 0.01em; }
+  .t-label { font-family: var(--font-sans); font-weight: 500; font-size: 11px; line-height: 1.3; letter-spacing: 0.12em; text-transform: uppercase; }
+  .t-code { font-family: var(--font-mono); font-weight: 400; font-size: 13px; line-height: 1.55; }
+  .t-figure { font-family: var(--font-mono); font-weight: 500; font-size: 18px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+  /* ───── 3 · Spacing / radii / shadows ───── */
+  .token-row {
+    display: grid;
+    grid-template-columns: 120px 120px 1fr 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--border);
+    align-items: center;
+    font-size: 13px;
+  }
+  .token-row:first-of-type { border-top: none; }
+  .token-row .tok { font-family: var(--font-mono); font-weight: 500; color: var(--text); }
+  .token-row .val { font-family: var(--font-mono); color: var(--text-muted); }
+  .token-row .viz { display: flex; align-items: center; }
+  .token-row .note { color: var(--text-muted); font-size: 13px; }
+  .space-bar { height: 8px; background: var(--primary); border-radius: 1px; }
+  .radius-demo { width: 64px; height: 48px; background: var(--surface); border: 1px solid var(--border-strong); }
+  .shadow-demo { width: 120px; height: 56px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+
+  /* ───── 4 · Components ───── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .comp-card.wide { grid-column: span 2; }
+  .comp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-header h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .comp-header .path {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .comp-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    min-height: 60px;
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms;
+    font-variant-numeric: tabular-nums;
+  }
+  .btn.sm { height: 32px; padding: 0 12px; font-size: 13px; }
+  .btn.md { height: 40px; padding: 0 16px; font-size: 14px; }
+  .btn.lg { height: 48px; padding: 0 20px; font-size: 15px; }
+  .btn.primary { background: var(--primary); color: var(--primary-foreground); }
+  .btn.primary:hover { background: var(--primary-hover); }
+  .btn.secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+  .btn.secondary:hover { background: var(--surface-2); }
+  .btn.ghost { background: transparent; color: var(--text); }
+  .btn.ghost:hover { background: var(--surface-2); }
+  .btn.destructive { background: var(--destructive); color: var(--text-inverse); }
+  .btn.link { background: transparent; color: var(--text-link); padding: 0; height: auto; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Chip */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .chip.premium { background: var(--accent-subtle); color: var(--accent); border-color: transparent; }
+  .chip.good { background: var(--score-good-subtle); color: var(--score-good); border-color: transparent; }
+  .chip.warm { background: var(--score-acceptable-subtle); color: var(--score-acceptable); border-color: transparent; }
+  .chip.avoid { background: var(--score-avoid-subtle); color: var(--score-avoid); border-color: transparent; }
+  .chip.caution { background: #E9DCC5; color: var(--accent); border-color: transparent; }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* Card */
+  .d-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .d-card .t { font-family: var(--font-display); font-size: 20px; font-weight: 500; }
+  .d-card .s { font-size: 13px; color: var(--text-muted); }
+
+  /* Score badge */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 6px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-inverse);
+    letter-spacing: 0.02em;
+  }
+  .score-badge .n {
+    background: rgba(255,255,255,0.2);
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+  }
+  .score-badge.perfect { background: var(--score-perfect); }
+  .score-badge.good { background: var(--score-good); }
+  .score-badge.acceptable { background: var(--score-acceptable); }
+  .score-badge.avoid { background: var(--score-avoid); }
+
+  /* Score gauge */
+  .gauge {
+    width: 112px;
+    height: 112px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gauge .num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--text);
+    z-index: 1;
+  }
+
+  /* Safety panel */
+  .safety-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    width: 100%;
+  }
+  .safety-panel .head {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .safety-panel .head .title { font-size: 13px; font-weight: 600; }
+  .safety-panel .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .safety-panel .cell {
+    padding: 12px 14px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .safety-panel .cell:last-child { border-right: none; }
+  .safety-panel .cell .gov { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--text-muted); text-transform: uppercase; }
+  .safety-panel .cell .lvl { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .safety-panel .cell .lvl .sw { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Form */
+  .input {
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+    width: 100%;
+  }
+  .input:focus { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+  .label { font-size: 12px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.02em; display: block; margin-bottom: 6px; }
+
+  /* Legend ramp */
+  .legend-continuous {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .legend-ramp {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, #0B3D6A 0%, #1E7BB2 25%, #E4D9A6 50%, #D97E2B 75%, #8C2E14 100%);
+  }
+  .legend-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Sparkline */
+  .sparkline-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    gap: 12px;
+  }
+  .sparkline-row .label { margin: 0; font-size: 13px; color: var(--text); }
+  .sparkline-row .v { font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+
+  /* Tier card demo */
+  .tier-card {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tier-card.feat { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+  .tier-card .name { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--text-muted); text-transform: uppercase; }
+  .tier-card .price { font-family: var(--font-display); font-size: 36px; font-weight: 500; }
+  .tier-card .price span { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); letter-spacing: 0; font-weight: 400; }
+  .tier-card ul { list-style: none; padding: 6px 0; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px; }
+  .tier-card ul li::before { content: '✓  '; color: var(--success); font-weight: 600; }
+
+  /* Upgrade prompt */
+  .upgrade-card {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    width: 340px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+  .upgrade-card::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 32px;
+    width: 10px;
+    height: 10px;
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    border-left: 1px solid var(--border-strong);
+    transform: rotate(45deg);
+  }
+  .upgrade-card .lock {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .upgrade-card h5 { font-family: var(--font-display); font-weight: 500; font-size: 18px; }
+  .upgrade-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .upgrade-card .actions { display: flex; gap: 8px; margin-top: 4px; }
+
+  /* Empty state */
+  .empty-state {
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    text-align: center;
+    background: var(--surface);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .empty-state .icon {
+    width: 48px; height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+  }
+  .empty-state h5 { font-family: var(--font-display); font-size: 20px; font-weight: 500; }
+  .empty-state p { font-size: 13px; color: var(--text-muted); max-width: 360px; }
+
+  /* Motion strip */
+  .motion-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    align-items: center;
+    font-size: 13px;
+  }
+  .motion-row:first-of-type { border-top: none; }
+  .motion-row .tok { font-family: var(--font-mono); color: var(--text); font-weight: 500; }
+  .motion-row .val { font-family: var(--font-mono); color: var(--text-muted); font-size: 11px; }
+
+  /* Footer */
+  .doc-footer {
+    margin-top: 120px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .doc-footer b { color: var(--text); font-weight: 500; display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-mono); }
+  .doc-footer a { color: var(--text); text-decoration: none; display: block; padding: 2px 0; font-family: var(--font-mono); font-size: 12px; }
+  .doc-footer a:hover { text-decoration: underline; }
+
+  /* Utility */
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 8px;
+  }
+
+  /* Lock icon svg inline */
+  .ico { width: 12px; height: 12px; display: inline-block; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ═════════ Header ═════════ -->
+  <header class="sheet-head">
+    <div>
+      <div class="eyebrow">Atlas · Where to Go for Great Weather · v2.0</div>
+      <h1>The Design System</h1>
+      <p class="lede">A reference work for trustworthy climate data. Light-only, document-forward, tuned for long reads and confident action.</p>
+    </div>
+    <div class="meta">
+      <div><b>Locked</b> · 2026-04-22</div>
+      <div>Phase 4.5 → 5 handoff</div>
+      <div>Tokens: <b>web/design/tokens.md</b></div>
+      <div>Theme: <b>tailwind.theme.css</b></div>
+      <div>Inventory: <b>components.md</b></div>
+    </div>
+  </header>
+
+  <!-- ═════════ 01 · Colour ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">01</div>
+      <h2>Colour</h2>
+      <div class="desc">Four colour families: surfaces (warm paper), ink (navy text), score (climate match, CVD-safe), and safety advisory. Intentional overlap between score-avoid and advisory-dnt — a "don't travel" region should read the same across both surfaces.</div>
+    </header>
+
+    <h3 class="block-title">Surfaces & structure</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="chip" style="background: #F7F6F2"><span>#F7F6F2</span></div>
+        <div class="meta"><div class="tok">background</div><div class="val">#F7F6F2</div><div class="note">Page background — warm paper white.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #FFFFFF; border-bottom: 1px solid var(--border)"><span>#FFFFFF</span></div>
+        <div class="meta"><div class="tok">surface</div><div class="val">#FFFFFF</div><div class="note">Cards, modals, elevated containers.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #ECEAE3"><span>#ECEAE3</span></div>
+        <div class="meta"><div class="tok">surface-2</div><div class="val">#ECEAE3</div><div class="note">Inset fills, table headers, disabled.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #E3DFD2"><span>#E3DFD2</span></div>
+        <div class="meta"><div class="tok">surface-sunken</div><div class="val">#E3DFD2</div><div class="note">Sunken rails, map empty frames.</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">Ink</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="chip dark" style="background: #0F1B2D"><span>#0F1B2D</span></div>
+        <div class="meta"><div class="tok">text · primary</div><div class="val">#0F1B2D · 16.9:1</div><div class="note">Body + headings. Also the <code>primary</code> action fill.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #4A5568"><span>#4A5568</span></div>
+        <div class="meta"><div class="tok">text-muted</div><div class="val">#4A5568 · 7.5:1</div><div class="note">Labels, captions, helper text.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #6B7280"><span>#6B7280</span></div>
+        <div class="meta"><div class="tok">text-subtle</div><div class="val">#6B7280 · 4.8:1</div><div class="note">Tertiary metadata. Never on actionable.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #8A4A1E"><span>#8A4A1E</span></div>
+        <div class="meta"><div class="tok">text-link</div><div class="val">#8A4A1E · 5.8:1</div><div class="note">Inline prose links only.</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">Score palette (climate match)</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="chip dark" style="background: #0B6E5F"><span>#0B6E5F</span></div>
+        <div class="meta"><div class="tok">score-perfect</div><div class="val">#0B6E5F · 5.82:1</div><div class="note">≥ 85 · "Perfect match".</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #0072B2"><span>#0072B2</span></div>
+        <div class="meta"><div class="tok">score-good</div><div class="val">#0072B2 · 5.46:1</div><div class="note">70–84 · "Good option".</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #B8610E"><span>#B8610E</span></div>
+        <div class="meta"><div class="tok">score-acceptable</div><div class="val">#B8610E · 4.67:1</div><div class="note">50–69 · "Acceptable".</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #7A2E2E"><span>#7A2E2E</span></div>
+        <div class="meta"><div class="tok">score-avoid</div><div class="val">#7A2E2E · 8.90:1</div><div class="note">&lt; 50 · "Avoid". Teal → blue → amber → oxblood — CVD-safe.</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">Safety advisory</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="chip dark" style="background: #4A5568"><span>#4A5568</span></div>
+        <div class="meta"><div class="tok">advisory-normal</div><div class="val">Level 1 · 7.5:1</div><div class="note">Exercise normal precautions.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #B8763E"><span>#B8763E</span></div>
+        <div class="meta"><div class="tok">advisory-caution</div><div class="val">Level 2 · 4.6:1</div><div class="note">Exercise increased caution.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #B8610E"><span>#B8610E</span></div>
+        <div class="meta"><div class="tok">advisory-reconsider</div><div class="val">Level 3 · 4.7:1</div><div class="note">Reconsider travel.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #7A2E2E"><span>#7A2E2E</span></div>
+        <div class="meta"><div class="tok">advisory-dnt</div><div class="val">Level 4 · 8.9:1</div><div class="note">Do not travel.</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">Brand · action · status</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="chip dark" style="background: #0F1B2D"><span>primary</span></div>
+        <div class="meta"><div class="tok">primary</div><div class="val">#0F1B2D</div><div class="note">Primary button fill. Navy ink.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #B8763E"><span class="mono" style="color: #fff; background: rgba(15,27,45,0.7)">accent</span></div>
+        <div class="meta"><div class="tok">accent</div><div class="val">#B8763E</div><div class="note">Brass. Editorial callouts, Premium marks. Never primary action.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #F3E8D9"><span>accent-subtle</span></div>
+        <div class="meta"><div class="tok">accent-subtle</div><div class="val">#F3E8D9</div><div class="note">Tag backgrounds, notices.</div></div>
+      </div>
+      <div class="swatch">
+        <div class="chip dark" style="background: #0072B2"><span>focus-ring</span></div>
+        <div class="meta"><div class="tok">focus-ring</div><div class="val">#0072B2</div><div class="note">Keyboard focus — 2px solid, 2px offset.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ 02 · Typography ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">02</div>
+      <h2>Typography</h2>
+      <div class="desc">IBM Plex — Serif (display), Sans (UI), Mono (data). Three families, one voice: considered and editorial. One display face per screen. Data is always mono with tabular figures.</div>
+    </header>
+
+    <h3 class="block-title">Families</h3>
+    <div class="swatch-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="swatch">
+        <div style="padding: 28px 20px 20px; font-family: var(--font-display); font-size: 48px; font-weight: 500; line-height: 1; letter-spacing: -0.01em;">Atlas</div>
+        <div class="meta"><div class="tok">IBM Plex Serif</div><div class="val">--font-display · weights 400 / 500 / 600</div><div class="note">Display, H1, H2. Never at 600 on body — drift.</div></div>
+      </div>
+      <div class="swatch">
+        <div style="padding: 28px 20px 20px; font-family: var(--font-sans); font-size: 48px; font-weight: 600; line-height: 1; letter-spacing: -0.015em;">Atlas</div>
+        <div class="meta"><div class="tok">IBM Plex Sans</div><div class="val">--font-sans · weights 400 / 500 / 600 / 700</div><div class="note">UI, body, H3 and below.</div></div>
+      </div>
+      <div class="swatch">
+        <div style="padding: 28px 20px 20px; font-family: var(--font-mono); font-size: 44px; font-weight: 500; line-height: 1; letter-spacing: -0.01em;">13.4°</div>
+        <div class="meta"><div class="tok">IBM Plex Mono</div><div class="val">--font-mono · weights 400 / 500</div><div class="note">Data readouts, eyebrows, coordinates.</div></div>
+      </div>
+    </div>
+
+    <h3 class="block-title">Scale</h3>
+    <div class="type-row">
+      <div class="left"><div class="tok">display-xl</div>72/76 · 500 · -0.015em</div>
+      <div class="sample t-display-xl">The last warm January</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">display-lg</div>56/60 · 500 · -0.01em</div>
+      <div class="sample t-display-lg">Peru in April, settled</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">h1</div>40/46 · 500 · -0.005em</div>
+      <div class="sample t-h1">Climate at a glance</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">h2</div>28/34 · 500</div>
+      <div class="sample t-h2">What the numbers say</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">h3 (sans)</div>20/28 · 600</div>
+      <div class="sample t-h3">Rainfall, month by month</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">h4 (sans)</div>16/22 · 600 · 0.01em</div>
+      <div class="sample t-h4">Methodology</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">body</div>16/25 · 400</div>
+      <div class="sample t-body" style="max-width: 68ch;">The coastal desert that cradles Lima is remarkable for what it spares you — not heat, not cold, but the kind of grey, damp stillness that turns a month indoors.</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">body-sm</div>14/21 · 400</div>
+      <div class="sample t-body-sm">Secondary prose and dense UI. Max-width 68ch in editorial, 48ch in narrow cards.</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">caption</div>13/19 · 500 · 0.01em</div>
+      <div class="sample t-caption">Mean daily maximum · 2014–2024 baseline</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">label</div>11/14 · 500 · 0.12em · uppercase</div>
+      <div class="sample t-label">Section · Premium · Updated daily</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">code</div>13/20 · 400 · mono</div>
+      <div class="sample t-code">lat: -12.0464, lng: -77.0428 · 13.4°C / 56.1°F · p50</div>
+    </div>
+    <div class="type-row">
+      <div class="left"><div class="tok">figure</div>18/22 · 500 · mono</div>
+      <div class="sample t-figure">13.4° &nbsp;·&nbsp; 42 mm &nbsp;·&nbsp; 7.2 h &nbsp;·&nbsp; €29 /yr</div>
+    </div>
+  </section>
+
+  <!-- ═════════ 03 · Spacing ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">03</div>
+      <h2>Spacing &amp; layout</h2>
+      <div class="desc">4-pixel base, powers of eight beyond 16. Eleven stops total — everything else is drift. Containers cap at 1280 (app), 720 (editorial).</div>
+    </header>
+    <div class="token-row">
+      <div class="tok">space-1</div><div class="val">4px</div>
+      <div class="viz"><div class="space-bar" style="width: 4px"></div></div>
+      <div class="note">Hairline gaps, icon-to-label.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-2</div><div class="val">8px</div>
+      <div class="viz"><div class="space-bar" style="width: 8px"></div></div>
+      <div class="note">Chip / button internal, stack of labels.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-3</div><div class="val">12px</div>
+      <div class="viz"><div class="space-bar" style="width: 12px"></div></div>
+      <div class="note">Card internal spacing, form row gap.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-4</div><div class="val">16px</div>
+      <div class="viz"><div class="space-bar" style="width: 16px"></div></div>
+      <div class="note">Default card padding unit.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-6</div><div class="val">24px</div>
+      <div class="viz"><div class="space-bar" style="width: 24px"></div></div>
+      <div class="note">Between-card gap, section inner.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-8</div><div class="val">32px</div>
+      <div class="viz"><div class="space-bar" style="width: 32px"></div></div>
+      <div class="note">Card outer, hero spacing.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-12</div><div class="val">48px</div>
+      <div class="viz"><div class="space-bar" style="width: 48px"></div></div>
+      <div class="note">Section-to-section on desktop.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-16</div><div class="val">64px</div>
+      <div class="viz"><div class="space-bar" style="width: 64px"></div></div>
+      <div class="note">Major section break.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">space-24</div><div class="val">96px</div>
+      <div class="viz"><div class="space-bar" style="width: 96px"></div></div>
+      <div class="note">Chapter break on editorial pages.</div>
+    </div>
+  </section>
+
+  <!-- ═════════ 04 · Radii & shadows ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">04</div>
+      <h2>Radii &amp; shadows</h2>
+      <div class="desc">Atlas rounds lightly — a documentary aesthetic, not playful. Shadows are tight and navy-tinted; elevate with borders first, shadows second.</div>
+    </header>
+    <h3 class="block-title">Border radius</h3>
+    <div class="token-row">
+      <div class="tok">radius-sm</div><div class="val">2px</div>
+      <div class="viz"><div class="radius-demo" style="border-radius: 2px"></div></div>
+      <div class="note">Chips, badges, checkboxes.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">radius-md</div><div class="val">4px</div>
+      <div class="viz"><div class="radius-demo" style="border-radius: 4px"></div></div>
+      <div class="note">Buttons, inputs, small cards. Default.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">radius-lg</div><div class="val">8px</div>
+      <div class="viz"><div class="radius-demo" style="border-radius: 8px"></div></div>
+      <div class="note">Large cards, modals, sheets, map drawer.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">radius-xl</div><div class="val">12px</div>
+      <div class="viz"><div class="radius-demo" style="border-radius: 12px"></div></div>
+      <div class="note">Hero cards. Ceiling — nothing rounder.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">radius-full</div><div class="val">9999px</div>
+      <div class="viz"><div class="radius-demo" style="border-radius: 9999px; width: 48px"></div></div>
+      <div class="note">Avatars, status dots, pill filters.</div>
+    </div>
+
+    <h3 class="block-title">Elevation</h3>
+    <div class="token-row">
+      <div class="tok">shadow-xs</div><div class="val">1px · 0.04</div>
+      <div class="viz"><div class="shadow-demo" style="box-shadow: var(--shadow-xs)"></div></div>
+      <div class="note">Resting buttons.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">shadow-sm</div><div class="val">1/3px · 0.06</div>
+      <div class="viz"><div class="shadow-demo" style="box-shadow: var(--shadow-sm)"></div></div>
+      <div class="note">Cards.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">shadow-md</div><div class="val">4/16px · 0.06</div>
+      <div class="viz"><div class="shadow-demo" style="box-shadow: var(--shadow-md)"></div></div>
+      <div class="note">Dropdowns, popovers.</div>
+    </div>
+    <div class="token-row">
+      <div class="tok">shadow-lg</div><div class="val">12/48px · 0.08</div>
+      <div class="viz"><div class="shadow-demo" style="box-shadow: var(--shadow-lg)"></div></div>
+      <div class="note">Modals, map drawer.</div>
+    </div>
+  </section>
+
+  <!-- ═════════ 05 · Motion ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">05</div>
+      <h2>Motion</h2>
+      <div class="desc">Short, no-bounce. Atlas is calm and considered — no spring physics, no 600ms reveals. Cosmetic motion is disabled under <code>prefers-reduced-motion</code>; map pan/zoom remains functional.</div>
+    </header>
+    <div class="motion-row">
+      <div class="tok">duration-fast</div>
+      <div><div class="val">150ms</div></div>
+      <div class="note">Hover, button press, tooltip open.</div>
+    </div>
+    <div class="motion-row">
+      <div class="tok">duration-base</div>
+      <div><div class="val">250ms</div></div>
+      <div class="note">Drawer slide, tab underline, card hover.</div>
+    </div>
+    <div class="motion-row">
+      <div class="tok">duration-slow</div>
+      <div><div class="val">400ms</div></div>
+      <div class="note">Modal fade, page-level transitions.</div>
+    </div>
+    <div class="motion-row">
+      <div class="tok">ease-standard</div>
+      <div><div class="val">cubic-bezier(.2, 0, 0, 1)</div></div>
+      <div class="note">Default curve.</div>
+    </div>
+    <div class="motion-row">
+      <div class="tok">ease-productive</div>
+      <div><div class="val">cubic-bezier(.2, 0, .38, .9)</div></div>
+      <div class="note">Map zoom, chart reflow — snappier.</div>
+    </div>
+  </section>
+
+  <!-- ═════════ 06 · Components ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">06</div>
+      <h2>Components</h2>
+      <div class="desc">Primitives below are the authoritative render. Prop signatures in <code>web/design/components.md</code>. Each card notes its target path under <code>web/src/components/</code>.</div>
+    </header>
+
+    <div class="comp-grid">
+
+      <!-- Buttons -->
+      <div class="comp-card wide">
+        <div class="comp-header">
+          <h4>Button</h4>
+          <div class="path">ui/button.tsx · primary · secondary · ghost · destructive · link</div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <button class="btn primary sm">Save trip</button>
+            <button class="btn primary md">Save trip</button>
+            <button class="btn primary lg">Save trip</button>
+            <span class="mono" style="font-size:11px; color: var(--text-muted); margin-left: 8px">sm · md · lg (32/40/48)</span>
+          </div>
+          <div class="row">
+            <button class="btn primary md">Save trip</button>
+            <button class="btn secondary md">Cancel</button>
+            <button class="btn ghost md">Skip</button>
+            <button class="btn destructive md">Delete trip</button>
+            <a class="btn link md">Methodology →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chips -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>Chip</h4>
+          <div class="path">ui/chip.tsx</div>
+        </div>
+        <div class="comp-body">
+          <span class="chip">Neutral</span>
+          <span class="chip premium"><span class="dot"></span>Premium</span>
+          <span class="chip good">Good</span>
+          <span class="chip caution">Caution</span>
+          <span class="chip warm">Warm</span>
+          <span class="chip avoid">Avoid</span>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>Input</h4>
+          <div class="path">ui/input.tsx</div>
+        </div>
+        <div class="comp-body" style="flex-direction: column; align-items: stretch;">
+          <label class="label">Email</label>
+          <input class="input" type="email" placeholder="you@domain.com" value="paul@wheretogoforgreatweather.com">
+        </div>
+      </div>
+
+      <!-- Score badge -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>ScoreBadge</h4>
+          <div class="path">match/score-badge.tsx</div>
+        </div>
+        <div class="comp-body">
+          <span class="score-badge perfect"><span class="n">92</span>Perfect</span>
+          <span class="score-badge good"><span class="n">78</span>Good</span>
+          <span class="score-badge acceptable"><span class="n">61</span>Acceptable</span>
+          <span class="score-badge avoid"><span class="n">34</span>Avoid</span>
+        </div>
+      </div>
+
+      <!-- Score gauge -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>ScoreGauge</h4>
+          <div class="path">match/score-gauge.tsx</div>
+        </div>
+        <div class="comp-body" style="gap: 24px; justify-content: center;">
+          <div class="col" style="align-items:center; gap:6px;">
+            <div class="gauge">
+              <svg viewBox="0 0 120 120" width="112" height="112" style="position:absolute; inset:0;">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="8" stroke-dasharray="245 82" stroke-dashoffset="41" transform="rotate(135 60 60)" stroke-linecap="round"/>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--score-perfect)" stroke-width="8" stroke-dasharray="226 101" stroke-dashoffset="41" transform="rotate(135 60 60)" stroke-linecap="round"/>
+              </svg>
+              <span class="num">92</span>
+            </div>
+            <div class="mono" style="font-size:10.5px; letter-spacing: 0.14em; color: var(--score-perfect); text-transform: uppercase;">Perfect · April</div>
+          </div>
+          <div class="col" style="align-items:center; gap:6px;">
+            <div class="gauge">
+              <svg viewBox="0 0 120 120" width="112" height="112" style="position:absolute; inset:0;">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="8" stroke-dasharray="245 82" stroke-dashoffset="41" transform="rotate(135 60 60)" stroke-linecap="round"/>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--score-good)" stroke-width="8" stroke-dasharray="181 146" stroke-dashoffset="41" transform="rotate(135 60 60)" stroke-linecap="round"/>
+              </svg>
+              <span class="num">74</span>
+            </div>
+            <div class="mono" style="font-size:10.5px; letter-spacing: 0.14em; color: var(--score-good); text-transform: uppercase;">Good · May</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safety panel -->
+      <div class="comp-card wide">
+        <div class="comp-header">
+          <h4>SafetyPanel</h4>
+          <div class="path">safety/safety-panel.tsx · combined + per-gov grid</div>
+        </div>
+        <div class="safety-panel">
+          <div class="head">
+            <div class="title">Combined advisory · Level 2 — exercise increased caution</div>
+            <div class="mono" style="font-size: 10.5px; letter-spacing: 0.12em; color: var(--text-muted); text-transform: uppercase;">Updated 6 days ago</div>
+          </div>
+          <div class="grid">
+            <div class="cell"><div class="gov">United States</div><div class="lvl"><span class="sw" style="background: var(--advisory-caution)"></span>Level 2</div></div>
+            <div class="cell"><div class="gov">United Kingdom</div><div class="lvl"><span class="sw" style="background: var(--advisory-normal)"></span>Normal</div></div>
+            <div class="cell"><div class="gov">Canada</div><div class="lvl"><span class="sw" style="background: var(--advisory-caution)"></span>Increased caution</div></div>
+            <div class="cell"><div class="gov">Australia</div><div class="lvl"><span class="sw" style="background: var(--advisory-normal)"></span>Normal</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>Card</h4>
+          <div class="path">ui/card.tsx · bordered (default), elevated</div>
+        </div>
+        <div class="comp-body">
+          <div class="d-card">
+            <div class="mono-label" style="margin: 0">Lima · Coast</div>
+            <div class="t">Perpetual spring</div>
+            <div class="s">13 – 19 °C · 5 mm · 28 days clear</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sparkline rows -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>Sparkline</h4>
+          <div class="path">charts/sparkline.tsx</div>
+        </div>
+        <div class="comp-body" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div class="sparkline-row">
+            <span class="label">Lima</span>
+            <svg viewBox="0 0 120 28" width="120" height="28" style="flex: 0 0 auto">
+              <polyline points="0,18 10,16 20,14 30,12 40,14 50,16 60,17 70,16 80,13 90,11 100,13 110,16" fill="none" stroke="var(--score-perfect)" stroke-width="1.5"/>
+            </svg>
+            <span class="v">13°</span>
+          </div>
+          <div class="sparkline-row">
+            <span class="label">Arequipa</span>
+            <svg viewBox="0 0 120 28" width="120" height="28" style="flex: 0 0 auto">
+              <polyline points="0,10 10,9 20,8 30,7 40,7 50,9 60,11 70,12 80,11 90,9 100,8 110,8" fill="none" stroke="var(--score-good)" stroke-width="1.5"/>
+            </svg>
+            <span class="v">18°</span>
+          </div>
+          <div class="sparkline-row">
+            <span class="label">Iquitos</span>
+            <svg viewBox="0 0 120 28" width="120" height="28" style="flex: 0 0 auto">
+              <polyline points="0,6 10,5 20,4 30,4 40,5 50,7 60,9 70,8 80,7 90,6 100,5 110,5" fill="none" stroke="var(--score-acceptable)" stroke-width="1.5"/>
+            </svg>
+            <span class="v">27°</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend continuous -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>MapLegend · continuous</h4>
+          <div class="path">map/map-legend.tsx · temperature</div>
+        </div>
+        <div class="comp-body" style="flex-direction:column; align-items:stretch; gap: 10px;">
+          <div class="mono-label" style="margin:0">Mean daily max · °C · April</div>
+          <div class="legend-continuous">
+            <div class="legend-ramp"></div>
+            <div class="legend-ticks">
+              <span>-10°</span><span>5°</span><span>20°</span><span>30°</span><span>40°+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend bins -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>MapLegend · score bins</h4>
+          <div class="path">map/map-legend.tsx · match</div>
+        </div>
+        <div class="comp-body" style="flex-direction:column; align-items:stretch; gap:8px;">
+          <div class="mono-label" style="margin:0">Match · Peru · April</div>
+          <div class="row" style="gap: 8px">
+            <div class="row" style="gap: 6px; align-items: center;"><span style="width:14px;height:14px;background:var(--score-perfect);border-radius:2px"></span><span class="mono" style="font-size:11px">≥85</span></div>
+            <div class="row" style="gap: 6px; align-items: center;"><span style="width:14px;height:14px;background:var(--score-good);border-radius:2px"></span><span class="mono" style="font-size:11px">70–84</span></div>
+            <div class="row" style="gap: 6px; align-items: center;"><span style="width:14px;height:14px;background:var(--score-acceptable);border-radius:2px"></span><span class="mono" style="font-size:11px">50–69</span></div>
+            <div class="row" style="gap: 6px; align-items: center;"><span style="width:14px;height:14px;background:var(--score-avoid);border-radius:2px"></span><span class="mono" style="font-size:11px">&lt;50</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline upgrade -->
+      <div class="comp-card">
+        <div class="comp-header">
+          <h4>InlineUpgradePopover</h4>
+          <div class="path">map/inline-upgrade-popover.tsx</div>
+        </div>
+        <div class="comp-body" style="padding: 14px 0 6px 0;">
+          <div class="upgrade-card" style="margin-top: 8px;">
+            <div class="lock">
+              <svg class="ico" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 0 1 4 0V5" stroke="currentColor" stroke-width="1.2"/></svg>
+              Premium · District zoom
+            </div>
+            <h5>Drill down to districts</h5>
+            <p>Free accounts see provinces (admin-1). Premium unlocks districts (admin-2) — useful when one province has a coast and a mountain.</p>
+            <div class="actions">
+              <button class="btn primary sm">Try Premium</button>
+              <button class="btn ghost sm">Not now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier card -->
+      <div class="comp-card wide">
+        <div class="comp-header">
+          <h4>TierCard</h4>
+          <div class="path">upgrade/tier-card.tsx</div>
+        </div>
+        <div class="comp-body" style="gap: 16px;">
+          <div class="tier-card">
+            <span class="name">Free</span>
+            <div class="price">€0<span> /forever</span></div>
+            <ul>
+              <li>Province zoom</li>
+              <li>Temp · rain · sun · wind</li>
+              <li>Combined safety advisory</li>
+            </ul>
+          </div>
+          <div class="tier-card feat">
+            <span class="name" style="color: var(--accent)">Premium</span>
+            <div class="price">€29<span> /year</span></div>
+            <ul>
+              <li>District zoom</li>
+              <li>+ Snow · SST · heat · humidity</li>
+              <li>10 / 50 / 90 percentile bands</li>
+              <li>Saved trips · email alerts</li>
+            </ul>
+          </div>
+          <div class="tier-card">
+            <span class="name">Agency · Team</span>
+            <div class="price">€249<span> /year · 5 seats</span></div>
+            <ul>
+              <li>All Premium features</li>
+              <li>Client trip management</li>
+              <li>PDF export · activity feed</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="comp-card wide">
+        <div class="comp-header">
+          <h4>EmptyState</h4>
+          <div class="path">content/empty-state.tsx</div>
+        </div>
+        <div class="empty-state">
+          <div class="icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 17l6-6 4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="3" cy="4" r="1.2" fill="currentColor"/><circle cx="17" cy="4" r="1.2" fill="currentColor"/></svg>
+          </div>
+          <h5>No saved trips yet</h5>
+          <p>When you save a trip from a country page, it appears here. Save up to 3 on Free; unlimited on Premium.</p>
+          <div class="row" style="margin-top: 8px; gap: 8px;">
+            <button class="btn primary md">Browse the map</button>
+            <button class="btn ghost md">See how it works</button>
+          </div>
+          <span class="mono" style="font-size:10.5px; letter-spacing:.14em; color:var(--text-subtle); text-transform:uppercase; margin-top:4px;">Unlimited on Premium</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═════════ 07 · Voice ═════════ -->
+  <section class="chapter">
+    <header>
+      <div class="num">07</div>
+      <h2>Voice</h2>
+      <div class="desc">Write like you're explaining a place to a friend who's about to buy a plane ticket. No breathless marketing copy, no apocalyptic weather talk. Observations before adjectives.</div>
+    </header>
+
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="comp-header"><h4>Do</h4><div class="path">atlas · observed</div></div>
+        <div class="col" style="gap:10px; font-family: var(--font-display); font-size: 18px; line-height: 1.5;">
+          <div>"Lima rarely sees rain. It also rarely sees the sun — expect a cool grey quilt for most of April."</div>
+          <div>"13–19°C, all month, almost every year."</div>
+          <div>"Perfect for long walks. Poor for a beach holiday."</div>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-header"><h4>Don't</h4><div class="path">drift · avoid</div></div>
+        <div class="col" style="gap:10px; font-family: var(--font-display); font-size: 18px; line-height: 1.5; color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--destructive); text-decoration-thickness: 1px;">
+          <div>"Unlock Lima's perfect weather today!"</div>
+          <div>"Incredible 13°C temperatures await 🌴"</div>
+          <div>"Absolutely stunning climate conditions."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ Footer ═════════ -->
+  <footer class="doc-footer">
+    <div>
+      <b>Reference files</b>
+      <a href="web/design/tokens.md">tokens.md</a>
+      <a href="web/design/tailwind.theme.css">tailwind.theme.css</a>
+      <a href="web/design/components.md">components.md</a>
+      <a href="web/design/HANDOFF.md">HANDOFF.md</a>
+      <a href="web/design/AUDIT.md">AUDIT.md</a>
+    </div>
+    <div>
+      <b>Design canvases</b>
+      <a href="Pricing Final.html">Pricing</a>
+      <a href="Country Page Final.html">Country</a>
+      <a href="Peru April.html">Per-month</a>
+      <a href="Desktop Map.html">Desktop map</a>
+      <a href="Mobile Map.html">Mobile map</a>
+      <a href="Trip Detail.html">Trip detail</a>
+      <a href="Account.html">Account</a>
+      <a href="Agency.html">Agency</a>
+      <a href="Auth &amp; Onboarding.html">Auth &amp; onboarding</a>
+    </div>
+    <div>
+      <b>Colophon</b>
+      <div style="font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); line-height: 1.6;">Atlas direction locked 2026-04-22. Set in IBM Plex Serif, Sans and Mono. All colour tokens verified WCAG 2.1 AA; score and advisory palettes verified for deuteranopia and protanopia.</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

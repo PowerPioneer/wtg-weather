@@ -41,6 +41,39 @@ pnpm dev
 - Lighthouse budget: LCP < 2.0s, CLS < 0.05, TBT < 100ms. Regressions
   block merge.
 
+## Design reference
+
+The canonical visual design for every screen lives in `web/design/`. Claude Code
+implementing Phase 5 MUST match the visual language defined there (colours,
+spacing, typography, component patterns). If a design artifact conflicts with a
+technical constraint (a11y, performance budget, framework limitation), flag it
+and propose an alternative rather than silently deviating.
+
+Entry points (read in this order):
+
+1. `web/design/HANDOFF.md` — design→engineering handoff, Phase 5 implementation plan
+2. `web/design/tokens.md` — colour / type / spacing / motion spec (single source of truth)
+3. `web/design/tailwind.theme.css` — Tailwind v4 `@theme` block, drop into `globals.css` verbatim
+4. `web/design/components.md` — component tree and prop signatures
+5. `web/design/AUDIT.md` — cross-screen consistency fixes to carry into implementation
+6. `web/design/system.html` — live, interactive token viewer (open in browser)
+
+Layout references (pixel-level source of truth — the `* Final.html` files
+supersede earlier drafts):
+
+- Pricing → `Pricing Final.html` · Country → `Country Page Final.html`
+- Per-month → `Peru April.html` · Desktop map → `Desktop Map.html`
+- Mobile map → `Mobile Map.html` · Display mode → `Display Mode.html`
+- Trip detail → `Trip Detail.html` · Account → `Account.html`
+- Agency → `Agency.html` · Client detail → `Client Detail.html`
+- Auth → `Auth & Onboarding.html` · Upgrades → `Upgrades & Empty States.html`
+
+JSX/CSS reference implementations for each screen live in `web/design/{map,
+country,pricing,trip,account,mobile,display-mode,directions}/`.
+
+Direction is locked to **Atlas** (light-only, credibility-first). Do not
+re-litigate the design decisions listed in `HANDOFF.md` § "already made".
+
 ## Routes and SEO
 
 - `/[country]` — `generateStaticParams` over all ~195 countries, static

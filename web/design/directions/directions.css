@@ -1,0 +1,196 @@
+/* Styles scoped to a brand direction board. */
+
+.bd-board {
+  width: 100%;
+  padding: 48px 44px;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+/* Header */
+.bd-header { margin-bottom: 40px; }
+.bd-tag {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.bd-title {
+  font-size: 64px;
+  margin: 0;
+  line-height: 1;
+}
+.bd-mood {
+  font-size: 17px;
+  line-height: 1.45;
+  margin: 14px 0 0 0;
+  max-width: 48ch;
+  font-weight: 500;
+}
+.bd-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 12px 0 0 0;
+  max-width: 56ch;
+}
+
+/* Section */
+.bd-section {
+  padding: 28px 0;
+  border-top: 1px solid currentColor;
+  border-color: color-mix(in oklab, currentColor 10%, transparent);
+}
+.bd-section-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.bd-section-body {}
+
+/* Palette */
+.bd-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.bd-swatch {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.bd-swatch-chip {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.06);
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.bd-swatch-hex { opacity: 0.9; }
+.bd-swatch-meta {
+  padding-top: 4px;
+  font-size: 13px;
+}
+.bd-swatch-name {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.bd-swatch-note {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Scores */
+.bd-scores { display: flex; flex-direction: column; gap: 10px; }
+.bd-score-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.bd-score-chip {
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+.bd-score-meta {}
+.bd-score-hex {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+.bd-score-note {
+  font-size: 11.5px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+.bd-cvd-note {
+  font-size: 12px;
+  margin-top: 16px;
+  line-height: 1.5;
+  max-width: 60ch;
+}
+
+/* Advisory */
+.bd-advisory {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 20px;
+}
+.bd-adv-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bd-adv-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.bd-adv-label { font-size: 13px; font-weight: 500; flex: 1; }
+.bd-adv-hex { font-size: 11px; }
+
+/* Typography */
+.bd-type { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.bd-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(0,0,0,0.06);
+}
+.bd-type-label { display: block; }
+.bd-type-notes {
+  font-size: 12.5px;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Spacing */
+.bd-spacing { display: flex; flex-direction: column; gap: 6px; }
+.bd-spacing-row { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 12px; }
+.bd-spacing-label { font-size: 11px; font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace; text-align: right; }
+.bd-spacing-bar { height: 8px; border-radius: 2px; }
+
+/* Radii */
+.bd-radii { display: flex; gap: 20px; }
+.bd-radii-item { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.bd-radii-box { width: 64px; height: 64px; }
+.bd-radii-label { font-size: 11px; font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace; }
+
+/* Samples */
+.bd-samples { display: flex; flex-direction: column; gap: 22px; }
+.bd-samples-row { display: flex; flex-direction: column; gap: 10px; }
+.bd-samples-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bd-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.bd-btn { cursor: pointer; transition: opacity .15s; }
+.bd-btn:hover { opacity: 0.9; }
+
+.bd-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.bd-personality {
+  font-size: 12.5px;
+  font-style: italic;
+  margin-top: 10px;
+  opacity: 0.8;
+}

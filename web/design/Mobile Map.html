@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WTG · Mobile Map — Unified Dock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #1a1a1c; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #e4e4e7; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script src="map/layers.js"></script>
+<script src="display-mode/variables.js"></script>
+<script type="text/babel" src="display-mode/DisplayModal.jsx"></script>
+
+<script type="text/babel" src="mobile/MobileKit.jsx"></script>
+<script type="text/babel" src="mobile/VariationDock.jsx"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard } = window;
+const { MobileVariationDock } = window;
+
+// ── Helper: faded-map background for standalone sheet artboards ────
+function SheetShowcase({ children, layerId = 'preferences' }) {
+  return (
+    <div style={{ width: 375, height: 812, position: 'relative', overflow: 'hidden', background: '#E4E8EC', fontFamily: "'IBM Plex Sans'" }}>
+      <div style={{ position: 'absolute', inset: 0 }}>
+        <window.MobileStatusBar />
+        <window.MobileTopBar floating />
+        <div style={{ position: 'absolute', top: 44, left: 0, right: 0, bottom: 0 }}>
+          <window.MobileMapSurface layerId={layerId} />
+        </div>
+      </div>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,27,45,0.36)', zIndex: 2 }} />
+      {children}
+    </div>
+  );
+}
+
+// ── Display Mode, default ──────────────────────────────────────────
+function DisplayModeStandalone() {
+  return (
+    <SheetShowcase>
+      <window.Sheet title={null} onClose={null} height={760} padX={0}>
+        <window.DisplayModeModal layout="mobile" activeId="preferences" onChange={() => {}} isPremium={false} onClose={() => {}} />
+      </window.Sheet>
+    </SheetShowcase>
+  );
+}
+
+// ── Display Mode, with inline upgrade popover auto-opened on "Snow" ─
+function DisplayWithForcedPopover() {
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      const btns = document.querySelectorAll('button');
+      for (const b of btns) {
+        if (b.textContent.trim().startsWith('Snow depth')) { b.click(); break; }
+      }
+    }, 140);
+    return () => clearTimeout(t);
+  }, []);
+  return <window.DisplayModeModal layout="mobile" activeId="preferences" onChange={() => {}} isPremium={false} onClose={() => {}} />;
+}
+function DisplayModeUpgrade() {
+  return (
+    <SheetShowcase>
+      <window.Sheet title={null} onClose={null} height={760} padX={0}>
+        <DisplayWithForcedPopover />
+      </window.Sheet>
+    </SheetShowcase>
+  );
+}
+
+// ── Preferences · sticky Apply (chosen) ────────────────────────────
+function PrefsSticky() {
+  return (
+    <SheetShowcase>
+      <window.Sheet title="Preferences" subtitle="Your ideal weather" onClose={() => {}} height={640} compactHeader>
+        <window.PrefsSheetContent autoApply={false} />
+        <window.StickyApplyBar />
+      </window.Sheet>
+    </SheetShowcase>
+  );
+}
+
+// ── Month picker ───────────────────────────────────────────────────
+function MonthStandalone() {
+  return (
+    <SheetShowcase>
+      <window.Sheet title="Month" subtitle="April" onClose={() => {}} compactHeader>
+        <window.MonthSheetContent />
+      </window.Sheet>
+    </SheetShowcase>
+  );
+}
+
+// ── Climate drawer · expanded ──────────────────────────────────────
+function ClimateExpandedStandalone() {
+  return (
+    <SheetShowcase>
+      <window.Sheet title="Climate information" subtitle={null} onClose={() => {}} height={640}>
+        <window.ClimateExpandedContent />
+      </window.Sheet>
+    </SheetShowcase>
+  );
+}
+
+// ── Legend states · 4 mobile treatments on one board ───────────────
+function LegendStates() {
+  const items = [
+    { title: 'My Preferences · qualitative 4-tier',  layerId: 'preferences' },
+    { title: 'Temperature · continuous, collapsed',  layerId: 'temp' },
+    { title: 'Rainfall · continuous, collapsed',     layerId: 'rain' },
+    { title: 'Safety · advisory ordinal',            layerId: 'safety' },
+  ];
+  return (
+    <div style={{ padding: 28, background: '#F7F6F2', width: 720, minHeight: 520, fontFamily: "'IBM Plex Sans'", color: '#0F1B2D' }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.14em', color: '#4A5568', fontWeight: 500, textTransform: 'uppercase' }}>Mobile legend states</div>
+      <div style={{ fontFamily: "'IBM Plex Serif'", fontSize: 24, fontWeight: 500, marginTop: 4, marginBottom: 18 }}>Collapses to a chip at 375 px</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+        {items.map(it => (
+          <div key={it.title}>
+            <div style={{ fontSize: 11, color: '#4A5568', marginBottom: 8 }}>{it.title}</div>
+            <window.MobileLegend layerId={it.layerId} />
+          </div>
+        ))}
+        <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+          <div style={{ fontSize: 11, color: '#4A5568', marginBottom: 8 }}>Temperature · tapped to expand</div>
+          <window.MobileLegend layerId="temp" expandedByDefault />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="mobile-main"
+        title="Mobile · unified dock"
+        subtitle="Locked direction — vertical pill dock bottom-left, floating top bar, legend chip top-right, climate peek always docked. Sticky Apply commits preference changes. This is the pattern we're carrying forward."
+      >
+        <DCArtboard id="main" label="Default · peek drawer docked" width={375} height={812}>
+          <MobileVariationDock />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="display-mode"
+        title="Display Mode · 10 options, 2 columns"
+        subtitle="Hero tile for My Preferences. Climate variables as 2-col grid. Safety separated. Premium group dimmed with PRO badges — tapping a locked tile opens an inline upgrade popover rather than a tooltip."
+      >
+        <DCArtboard id="dm-default" label="Default · all 10 visible" width={375} height={812}>
+          <DisplayModeStandalone />
+        </DCArtboard>
+        <DCArtboard id="dm-upgrade" label="Tap Snow depth · upgrade popover" width={375} height={812}>
+          <DisplayModeUpgrade />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="prefs"
+        title="Preferences · sticky Apply"
+        subtitle="Staged edits — changes don't repaint until you commit. Reset clears overrides; Apply commits and dismisses the sheet."
+      >
+        <DCArtboard id="pref-sticky" label="Sticky Apply bar" width={375} height={812}>
+          <PrefsSticky />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="month"
+        title="Month selector"
+        subtitle="Grid of 12, current month highlighted. Tapping a month repaints the map and dismisses the sheet."
+      >
+        <DCArtboard id="month-default" label="Month grid" width={375} height={812}>
+          <MonthStandalone />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="climate"
+        title="Climate drawer · expanded"
+        subtitle="Peek drawer is docked by default (visible on the main artboard). Tapping the peek, or swiping up, expands to the full climate sheet with 10-year ERA5 charts and a Save CTA."
+      >
+        <DCArtboard id="climate-expanded" label="Expanded state" width={375} height={812}>
+          <ClimateExpandedStandalone />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="legends"
+        title="Legend · how it collapses on 375 px"
+        subtitle="Continuous ramps become a chip with ramp + title + unit; tap to expand into the full-tick panel. Qualitative stays as small colour-coded pills. Safety uses striped swatches to hint at the advisory ordinality."
+      >
+        <DCArtboard id="legend-states" label="Four legend states" width={720} height={520}>
+          <LegendStates />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
