@@ -42,4 +42,32 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: web
+    if: github.event_name == 'pull_request'
+    defaults: { run: { working-directory: web } }
+    env:
+      # Budget is defined in web/lighthouserc.json — LCP<2.0s, CLS<0.05, TBT<100ms.
+      # Build flags match production; mock data stays on so routes don't need
+      # the API container.
+      WTG_USE_MOCK_DATA: "1"
+      NEXT_PUBLIC_APP_ENV: "ci"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Lighthouse CI
+        run: pnpm exec lhci autorun --config=./lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

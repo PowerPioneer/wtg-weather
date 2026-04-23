@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ScoreBadge > snapshot for acceptable bin > acceptable 1`] = `
+<span
+  aria-label="61 out of 100 — Fair"
+  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-acceptable h-[26px] min-w-11 px-2.5 text-[13px]"
+  role="img"
+>
+  <span
+    aria-hidden="true"
+  >
+    61
+  </span>
+  <span
+    aria-hidden="true"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
+  >
+    Fair
+  </span>
+</span>
+`;
+
+exports[`ScoreBadge > snapshot for avoid bin > avoid 1`] = `
+<span
+  aria-label="30 out of 100 — Avoid"
+  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-avoid h-[26px] min-w-11 px-2.5 text-[13px]"
+  role="img"
+>
+  <span
+    aria-hidden="true"
+  >
+    30
+  </span>
+  <span
+    aria-hidden="true"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
+  >
+    Avoid
+  </span>
+</span>
+`;
+
+exports[`ScoreBadge > snapshot for good bin > good 1`] = `
+<span
+  aria-label="78 out of 100 — Good"
+  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-good h-[26px] min-w-11 px-2.5 text-[13px]"
+  role="img"
+>
+  <span
+    aria-hidden="true"
+  >
+    78
+  </span>
+  <span
+    aria-hidden="true"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
+  >
+    Good
+  </span>
+</span>
+`;
+
+exports[`ScoreBadge > snapshot for perfect bin > perfect 1`] = `
+<span
+  aria-label="92 out of 100 — Perfect"
+  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-perfect h-[26px] min-w-11 px-2.5 text-[13px]"
+  role="img"
+>
+  <span
+    aria-hidden="true"
+  >
+    92
+  </span>
+  <span
+    aria-hidden="true"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
+  >
+    Perfect
+  </span>
+</span>
+`;

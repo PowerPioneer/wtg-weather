@@ -137,3 +137,41 @@ class SignedTileURLResponse(BaseModel):
     url: str
     expires_at: int
     tier: Literal["free", "premium"]
+
+
+# --- Onboarding ---
+
+
+OnboardingKind = Literal["consumer", "agency"]
+
+
+class OnboardingState(BaseModel):
+    kind: OnboardingKind | None = None
+    step: int = Field(default=0, ge=0, le=10)
+    completed: bool = False
+    data: dict[str, Any] = Field(default_factory=dict)
+
+
+class OnboardingPatch(BaseModel):
+    kind: OnboardingKind | None = None
+    step: int | None = Field(default=None, ge=0, le=10)
+    completed: bool | None = None
+    data: dict[str, Any] | None = None
+
+
+# --- Paddle ---
+
+
+class PaddleCheckoutRequest(BaseModel):
+    plan: Literal[
+        "consumer_premium",
+        "agency_starter",
+        "agency_pro",
+    ]
+    organization_id: uuid.UUID | None = None
+
+
+class PaddleCheckoutResponse(BaseModel):
+    checkout_url: str
+    sandbox: bool
+    plan: str

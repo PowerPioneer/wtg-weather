@@ -38,9 +38,17 @@ class Settings(BaseSettings):
 
     paddle_api_key: str = ""
     paddle_sandbox: bool = True
+    paddle_checkout_base_url: str = "https://sandbox-checkout.paddle.com/checkout/custom"
+    paddle_price_consumer_premium: str = "pri_sandbox_consumer_premium"
+    paddle_price_agency_starter: str = "pri_sandbox_agency_starter"
+    paddle_price_agency_pro: str = "pri_sandbox_agency_pro"
 
     rate_limit_anonymous: str = "100/minute"
     rate_limit_authenticated: str = "600/minute"
+
+    glitchtip_dsn: str = ""
+    glitchtip_traces_sample_rate: float = 0.0
+    glitchtip_release: str = ""
 
     cors_origins: list[str] = Field(
         default_factory=lambda: [

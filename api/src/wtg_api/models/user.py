@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import String, Uuid
+from sqlalchemy import JSON, Boolean, Integer, String, Uuid
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from wtg_api.db import Base, TimestampMixin
@@ -23,6 +24,15 @@ class User(Base, TimestampMixin):
     name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     google_sub: Mapped[str | None] = mapped_column(
         String(255), unique=True, index=True, nullable=True
+    )
+
+    onboarding_kind: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    onboarding_step: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    onboarding_completed: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
+    onboarding_data: Mapped[dict[str, Any]] = mapped_column(
+        JSON().with_variant(JSONB, "postgresql"), nullable=False, default=dict
     )
 
     memberships: Mapped[list[Membership]] = relationship(
