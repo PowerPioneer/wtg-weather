@@ -7,5 +7,8 @@
 # Weekly Sun 03:00 UTC: scrape advisories + publish
 0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
 
+# Weekly Mon 04:00 UTC: recompute alert matches + email transitions
+0 4 * * 1 /opt/wtg-weather/infra/scripts/weekly-alerts.sh >> /var/log/wtg-alerts.log 2>&1
+
 # Yearly Jan 15 04:00 UTC: full ERA5 pipeline rebuild (phase 7 script)
 0 4 15 1 * /opt/wtg-weather/infra/scripts/yearly-era5.sh >> /var/log/wtg-era5.log 2>&1

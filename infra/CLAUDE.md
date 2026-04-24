@@ -8,11 +8,19 @@ Docker Compose on a 16GB Ubuntu server, Caddy front, bunny.net CDN in front.
 - `docker compose logs -f api web` — tail
 - `docker compose exec postgres psql -U wtg wtg` — DB shell
 - `./infra/scripts/backup-postgres.sh` — manual backup (also runs nightly)
+- `./infra/scripts/restore-postgres.sh <db> <stamp|latest>` — restore from B2
 - `./infra/scripts/rebuild-tiles.sh` — regenerate PMTiles and purge bunny.net cache
+
+## Cutover
+
+The v1 → v2 apex switch is documented step-by-step in `infra/CUTOVER.md`,
+including rollback and the 72h post-cutover checklist. Do not flip DNS
+without reading it end to end.
 
 ## Cron (on host, not in container)
 
 - Weekly Sun 03:00 UTC: `weekly-advisories.sh` — scrape + publish new advisories
+- Weekly Mon 04:00 UTC: `weekly-alerts.sh` — recompute alert matches, email on transitions
 - Yearly Jan 15 04:00 UTC: `yearly-era5.sh` — full pipeline rebuild, old year swap
 - Nightly 02:00 UTC: `backup-postgres.sh` — dump, encrypt, upload to B2
 

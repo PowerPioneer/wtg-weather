@@ -50,6 +50,7 @@ next-env.d.ts
 # Claude Code per-user
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+.claude/worktrees/
 
 # Logs
 *.log

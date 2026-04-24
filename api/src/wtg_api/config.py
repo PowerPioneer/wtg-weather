@@ -3,8 +3,11 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_PADDLE_SANDBOX_CHECKOUT = "https://sandbox-checkout.paddle.com/checkout/custom"
+_PADDLE_LIVE_CHECKOUT = "https://checkout.paddle.com/checkout/custom"
 
 
 class Settings(BaseSettings):
@@ -38,7 +41,9 @@ class Settings(BaseSettings):
 
     paddle_api_key: str = ""
     paddle_sandbox: bool = True
-    paddle_checkout_base_url: str = "https://sandbox-checkout.paddle.com/checkout/custom"
+    # Leave empty in .env to auto-pick based on paddle_sandbox. Set explicitly
+    # only to override (e.g. staging pointing at a self-hosted mock).
+    paddle_checkout_base_url: str = ""
     paddle_price_consumer_premium: str = "pri_sandbox_consumer_premium"
     paddle_price_agency_starter: str = "pri_sandbox_agency_starter"
     paddle_price_agency_pro: str = "pri_sandbox_agency_pro"
@@ -57,6 +62,14 @@ class Settings(BaseSettings):
             "https://wheretogoforgreatweather.com",
         ]
     )
+
+    @model_validator(mode="after")
+    def _resolve_paddle_checkout_base_url(self) -> Settings:
+        if not self.paddle_checkout_base_url:
+            self.paddle_checkout_base_url = (
+                _PADDLE_SANDBOX_CHECKOUT if self.paddle_sandbox else _PADDLE_LIVE_CHECKOUT
+            )
+        return self
 
 
 @lru_cache(maxsize=1)

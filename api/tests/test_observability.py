@@ -39,3 +39,23 @@ def test_before_send_drops_pii_fields() -> None:
 def test_init_sentry_noop_when_dsn_blank() -> None:
     settings = Settings(glitchtip_dsn="")
     assert init_sentry(settings) is False
+
+
+def test_paddle_checkout_url_defaults_sandbox_when_empty() -> None:
+    settings = Settings(paddle_sandbox=True, paddle_checkout_base_url="")
+    assert "sandbox-checkout.paddle.com" in settings.paddle_checkout_base_url
+
+
+def test_paddle_checkout_url_defaults_live_when_sandbox_off() -> None:
+    settings = Settings(paddle_sandbox=False, paddle_checkout_base_url="")
+    assert settings.paddle_checkout_base_url == (
+        "https://checkout.paddle.com/checkout/custom"
+    )
+
+
+def test_paddle_checkout_url_explicit_override_preserved() -> None:
+    settings = Settings(
+        paddle_sandbox=False,
+        paddle_checkout_base_url="https://mock.example.com/checkout",
+    )
+    assert settings.paddle_checkout_base_url == "https://mock.example.com/checkout"
