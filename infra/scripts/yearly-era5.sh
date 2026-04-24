@@ -15,6 +15,10 @@ log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
 COMPOSE="${COMPOSE:-docker compose}"
 LOCK="/tmp/wtg-yearly-era5.lock"
 
+# GDAL caps per-feature GeoJSON size at 200MB by default; large countries'
+# admin-2 layers (Canada, Russia) exceed that. 0 = unlimited.
+export OGR_GEOJSON_MAX_OBJ_SIZE=0
+
 exec 9>"$LOCK"
 if ! flock -n 9; then
     log "ERROR: another yearly-era5 run is in progress (lock: $LOCK)" >&2
