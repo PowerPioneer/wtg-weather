@@ -148,11 +148,19 @@ def download_geoboundaries_admin2(
                 written.append(target)
                 continue
             log.info("[%d/%d] resolving %s ADM2", idx, total, iso3)
-            geojson_url = _resolve_geoboundaries_geojson_url(resolved, iso3)
-            resp = resolved.get(geojson_url)
-            resp.raise_for_status()
+            try:
+                geojson_url = _resolve_geoboundaries_geojson_url(resolved, iso3)
+                resp = resolved.get(geojson_url)
+                resp.raise_for_status()
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 404:
+                    log.warning(
+                        "[%d/%d] %s has no ADM2 on geoBoundaries — skipping",
+                        idx, total, iso3,
+                    )
+                    continue
+                raise
             target.parent.mkdir(parents=True, exist_ok=True)
-            # Validate that the body is JSON before writing.
             try:
                 json.loads(resp.text)
             except json.JSONDecodeError as exc:
