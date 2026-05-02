@@ -17,11 +17,13 @@ from __future__ import annotations
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from wtg_api.config import get_settings
-from wtg_api.deps import current_entitlement
+from wtg_api.deps import db_session, optional_user
+from wtg_api.models import User
 from wtg_api.schemas import SignedTileURLResponse
-from wtg_api.services.entitlements import Entitlement
+from wtg_api.services.entitlements import resolve
 from wtg_api.services.signing import sign_path, verify
 
 router = APIRouter(prefix="/api/tiles", tags=["tiles"])
@@ -30,10 +32,17 @@ router = APIRouter(prefix="/api/tiles", tags=["tiles"])
 @router.get("/url", response_model=SignedTileURLResponse)
 async def get_tile_url(
     tier: Literal["free", "premium"] = Query("free"),
-    entitlement: Entitlement = Depends(current_entitlement),
+    user: User | None = Depends(optional_user),
+    db: AsyncSession = Depends(db_session),
 ) -> SignedTileURLResponse:
-    if tier == "premium" and not entitlement.is_premium:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "premium entitlement required")
+    if tier == "premium":
+        if user is None:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "authentication required for premium tiles"
+            )
+        entitlement = await resolve(db, user)
+        if not entitlement.is_premium:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "premium entitlement required")
 
     s = get_settings()
     path = f"/{tier}.pmtiles"
