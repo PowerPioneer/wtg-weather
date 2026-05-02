@@ -26,14 +26,18 @@ without reading it end to end.
 
 ## Caddy
 
-Caddyfile provisions SSL via Let's Encrypt for both `v2.*` and (post-cutover)
-the apex. Routes:
+Caddyfile provisions SSL via Let's Encrypt for the apex stack and for the
+two ops subdomains. Site blocks:
 
-- `/_tiles/*` — HMAC-verified static tile serving from `/var/tiles`
-- `/api/*` — reverse proxy to `api:8000`
-- `/*` — reverse proxy to `web:3000`
-- `/_glitchtip/*` — internal only; basic auth
-- `/_plausible/*` — internal only; basic auth
+- `v2.wheretogoforgreatweather.com` (and post-cutover the apex) — public:
+  - `/_tiles/*` — HMAC-verified static tile serving from `/var/tiles`
+  - `/api/*` — reverse proxy to `api:8000`
+  - `/*` — reverse proxy to `web:3000`
+- `glitchtip.v2.wheretogoforgreatweather.com` — basic-auth, reverse proxy
+  to `glitchtip-web:8000`. Subdomain (not subpath) because GlitchTip emits
+  absolute URLs for its static assets and breaks under path stripping.
+- `plausible.v2.wheretogoforgreatweather.com` — basic-auth, reverse proxy
+  to `plausible:8000`. Same reason as GlitchTip.
 
 ## Rules
 
