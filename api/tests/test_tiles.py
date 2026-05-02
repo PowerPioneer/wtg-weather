@@ -9,8 +9,20 @@ from wtg_api.services.signing import sign_path
 
 
 @pytest.mark.asyncio
-async def test_tile_url_requires_auth(client: AsyncClient) -> None:
+async def test_tile_url_free_allowed_anonymously(client: AsyncClient) -> None:
+    """Free tier is publicly accessible — anonymous visitors can render
+    the country/admin-1 map without an account."""
     r = await client.get("/api/tiles/url", params={"tier": "free"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["tier"] == "free"
+    assert "/free.pmtiles" in body["url"]
+    assert body["expires_at"] > 0
+
+
+@pytest.mark.asyncio
+async def test_tile_url_premium_requires_auth(client: AsyncClient) -> None:
+    r = await client.get("/api/tiles/url", params={"tier": "premium"})
     assert r.status_code == 401
 
 
