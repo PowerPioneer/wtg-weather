@@ -11,6 +11,7 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 revision: str = "0002_core_schema"
 down_revision: Union[str, None] = "0001_initial"
@@ -29,10 +30,18 @@ ROLE_VALUES = ("owner", "admin", "agent", "member")
 
 
 def upgrade() -> None:
-    plan_enum = sa.Enum(*PLAN_VALUES, name="plan", create_type=False)
-    role_enum = sa.Enum(*ROLE_VALUES, name="role", create_type=False)
-    sa.Enum(*PLAN_VALUES, name="plan").create(op.get_bind(), checkfirst=True)
-    sa.Enum(*ROLE_VALUES, name="role").create(op.get_bind(), checkfirst=True)
+    plan_values_sql = ", ".join(f"'{v}'" for v in PLAN_VALUES)
+    role_values_sql = ", ".join(f"'{v}'" for v in ROLE_VALUES)
+    op.execute(
+        f"DO $$ BEGIN CREATE TYPE plan AS ENUM ({plan_values_sql}); "
+        f"EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
+    )
+    op.execute(
+        f"DO $$ BEGIN CREATE TYPE role AS ENUM ({role_values_sql}); "
+        f"EXCEPTION WHEN duplicate_object THEN NULL; END $$;"
+    )
+    plan_enum = postgresql.ENUM(*PLAN_VALUES, name="plan", create_type=False)
+    role_enum = postgresql.ENUM(*ROLE_VALUES, name="role", create_type=False)
 
     op.create_table(
         "users",
