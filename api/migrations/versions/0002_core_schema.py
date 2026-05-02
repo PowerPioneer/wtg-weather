@@ -29,10 +29,10 @@ ROLE_VALUES = ("owner", "admin", "agent", "member")
 
 
 def upgrade() -> None:
-    plan_enum = sa.Enum(*PLAN_VALUES, name="plan")
-    role_enum = sa.Enum(*ROLE_VALUES, name="role")
-    plan_enum.create(op.get_bind(), checkfirst=True)
-    role_enum.create(op.get_bind(), checkfirst=True)
+    plan_enum = sa.Enum(*PLAN_VALUES, name="plan", create_type=False)
+    role_enum = sa.Enum(*ROLE_VALUES, name="role", create_type=False)
+    sa.Enum(*PLAN_VALUES, name="plan").create(op.get_bind(), checkfirst=True)
+    sa.Enum(*ROLE_VALUES, name="role").create(op.get_bind(), checkfirst=True)
 
     op.create_table(
         "users",
