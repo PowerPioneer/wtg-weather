@@ -131,7 +131,8 @@ export async function fetchTileUrl(
   });
   if (res.status === 403) return "forbidden";
   if (!res.ok) throw new Error(`fetchTileUrl(${tier}) failed: ${res.status}`);
-  return (await res.json()) as TileUrlResponse;
+  const raw = (await res.json()) as { url: string; expires_at: number };
+  return { url: raw.url, expiresAt: raw.expires_at };
 }
 
 /**
