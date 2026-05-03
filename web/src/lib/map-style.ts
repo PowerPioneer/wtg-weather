@@ -224,7 +224,6 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     name: "Atlas Climate",
     sources,
     layers,
-    glyphs: undefined,
     // Light background shown briefly before tiles load.
     metadata: { "wtg:surface": SURFACE_BG },
   } satisfies StyleSpecification;
