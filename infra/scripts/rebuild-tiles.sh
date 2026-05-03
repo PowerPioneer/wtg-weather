@@ -2,14 +2,18 @@
 # Regenerate free + premium PMTiles from the latest processed data and purge
 # the bunny.net pull zone so the map clients pick them up.
 #
-# Idempotent: tippecanoe writes to a tmp path and only swaps the final file
-# in place on success. A failed run leaves the previous tiles untouched.
-# Running twice with identical inputs produces bit-identical PMTiles.
+# The pipeline runs on the host (per `pipeline/CLAUDE.md`), not in a
+# container — `uv` is the entrypoint, and the CLI writes directly into the
+# repo's `tiles/` directory which Caddy mounts read-only at `/var/tiles`.
+#
+# Idempotent: each tier's existing `.pmtiles` is backed up to `.bak` before
+# the rebuild and restored if the build fails. Running twice with identical
+# inputs produces bit-identical PMTiles.
 #
 # Loggable: every stage prefixes output with an RFC3339 timestamp.
 #
 # Optional env:
-#   COMPOSE             — default "docker compose"
+#   UV                  — default "uv"
 #   BUNNY_API_KEY       — bunny.net API key (if set, purges the pull zone)
 #   BUNNY_PULL_ZONE_ID  — bunny.net pull-zone numeric id
 #   TIERS               — space-separated list (default "free premium")
@@ -18,7 +22,7 @@ set -euo pipefail
 log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
 fail() { log "ERROR: $*" >&2; exit 1; }
 
-COMPOSE="${COMPOSE:-docker compose}"
+UV="${UV:-uv}"
 TIERS="${TIERS:-free premium}"
 LOCK="/tmp/wtg-rebuild-tiles.lock"
 
@@ -29,25 +33,32 @@ fi
 
 cd "$(dirname "$0")/../.."
 
+command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
+
 # GeoJSON build is a prerequisite for pmtiles. Cached — idempotent no-op if
 # inputs haven't changed since the last run.
 log "stage=build-geojson"
-$COMPOSE exec -T pipeline uv run wtg build geojson
+"$UV" run --directory pipeline wtg build geojson
 
 for tier in $TIERS; do
     log "stage=build-pmtiles tier=${tier}"
-    tmp="./tiles/${tier}.pmtiles.tmp"
     final="./tiles/${tier}.pmtiles"
-    rm -f "$tmp"
+    backup="./tiles/${tier}.pmtiles.bak"
 
-    if ! $COMPOSE exec -T pipeline uv run wtg build pmtiles --tier "$tier" --out "/tiles/${tier}.pmtiles.tmp"; then
-        log "ERROR: pmtiles build failed for tier=${tier} — previous file preserved"
-        rm -f "$tmp"
+    # Preserve the previous file in case the build fails partway through.
+    if [[ -f "$final" ]]; then
+        cp -f "$final" "$backup"
+    fi
+
+    if ! "$UV" run --directory pipeline wtg build pmtiles --tier "$tier"; then
+        log "ERROR: pmtiles build failed for tier=${tier} — restoring previous file"
+        if [[ -f "$backup" ]]; then mv -f "$backup" "$final"; fi
         exit 1
     fi
 
-    [[ -s "$tmp" ]] || fail "pmtiles tmp output empty for tier=${tier}"
-    mv -f "$tmp" "$final"
+    [[ -s "$final" ]] || { log "ERROR: pmtiles output empty for tier=${tier}"; \
+        if [[ -f "$backup" ]]; then mv -f "$backup" "$final"; fi; exit 1; }
+    rm -f "$backup"
     size_bytes=$(stat -c '%s' "$final")
     log "tier=${tier} published size=${size_bytes}B"
 done
