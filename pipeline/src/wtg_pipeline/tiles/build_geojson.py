@@ -57,6 +57,26 @@ PREMIUM_VARIABLES: tuple[str, ...] = (
     "rh",  # relative humidity
 )
 
+# Short property aliases consumed by the web's display-mode catalog
+# (see web/src/lib/display-modes.ts — `prop` field). The pipeline emits
+# `<variable>_p50_<mm>` for analytical use AND `<alias>_<mm>` for the map
+# paint expressions. Keep both in sync if a new mode ships on the web.
+WEB_PROP_ALIAS: dict[str, str] = {
+    "t2m": "t",
+    "tp": "r",
+    "sun_hours": "s",
+    "si10": "w",
+    "sd": "snow",
+    "sst": "sst",
+    "rh": "hum",
+}
+
+# Pipeline `polygon_score` returns 0..3; the web's preferences mode bins on a
+# 0..100 scale (see web/src/lib/scoring.ts SCORE_BINS). These centroids place
+# each bucket squarely inside the corresponding web bin (avoid <50, acceptable
+# 50-69, good 70-84, perfect ≥85).
+SCORE_TO_PREF: dict[int, int] = {0: 25, 1: 60, 2: 75, 3: 90}
+
 
 def variables_for_tier(tier: Tier) -> tuple[str, ...]:
     if tier == "free":
@@ -102,6 +122,8 @@ def _widen_percentiles_for_polygon(
     """Turn long-format percentiles for one polygon into the flat props dict.
 
     Output keys follow the ``{variable}_{stat}_{mm}`` pattern for p10/p50/p90.
+    Additionally, the p50 is mirrored under the short alias `<alias>_<mm>`
+    that the web's map paint expressions read directly.
     """
     props: dict[str, float] = {}
     for row in poly_percentiles.itertuples(index=False):
@@ -114,6 +136,11 @@ def _widen_percentiles_for_polygon(
             if value is None or value != value:  # NaN check
                 continue
             props[f"{var}_{stat}_{month_str}"] = float(value)
+        p50 = getattr(row, "p50", None)
+        if p50 is not None and p50 == p50:
+            alias = WEB_PROP_ALIAS.get(var)
+            if alias is not None:
+                props[f"{alias}_{month_str}"] = float(p50)
     return props
 
 
@@ -175,7 +202,11 @@ def build_feature_collection(
             by_month.setdefault(month, {})[v] = float(p50)
         for month in range(1, 13):
             values = by_month.get(month, {})
-            props[f"score_{month:02d}"] = _score_row(values)
+            score = _score_row(values)
+            props[f"score_{month:02d}"] = score
+            # `pref_<mm>` is what the web's `preferences` display mode reads;
+            # rebase the 0..3 bucket onto the 0..100 web score scale.
+            props[f"pref_{month:02d}"] = SCORE_TO_PREF[score]
 
         geometry = getattr(row, "geometry", None)
         if geometry is None:

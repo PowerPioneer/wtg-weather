@@ -24,14 +24,35 @@ export const COUNTRY_FILL_LAYER = "wtg-country-fill";
 export const COUNTRY_LINE_LAYER = "wtg-country-line";
 export const ADMIN1_FILL_LAYER = "wtg-admin1-fill";
 export const ADMIN1_LINE_LAYER = "wtg-admin1-line";
+// Mosaic layers paint admin-1 polygons of climatically-incoherent countries
+// (Phase 3a suppression list) at country-level zoom — those countries have
+// no country-level row in the tiles, so without this they'd render as holes.
+export const ADMIN1_MOSAIC_FILL_LAYER = "wtg-admin1-mosaic-fill";
+export const ADMIN1_MOSAIC_LINE_LAYER = "wtg-admin1-mosaic-line";
 export const ADMIN2_FILL_LAYER = "wtg-admin2-fill";
 export const ADMIN2_LINE_LAYER = "wtg-admin2-line";
 
 export const FILL_LAYER_IDS = [
   COUNTRY_FILL_LAYER,
+  ADMIN1_MOSAIC_FILL_LAYER,
   ADMIN1_FILL_LAYER,
   ADMIN2_FILL_LAYER,
 ] as const;
+
+// Mirror of `pipeline/src/wtg_pipeline/processing/country_rules.py`
+// `SUPPRESSED_COUNTRIES`. Keep in sync when entries are added/removed.
+export const SUPPRESSED_COUNTRIES: readonly string[] = [
+  "RU",
+  "CA",
+  "US",
+  "CN",
+  "AU",
+  "BR",
+  "IN",
+  "AR",
+  "KZ",
+  "CL",
+];
 
 // Zoom thresholds must match the tippecanoe `-Z/-z` flags in pipeline/CLAUDE.md.
 const ZOOM_COUNTRY_MAX = 3.5;
@@ -51,9 +72,13 @@ export function buildFillColorExpression(
 ): ExpressionSpecification {
   const mode = DISPLAY_MODES[modeId];
   const prop = modeProperty(mode, month);
-  // `['get']` returns null for missing; coerce to a sentinel then branch on it
-  // so blank polygons render with the neutral border fill instead of black.
-  const raw: ExpressionSpecification = ["to-number", ["get", prop], -9999];
+  // `['get']` returns null for missing. MapLibre's `to-number` converts null
+  // to 0, so we have to inject the sentinel via `coalesce` before conversion;
+  // otherwise blank polygons silently fall into the lowest bin.
+  const raw: ExpressionSpecification = [
+    "to-number",
+    ["coalesce", ["get", prop], -9999],
+  ];
 
   if (mode.kind === "qualitative") {
     // Preferences score 0-100 → 4 Atlas bins. Mirrors scoring.ts SCORE_BINS.
@@ -148,6 +173,12 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     };
   }
 
+  const suppressedFilter: ExpressionSpecification = [
+    "in",
+    ["get", "iso_a2"],
+    ["literal", SUPPRESSED_COUNTRIES],
+  ];
+
   const layers: StyleSpecification["layers"] = [
     { id: "wtg-background", type: "background", paint: { "background-color": WATER } },
     {
@@ -169,6 +200,31 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
       "source-layer": "country",
       maxzoom: ZOOM_COUNTRY_MAX,
       paint: { "line-color": LINE_COLOR, "line-opacity": 0.3, "line-width": 0.6 },
+    },
+    // Mosaic: render admin-1 polygons of suppressed countries at country zoom
+    // so they don't appear as holes where the country row was deliberately
+    // dropped by the Phase 3a aggregation rules.
+    {
+      id: ADMIN1_MOSAIC_FILL_LAYER,
+      type: "fill",
+      source: FREE_SOURCE_ID,
+      "source-layer": "admin1",
+      maxzoom: ZOOM_ADMIN1_MIN,
+      filter: suppressedFilter,
+      paint: {
+        "fill-color": fillColor,
+        "fill-opacity": fillOpacity,
+        "fill-antialias": true,
+      },
+    },
+    {
+      id: ADMIN1_MOSAIC_LINE_LAYER,
+      type: "line",
+      source: FREE_SOURCE_ID,
+      "source-layer": "admin1",
+      maxzoom: ZOOM_ADMIN1_MIN,
+      filter: suppressedFilter,
+      paint: { "line-color": LINE_COLOR, "line-opacity": 0.2, "line-width": 0.4 },
     },
     {
       id: ADMIN1_FILL_LAYER,
@@ -231,7 +287,9 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
 
 /** Exposed so the canvas can update paint live without rebuilding the style. */
 export function activeFillLayerIds(premium: boolean): readonly string[] {
-  return premium ? FILL_LAYER_IDS : FILL_LAYER_IDS.slice(0, 2);
+  // Without premium tiles, only the admin-2 layer is absent — strip it off
+  // the end and return the rest (country + mosaic + admin1).
+  return premium ? FILL_LAYER_IDS : FILL_LAYER_IDS.slice(0, -1);
 }
 
 export type Mode = DisplayMode;
