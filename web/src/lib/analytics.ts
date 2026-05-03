@@ -15,6 +15,7 @@
 export const ANALYTICS_EVENTS = {
   pageView: "page_view",
   mapLayerChange: "map_layer_change",
+  mapFeatureSelect: "map_feature_select",
   upgradeClick: "upgrade_click",
   tripSaved: "trip_saved",
 } as const;

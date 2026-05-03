@@ -15,7 +15,10 @@
  */
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+
+import type maplibregl from "maplibre-gl";
 
 import { Button } from "@/components/ui/button";
 import { MapLegend } from "@/components/map/map-legend";
@@ -28,6 +31,7 @@ import {
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
+import { COUNTRIES } from "@/lib/countries";
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
 
@@ -83,6 +87,22 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
     if (!isPremium) setUpgradeFeature("admin2");
   }, [isPremium]);
 
+  const router = useRouter();
+  const handleFeatureSelect = useCallback(
+    (feature: maplibregl.MapGeoJSONFeature) => {
+      const props = feature.properties ?? {};
+      const iso = typeof props.iso_a2 === "string" ? props.iso_a2.toUpperCase() : "";
+      const country = iso ? COUNTRIES.find((c) => c.iso2 === iso) : undefined;
+      if (!country) return;
+      trackEvent(ANALYTICS_EVENTS.mapFeatureSelect, {
+        iso_a2: iso,
+        level: typeof props.level === "string" ? props.level : "country",
+      });
+      router.push(`/${country.slug}`);
+    },
+    [router],
+  );
+
   const handleModeChange = useCallback(
     (next: DisplayModeId) => {
       if (next === mode) return;
@@ -123,6 +143,7 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
           mode={mode}
           month={month}
           onPremiumZoomBlocked={handlePremiumZoomBlocked}
+          onFeatureSelect={handleFeatureSelect}
         />
       )}
 

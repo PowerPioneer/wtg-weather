@@ -55,7 +55,10 @@ describe("buildMapStyle", () => {
     // The mosaic must cap at the admin-1 transition zoom — above that, the
     // regular admin-1 fill takes over and renders everyone.
     expect(mosaicFill).toMatchObject({ "source-layer": "admin1" });
-    const filterStr = JSON.stringify(mosaicFill?.filter);
+    // `filter` only exists on non-background layers — narrow before reading.
+    const filter =
+      mosaicFill && "filter" in mosaicFill ? mosaicFill.filter : undefined;
+    const filterStr = JSON.stringify(filter);
     for (const iso of SUPPRESSED_COUNTRIES) {
       expect(filterStr).toContain(iso);
     }
