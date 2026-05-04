@@ -12,16 +12,29 @@ v2.wheretogoforgreatweather.com {
     }
 
     route /_tiles/* {
-        # Custom module verifies ?exp=<unix>&sig=<hmac> against TILE_SIGNING_SECRET
-        # before serving. If invalid: 403.
-        # Alternative: reverse proxy to api:8000 /tiles/verify first.
+        # `defer` + `>Header-Name` ensures the headers are written even when
+        # `file_server` short-circuits the response (range requests, 304s,
+        # precompressed `.br` matches). Without `defer` the CORS header gets
+        # dropped on 206 Partial Content responses, which PMTiles uses
+        # exclusively — the browser then refuses the bytes with a CORS error.
+        header /* {
+            defer
+            >Cache-Control "public, max-age=31536000, immutable"
+            >Access-Control-Allow-Origin "https://v2.wheretogoforgreatweather.com"
+            >Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+            >Access-Control-Expose-Headers "Content-Length, Content-Range, ETag"
+            >Access-Control-Max-Age "86400"
+            >Vary "Origin"
+        }
+        # TODO(phase-7): replace with `forward_auth api:8000 { uri /api/tiles/verify }`
+        # — current `reverse_proxy /_tiles/verify api:8000` only matches that
+        # one literal path, so file_server below serves any /_tiles/*.pmtiles
+        # without an HMAC check. Tracked for hardening before public launch.
         reverse_proxy /_tiles/verify api:8000
         root * /var/tiles
         file_server {
             precompressed br
         }
-        header Cache-Control "public, max-age=31536000, immutable"
-        header Access-Control-Allow-Origin "https://v2.wheretogoforgreatweather.com"
     }
 
     route /api/* {
