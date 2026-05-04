@@ -35,12 +35,14 @@ cd "$(dirname "$0")/../.."
 
 command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
 
-# GeoJSON build is a prerequisite for pmtiles. Cached — idempotent no-op if
-# inputs haven't changed since the last run.
-log "stage=build-geojson"
-"$UV" run --directory pipeline wtg build geojson
-
 for tier in $TIERS; do
+    # GeoJSON build is a prerequisite for pmtiles, and the CLI's `--tier`
+    # flag selects WHICH set of geojson layers gets emitted into
+    # `pipeline/data/final/<level>_<tier>.geojson`. Build once per tier so
+    # the premium pmtiles step can find `country_premium.geojson` etc.
+    log "stage=build-geojson tier=${tier}"
+    "$UV" run --directory pipeline wtg build geojson --tier "$tier"
+
     log "stage=build-pmtiles tier=${tier}"
     final="./tiles/${tier}.pmtiles"
     backup="./tiles/${tier}.pmtiles.bak"
