@@ -16,7 +16,10 @@ async def test_tile_url_free_allowed_anonymously(client: AsyncClient) -> None:
     assert r.status_code == 200
     body = r.json()
     assert body["tier"] == "free"
-    assert "/free.pmtiles" in body["url"]
+    # Must include the `/_tiles/` prefix so bunny.net's origin pull lands on
+    # Caddy's tile-serving route rather than falling through to the Next.js
+    # app and 502'ing.
+    assert "/_tiles/free.pmtiles" in body["url"]
     assert body["expires_at"] > 0
 
 
@@ -33,7 +36,7 @@ async def test_tile_url_free_for_any_authenticated_user(client: AsyncClient, use
     assert r.status_code == 200
     body = r.json()
     assert body["tier"] == "free"
-    assert "/free.pmtiles" in body["url"]
+    assert "/_tiles/free.pmtiles" in body["url"]
     assert body["expires_at"] > 0
 
 
@@ -52,7 +55,7 @@ async def test_tile_url_premium_allowed_for_premium_user(
     login(client, user)
     r = await client.get("/api/tiles/url", params={"tier": "premium"})
     assert r.status_code == 200
-    assert "/premium.pmtiles" in r.json()["url"]
+    assert "/_tiles/premium.pmtiles" in r.json()["url"]
 
 
 @pytest.mark.asyncio

@@ -45,10 +45,16 @@ async def get_tile_url(
             raise HTTPException(status.HTTP_403_FORBIDDEN, "premium entitlement required")
 
     s = get_settings()
+    # The HMAC is computed over the bare path (`/free.pmtiles`) so the
+    # `verify_tile` endpoint can keep stripping the `/_tiles` prefix it
+    # receives from Caddy. The CDN URL gets the prefix tacked on so the
+    # request bunny.net forwards to the origin actually hits Caddy's
+    # `/_tiles/*` tile-serving route — without it, the request falls
+    # through to `route /*` (Next.js) and 502s.
     path = f"/{tier}.pmtiles"
     signed = sign_path(path, s.tile_signing_secret, s.tile_signature_ttl_seconds)
     return SignedTileURLResponse(
-        url=f"{s.cdn_url}{signed.url}",
+        url=f"{s.cdn_url}/_tiles{signed.url}",
         expires_at=signed.expires_at,
         tier=tier,
     )
