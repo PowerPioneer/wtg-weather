@@ -536,7 +536,7 @@ services:
     environment:
       INTERNAL_API_URL: http://api:8000
       NEXT_PUBLIC_API_URL: https://v2.wheretogoforgreatweather.com/api
-      NEXT_PUBLIC_CDN_URL: https://wtg.b-cdn.net
+      NEXT_PUBLIC_CDN_URL: https://cdn.wheretogoforgreatweather.com
       NEXT_PUBLIC_PLAUSIBLE_DOMAIN: v2.wheretogoforgreatweather.com
       NEXT_PUBLIC_POSTHOG_KEY: ${POSTHOG_KEY}
       GLITCHTIP_DSN: ${GLITCHTIP_DSN_WEB}
@@ -656,7 +656,14 @@ plausible.v2.wheretogoforgreatweather.com {
 }
 ```
 
-bunny.net pull zone origin → `https://v2.wheretogoforgreatweather.com/_tiles/`. Cache TTL 1 year, edge rules to pass through `exp` and `sig` query params unchanged. On tile rebuild, the `rebuild-tiles.sh` script hits the bunny.net API to purge.
+### CDN topology
+
+- **Pull zone name:** `wtgweather` (bunny.net requires ≥4 chars, so the original `wtg` was rejected). Default hostname `wtgweather.b-cdn.net`.
+- **Custom hostname:** `cdn.wheretogoforgreatweather.com` — CNAME to `wtgweather.b-cdn.net`. SSL is auto-provisioned by bunny.net once DNS resolves; "Force SSL" toggled on for the linked hostname.
+- **Origin URL:** `https://v2.wheretogoforgreatweather.com` (HTTPS, not HTTP — Caddy redirects HTTP→HTTPS so HTTP origin would just waste a hop and leak the origin pull on the wire).
+- **Cache settings:** "Use origin Cache-Control" (Caddy emits `public, max-age=31536000, immutable` on `/_tiles/*`). **Vary by Query String: enabled**, **Query String Sort: off** — signed URLs (`?exp=…&sig=…`) MUST cache as distinct objects, and reordering the params would invalidate the HMAC.
+- **Purge:** on tile rebuild, `rebuild-tiles.sh` hits the bunny.net API. Account API key + numeric pull-zone id live in `.env` as `BUNNY_API_KEY` and `BUNNY_PULL_ZONE_ID`.
+- **API → CDN host:** the FastAPI service signs URLs against `CDN_URL` (default `https://cdn.wheretogoforgreatweather.com`). The web frontend uses `NEXT_PUBLIC_CDN_URL` for any client-side construction. Both env vars must point at the same hostname or signed URLs return 403 at the edge.
 
 ---
 

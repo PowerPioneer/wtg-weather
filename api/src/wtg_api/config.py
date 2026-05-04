@@ -27,7 +27,11 @@ class Settings(BaseSettings):
     session_cookie_name: str = "wtg_session"
     session_ttl_seconds: int = 30 * 24 * 3600
 
-    cdn_url: str = "https://wtg.b-cdn.net"
+    # CDN hostname tile URLs are signed against. Production points the
+    # `cdn.wheretogoforgreatweather.com` CNAME at the bunny.net pull zone
+    # `wtgweather` (zone names must be ≥4 chars, hence not `wtg`). Override
+    # per-environment via `CDN_URL`.
+    cdn_url: str = "https://cdn.wheretogoforgreatweather.com"
     public_web_origin: str = "http://localhost:3000"
 
     google_client_id: str = ""
