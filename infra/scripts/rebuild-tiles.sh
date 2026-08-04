@@ -40,8 +40,14 @@ for tier in $TIERS; do
     # flag selects WHICH set of geojson layers gets emitted into
     # `pipeline/data/final/<level>_<tier>.geojson`. Build once per tier so
     # the premium pmtiles step can find `country_premium.geojson` etc.
+    #
+    # `--force` is required, not optional: `wtg build geojson` treats an
+    # existing non-empty output as a cache hit and skips it. Without the
+    # flag this whole script silently degrades into republishing the last
+    # build's bytes, which is the opposite of what it exists to do — a
+    # pipeline code change would never reach the map.
     log "stage=build-geojson tier=${tier}"
-    "$UV" run --directory pipeline wtg build geojson --tier "$tier"
+    "$UV" run --directory pipeline wtg build geojson --tier "$tier" --force
 
     log "stage=build-pmtiles tier=${tier}"
     final="./tiles/${tier}.pmtiles"
