@@ -8,7 +8,9 @@ unit-test session doesn't pull xarray/geopandas off disk.
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
+from typing import Iterable
 
 from wtg_pipeline.config import (
     boundaries_raw_dir,
@@ -46,37 +48,82 @@ log = logging.getLogger(__name__)
 TILE_DIR = Path(__file__).resolve().parents[3] / "tiles"
 
 
-def _load_boundary_frames() -> dict[Level, PolygonFrame]:
-    """Load the three polygon GeoDataFrames from the boundaries raw dir.
+def _load_boundary_frames(
+    levels: Iterable[Level] = LEVELS,
+) -> dict[Level, PolygonFrame]:
+    """Load polygon GeoDataFrames for the requested levels only.
 
     Naming is defensive: Natural Earth ships the columns ``ISO_A2`` /
     ``iso_3166_2`` / ``name`` etc., and geoBoundaries uses ``shapeISO`` /
     ``shapeName``. We normalise the relevant columns into stable names.
+
+    Levels are loaded on demand because admin-2 is expensive and optional:
+    geoBoundaries ADM2 is ~3.5 GB across 179 files, and nothing in the free
+    tier touches it. Loading it unconditionally made a free-tier build both
+    slow and hostage to a data problem in a file it would never read.
     """
     try:
         import geopandas as gpd  # type: ignore[import-not-found]
     except ImportError as exc:
         raise RuntimeError("geopandas required; run `uv sync`.") from exc
 
+    wanted = set(levels)
     base = boundaries_raw_dir()
-    country_zip = base / "natural_earth" / "ne_50m_admin_0_countries.zip"
-    admin1_zip = base / "natural_earth" / "ne_50m_admin_1_states_provinces.zip"
+    frames: dict[Level, PolygonFrame] = {}
 
-    country_gdf = gpd.read_file(f"zip://{country_zip}")
-    country_gdf["polygon_id"] = country_gdf["ISO_A2_EH"].fillna(country_gdf.get("ISO_A2", ""))
-    country_gdf["iso_a2"] = country_gdf["polygon_id"]
-    country_gdf["name"] = country_gdf.get("NAME_EN", country_gdf.get("NAME"))
+    if "country" in wanted:
+        country_zip = base / "natural_earth" / "ne_50m_admin_0_countries.zip"
+        country_gdf = gpd.read_file(f"zip://{country_zip}")
+        country_gdf["polygon_id"] = country_gdf["ISO_A2_EH"].fillna(
+            country_gdf.get("ISO_A2", "")
+        )
+        country_gdf["iso_a2"] = country_gdf["polygon_id"]
+        country_gdf["name"] = country_gdf.get("NAME_EN", country_gdf.get("NAME"))
+        frames["country"] = PolygonFrame(
+            level="country",
+            gdf=country_gdf,
+            iso_a2_col="iso_a2",
+            id_col="polygon_id",
+            name_col="name",
+            admin1_code_col=None,
+        )
 
-    admin1_gdf = gpd.read_file(f"zip://{admin1_zip}")
-    admin1_gdf["polygon_id"] = admin1_gdf["iso_3166_2"]
-    admin1_gdf["iso_a2"] = admin1_gdf["iso_a2"]
-    admin1_gdf["name"] = admin1_gdf.get("name_en", admin1_gdf.get("name"))
-    admin1_gdf["admin1_code"] = admin1_gdf["iso_3166_2"]
+    if "admin1" in wanted:
+        admin1_zip = base / "natural_earth" / "ne_50m_admin_1_states_provinces.zip"
+        admin1_gdf = gpd.read_file(f"zip://{admin1_zip}")
+        admin1_gdf["polygon_id"] = admin1_gdf["iso_3166_2"]
+        admin1_gdf["iso_a2"] = admin1_gdf["iso_a2"]
+        admin1_gdf["name"] = admin1_gdf.get("name_en", admin1_gdf.get("name"))
+        admin1_gdf["admin1_code"] = admin1_gdf["iso_3166_2"]
+        frames["admin1"] = PolygonFrame(
+            level="admin1",
+            gdf=admin1_gdf,
+            iso_a2_col="iso_a2",
+            id_col="polygon_id",
+            name_col="name",
+            admin1_code_col="admin1_code",
+        )
+
+    if "admin2" in wanted:
+        frames["admin2"] = _load_admin2_frame(gpd, base)
+
+    return frames
+
+
+def _load_admin2_frame(gpd: object, base: Path) -> PolygonFrame:
+    """Concatenate the per-country geoBoundaries ADM2 files into one frame."""
+    # geoBoundaries ships single features far larger than GDAL's default
+    # per-feature ceiling — PHL_ADM2.geojson is 444 MB and its island
+    # multipolygons run to tens of MB each. Without lifting the limit,
+    # `read_file` aborts mid-directory with a DataSourceError.
+    os.environ["OGR_GEOJSON_MAX_OBJ_SIZE"] = "0"
 
     admin2_dir = base / "geoboundaries" / "adm2"
+    paths = sorted(admin2_dir.glob("*_ADM2.geojson"))
     admin2_frames = []
-    for geojson in sorted(admin2_dir.glob("*_ADM2.geojson")):
-        sub = gpd.read_file(geojson)
+    for index, geojson in enumerate(paths, start=1):
+        log.info("[%d/%d] reading %s", index, len(paths), geojson.name)
+        sub = gpd.read_file(geojson)  # type: ignore[attr-defined]
         iso3 = geojson.stem.split("_", 1)[0]
         sub["iso_a3"] = iso3
         sub["iso_a2"] = sub.get("shapeGroup", iso3)[:2] if "shapeGroup" in sub.columns else ""
@@ -84,38 +131,22 @@ def _load_boundary_frames() -> dict[Level, PolygonFrame]:
         sub["name"] = sub.get("shapeName", "")
         sub["admin1_code"] = ""
         admin2_frames.append(sub)
-    admin2_gdf = (
-        gpd.GeoDataFrame(gpd.pd.concat(admin2_frames, ignore_index=True))
-        if admin2_frames
-        else gpd.GeoDataFrame({"polygon_id": [], "iso_a2": [], "name": [], "admin1_code": []})
-    )
 
-    return {
-        "country": PolygonFrame(
-            level="country",
-            gdf=country_gdf,
-            iso_a2_col="iso_a2",
-            id_col="polygon_id",
-            name_col="name",
-            admin1_code_col=None,
-        ),
-        "admin1": PolygonFrame(
-            level="admin1",
-            gdf=admin1_gdf,
-            iso_a2_col="iso_a2",
-            id_col="polygon_id",
-            name_col="name",
-            admin1_code_col="admin1_code",
-        ),
-        "admin2": PolygonFrame(
-            level="admin2",
-            gdf=admin2_gdf,
-            iso_a2_col="iso_a2",
-            id_col="polygon_id",
-            name_col="name",
-            admin1_code_col="admin1_code",
-        ),
-    }
+    admin2_gdf = (
+        gpd.GeoDataFrame(gpd.pd.concat(admin2_frames, ignore_index=True))  # type: ignore[attr-defined]
+        if admin2_frames
+        else gpd.GeoDataFrame(  # type: ignore[attr-defined]
+            {"polygon_id": [], "iso_a2": [], "name": [], "admin1_code": []}
+        )
+    )
+    return PolygonFrame(
+        level="admin2",
+        gdf=admin2_gdf,
+        iso_a2_col="iso_a2",
+        id_col="polygon_id",
+        name_col="name",
+        admin1_code_col="admin1_code",
+    )
 
 
 def _resolve_levels(level: str) -> tuple[Level, ...]:
@@ -128,12 +159,13 @@ def _resolve_levels(level: str) -> tuple[Level, ...]:
 
 def run_aggregate(*, level: str, years_spec: str, force: bool) -> list[Path]:
     years = parse_year_range(years_spec)
-    frames = _load_boundary_frames()
+    resolved = _resolve_levels(level)
+    frames = _load_boundary_frames(resolved)
     variables = list(ERA5_VARIABLES.values())
     nc_dir = era5_raw_dir()
 
     outputs: list[Path] = []
-    for lv in _resolve_levels(level):
+    for lv in resolved:
         out = aggregate_level(
             level=lv,
             polygons=frames[lv],
@@ -145,7 +177,7 @@ def run_aggregate(*, level: str, years_spec: str, force: bool) -> list[Path]:
         outputs.append(out)
 
     # Country-level gets rewritten through country_rules.
-    if any(lv == "country" for lv in _resolve_levels(level)):
+    if "country" in resolved:
         _apply_country_rules_to_disk()
     return outputs
 
@@ -259,13 +291,13 @@ def run_build_geojson(*, tier: str, force: bool) -> list[Path]:
     except ImportError as exc:
         raise RuntimeError("pandas required; run `uv sync`.") from exc
 
-    frames = _load_boundary_frames()
     suppressed = country_rules.SUPPRESSED_COUNTRIES
 
     outputs: list[Path] = []
     levels: tuple[Level, ...] = (
         ("country", "admin1", "admin2") if tier == "premium" else ("country", "admin1")
     )
+    frames = _load_boundary_frames(levels)
     for lv in levels:
         perc_path = percentiles_path(lv)
         if not perc_path.exists():
