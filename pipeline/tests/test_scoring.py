@@ -28,24 +28,39 @@ def test_variable_in_buffer() -> None:
     assert not variable_in_buffer(31.1, pref)
 
 
+def test_precipitation_preference_is_per_day() -> None:
+    # Tiles carry mm/day, not mm/month — a 2 mm/day month is pleasant, and
+    # ERA5's native m/day would put every polygon inside the range.
+    tp = next(p for p in DEFAULT_PREFERENCES if p.variable == "tp")
+    assert variable_in_range(2.0, tp)
+    assert not variable_in_range(20.0, tp)
+
+
 def test_perfect_match_scores_three() -> None:
-    values = {"t2m": 24.0, "tp": 20.0, "sun_hours": 8.0}
+    values = {"t2m": 24.0, "tp": 2.0, "sun_hours": 8.0}
     assert polygon_score(values) == 3
 
 
 def test_one_in_buffer_scores_two() -> None:
-    values = {"t2m": 30.0, "tp": 20.0, "sun_hours": 8.0}  # t2m in buffer
+    values = {"t2m": 30.0, "tp": 2.0, "sun_hours": 8.0}  # t2m in buffer
     assert polygon_score(values) == 2
 
 
 def test_one_out_of_buffer_scores_one() -> None:
-    values = {"t2m": 40.0, "tp": 20.0, "sun_hours": 8.0}
+    values = {"t2m": 40.0, "tp": 2.0, "sun_hours": 8.0}
     assert polygon_score(values) == 1
 
 
 def test_two_out_of_buffer_scores_zero() -> None:
-    values = {"t2m": 40.0, "tp": 200.0, "sun_hours": 8.0}
+    values = {"t2m": 40.0, "tp": 20.0, "sun_hours": 8.0}
     assert polygon_score(values) == 0
+
+
+def test_raw_era5_units_do_not_score_as_a_match() -> None:
+    # Guard against the regression that shipped a single-colour map: raw
+    # Kelvin + m/day must not quietly land in a middling bucket.
+    raw_si = {"t2m": 297.15, "tp": 0.002, "sun_hours": 8.0}
+    assert polygon_score(raw_si) < 2
 
 
 def test_empty_preferences_scores_zero() -> None:

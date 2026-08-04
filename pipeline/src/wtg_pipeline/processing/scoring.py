@@ -55,9 +55,14 @@ class VariablePreference:
 
 # Free-tier default preferences: "warm, dry, sunny" — broadly matches the
 # majority of traveller searches on the live site.
+#
+# Units here are the *display* units the tiles carry (see
+# `wtg_pipeline.processing.units`), NOT ERA5's SI units. Scoring raw SI
+# values against these ranges puts every polygon on Earth in the same
+# bucket, which is exactly the bug this pairing was written to prevent.
 DEFAULT_PREFERENCES: tuple[VariablePreference, ...] = (
     VariablePreference("t2m", lo=18.0, hi=28.0, buffer=3.0),  # °C
-    VariablePreference("tp", lo=0.0, hi=80.0, buffer=40.0),  # mm / month
+    VariablePreference("tp", lo=0.0, hi=2.7, buffer=1.3),  # mm / day (≈ 80 mm/month)
     VariablePreference("sun_hours", lo=6.0, hi=13.0, buffer=1.5),  # h / day
 )
 
