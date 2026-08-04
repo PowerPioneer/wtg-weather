@@ -12,7 +12,7 @@
 #
 # Loggable: every stage prefixes output with an RFC3339 timestamp.
 #
-# Optional env:
+# Optional env (each falls back to the repo-root `.env`):
 #   UV                  — default "uv"
 #   BUNNY_API_KEY       — bunny.net API key (if set, purges the pull zone)
 #   BUNNY_PULL_ZONE_ID  — bunny.net pull-zone numeric id
@@ -32,6 +32,30 @@ if ! flock -n 9; then
 fi
 
 cd "$(dirname "$0")/../.."
+
+# The bunny.net credentials live in the repo-root `.env` that compose loads.
+# A plain shell — cron, or a human running this by hand — does not load it,
+# so the purge silently no-op'd and rebuilt tiles never reached anyone: the
+# pull zone caches for a year and ignores the signed query string.
+#
+# Deliberately parsed, not sourced. `. ./.env` would execute whatever else
+# is in the file, and this script runs as root on the production host.
+# Values are never logged.
+env_value() {
+    local key="$1" line value
+    [[ -f .env ]] || return 0
+    line=$(grep -aE "^[[:space:]]*(export[[:space:]]+)?${key}=" .env | tail -1) || true
+    [[ -n "${line:-}" ]] || return 0
+    value="${line#*=}"
+    value="${value%$'\r'}"          # tolerate CRLF checkouts
+    if [[ "$value" == \"*\" || "$value" == \'*\' ]]; then
+        value="${value:1:${#value}-2}"
+    fi
+    printf '%s' "$value"
+}
+
+BUNNY_API_KEY="${BUNNY_API_KEY:-$(env_value BUNNY_API_KEY)}"
+BUNNY_PULL_ZONE_ID="${BUNNY_PULL_ZONE_ID:-$(env_value BUNNY_PULL_ZONE_ID)}"
 
 command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
 
@@ -77,14 +101,20 @@ if [[ -n "${BUNNY_API_KEY:-}" && -n "${BUNNY_PULL_ZONE_ID:-}" ]]; then
     log "stage=purge target=bunny.net zone=${BUNNY_PULL_ZONE_ID}"
     # Purge the whole pull zone — PMTiles are immutable per version but the
     # filename is stable, so we must invalidate to pick up new bytes.
-    if ! curl --fail --silent --show-error \
+    if curl --fail --silent --show-error \
             -X POST "https://api.bunny.net/pullzone/${BUNNY_PULL_ZONE_ID}/purgeCache" \
             -H "AccessKey: ${BUNNY_API_KEY}" \
             -o /dev/null; then
-        log "WARN: bunny.net purge failed — run manually or wait for TTL"
+        log "stage=purge OK"
+    else
+        log "WARN: bunny.net purge FAILED — the new tiles are on disk but the"
+        log "WARN: CDN will keep serving the old ones. Purge the pull zone at"
+        log "WARN: https://dash.bunny.net before assuming this rebuild shipped."
     fi
 else
-    log "stage=purge skipped (no BUNNY_API_KEY / BUNNY_PULL_ZONE_ID)"
+    log "WARN: purge skipped — no BUNNY_API_KEY / BUNNY_PULL_ZONE_ID in the"
+    log "WARN: environment or in ./.env. The rebuilt tiles will NOT reach"
+    log "WARN: users until the bunny.net pull zone is purged."
 fi
 
 log "rebuild-tiles OK (tiers: ${TIERS})"
