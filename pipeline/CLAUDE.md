@@ -27,6 +27,17 @@ uv run wtg --help
 
 - All sources in `src/wtg_pipeline/sources/`. One file per source. Each file
   exports a `fetch()` function that returns raw bytes or a local path.
+- Natural Earth scales are NOT interchangeable. Country comes from **1:50m**;
+  admin-1 MUST come from **1:10m**. At 1:50m Natural Earth only subdivides a
+  handful of large countries (9 in practice), which leaves most of the world
+  with no admin-1 polygon — countries vanish in the mid-zoom band and the
+  suppressed-country mosaic renders as a hole.
+- Admin-1 polygon identity is `adm1_code`, never `iso_3166_2`: the latter is
+  not unique in the 10m layer. `iso_3166_2` is the `MAINLAND_WHITELIST` key
+  only. Country identity is `ADM0_A3`, because a few polygons have no ISO-2.
+- `MAINLAND_WHITELIST` is generated, not hand-edited — its codes are tied to
+  the Natural Earth admin-1 vintage. Regenerate with
+  `python scripts/generate_mainland_whitelist.py` and review the diff.
 - Advisories: each government scraper inherits from `advisories/base.py`
   and returns the normalised schema: `{country_iso2, region_code|null,
   level: 1-4, summary, source_url, fetched_at}`.

@@ -8,6 +8,8 @@ import {
   ADMIN2_FILL_LAYER,
   COUNTRY_FILL_LAYER,
   FILL_LAYER_IDS,
+  FREE_SOURCE_ID,
+  PREMIUM_SOURCE_ID,
   SUPPRESSED_COUNTRIES,
   activeFillLayerIds,
   buildFillColorExpression,
@@ -127,5 +129,96 @@ describe("activeFillLayerIds", () => {
     expect(ids).toContain(ADMIN1_MOSAIC_FILL_LAYER);
     expect(ids).toContain(ADMIN1_FILL_LAYER);
     expect(ids).not.toContain(ADMIN2_FILL_LAYER);
+  });
+});
+
+describe("SUPPRESSED_COUNTRIES parity with the pipeline", () => {
+  // These countries emit no country-level row, so the map paints their
+  // admin-1 polygons as a mosaic instead. The list is duplicated here and in
+  // pipeline/src/wtg_pipeline/processing/country_rules.py; if the two drift,
+  // a country is either painted twice or not at all — Argentina, Chile and
+  // Kazakhstan were invisible for exactly this class of mismatch.
+  it("matches the Python SUPPRESSED_COUNTRIES table", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+
+    const source = readFileSync(
+      join(
+        process.cwd(),
+        "..",
+        "pipeline/src/wtg_pipeline/processing/country_rules.py",
+      ),
+      "utf8",
+    );
+
+    const block = source.match(
+      /SUPPRESSED_COUNTRIES:\s*frozenset\[str\]\s*=\s*frozenset\(\s*\{([\s\S]*?)\}\s*\)/,
+    );
+    expect(block, "could not locate SUPPRESSED_COUNTRIES in country_rules.py").toBeTruthy();
+
+    const pythonCodes = [...block![1].matchAll(/"([A-Z]{2})"/g)].map((m) => m[1]);
+    expect(pythonCodes.length).toBeGreaterThan(0);
+    expect([...pythonCodes].sort()).toEqual([...SUPPRESSED_COUNTRIES].sort());
+  });
+});
+
+describe("tier source selection", () => {
+  // A layer reads properties only from its own source, and the premium-only
+  // variables live solely in the premium archive. If country and admin-1 keep
+  // pointing at the free archive, an entitled user selecting Snow depth or Sea
+  // surface temp gets missing-grey everywhere above admin-2 zoom.
+  const base = { mode: "preferences" as const, month: 4 };
+
+  const sourceOf = (style: ReturnType<typeof buildMapStyle>, layerId: string) => {
+    const layer = style.layers.find((l) => l.id === layerId);
+    return layer && "source" in layer ? layer.source : undefined;
+  };
+
+  it("reads every base layer from the free archive without premium", () => {
+    const style = buildMapStyle({ ...base, freeTilesUrl: FREE_URL, premiumTilesUrl: null });
+    for (const id of [COUNTRY_FILL_LAYER, ADMIN1_FILL_LAYER, ADMIN1_MOSAIC_FILL_LAYER]) {
+      expect(sourceOf(style, id)).toBe(FREE_SOURCE_ID);
+    }
+  });
+
+  it("reads every base layer from the premium archive when entitled", () => {
+    const style = buildMapStyle({
+      ...base,
+      freeTilesUrl: FREE_URL,
+      premiumTilesUrl: PREMIUM_URL,
+    });
+    for (const id of [
+      COUNTRY_FILL_LAYER,
+      ADMIN1_FILL_LAYER,
+      ADMIN1_MOSAIC_FILL_LAYER,
+      ADMIN2_FILL_LAYER,
+    ]) {
+      expect(sourceOf(style, id)).toBe(PREMIUM_SOURCE_ID);
+    }
+  });
+
+  it("falls back to the free archive when premium is denied", () => {
+    // `useTileUrls` nulls the premium URL on a 403 rather than crashing; the
+    // map must degrade to the free variable set, not go blank.
+    const style = buildMapStyle({ ...base, freeTilesUrl: FREE_URL, premiumTilesUrl: null });
+    expect(Object.keys(style.sources)).toEqual([FREE_SOURCE_ID]);
+    expect(style.layers.find((l) => l.id === ADMIN2_FILL_LAYER)).toBeUndefined();
+  });
+
+  it("declares no source it does not use, and uses none it did not declare", () => {
+    for (const premiumTilesUrl of [null, PREMIUM_URL]) {
+      const style = buildMapStyle({ ...base, freeTilesUrl: FREE_URL, premiumTilesUrl });
+      const declared = new Set(Object.keys(style.sources));
+      const referenced = new Set(
+        style.layers.flatMap((l) => ("source" in l && l.source ? [l.source] : [])),
+      );
+      expect([...referenced].sort()).toEqual([...declared].sort());
+    }
+  });
+
+  it("never emits a camera, so setStyle preserves the user's viewport", () => {
+    const style = buildMapStyle({ ...base, freeTilesUrl: FREE_URL, premiumTilesUrl: null });
+    expect(style).not.toHaveProperty("center");
+    expect(style).not.toHaveProperty("zoom");
   });
 });

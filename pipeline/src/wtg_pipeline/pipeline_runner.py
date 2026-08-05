@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import os
+from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
@@ -32,6 +33,7 @@ from wtg_pipeline.processing.sunshine import (
     REFERENCE_CITIES,
     sunshine_hours_from_ssrd,
 )
+from wtg_pipeline.sources import geoboundaries
 from wtg_pipeline.sources.era5 import ERA5_VARIABLES, parse_year_range
 from wtg_pipeline.tiles import pmtiles as pmtiles_mod
 from wtg_pipeline.tiles import tippecanoe as tippecanoe_mod
@@ -72,13 +74,15 @@ def _load_boundary_frames(
     frames: dict[Level, PolygonFrame] = {}
 
     if "country" in wanted:
-        country_zip = base / "natural_earth" / "ne_50m_admin_0_countries.zip"
-        country_gdf = gpd.read_file(f"zip://{country_zip}")
-        country_gdf["polygon_id"] = country_gdf["ISO_A2_EH"].fillna(
-            country_gdf.get("ISO_A2", "")
+        country_zip = (
+            base / "natural_earth" / geoboundaries.NATURAL_EARTH_COUNTRY_FILENAME
         )
-        country_gdf["iso_a2"] = country_gdf["polygon_id"]
-        country_gdf["name"] = country_gdf.get("NAME_EN", country_gdf.get("NAME"))
+        country_gdf = gpd.read_file(f"zip://{country_zip}")
+        country_gdf["iso_a2"] = _normalise_country_iso_a2(country_gdf)
+        # ADM0_A3 is populated for every row (including the handful with no
+        # ISO-2), so it is the only safe polygon identity here.
+        country_gdf["polygon_id"] = country_gdf["ADM0_A3"].astype(str)
+        country_gdf["name"] = _coalesce_column(country_gdf, "NAME_EN", "NAME")
         frames["country"] = PolygonFrame(
             level="country",
             gdf=country_gdf,
@@ -89,12 +93,20 @@ def _load_boundary_frames(
         )
 
     if "admin1" in wanted:
-        admin1_zip = base / "natural_earth" / "ne_50m_admin_1_states_provinces.zip"
+        admin1_zip = (
+            base / "natural_earth" / geoboundaries.NATURAL_EARTH_ADMIN1_FILENAME
+        )
         admin1_gdf = gpd.read_file(f"zip://{admin1_zip}")
-        admin1_gdf["polygon_id"] = admin1_gdf["iso_3166_2"]
-        admin1_gdf["iso_a2"] = admin1_gdf["iso_a2"]
-        admin1_gdf["name"] = admin1_gdf.get("name_en", admin1_gdf.get("name"))
-        admin1_gdf["admin1_code"] = admin1_gdf["iso_3166_2"]
+        # `iso_3166_2` is NOT unique in the 10m layer — 155 rows share a code
+        # with another row (Azerbaijan district/municipality pairs, Australia's
+        # Lord Howe Island filed under AU-NSW, and so on). Using it as the
+        # polygon identity silently collapses those polygons onto one another
+        # during aggregation. `adm1_code` is unique per feature, so identity
+        # comes from there and `iso_3166_2` is kept only as the whitelist key.
+        admin1_gdf["polygon_id"] = admin1_gdf["adm1_code"].astype(str)
+        admin1_gdf["iso_a2"] = admin1_gdf["iso_a2"].astype(str).str.strip().str.upper()
+        admin1_gdf["name"] = _coalesce_column(admin1_gdf, "name_en", "name")
+        admin1_gdf["admin1_code"] = admin1_gdf["iso_3166_2"].astype(str).str.strip()
         frames["admin1"] = PolygonFrame(
             level="admin1",
             gdf=admin1_gdf,
@@ -110,6 +122,118 @@ def _load_boundary_frames(
     return frames
 
 
+def _coalesce_column(gdf: object, primary: str, fallback: str) -> object:
+    """First non-null of two columns, as a string Series.
+
+    Natural Earth leaves ``name_en`` null for a handful of units; the local
+    ``name`` is always populated.
+    """
+    columns = getattr(gdf, "columns", [])
+    if primary in columns and fallback in columns:
+        return gdf[primary].fillna(gdf[fallback]).astype(str)
+    if primary in columns:
+        return gdf[primary].astype(str)
+    return gdf[fallback].astype(str)
+
+
+def _normalise_country_iso_a2(gdf: object) -> object:
+    """Country ISO-2 codes with Natural Earth's ``-99`` sentinel removed.
+
+    NE writes ``-99`` where a polygon has no assigned ISO-3166-1 alpha-2
+    code. In the 50m country layer that is Somaliland, Northern Cyprus and
+    the Siachen Glacier. Left as-is the sentinel reaches the tiles and the
+    web treats ``-99`` as if it were a country: it cannot be routed to a
+    country page and it pollutes any ISO-keyed lookup.
+
+    These polygons still carry real climate, so they are kept and painted —
+    only the code is blanked, which makes them non-routable rather than
+    wrongly routable. ``ISO_A2_EH`` is preferred over ``ISO_A2`` because it
+    resolves several disputed territories that ``ISO_A2`` leaves at ``-99``.
+    """
+    columns = getattr(gdf, "columns", [])
+    primary = "ISO_A2_EH" if "ISO_A2_EH" in columns else "ISO_A2"
+
+    def _clean(name: str):
+        # Null-check on the raw column, before `astype(str)` turns a genuine
+        # null into the string "nan". Namibia's ISO-2 code is the literal
+        # "NA", so no string that merely *looks* like a null token may be
+        # treated as one.
+        column = gdf[name]
+        text = column.astype(str).str.strip().str.upper()
+        return text.mask(column.isna(), "").where(~text.isin(_MISSING_ISO_TOKENS), "")
+
+    cleaned = _clean(primary)
+    if primary == "ISO_A2_EH" and "ISO_A2" in columns:
+        cleaned = cleaned.where(cleaned != "", _clean("ISO_A2"))
+    dropped = int((cleaned == "").sum())
+    if dropped:
+        names = gdf.loc[cleaned == "", "NAME_EN"].astype(str).tolist()
+        log.warning(
+            "%d country polygon(s) have no ISO-3166-1 alpha-2 code and will be "
+            "painted but not routable: %s",
+            dropped,
+            ", ".join(sorted(names)),
+        )
+    return cleaned
+
+
+# String tokens Natural Earth uses for "no code here". Deliberately minimal:
+# "NA" is Namibia's real ISO-3166-1 alpha-2 code, and "NAN"/"NONE" are only
+# ever produced by stringifying a null, which is handled separately.
+_MISSING_ISO_TOKENS: frozenset[str] = frozenset({"-99", ""})
+
+
+@lru_cache(maxsize=1)
+def _iso3_to_iso2() -> dict[str, str]:
+    """ISO-3 → ISO-2 country codes, sourced from the Natural Earth country layer.
+
+    geoBoundaries identifies countries by ISO-3 while every other level in the
+    pipeline keys off ISO-2. Natural Earth carries both, so it is the mapping
+    of record here — deriving one from the other by string surgery is wrong for
+    a large share of countries.
+    """
+    try:
+        import geopandas as gpd  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise RuntimeError("geopandas required; run `uv sync`.") from exc
+
+    zip_path = (
+        boundaries_raw_dir()
+        / "natural_earth"
+        / geoboundaries.NATURAL_EARTH_COUNTRY_FILENAME
+    )
+    if not zip_path.exists():
+        raise FileNotFoundError(
+            f"{zip_path} is required to map geoBoundaries ISO-3 codes onto "
+            f"ISO-2. Run `wtg download boundaries --source naturalearth`."
+        )
+    gdf = gpd.read_file(f"zip://{zip_path}")
+    iso2 = _normalise_country_iso_a2(gdf)
+    return {
+        str(a3).upper(): code
+        for a3, code in zip(gdf["ADM0_A3"], iso2, strict=True)
+        if code
+    }
+
+
+def _admin2_polygon_ids(sub: object, iso3: str) -> object:
+    """Stable, unique identity for each geoBoundaries ADM2 feature.
+
+    Prefers ``shapeID`` (populated and unique), falls back to ``shapeISO``,
+    and finally synthesises ``{ISO3}-ADM2-{n}`` so that a file with neither
+    still aggregates instead of collapsing every polygon onto a blank id.
+    """
+    candidates = [c for c in ("shapeID", "shapeISO") if c in getattr(sub, "columns", [])]
+    ids = None
+    for column in candidates:
+        values = sub[column].astype(str).str.strip()
+        ids = values if ids is None else ids.where(ids != "", values)
+    if ids is None:
+        ids = sub.index.to_series().map(lambda _: "")
+    synthetic = [f"{iso3}-ADM2-{n}" for n in range(len(sub))]
+    return ids.where(ids != "", synthetic).astype(str)
+
+
 def _load_admin2_frame(gpd: object, base: Path) -> PolygonFrame:
     """Concatenate the per-country geoBoundaries ADM2 files into one frame."""
     # geoBoundaries ships single features far larger than GDAL's default
@@ -120,15 +244,28 @@ def _load_admin2_frame(gpd: object, base: Path) -> PolygonFrame:
 
     admin2_dir = base / "geoboundaries" / "adm2"
     paths = sorted(admin2_dir.glob("*_ADM2.geojson"))
+    iso3_to_iso2 = _iso3_to_iso2()
     admin2_frames = []
     for index, geojson in enumerate(paths, start=1):
         log.info("[%d/%d] reading %s", index, len(paths), geojson.name)
         sub = gpd.read_file(geojson)  # type: ignore[attr-defined]
-        iso3 = geojson.stem.split("_", 1)[0]
+        iso3 = geojson.stem.split("_", 1)[0].upper()
         sub["iso_a3"] = iso3
-        sub["iso_a2"] = sub.get("shapeGroup", iso3)[:2] if "shapeGroup" in sub.columns else ""
-        sub["polygon_id"] = sub.get("shapeISO", sub.get("shapeID"))
-        sub["name"] = sub.get("shapeName", "")
+
+        # geoBoundaries' ISO-2 has to be looked up, not derived. `shapeGroup`
+        # holds the ISO-3 code, and truncating that to two characters is wrong
+        # for a large share of the world (DNK→DK, CHN→CN, DEU→DE all break).
+        iso2 = iso3_to_iso2.get(iso3, "")
+        if not iso2:
+            log.warning("no ISO-2 mapping for %s; admin-2 rows will be unrouteable", iso3)
+        sub["iso_a2"] = iso2
+
+        # `shapeISO` is empty in every geoBoundaries ADM2 file we have — using
+        # it as the identity gave every polygon the same blank id, which
+        # collapses the whole level onto one row during aggregation.
+        # `shapeID` is populated and unique per feature.
+        sub["polygon_id"] = _admin2_polygon_ids(sub, iso3)
+        sub["name"] = sub["shapeName"].astype(str) if "shapeName" in sub.columns else ""
         sub["admin1_code"] = ""
         admin2_frames.append(sub)
 
@@ -337,19 +474,25 @@ def run_build_pmtiles(*, tier: str) -> Path:
     if tier_typed not in {"free", "premium"}:
         raise ValueError(f"unknown tier: {tier!r}")
 
-    required = ("country", "admin1") if tier_typed == "free" else ("country", "admin1")
-    optional = () if tier_typed == "free" else ("admin2",)
+    # admin-2 is the premium tier's entire reason to exist. Building premium
+    # without it used to warn and continue, which shipped a premium archive
+    # that was just the free one at higher zoom — the failure was invisible
+    # until someone decoded the tiles. Treat it as fatal instead.
+    required: tuple[str, ...] = (
+        ("country", "admin1")
+        if tier_typed == "free"
+        else ("country", "admin1", "admin2")
+    )
     layers: list[tuple[str, Path]] = []
     for lv in required:
         path = gpath(tier=tier_typed, level=lv)  # type: ignore[arg-type]
         if not path.exists():
-            raise FileNotFoundError(path)
-        layers.append((lv, path))
-    for lv in optional:
-        path = gpath(tier=tier_typed, level=lv)  # type: ignore[arg-type]
-        if not path.exists():
-            log.warning("missing %s; building %s tier without it", path.name, tier_typed)
-            continue
+            raise FileNotFoundError(
+                f"{path} is missing — cannot build the {tier_typed} tier without "
+                f"the {lv} layer. Run `wtg process aggregate --level {lv}`, "
+                f"`wtg process percentiles --level {lv}` and "
+                f"`wtg build geojson --tier {tier_typed}` first."
+            )
         layers.append((lv, path))
 
     ensure_dir(TILE_DIR)

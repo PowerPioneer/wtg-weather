@@ -21,6 +21,7 @@ pay the import cost.
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Literal
@@ -95,6 +96,35 @@ def aggregated_path(level: Level, base_dir: Path | None = None) -> Path:
     return ensure_dir(root) / f"{level}.parquet"
 
 
+def _open_era5_dataset(nc_path: Path):
+    """Open an ERA5 NetCDF, trying each available HDF5 binding in turn.
+
+    ``xarray`` defaults to the ``netcdf4`` engine, whose compiled extension
+    is not always loadable — it is absent in slim images and can be blocked
+    outright by endpoint security policy on developer machines. ``h5netcdf``
+    reads the same files through ``h5py``. Both are tried before giving up so
+    a missing binding degrades into using the other one rather than failing
+    the run.
+
+    ``WTG_NETCDF_ENGINE`` pins a specific engine when a build needs to be
+    reproducible against one binding.
+    """
+    xr = _require_xarray()
+    pinned = os.environ.get("WTG_NETCDF_ENGINE")
+    engines = [pinned] if pinned else ["netcdf4", "h5netcdf"]
+
+    errors: list[str] = []
+    for engine in engines:
+        try:
+            return xr.open_dataset(nc_path, engine=engine)
+        except (ImportError, ValueError) as exc:
+            errors.append(f"{engine}: {type(exc).__name__}: {exc}")
+    raise RuntimeError(
+        f"could not open {nc_path.name} with any NetCDF engine. Install "
+        f"`netcdf4` or `h5netcdf`. Attempts:\n  " + "\n  ".join(errors)
+    )
+
+
 def _raster_from_netcdf(nc_path: Path, variable_code: str):
     """Open an ERA5 monthly-means NetCDF and return the DataArray.
 
@@ -103,8 +133,7 @@ def _raster_from_netcdf(nc_path: Path, variable_code: str):
     CF name; we prefer the short code but fall back to a single-variable
     heuristic.
     """
-    xr = _require_xarray()
-    ds = xr.open_dataset(nc_path)
+    ds = _open_era5_dataset(nc_path)
     if variable_code in ds.variables:
         da = ds[variable_code]
     else:
@@ -175,6 +204,27 @@ def aggregate_variable_year(
     id_col = polygons.id_col
     a1_col = polygons.admin1_code_col
 
+    # Resolve each polygon's attributes once. Scanning the frame per polygon
+    # per month is quadratic, which is unnoticeable on a few dozen polygons
+    # and ruinous on the ~4,600 the 10m admin-1 layer carries.
+    has_admin1_col = bool(a1_col) and a1_col in gdf.columns
+    attributes: dict[str, tuple[str, str]] = {}
+    for attr_row in gdf.itertuples(index=False):
+        pid = str(getattr(attr_row, id_col))
+        if pid in attributes:
+            # Duplicate identities would silently overwrite each other's
+            # climate downstream; the loaders are responsible for choosing a
+            # unique id column, so surface the breach rather than absorb it.
+            raise ValueError(
+                f"duplicate polygon id {pid!r} in the {polygons.level} frame — "
+                f"{id_col!r} is not unique"
+            )
+        iso_a2 = str(getattr(attr_row, iso_col, "") or "").upper()
+        admin1_code = (
+            str(getattr(attr_row, a1_col, "") or "") if has_admin1_col else ""
+        )
+        attributes[pid] = (iso_a2, admin1_code)
+
     times = da[time_name].values
     for t in times:
         ts = pd.Timestamp(t)
@@ -183,18 +233,11 @@ def aggregate_variable_year(
         slice2d = da.sel({time_name: t})
         means = _mean_per_polygon(slice2d, gdf, id_col)
         for pid, value in means.items():
-            row_mask = gdf[id_col].astype(str) == pid
-            match = gdf[row_mask]
-            iso_a2 = str(match.iloc[0][iso_col]) if len(match) else ""
-            admin1_code = (
-                str(match.iloc[0][a1_col])
-                if a1_col and len(match) and a1_col in gdf.columns
-                else ""
-            )
+            iso_a2, admin1_code = attributes.get(pid, ("", ""))
             rows.append(
                 {
                     "polygon_id": pid,
-                    "iso_a2": iso_a2.upper(),
+                    "iso_a2": iso_a2,
                     "admin1_code": admin1_code,
                     "year": year,
                     "month": month,
@@ -286,6 +329,16 @@ def apply_country_rules(admin1_df: "object", country_df: "object") -> "object":
     # aggregation; recompute from admin-1.
     kept = kept[~kept["iso_a2"].isin(isos_needing_recompute)]
 
+    # A recomputed row has to keep the *country layer's* polygon id, which is
+    # not the ISO-2 code — downstream, `build_feature_collection` joins
+    # percentiles to geometry on that id, so a recomputed country carrying the
+    # wrong id silently loses all of its climate and drops out of the tiles.
+    polygon_id_by_iso = (
+        country_df.drop_duplicates("iso_a2")
+        .set_index("iso_a2")["polygon_id"]
+        .to_dict()
+    )
+
     recomputed: list[object] = []
     fallback_isos: list[str] = []
     for iso in isos_needing_recompute:
@@ -319,7 +372,7 @@ def apply_country_rules(admin1_df: "object", country_df: "object") -> "object":
                 "value"
             ].mean()
         )
-        grouped["polygon_id"] = iso
+        grouped["polygon_id"] = polygon_id_by_iso.get(iso, iso)
         grouped["admin1_code"] = ""
         recomputed.append(grouped)
 

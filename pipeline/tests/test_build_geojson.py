@@ -120,6 +120,24 @@ def test_every_emitted_variable_has_a_web_alias() -> None:
         assert variable in WEB_PROP_ALIAS
 
 
+def test_free_tier_emits_every_variable_the_product_sells_as_free() -> None:
+    # REBUILD_PLAN.md § Pricing: free is "temp/rain/sun + wind", and the web's
+    # display-mode catalog marks temperature / rainfall / sunshine / wind as
+    # `tier: "free"`. A mode the picker offers but the tiles have no property
+    # for paints entirely missing-grey, which is how wind shipped broken.
+    free = variables_for_tier("free")
+    for variable in ("t2m", "tp", "sun_hours", "si10"):
+        assert variable in free, f"{variable} is sold as free but is not emitted"
+
+
+def test_free_tier_withholds_premium_variables() -> None:
+    # The tier boundary is a file boundary — free.pmtiles is served to
+    # unauthenticated users, so anything in it is effectively public.
+    free = variables_for_tier("free")
+    for variable in ("sd", "sst", "rh", "heat"):
+        assert variable not in free, f"{variable} is premium but leaks into free tiles"
+
+
 def test_source_variables_include_derivation_inputs() -> None:
     # `ssrd` and `d2m` are never emitted but must be read, or sunshine and
     # humidity silently vanish from the tiles.
@@ -177,3 +195,67 @@ def test_scores_vary_across_climates() -> None:
 
 def test_missing_climate_data_scores_lowest() -> None:
     assert score_props({})["pref_01"] == SCORE_TO_PREF[0]
+
+
+class _Geom:
+    """Minimal stand-in for a shapely geometry."""
+
+    __geo_interface__ = {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]]}
+
+    def representative_point(self):
+        return self
+
+    @property
+    def y(self) -> float:
+        return 0.0
+
+
+def _build_input(level: str):
+    from wtg_pipeline.tiles.build_geojson import BuildInput
+
+    polygons = pd.DataFrame(
+        {
+            "polygon_id": ["p1"],
+            "iso_a2": ["PE"],
+            "name": ["Somewhere"],
+            "admin1_code": [""],
+            "geometry": [_Geom()],
+        }
+    )
+    percentiles = pd.DataFrame(
+        [
+            {"polygon_id": "p1", **_row("t2m", 1, 297.15)},
+            {"polygon_id": "p1", **_row("tp", 1, 0.002)},
+            {"polygon_id": "p1", **_row("ssrd", 1, BRIGHT_SSRD)},
+        ]
+    )
+    return BuildInput(
+        level=level,
+        polygons_gdf=polygons,
+        id_col="polygon_id",
+        iso_a2_col="iso_a2",
+        name_col="name",
+        admin1_code_col="admin1_code",
+        percentiles_df=percentiles,
+    )
+
+
+def test_admin2_features_carry_a_tippecanoe_minzoom_hint() -> None:
+    # Tippecanoe's -Z is global, so without this admin-2 is tiled from zoom 0
+    # and its polygons crowd out country/admin-1 in world-view tiles that
+    # never display a district anyway.
+    from wtg_pipeline.tiles.build_geojson import build_feature_collection
+
+    fc = build_feature_collection(_build_input("admin2"), tier="premium")
+    feature = fc["features"][0]
+    assert feature["tippecanoe"] == {"minzoom": 6}
+
+
+@pytest.mark.parametrize("level", ["country", "admin1"])
+def test_base_levels_carry_no_zoom_hint(level: str) -> None:
+    # Country and admin-1 must stay available from zoom 0 — they are what the
+    # world view renders.
+    from wtg_pipeline.tiles.build_geojson import build_feature_collection
+
+    fc = build_feature_collection(_build_input(level), tier="free")
+    assert "tippecanoe" not in fc["features"][0]

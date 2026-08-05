@@ -53,14 +53,27 @@ export function MapCanvas({
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  // Which URL pair the live style was built from, so a re-render that did not
+  // change them does not trigger a pointless restyle.
+  const appliedUrlsRef = useRef<string | null>(null);
+  const urlKey = `${freeTilesUrl ?? ""}|${premiumTilesUrl ?? ""}`;
   const [styleReady, setStyleReady] = useState(false);
   const [hasPremiumLayer, setHasPremiumLayer] = useState(false);
   const [hoverId, setHoverId] = useState<string | number | null>(null);
 
-  // Style build depends on URLs; rebuild only when URLs change.
+  // Signed tile URLs are re-issued shortly before their 15-minute expiry, so
+  // the URL string changes roughly every 14 minutes for as long as the page is
+  // open. Tying the map's *construction* to it meant the instance was torn
+  // down and rebuilt at INITIAL_CENTER/INITIAL_ZOOM on that cadence, throwing
+  // the user back to world view mid-session. Construction is therefore keyed
+  // only on whether tiles are available at all; a URL change swaps the style
+  // in place below, which leaves the camera untouched.
+  const hasTiles = freeTilesUrl != null;
+
   useEffect(() => {
     if (!containerRef.current || !freeTilesUrl) return;
     registerPmtilesProtocol();
+    appliedUrlsRef.current = urlKey;
 
     const map = new maplibregl.Map({
       container: containerRef.current,
@@ -91,13 +104,32 @@ export function MapCanvas({
 
     return () => {
       mapRef.current = null;
+      appliedUrlsRef.current = null;
       setStyleReady(false);
       setHasPremiumLayer(false);
       map.remove();
     };
-    // Intentional: mode/month updates are applied via setPaintProperty below.
+    // Intentional: this effect owns the map's lifetime and must run exactly
+    // once per mount. The tile URLs, mode and month it reads are the values at
+    // construction; each is kept current afterwards by an effect of its own —
+    // URLs by the restyle effect below, mode/month by the paint effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [freeTilesUrl, premiumTilesUrl]);
+  }, [hasTiles]);
+
+  // Swap the style in place when a signed URL is re-issued, or when premium
+  // entitlement appears or lapses. `setStyle` preserves the camera, so this is
+  // invisible to the user beyond the tiles reloading.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !freeTilesUrl) return;
+    // Already applied at construction — mode/month changes must not restyle.
+    if (appliedUrlsRef.current === urlKey) return;
+    appliedUrlsRef.current = urlKey;
+
+    setStyleReady(false);
+    map.setMaxZoom(premiumTilesUrl ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM);
+    map.setStyle(buildMapStyle({ freeTilesUrl, premiumTilesUrl, mode, month }));
+  }, [urlKey, freeTilesUrl, premiumTilesUrl, mode, month]);
 
   // Live paint updates — mode, month.
   useEffect(() => {

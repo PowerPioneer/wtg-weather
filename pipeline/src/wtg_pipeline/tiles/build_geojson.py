@@ -73,7 +73,11 @@ Level = Literal["country", "admin1", "admin2"]
 # Variables *emitted* per tier, in display units. `sun_hours`, `rh` and
 # `heat` are derived (see SOURCE_VARIABLES for what has to be read to
 # produce them).
-FREE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours")
+# Wind is a free-tier variable: `REBUILD_PLAN.md` § Pricing sells the free tier
+# as "temp/rain/sun + wind", and the web's display-mode picker marks the wind
+# mode `tier: "free"`. It was missing here, so every free user who selected
+# Wind speed got a fully grey map.
+FREE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours", "si10")
 PREMIUM_VARIABLES: tuple[str, ...] = (
     "t2m",
     "tp",
@@ -88,7 +92,7 @@ PREMIUM_VARIABLES: tuple[str, ...] = (
 # Raw ERA5 variable codes that must be read out of the percentiles frame to
 # produce the emitted set above. `ssrd` and `d2m` are inputs only — they are
 # never written to the tiles.
-FREE_SOURCE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "ssrd")
+FREE_SOURCE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "ssrd", "si10")
 PREMIUM_SOURCE_VARIABLES: tuple[str, ...] = (
     "t2m",
     "tp",
@@ -129,6 +133,18 @@ UNIT_CONVERSIONS: dict[str, Callable[[float], float]] = {
 INTERMEDIATE_VARIABLES: frozenset[str] = frozenset({"ssrd", "d2m"})
 
 PERCENTILE_STATS: tuple[str, ...] = ("p10", "p50", "p90")
+
+# Lowest zoom at which each level is actually rendered, mirroring the layer
+# `minzoom` values in web/src/lib/map-style.ts.
+#
+# Tippecanoe's `-Z` flag is global, so without a per-feature hint admin-2 is
+# tiled from zoom 0 — tens of thousands of district polygons crammed into
+# world-view tiles that never display them. Those tiles blow past the 500KB
+# budget and `--drop-densest-as-needed` starts discarding features, which at
+# low zoom means dropping *country and admin-1* polygons that the premium tier
+# does render. Emitting a per-feature `tippecanoe.minzoom` keeps admin-2 out of
+# the zoom range where it is invisible.
+LEVEL_MIN_ZOOM: dict[str, int] = {"admin2": 6}
 
 # The variables `polygon_score` consults, in the units it expects.
 SCORED_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours")
@@ -384,13 +400,17 @@ def build_feature_collection(
         props.update(converted)
 
         props.update(score_props(converted))
-        features.append(
-            {
-                "type": "Feature",
-                "geometry": geometry.__geo_interface__,
-                "properties": props,
-            }
-        )
+        feature: dict[str, object] = {
+            "type": "Feature",
+            "geometry": geometry.__geo_interface__,
+            "properties": props,
+        }
+        min_zoom = LEVEL_MIN_ZOOM.get(build_input.level)
+        if min_zoom is not None:
+            # Read by tippecanoe itself, not by the map — it is stripped from
+            # the feature before the tile is written.
+            feature["tippecanoe"] = {"minzoom": min_zoom}
+        features.append(feature)
 
     return {"type": "FeatureCollection", "features": features}
 

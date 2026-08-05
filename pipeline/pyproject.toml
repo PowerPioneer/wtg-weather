@@ -44,6 +44,16 @@ dev = [
     "pytest>=8.0",
     "ruff>=0.5",
     "respx>=0.21",
+    # Decode built PMTiles archives in tests/test_tiles_content.py — the only
+    # check that looks at what actually reached the tiles rather than at the
+    # code that was supposed to put it there.
+    "pmtiles>=3.4",
+    "mapbox-vector-tile>=2.1",
+    # Fallback NetCDF engine. The `netcdf4` extension module fails to load on
+    # some developer machines (endpoint security policy blocks the bundled
+    # DLL); `h5netcdf` reads the same ERA5 files via h5py.
+    "h5netcdf>=1.3",
+    "h5py>=3.11",
 ]
 
 [tool.ruff]

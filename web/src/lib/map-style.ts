@@ -142,9 +142,14 @@ export function buildFillOpacityExpression(modeId: DisplayModeId): number {
 }
 
 export type StyleInput = {
-  /** Signed pmtiles URL for country + admin-1 (free tier). */
+  /** Signed pmtiles URL for the free archive — country + admin-1, free variables. */
   freeTilesUrl: string;
-  /** Signed pmtiles URL for admin-2 (premium). Pass `null` to disable the layer. */
+  /**
+   * Signed pmtiles URL for the premium archive — country + admin-1 + admin-2,
+   * all variables. When present it supersedes `freeTilesUrl` for every layer,
+   * because the premium-only variables exist nowhere else. Pass `null` for an
+   * unentitled or denied session to fall back to the free archive.
+   */
   premiumTilesUrl: string | null;
   /** Active display mode. Default: `preferences`. */
   mode: DisplayModeId;
@@ -157,21 +162,33 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
   const fillColor = buildFillColorExpression(mode, month);
   const fillOpacity = buildFillOpacityExpression(mode);
 
-  const sources: StyleSpecification["sources"] = {
-    [FREE_SOURCE_ID]: {
-      type: "vector",
-      url: `pmtiles://${freeTilesUrl}`,
-      attribution: "© ERA5 · geoBoundaries · Natural Earth",
-    },
-  };
+  // A layer can only read properties from its own source — MapLibre has no
+  // cross-source join — and the premium-only variables (snow, SST, heat index,
+  // humidity) exist solely in the premium archive. So an entitled user has to
+  // read country and admin-1 from the premium archive too, or those variables
+  // paint missing-grey everywhere above admin-2 zoom.
+  //
+  // The premium archive carries country and admin-1 as well as admin-2 (the
+  // pipeline refuses to build it otherwise), so this needs no extra data. When
+  // premium is absent or denied, everything falls back to the free archive and
+  // the map degrades to the free variable set rather than breaking.
+  const baseSourceId = premiumTilesUrl ? PREMIUM_SOURCE_ID : FREE_SOURCE_ID;
 
-  if (premiumTilesUrl) {
-    sources[PREMIUM_SOURCE_ID] = {
-      type: "vector",
-      url: `pmtiles://${premiumTilesUrl}`,
-      attribution: "Premium tier",
-    };
-  }
+  const sources: StyleSpecification["sources"] = premiumTilesUrl
+    ? {
+        [PREMIUM_SOURCE_ID]: {
+          type: "vector",
+          url: `pmtiles://${premiumTilesUrl}`,
+          attribution: "© ERA5 · geoBoundaries · Natural Earth",
+        },
+      }
+    : {
+        [FREE_SOURCE_ID]: {
+          type: "vector",
+          url: `pmtiles://${freeTilesUrl}`,
+          attribution: "© ERA5 · geoBoundaries · Natural Earth",
+        },
+      };
 
   const suppressedFilter: ExpressionSpecification = [
     "in",
@@ -184,7 +201,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: COUNTRY_FILL_LAYER,
       type: "fill",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "country",
       maxzoom: ZOOM_COUNTRY_MAX,
       paint: {
@@ -196,7 +213,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: COUNTRY_LINE_LAYER,
       type: "line",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "country",
       maxzoom: ZOOM_COUNTRY_MAX,
       paint: { "line-color": LINE_COLOR, "line-opacity": 0.3, "line-width": 0.6 },
@@ -207,7 +224,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: ADMIN1_MOSAIC_FILL_LAYER,
       type: "fill",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "admin1",
       maxzoom: ZOOM_ADMIN1_MIN,
       filter: suppressedFilter,
@@ -220,7 +237,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: ADMIN1_MOSAIC_LINE_LAYER,
       type: "line",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "admin1",
       maxzoom: ZOOM_ADMIN1_MIN,
       filter: suppressedFilter,
@@ -229,7 +246,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: ADMIN1_FILL_LAYER,
       type: "fill",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "admin1",
       minzoom: ZOOM_ADMIN1_MIN,
       maxzoom: ZOOM_ADMIN1_MAX,
@@ -242,7 +259,7 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
     {
       id: ADMIN1_LINE_LAYER,
       type: "line",
-      source: FREE_SOURCE_ID,
+      source: baseSourceId,
       "source-layer": "admin1",
       minzoom: ZOOM_ADMIN1_MIN,
       maxzoom: ZOOM_ADMIN1_MAX,

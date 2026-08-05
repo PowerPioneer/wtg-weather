@@ -17,9 +17,22 @@ Two declarative tables encode the fix:
   listed is silently excluded, so a newly added overseas territory never
   contaminates the parent country's mean.
 
-The whitelist is expressed in terms of the admin-1 ``iso_3166_2`` code used by
-Natural Earth (e.g. ``FR-75``, ``US-CA``). Countries not present in either
-table aggregate normally over every polygon.
+The whitelist is expressed in terms of the admin-1 ``iso_3166_2`` code as it
+appears in the **Natural Earth 1:10m** admin-1 layer, which is the vintage the
+pipeline downloads. That granularity matters: 10m subdivides France into 101
+departments (``FR-75``), not the 13 post-2016 regions (``FR-IDF``), and the UK
+into 232 districts rather than four constituent countries. An earlier version
+of this table was written against region-level codes that do not occur in the
+data at all, so every whitelisted country matched nothing and silently fell
+back to a naive aggregate that still included its overseas territory.
+
+Do not hand-edit the whitelist. Regenerate it with::
+
+    uv run --directory pipeline python scripts/generate_mainland_whitelist.py
+
+which derives the codes from Natural Earth's own ``type_en`` / ``region``
+attributes and prints the literal below. Countries not present in either table
+aggregate normally over every polygon.
 
 The full QA rationale for these choices lives in
 ``pipeline/docs/aggregation-qa-2026.md``.
@@ -49,57 +62,219 @@ SUPPRESSED_COUNTRIES: frozenset[str] = frozenset(
 )
 
 
+# Deliberately absent from MAINLAND_WHITELIST, recorded so the reasoning is
+# not lost: every one of the United Kingdom's 232 admin-1 units in the 10m
+# layer is domestic. Gibraltar, the Falklands and the other overseas
+# territories are separate admin-0 entries carrying their own ISO codes (GI,
+# FK, …), so they can never reach the GB aggregate and there is nothing to
+# filter out.
+_NO_WHITELIST_NEEDED: frozenset[str] = frozenset({"GB"})
+
+
 # Opt-in whitelist: country ISO-2 → admin-1 ISO-3166-2 codes that count
 # toward the country-level aggregate. Any region NOT listed is excluded.
 #
 # Countries that aren't in this mapping aggregate over every polygon they
-# own, which is the right default for the ~170 remaining cases (small or
+# own, which is the right default for the ~230 remaining cases (small or
 # climatically coherent mainland-only states).
+#
+# GENERATED — see the module docstring. Excluded units by country:
+#   DK  none (Greenland and the Faroes are separate ISO countries)
+#   EC  Galápagos
+#   ES  Canary Is. (Las Palmas, Santa Cruz de Tenerife), Ceuta, Melilla
+#   FR  French Guiana, Guadeloupe, Martinique, Mayotte, Réunion
+#   NL  Bonaire, Saba, Sint Eustatius
+#   NO  Svalbard, Bouvet Island
+#   PT  Azores, Madeira
 MAINLAND_WHITELIST: dict[str, frozenset[str]] = {
-    # France: metropolitan regions only. Drops Guyane (FR-GF), Réunion
-    # (FR-RE), Martinique (FR-MQ), Guadeloupe (FR-GP), Mayotte (FR-YT),
-    # Saint-Pierre-et-Miquelon, New Caledonia, French Polynesia, etc.
-    "FR": frozenset(
+    "DK": frozenset(
         {
-            "FR-ARA",  # Auvergne-Rhône-Alpes
-            "FR-BFC",  # Bourgogne-Franche-Comté
-            "FR-BRE",  # Bretagne
-            "FR-CVL",  # Centre-Val de Loire
-            "FR-COR",  # Corse
-            "FR-GES",  # Grand Est
-            "FR-HDF",  # Hauts-de-France
-            "FR-IDF",  # Île-de-France
-            "FR-NOR",  # Normandie
-            "FR-NAQ",  # Nouvelle-Aquitaine
-            "FR-OCC",  # Occitanie
-            "FR-PDL",  # Pays de la Loire
-            "FR-PAC",  # Provence-Alpes-Côte d'Azur
+            "DK-81",
+            "DK-82",
+            "DK-83",
+            "DK-84",
+            "DK-85",
         }
     ),
-    # Spain: Iberian peninsula + Balearic Islands only. Drops Canarias
-    # (ES-CN), Ceuta (ES-CE), Melilla (ES-ML).
+    "EC": frozenset(
+        {
+            "EC-A",
+            "EC-B",
+            "EC-C",
+            "EC-D",
+            "EC-E",
+            "EC-F",
+            "EC-G",
+            "EC-H",
+            "EC-I",
+            "EC-L",
+            "EC-M",
+            "EC-N",
+            "EC-O",
+            "EC-P",
+            "EC-R",
+            "EC-S",
+            "EC-SD",
+            "EC-SE",
+            "EC-T",
+            "EC-U",
+            "EC-X",
+            "EC-Y",
+            "EC-Z",
+        }
+    ),
     "ES": frozenset(
         {
-            "ES-AN",
-            "ES-AR",
-            "ES-AS",
-            "ES-IB",
-            "ES-CB",
-            "ES-CL",
-            "ES-CM",
-            "ES-CT",
-            "ES-EX",
-            "ES-GA",
-            "ES-MD",
-            "ES-MC",
-            "ES-NC",
-            "ES-PV",
-            "ES-RI",
-            "ES-VC",
+            "ES-A",
+            "ES-AB",
+            "ES-AL",
+            "ES-AV",
+            "ES-B",
+            "ES-BA",
+            "ES-BI",
+            "ES-BU",
+            "ES-C",
+            "ES-CA",
+            "ES-CC",
+            "ES-CO",
+            "ES-CR",
+            "ES-CS",
+            "ES-CU",
+            "ES-GI",
+            "ES-GR",
+            "ES-GU",
+            "ES-H",
+            "ES-HU",
+            "ES-J",
+            "ES-L",
+            "ES-LE",
+            "ES-LO",
+            "ES-LU",
+            "ES-M",
+            "ES-MA",
+            "ES-MU",
+            "ES-NA",
+            "ES-O",
+            "ES-OR",
+            "ES-P",
+            "ES-PM",
+            "ES-PO",
+            "ES-S",
+            "ES-SA",
+            "ES-SE",
+            "ES-SG",
+            "ES-SO",
+            "ES-SS",
+            "ES-T",
+            "ES-TE",
+            "ES-TO",
+            "ES-V",
+            "ES-VA",
+            "ES-VI",
+            "ES-Z",
+            "ES-ZA",
         }
     ),
-    # Netherlands: European provinces only. Drops Bonaire / Saba / Sint
-    # Eustatius (Caribbean Netherlands) which sit in BES codes.
+    "FR": frozenset(
+        {
+            "FR-01",
+            "FR-02",
+            "FR-03",
+            "FR-04",
+            "FR-05",
+            "FR-06",
+            "FR-07",
+            "FR-08",
+            "FR-09",
+            "FR-10",
+            "FR-11",
+            "FR-12",
+            "FR-13",
+            "FR-14",
+            "FR-15",
+            "FR-16",
+            "FR-17",
+            "FR-18",
+            "FR-19",
+            "FR-21",
+            "FR-22",
+            "FR-23",
+            "FR-24",
+            "FR-25",
+            "FR-26",
+            "FR-27",
+            "FR-28",
+            "FR-29",
+            "FR-2A",
+            "FR-2B",
+            "FR-30",
+            "FR-31",
+            "FR-32",
+            "FR-33",
+            "FR-34",
+            "FR-35",
+            "FR-36",
+            "FR-37",
+            "FR-38",
+            "FR-39",
+            "FR-40",
+            "FR-41",
+            "FR-42",
+            "FR-43",
+            "FR-44",
+            "FR-45",
+            "FR-46",
+            "FR-47",
+            "FR-48",
+            "FR-49",
+            "FR-50",
+            "FR-51",
+            "FR-52",
+            "FR-53",
+            "FR-54",
+            "FR-55",
+            "FR-56",
+            "FR-57",
+            "FR-58",
+            "FR-59",
+            "FR-60",
+            "FR-61",
+            "FR-62",
+            "FR-63",
+            "FR-64",
+            "FR-65",
+            "FR-66",
+            "FR-67",
+            "FR-68",
+            "FR-69",
+            "FR-70",
+            "FR-71",
+            "FR-72",
+            "FR-73",
+            "FR-74",
+            "FR-75",
+            "FR-76",
+            "FR-77",
+            "FR-78",
+            "FR-79",
+            "FR-80",
+            "FR-81",
+            "FR-82",
+            "FR-83",
+            "FR-84",
+            "FR-85",
+            "FR-86",
+            "FR-87",
+            "FR-88",
+            "FR-89",
+            "FR-90",
+            "FR-91",
+            "FR-92",
+            "FR-93",
+            "FR-94",
+            "FR-95",
+        }
+    ),
     "NL": frozenset(
         {
             "NL-DR",
@@ -116,93 +291,49 @@ MAINLAND_WHITELIST: dict[str, frozenset[str]] = {
             "NL-ZH",
         }
     ),
-    # Denmark: Jutland + islands only. Drops Greenland (GL — separate ISO
-    # country anyway, but some boundary sources attach it) and Færøerne.
-    "DK": frozenset(
-        {
-            "DK-81",  # Nordjylland
-            "DK-82",  # Midtjylland
-            "DK-83",  # Syddanmark
-            "DK-84",  # Hovedstaden
-            "DK-85",  # Sjælland
-        }
-    ),
-    # Portugal: mainland only. Drops Açores (PT-20) and Madeira (PT-30).
-    "PT": frozenset(
-        {
-            "PT-01",  # Aveiro
-            "PT-02",  # Beja
-            "PT-03",  # Braga
-            "PT-04",  # Bragança
-            "PT-05",  # Castelo Branco
-            "PT-06",  # Coimbra
-            "PT-07",  # Évora
-            "PT-08",  # Faro
-            "PT-09",  # Guarda
-            "PT-10",  # Leiria
-            "PT-11",  # Lisboa
-            "PT-12",  # Portalegre
-            "PT-13",  # Porto
-            "PT-14",  # Santarém
-            "PT-15",  # Setúbal
-            "PT-16",  # Viana do Castelo
-            "PT-17",  # Vila Real
-            "PT-18",  # Viseu
-        }
-    ),
-    # Norway: mainland only. Drops Svalbard (NO-21) and Jan Mayen (NO-22).
     "NO": frozenset(
         {
-            "NO-03",  # Oslo
-            "NO-11",  # Rogaland
-            "NO-15",  # Møre og Romsdal
-            "NO-18",  # Nordland
-            "NO-30",  # Viken
-            "NO-31",  # Vestfold og Telemark (older: 07/08)
-            "NO-34",  # Innlandet
-            "NO-38",  # Vestfold og Telemark (alt)
-            "NO-42",  # Agder
-            "NO-46",  # Vestland
-            "NO-50",  # Trøndelag
-            "NO-54",  # Troms og Finnmark
+            "NO-01",
+            "NO-02",
+            "NO-03",
+            "NO-04",
+            "NO-05",
+            "NO-06",
+            "NO-07",
+            "NO-08",
+            "NO-09",
+            "NO-10",
+            "NO-11",
+            "NO-12",
+            "NO-14",
+            "NO-15",
+            "NO-16",
+            "NO-17",
+            "NO-18",
+            "NO-19",
+            "NO-20",
         }
     ),
-    # United Kingdom: Great Britain + NI. Drops Gibraltar, Falklands,
-    # British Overseas Territories, Crown Dependencies.
-    "GB": frozenset(
+    "PT": frozenset(
         {
-            "GB-ENG",
-            "GB-SCT",
-            "GB-WLS",
-            "GB-NIR",
-        }
-    ),
-    # Ecuador: continental only. Drops Galápagos (EC-W).
-    "EC": frozenset(
-        {
-            "EC-A",  # Azuay
-            "EC-B",  # Bolívar
-            "EC-C",  # Carchi
-            "EC-D",  # Orellana
-            "EC-E",  # Esmeraldas
-            "EC-F",  # Cañar
-            "EC-G",  # Guayas
-            "EC-H",  # Chimborazo
-            "EC-I",  # Imbabura
-            "EC-L",  # Loja
-            "EC-M",  # Manabí
-            "EC-N",  # Napo
-            "EC-O",  # El Oro
-            "EC-P",  # Pichincha
-            "EC-R",  # Los Ríos
-            "EC-S",  # Morona Santiago
-            "EC-SD",  # Santo Domingo
-            "EC-SE",  # Santa Elena
-            "EC-T",  # Tungurahua
-            "EC-U",  # Sucumbíos
-            "EC-X",  # Cotopaxi
-            "EC-Y",  # Pastaza
-            "EC-Z",  # Zamora Chinchipe
+            "PT-01",
+            "PT-02",
+            "PT-03",
+            "PT-04",
+            "PT-05",
+            "PT-06",
+            "PT-07",
+            "PT-08",
+            "PT-09",
+            "PT-10",
+            "PT-11",
+            "PT-12",
+            "PT-13",
+            "PT-14",
+            "PT-15",
+            "PT-16",
+            "PT-17",
+            "PT-18",
         }
     ),
 }

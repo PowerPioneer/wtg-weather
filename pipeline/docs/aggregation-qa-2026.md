@@ -22,6 +22,30 @@ In order of preference (per Phase 3a in `REBUILD_PLAN.md`):
 3. **Area-weighted averaging** for the polygons that remain — exactextract
    does this by default via fractional cell coverage.
 
+## Boundary vintage (revised August 2026)
+
+The whitelist codes are tied to the Natural Earth admin-1 vintage, and the
+original table was written against the wrong one. It listed region-level codes
+(`FR-ARA`, `GB-ENG`, post-2020 `NO-42`) that do not occur in the layer the
+pipeline downloads, so **every whitelisted country matched nothing and silently
+fell back to a naive aggregate** — the filtering described below was specified
+but never actually applied.
+
+Two things changed as a result:
+
+* admin-1 now comes from Natural Earth **1:10m** rather than 1:50m. The 50m
+  layer only subdivides nine countries, which left most of the world with no
+  admin-1 polygon at all and made the "mosaic" resolution below impossible for
+  Argentina, Chile and Kazakhstan.
+* the whitelist is **generated**, not hand-written — see
+  `scripts/generate_mainland_whitelist.py`, which derives it from Natural
+  Earth's own `type_en` / `region` attributes. Regenerate and review the diff
+  whenever the boundary vintage changes.
+
+At 10m the units are finer than the table below originally assumed: France is
+101 departments rather than 13 regions, Spain 52 provinces rather than 17
+autonomous communities, the UK 232 districts rather than 4 countries.
+
 ## Reference-country review (20 polygons)
 
 The "before / after" scores below show the free-tier "great weather in
@@ -36,13 +60,13 @@ structural decision; only the score deltas are TBD.
 | ISO | Country     | Naive April score | After-rules April score | Decision     | Reason |
 |-----|-------------|------------------:|------------------------:|--------------|--------|
 | US  | United States | TBD             | TBD (mosaic)            | suppress     | Alaska + Hawaii + Puerto Rico + 50 states span every climate band. Mosaic at country zoom. |
-| FR  | France        | TBD             | TBD (Paris-like)        | whitelist    | DOM-TOM (Guyane / Réunion / Martinique / Guadeloupe / Mayotte / NC / PF) drag the mean to "tropical" in April. Whitelist 13 metropolitan regions only. |
-| ES  | Spain         | TBD             | TBD (Iberia-like)       | whitelist    | Canarias + Ceuta + Melilla raise mean April temperature. Whitelist 16 mainland + Balearic regions. |
-| GB  | United Kingdom| TBD             | TBD (UK-like)           | whitelist    | Drops Gibraltar, Falklands, BOTs, Crown Dependencies. Keep ENG/SCT/WLS/NIR. |
+| FR  | France        | TBD             | TBD (Paris-like)        | whitelist    | DOM-TOM (Guyane / Réunion / Martinique / Guadeloupe / Mayotte) drag the mean to "tropical" in April. Whitelist the 96 metropolitan departments; NE types the 5 overseas ones "Overseas department". |
+| ES  | Spain         | TBD             | TBD (Iberia-like)       | whitelist    | Canarias + Ceuta + Melilla raise mean April temperature. Whitelist 48 peninsular + Balearic provinces. |
+| GB  | United Kingdom| TBD             | TBD (UK-like)           | none         | **Revised** — all 232 UK admin-1 units in the 10m layer are domestic. Gibraltar, the Falklands and the other BOTs are separate admin-0 entries with their own ISO codes, so nothing needs filtering. |
 | NL  | Netherlands   | TBD             | TBD (NW-Europe-like)    | whitelist    | Caribbean Netherlands (Bonaire/Saba/Sint Eustatius) shifts April toward "tropical". Whitelist 12 European provinces. |
-| DK  | Denmark       | TBD             | TBD (Jutland-like)      | whitelist    | Some boundary sources still attach Greenland or Færøerne. Whitelist 5 metro regions only. |
+| DK  | Denmark       | TBD             | TBD (Jutland-like)      | whitelist    | Greenland and Færøerne are separate ISO countries in Natural Earth. Whitelist the 5 metro regions; the entry stays so inclusion is opt-in. |
 | PT  | Portugal      | TBD             | TBD (Iberia-like)       | whitelist    | Açores + Madeira are mid-Atlantic. Whitelist 18 mainland districts. |
-| NO  | Norway        | TBD             | TBD (Scandinavia-like)  | whitelist    | Svalbard + Jan Mayen are arctic outliers. Whitelist 11 mainland counties. |
+| NO  | Norway        | TBD             | TBD (Scandinavia-like)  | whitelist    | Svalbard + Bouvet Island are arctic/sub-antarctic outliers. Whitelist 19 mainland counties. |
 | CL  | Chile         | TBD             | TBD (mosaic)            | suppress     | Atacama (driest desert) → Tierra del Fuego (sub-polar) → Easter Island. No coherent country mean exists. Mosaic. |
 | EC  | Ecuador       | TBD             | TBD (Quito/coast-like)  | whitelist    | Galápagos has its own climate. Whitelist 23 continental provinces. |
 | RU  | Russia        | TBD             | TBD (mosaic)            | suppress     | Moscow ≠ Sochi ≠ Vladivostok. Span 11 time zones. Mosaic. |
@@ -72,7 +96,9 @@ the rules themselves do not regress.
 * Every suppressed country answers `is_suppressed("XX") is True`.
 * Every whitelisted country has `admin1_contributes(…)` filtering with at
   least one expected admin-1 code in the whitelist and at least one
-  expected exclusion (e.g. FR-IDF in, FR-GF out; ES-AN in, ES-CN out).
+  expected exclusion (e.g. FR-75 in, FR-GF out; ES-M in, ES-GC out).
+* Whitelist sizes are pinned per country, so a table written against the
+  wrong boundary vintage fails loudly instead of matching nothing.
 * `filter_admin1_codes` is exercised round-trip.
 * Suppressed countries always return `False` from `admin1_contributes`,
   guaranteeing zero contribution to the country aggregate even if a

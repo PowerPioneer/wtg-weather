@@ -2,8 +2,13 @@
 
 The sources:
 
-* Natural Earth — CC0, 1:50m cultural vectors for country + admin-1. Single
-  zipfile per layer.
+* Natural Earth — CC0 cultural vectors. Country comes from the 1:50m layer;
+  admin-1 comes from the **1:10m** layer. Scale matters: at 1:50m Natural
+  Earth only ships subdivisions for a handful of large countries (9 in
+  practice), so a 50m admin-1 build leaves most of the world with no
+  admin-1 polygon at all. The 10m layer carries ~4,600 units across ~240
+  countries, which is what the mid-zoom band and the suppressed-country
+  mosaic both depend on. Single zipfile per layer.
 * geoBoundaries — CC-BY-4.0, admin-2 per country. API returns a JSON metadata
   document with a ``gjDownloadURL`` field pointing at the GeoJSON.
 
@@ -31,13 +36,19 @@ log = logging.getLogger(__name__)
 USER_AGENT = "wtg-pipeline/0.1 (+https://wheretogoforgreatweather.com)"
 
 
-# Natural Earth 1:50m cultural vectors (zip archives).
+# Natural Earth cultural vectors (zip archives). Country at 1:50m, admin-1 at
+# 1:10m — see the module docstring for why the scales differ.
 NATURAL_EARTH_COUNTRY_URL = (
     "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_0_countries.zip"
 )
 NATURAL_EARTH_ADMIN1_URL = (
-    "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_1_states_provinces.zip"
+    "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_1_states_provinces.zip"
 )
+
+# Filenames the downloader writes and the pipeline reads back. Exported so
+# `pipeline_runner` resolves the same paths instead of restating them.
+NATURAL_EARTH_COUNTRY_FILENAME = "ne_50m_admin_0_countries.zip"
+NATURAL_EARTH_ADMIN1_FILENAME = "ne_10m_admin_1_states_provinces.zip"
 
 GEOBOUNDARIES_API = "https://www.geoboundaries.org/api/current/gbOpen"
 
@@ -95,10 +106,14 @@ def download_natural_earth(
     try:
         artifacts = [
             BoundaryArtifact(
-                "country", NATURAL_EARTH_COUNTRY_URL, out_dir / "ne_50m_admin_0_countries.zip"
+                "country",
+                NATURAL_EARTH_COUNTRY_URL,
+                out_dir / NATURAL_EARTH_COUNTRY_FILENAME,
             ),
             BoundaryArtifact(
-                "admin1", NATURAL_EARTH_ADMIN1_URL, out_dir / "ne_50m_admin_1_states_provinces.zip"
+                "admin1",
+                NATURAL_EARTH_ADMIN1_URL,
+                out_dir / NATURAL_EARTH_ADMIN1_FILENAME,
             ),
         ]
         return [_download_binary(resolved, a.url, a.target, force=force) for a in artifacts]
