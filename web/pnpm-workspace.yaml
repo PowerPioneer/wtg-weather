@@ -1,3 +1,10 @@
+# Packages whose install scripts are deliberately not run. pnpm 11 promotes an
+# unclassified ignored build script to a hard error, so every package that has
+# one must appear here (or in onlyBuiltDependencies) or `pnpm install` fails.
+# core-js and protobufjs only print funding notices / set up a CLI we do not
+# use, so ignoring them is safe.
 ignoredBuiltDependencies:
+  - core-js
+  - protobufjs
   - sharp
   - unrs-resolver
