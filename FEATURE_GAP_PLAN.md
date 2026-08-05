@@ -256,6 +256,8 @@ shows districts past z6; smoke test green.
 
 ### WS-2 · Web: clickable countries + full registry
 
+> **Status: complete.** See § "WS-2 progress" at the end of this document.
+
 1. Generate the full country registry (~195 entries: slug, name, iso2, region)
    into `web/src/lib/countries.ts` — derive from the pipeline's country
    output or Natural Earth attributes at build time; do not hand-type.
@@ -436,6 +438,42 @@ Two things to check on the box while this runs:
 2. `wtg build pmtiles --tier premium` now fails loudly if admin-2 is absent.
    If it does, admin-2 never made it through aggregate → percentiles → geojson;
    fix that rather than reverting the check.
+
+## WS-2 progress
+
+### Changes landed
+
+| Change | File | Why |
+|---|---|---|
+| Country registry generated from Natural Earth, 9 entries → **237** | `pipeline/scripts/generate_country_registry.py` → `web/src/lib/countries.generated.ts` | RC-3. Generated from the *same* `ne_50m_admin_0_countries.zip` the tiles' country level is built from, with the same `-99` blanking, so the codes cannot drift from what the polygons carry. Territories Natural Earth files under a parent's code (Ashmore and Cartier under `AU`) collapse onto the parent; the three polygons with no ISO-2 at all are absent by construction, matching the pipeline's "painted but not routable" treatment. |
+| Registry lookups are O(1) and case-insensitive | `web/src/lib/countries.ts` | The hover path runs on every pointer move; a linear scan of 237 entries per event is avoidable. `findCountryByIso2` is the one entry point the map uses. |
+| Click opens a climate panel instead of navigating (or doing nothing) | `web/src/components/map/climate-panel.tsx`, `app/map/map-experience.tsx` | RC-3's second half: even the nine working countries only ever hard-navigated, so the map read as dead. The panel names the feature, scores the selected month, charts the year, and offers the country page as a deliberate next step. It opens for *every* polygon — a feature with no country page says so rather than silently doing nothing. |
+| Unknown ISO codes are now telemetry, not a silent `return` | `app/map/map-experience.tsx` | `map_feature_select` carries `registry_miss`, which is how a future registry/tile-vintage drift becomes visible instead of becoming another dead map. |
+| Hover card wired to the existing `match-tooltip` | `web/src/components/map/map-hover-card.tsx` | Reads the hovered feature's own tile properties — score, the variable currently painted, and the free trio — and flips against the map container's edges. Suppressed on touch, where there is no hover state. |
+| Selection outline on the clicked polygon | `web/src/lib/map-style.ts`, `components/map/map-canvas.tsx` | One line layer per level, filtered on the `id` property (namespaced per level by the pipeline, so one id can never match two levels). Re-applied after a style swap, because a re-signed tile URL rebuilds every layer with its default filter. |
+| Feature-property reader | `web/src/lib/feature-climate.ts` | Single typed path from `feature.properties` (typed `unknown`) to identity / series / percentile bands, returning `null` for anything the tier or level does not carry. No fetch — `web/CLAUDE.md`'s "climate is baked into the PMTiles" rule holds. |
+| `MapCanvas` memoised | `components/map/map-canvas.tsx` | The page re-renders on every pointer move while the hover card follows the cursor; the canvas has nothing to do on those renders. |
+| Route generation gated on the data path | `web/src/lib/country-routes.ts` + the three `generateStaticParams` and `sitemap.ts` | `dynamicParams = false` turns a generated slug with no data into a build-time 404, so widening the registry to the world would have shipped ~2,800 404s and a sitemap advertising them. `routableCountries()` is the fixtures while `USE_MOCK_DATA` is on and the full registry the moment WS-5 turns it off — no further edit needed there. |
+
+### Tests added
+
+- `web/src/lib/countries.test.ts` — size, uniqueness, code/slug shape, and that every `SUPPRESSED_COUNTRIES` code plus the reported-missing four (GE, AR, CL, KZ) resolve.
+- `web/src/lib/feature-climate.test.ts` — property decoding, including the gap and wrong-type cases that would otherwise reach a chart as zeroes.
+- `web/src/components/map/climate-panel.test.tsx` — the Georgia case end to end, region features naming their parent country, and the codeless-polygon copy.
+- `web/src/app/map/map-experience.test.tsx` — a click on a mocked `iso_a2: "GE"` feature opens the panel, outlines the polygon, and emits `map_feature_select`; a registry miss still opens a panel and reports `registry_miss: true`; hover raises and clears the card; Escape closes.
+- `web/src/components/map/map-canvas.test.tsx` — hover callback with pointer position, and the selection outline surviving a restyle.
+- `web/src/lib/country-routes.test.ts` — the gate is the fixtures under mocks and the whole registry without them.
+
+### Follow-ups this leaves for other workstreams
+
+1. The panel and hover card score from the baked `pref_<mm>`. WS-3 should point
+   both at the same client-side scoring function it gives the paint expression,
+   or a user's own preferences will disagree with the number in the panel.
+2. The CTA for an admin-1/admin-2 feature goes to the parent country page —
+   WS-5 should route it to `/{country}/{regionSlug}` once those pages have data.
+3. `routableCountries()` is the only thing standing between the registry and
+   2,844 country/month pages. WS-5 turning `USE_MOCK_DATA` off is what opens
+   that gate, so the API must answer for every slug in the registry by then.
 
 ## Part 4 — What was *not* verified in this audit
 

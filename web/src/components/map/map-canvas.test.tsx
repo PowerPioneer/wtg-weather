@@ -1,5 +1,10 @@
-import { cleanup, render } from "@testing-library/react";
+import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import {
+  ADMIN1_SELECTED_LAYER,
+  COUNTRY_SELECTED_LAYER,
+} from "@/lib/map-style";
 
 /**
  * The regression these cover: signed tile URLs are re-issued about a minute
@@ -23,16 +28,40 @@ class FakeMap {
     FakeMap.instances.push(this);
   }
 
+  layerHandlers: Record<string, Record<string, unknown[]>> = {};
+  filters: [string, unknown][] = [];
+
   addControl() {}
   on(event: string, a: unknown, b?: unknown) {
     (this.handlers[event] ||= []).push(b ?? a);
+    if (typeof a === "string") {
+      ((this.layerHandlers[a] ||= {})[event] ||= []).push(b);
+    }
   }
   off() {}
   remove() {
     this.removed = true;
   }
-  getLayer() {
-    return null;
+  /** Mirrors the real map: a layer exists if the applied style declares it. */
+  getLayer(id: string) {
+    const style = (this.setStyleCalls.at(-1) ?? this.opts.style) as {
+      layers?: { id: string }[];
+    };
+    return style?.layers?.find((layer) => layer.id === id) ?? null;
+  }
+  setFilter(layerId: string, filter: unknown) {
+    this.filters.push([layerId, filter]);
+  }
+  /** Run the `style.load` callback the component registered at construction. */
+  emitStyleLoad() {
+    for (const handler of this.handlers["style.load"] ?? []) {
+      (handler as () => void)();
+    }
+  }
+  emitLayerEvent(event: string, layerId: string, payload: unknown) {
+    for (const handler of this.layerHandlers[layerId]?.[event] ?? []) {
+      (handler as (e: unknown) => void)(payload);
+    }
   }
   getCanvas() {
     return { style: {} as Record<string, string> };
@@ -140,6 +169,107 @@ describe("MapCanvas tile-URL handling", () => {
     expect(FakeMap.instances).toHaveLength(1);
     expect(map.setStyleCalls).toHaveLength(1);
     expect(map.maxZoomCalls).toEqual([9]);
+  });
+
+  it("reports hovered features with their pointer position, and clears on leave", () => {
+    const onFeatureHover = vi.fn();
+    render(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        onFeatureHover={onFeatureHover}
+      />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+
+    const feature = { properties: { id: "GEO", name: "Georgia" } };
+    act(() =>
+      map.emitLayerEvent("mousemove", "wtg-country-fill", {
+        features: [feature],
+        point: { x: 12, y: 34 },
+      }),
+    );
+    expect(onFeatureHover).toHaveBeenCalledWith({
+      feature,
+      point: { x: 12, y: 34 },
+    });
+
+    onFeatureHover.mockClear();
+    act(() => map.emitLayerEvent("mouseleave", "wtg-country-fill", {}));
+    expect(onFeatureHover).toHaveBeenCalledWith(null);
+  });
+
+  it("outlines the selected polygon, and re-applies the outline after a restyle", () => {
+    // A style swap rebuilds every layer with its default "match nothing"
+    // filter, so the outline has to be re-applied or a re-signed tile URL
+    // would silently drop the selection the user is looking at.
+    const { rerender } = render(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        selectedFeatureId="GEO"
+      />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+
+    const applied = map.filters.filter(([, filter]) =>
+      JSON.stringify(filter).includes("GEO"),
+    );
+    expect(applied.map(([layerId]) => layerId)).toEqual([
+      COUNTRY_SELECTED_LAYER,
+      ADMIN1_SELECTED_LAYER,
+    ]);
+
+    map.filters = [];
+    rerender(
+      <MapCanvas
+        freeTilesUrl={FREE_B}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        selectedFeatureId="GEO"
+      />,
+    );
+    act(() => map.emitStyleLoad());
+    expect(
+      map.filters.some(([, filter]) => JSON.stringify(filter).includes("GEO")),
+    ).toBe(true);
+  });
+
+  it("clears the outline when the selection is dropped", () => {
+    const { rerender } = render(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        selectedFeatureId="GEO"
+      />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+    map.filters = [];
+
+    rerender(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        selectedFeatureId={null}
+      />,
+    );
+
+    expect(map.filters.length).toBeGreaterThan(0);
+    for (const [, filter] of map.filters) {
+      expect(JSON.stringify(filter)).not.toContain("GEO");
+    }
   });
 
   it("builds the map only once tiles are available", () => {

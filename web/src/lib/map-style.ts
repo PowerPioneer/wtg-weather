@@ -32,6 +32,20 @@ export const ADMIN1_MOSAIC_LINE_LAYER = "wtg-admin1-mosaic-line";
 export const ADMIN2_FILL_LAYER = "wtg-admin2-fill";
 export const ADMIN2_LINE_LAYER = "wtg-admin2-line";
 
+// Outline drawn around the clicked polygon. One layer per level because a
+// layer can only read one source-layer; all three filter on the same `id`
+// property, whose values are namespaced per level by the pipeline (ADM0_A3 /
+// adm1_code / geoBoundaries id) so one id can never match two of them.
+export const COUNTRY_SELECTED_LAYER = "wtg-country-selected";
+export const ADMIN1_SELECTED_LAYER = "wtg-admin1-selected";
+export const ADMIN2_SELECTED_LAYER = "wtg-admin2-selected";
+
+export const SELECTED_LAYER_IDS = [
+  COUNTRY_SELECTED_LAYER,
+  ADMIN1_SELECTED_LAYER,
+  ADMIN2_SELECTED_LAYER,
+] as const;
+
 export const FILL_LAYER_IDS = [
   COUNTRY_FILL_LAYER,
   ADMIN1_MOSAIC_FILL_LAYER,
@@ -134,6 +148,16 @@ export function buildFillColorExpression(
   }
 
   return MISSING_FILL as unknown as ExpressionSpecification;
+}
+
+/**
+ * Filter for the selection outline layers. `null` selects nothing: every
+ * feature carries a non-empty `id`, so the empty string matches none of them.
+ */
+export function buildSelectionFilter(
+  featureId: string | null,
+): ExpressionSpecification {
+  return ["==", ["get", "id"], featureId ?? ""];
 }
 
 /** Opacity expression for land polygons. SST dims land; others render at 1. */
@@ -265,6 +289,27 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
       maxzoom: ZOOM_ADMIN1_MAX,
       paint: { "line-color": LINE_COLOR, "line-opacity": 0.35, "line-width": 0.6 },
     },
+    {
+      id: COUNTRY_SELECTED_LAYER,
+      type: "line",
+      source: baseSourceId,
+      "source-layer": "country",
+      maxzoom: ZOOM_COUNTRY_MAX,
+      filter: buildSelectionFilter(null),
+      paint: { "line-color": LINE_COLOR, "line-width": 2, "line-opacity": 1 },
+    },
+    {
+      // No `minzoom`: a suppressed country's admin-1 polygons are also what
+      // the mosaic paints below the admin-1 handover zoom, and a click there
+      // has to outline something.
+      id: ADMIN1_SELECTED_LAYER,
+      type: "line",
+      source: baseSourceId,
+      "source-layer": "admin1",
+      maxzoom: ZOOM_ADMIN1_MAX,
+      filter: buildSelectionFilter(null),
+      paint: { "line-color": LINE_COLOR, "line-width": 2, "line-opacity": 1 },
+    },
   ];
 
   if (premiumTilesUrl) {
@@ -288,6 +333,15 @@ export function buildMapStyle(input: StyleInput): StyleSpecification {
         "source-layer": "admin2",
         minzoom: ZOOM_ADMIN2_MIN,
         paint: { "line-color": LINE_COLOR, "line-opacity": 0.4, "line-width": 0.5 },
+      },
+      {
+        id: ADMIN2_SELECTED_LAYER,
+        type: "line",
+        source: PREMIUM_SOURCE_ID,
+        "source-layer": "admin2",
+        minzoom: ZOOM_ADMIN2_MIN,
+        filter: buildSelectionFilter(null),
+        paint: { "line-color": LINE_COLOR, "line-width": 2, "line-opacity": 1 },
       },
     );
   }

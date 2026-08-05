@@ -10,14 +10,16 @@
  */
 
 import maplibregl, { type Map as MapLibreMap } from "maplibre-gl";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import {
   ADMIN2_FILL_LAYER,
   FILL_LAYER_IDS,
+  SELECTED_LAYER_IDS,
   buildFillColorExpression,
   buildFillOpacityExpression,
   buildMapStyle,
+  buildSelectionFilter,
 } from "@/lib/map-style";
 import { registerPmtilesProtocol } from "@/lib/pmtiles";
 import type { DisplayModeId } from "@/lib/display-modes";
@@ -25,16 +27,26 @@ import { DISPLAY_MODES } from "@/lib/display-modes";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
+export type MapFeatureHover = {
+  feature: maplibregl.MapGeoJSONFeature;
+  /** Pointer position in container pixels — where the hover card is pinned. */
+  point: { x: number; y: number };
+};
+
 export type MapCanvasProps = {
   freeTilesUrl: string | null;
   premiumTilesUrl: string | null;
   mode: DisplayModeId;
   /** 1-indexed month (1 = January). */
   month: number;
+  /** Polygon `id` to outline as selected. `null` clears the outline. */
+  selectedFeatureId?: string | null;
   /** Fires when the user tries to zoom past the free tier's max zoom. */
   onPremiumZoomBlocked?: () => void;
   /** Fires on click — feature properties include `iso`, `name`, etc. */
   onFeatureSelect?: (feature: maplibregl.MapGeoJSONFeature) => void;
+  /** Fires on pointer move over a polygon, and with `null` on leave. */
+  onFeatureHover?: (hover: MapFeatureHover | null) => void;
 };
 
 const FREE_MAX_ZOOM = 5.5;
@@ -43,13 +55,15 @@ const INITIAL_CENTER: [number, number] = [10, 25];
 const INITIAL_ZOOM = 1.8;
 const MIN_ZOOM = 1;
 
-export function MapCanvas({
+function MapCanvasImpl({
   freeTilesUrl,
   premiumTilesUrl,
   mode,
   month,
+  selectedFeatureId = null,
   onPremiumZoomBlocked,
   onFeatureSelect,
+  onFeatureHover,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -156,10 +170,15 @@ export function MapCanvas({
       if (!feature) return;
       setHoverId(feature.id ?? null);
       map.getCanvas().style.cursor = "pointer";
+      onFeatureHover?.({
+        feature,
+        point: { x: event.point.x, y: event.point.y },
+      });
     };
     const onMouseLeave = () => {
       setHoverId(null);
       map.getCanvas().style.cursor = "";
+      onFeatureHover?.(null);
     };
     const onClick = (event: maplibregl.MapLayerMouseEvent) => {
       const feature = event.features?.[0];
@@ -190,8 +209,30 @@ export function MapCanvas({
         map.off("click", id, onClick);
       }
       map.off("zoom", onZoom);
+      // Leaving the layers behind without clearing would strand a hover card
+      // on screen over a map that is no longer tracking the pointer.
+      onFeatureHover?.(null);
     };
-  }, [styleReady, premiumTilesUrl, onFeatureSelect, onPremiumZoomBlocked]);
+  }, [
+    styleReady,
+    premiumTilesUrl,
+    onFeatureSelect,
+    onFeatureHover,
+    onPremiumZoomBlocked,
+  ]);
+
+  // Selection outline. Re-runs on `styleReady` as well as on the id because a
+  // style swap (a re-signed URL, or premium arriving) rebuilds the layers with
+  // their default "match nothing" filter.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !styleReady) return;
+    const filter = buildSelectionFilter(selectedFeatureId);
+    for (const layerId of SELECTED_LAYER_IDS) {
+      if (!map.getLayer(layerId)) continue;
+      map.setFilter(layerId, filter);
+    }
+  }, [selectedFeatureId, styleReady]);
 
   // Keyboard zoom. MapLibre's built-in keyboard handler already covers arrow
   // pan + shift-arrow rotate; we bind +/- explicitly because the default
@@ -227,6 +268,7 @@ export function MapCanvas({
       data-month={month}
       data-has-premium-layer={hasPremiumLayer ? "true" : "false"}
       data-hover-id={hoverId ?? ""}
+      data-selected-id={selectedFeatureId ?? ""}
     >
       <span id="wtg-map-a11y-hint" className="sr-only">
         Interactive climate map. Use arrow keys to pan. Use plus and minus to zoom.
@@ -235,3 +277,10 @@ export function MapCanvas({
     </div>
   );
 }
+
+/**
+ * Memoised: the page re-renders on every pointer move while a hover card is up
+ * (the card follows the cursor), and there is nothing for the canvas to do on
+ * those renders — its props are stable and the map instance owns its own DOM.
+ */
+export const MapCanvas = memo(MapCanvasImpl);

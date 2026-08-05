@@ -11,16 +11,18 @@
  *   - fetch signed tile URLs via `useTileUrls`
  *   - show the display-mode picker (modal on desktop, sheet on mobile)
  *   - host the premium-zoom upgrade popover (403 / max-zoom triggers)
+ *   - own hover / selection: the hover card and the climate panel
  *   - render the legend and top-level controls
  */
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import type maplibregl from "maplibre-gl";
 
 import { Button } from "@/components/ui/button";
+import { ClimatePanel } from "@/components/map/climate-panel";
+import { MapHoverCard } from "@/components/map/map-hover-card";
 import { MapLegend } from "@/components/map/map-legend";
 import { DisplayModeModal } from "@/components/map/display-mode-modal";
 import { DisplayModeSheet } from "@/components/map/display-mode-sheet";
@@ -28,11 +30,18 @@ import {
   InlineUpgradePopover,
   type PremiumFeature,
 } from "@/components/map/inline-upgrade-popover";
+import type { MapFeatureHover } from "@/components/map/map-canvas";
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
-import { COUNTRIES } from "@/lib/countries";
+import { findCountryByIso2 } from "@/lib/countries";
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
+import {
+  featureProperties,
+  readFeatureIdentity,
+  type FeatureIdentity,
+  type FeatureProperties,
+} from "@/lib/feature-climate";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
 
 const MapCanvas = dynamic(
@@ -56,6 +65,14 @@ export type MapExperienceProps = {
   isPremium: boolean;
 };
 
+/** A feature the user is pointing at or has clicked, decoded from its tile properties. */
+type FeatureSelection = {
+  identity: FeatureIdentity;
+  properties: FeatureProperties;
+};
+
+type HoverSelection = FeatureSelection & { point: { x: number; y: number } };
+
 export function MapExperience({ isPremium }: MapExperienceProps) {
   const { mode, month, setMode, setMonth } = useMapState();
   const tiles = useTileUrls({ premium: isPremium });
@@ -63,6 +80,8 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature | null>(null);
+  const [selected, setSelected] = useState<FeatureSelection | null>(null);
+  const [hovered, setHovered] = useState<HoverSelection | null>(null);
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 768px)");
@@ -87,21 +106,59 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
     if (!isPremium) setUpgradeFeature("admin2");
   }, [isPremium]);
 
-  const router = useRouter();
+  // A click opens the climate panel rather than navigating: navigation was
+  // both too abrupt and, for every ISO code missing from the old nine-entry
+  // registry, a silent no-op — the map read as dead. The panel always opens,
+  // even for a polygon with no country page, and says so.
   const handleFeatureSelect = useCallback(
     (feature: maplibregl.MapGeoJSONFeature) => {
-      const props = feature.properties ?? {};
-      const iso = typeof props.iso_a2 === "string" ? props.iso_a2.toUpperCase() : "";
-      const country = iso ? COUNTRIES.find((c) => c.iso2 === iso) : undefined;
-      if (!country) return;
+      const properties = featureProperties(feature);
+      const identity = readFeatureIdentity(properties);
+      if (!identity) return;
+
+      const country = findCountryByIso2(identity.iso2);
       trackEvent(ANALYTICS_EVENTS.mapFeatureSelect, {
-        iso_a2: iso,
-        level: typeof props.level === "string" ? props.level : "country",
+        iso_a2: identity.iso2 || "none",
+        level: identity.level,
+        // A miss means either a codeless polygon (expected: Somaliland,
+        // Northern Cyprus, the Siachen Glacier) or a registry that has drifted
+        // from the tiles' Natural Earth vintage. Worth seeing in analytics
+        // either way — the previous handler dropped it on the floor.
+        registry_miss: country == null,
       });
-      router.push(`/${country.slug}`);
+
+      setSelected({ identity, properties });
+      setHovered(null);
     },
-    [router],
+    [],
   );
+
+  const handleFeatureHover = useCallback((hover: MapFeatureHover | null) => {
+    if (!hover) {
+      setHovered(null);
+      return;
+    }
+    const properties = featureProperties(hover.feature);
+    const identity = readFeatureIdentity(properties);
+    if (!identity) {
+      setHovered(null);
+      return;
+    }
+    setHovered({ identity, properties, point: hover.point });
+  }, []);
+
+  const closePanel = useCallback(() => setSelected(null), []);
+
+  // Escape closes the panel — it is a dialog over the map, and the map keeps
+  // keyboard focus for panning, so the key has to be handled at the document.
+  useEffect(() => {
+    if (!selected) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelected(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [selected]);
 
   const handleModeChange = useCallback(
     (next: DisplayModeId) => {
@@ -142,10 +199,35 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
           premiumTilesUrl={tiles.premiumUrl}
           mode={mode}
           month={month}
+          selectedFeatureId={selected?.identity.id ?? null}
           onPremiumZoomBlocked={handlePremiumZoomBlocked}
           onFeatureSelect={handleFeatureSelect}
+          onFeatureHover={handleFeatureHover}
         />
       )}
+
+      {/* Hover card — suppressed on touch, where there is no hover state and
+          the card would only ever appear under the finger that just tapped. */}
+      {hovered && !isMobile ? (
+        <MapHoverCard
+          identity={hovered.identity}
+          properties={hovered.properties}
+          point={hovered.point}
+          mode={mode}
+          month={month}
+          countryName={findCountryByIso2(hovered.identity.iso2)?.name}
+        />
+      ) : null}
+
+      {selected ? (
+        <ClimatePanel
+          identity={selected.identity}
+          properties={selected.properties}
+          month={month}
+          country={findCountryByIso2(selected.identity.iso2)}
+          onClose={closePanel}
+        />
+      ) : null}
 
       {/* Top-left: mode + month pills */}
       <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-wrap items-center gap-2">
