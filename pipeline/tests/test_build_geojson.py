@@ -240,6 +240,31 @@ def _build_input(level: str):
     )
 
 
+def test_admin1_of_a_suppressed_country_is_never_zoom_hinted() -> None:
+    """The mosaic exception.
+
+    Suppressed countries emit no country-level row, so the web paints their
+    admin-1 polygons as a mosaic below zoom 3. A `minzoom: 3` hint would empty
+    that mosaic and put Argentina, Chile and Kazakhstan back to being holes at
+    world zoom -- the exact bug this change set exists to fix.
+    """
+    from wtg_pipeline.tiles.build_geojson import feature_min_zoom
+
+    for iso in ("AR", "CL", "KZ", "RU", "US"):
+        assert feature_min_zoom("admin1", iso) is None, iso
+
+
+def test_admin1_of_a_normal_country_is_hinted_to_the_handover_zoom() -> None:
+    from wtg_pipeline.tiles.build_geojson import feature_min_zoom
+
+    for iso in ("PE", "FR", "GE", "BE"):
+        assert feature_min_zoom("admin1", iso) == 3, iso
+    # Country is the world-view layer and must never be hinted away.
+    assert feature_min_zoom("country", "PE") is None
+    # admin-2 is premium-only and never renders below 6, suppressed or not.
+    assert feature_min_zoom("admin2", "AR") == 6
+
+
 def test_admin2_features_carry_a_tippecanoe_minzoom_hint() -> None:
     # Tippecanoe's -Z is global, so without this admin-2 is tiled from zoom 0
     # and its polygons crowd out country/admin-1 in world-view tiles that
@@ -251,11 +276,18 @@ def test_admin2_features_carry_a_tippecanoe_minzoom_hint() -> None:
     assert feature["tippecanoe"] == {"minzoom": 6}
 
 
-@pytest.mark.parametrize("level", ["country", "admin1"])
-def test_base_levels_carry_no_zoom_hint(level: str) -> None:
-    # Country and admin-1 must stay available from zoom 0 — they are what the
-    # world view renders.
+def test_country_level_carries_no_zoom_hint() -> None:
+    # Country is what the world view renders; it must never be hinted away.
     from wtg_pipeline.tiles.build_geojson import build_feature_collection
 
-    fc = build_feature_collection(_build_input(level), tier="free")
+    fc = build_feature_collection(_build_input("country"), tier="free")
     assert "tippecanoe" not in fc["features"][0]
+
+
+def test_admin1_carries_the_handover_zoom_hint() -> None:
+    # The fixture polygon is Peruvian, i.e. not a suppressed country, so it is
+    # hinted to the zoom the web actually starts drawing admin-1 at.
+    from wtg_pipeline.tiles.build_geojson import build_feature_collection
+
+    fc = build_feature_collection(_build_input("admin1"), tier="free")
+    assert fc["features"][0]["tippecanoe"] == {"minzoom": 3}

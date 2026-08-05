@@ -24,10 +24,30 @@ log = logging.getLogger(__name__)
 
 Tier = Literal["free", "premium"]
 
-FREE_FLAGS: tuple[str, ...] = ("-Z0", "-z5", "--coalesce-smallest-as-needed")
+# `--no-tiny-polygon-reduction` and the raised byte ceiling are load-bearing,
+# not tuning. The original flags were chosen when admin-1 held 294 coarse 1:50m
+# polygons; it now holds 4,596 detailed 1:10m ones. At the 500KB default,
+# tippecanoe's tiny-polygon reduction was discarding most of them in the
+# mid-zoom band — measured at 20% of source surviving at z3, 42% at z4 and 61%
+# at z5. Every discarded polygon is a hole on the map, because the country
+# layer stops at zoom 3.5 and nothing paints underneath admin-1 above it.
+#
+# `--coalesce-smallest-as-needed` stays as the last-resort valve so a tile can
+# never grow without bound; it merges rather than drops.
+_MAX_TILE_BYTES = "2000000"
+
+FREE_FLAGS: tuple[str, ...] = (
+    "-Z0",
+    "-z5",
+    "--no-tiny-polygon-reduction",
+    f"--maximum-tile-bytes={_MAX_TILE_BYTES}",
+    "--coalesce-smallest-as-needed",
+)
 PREMIUM_FLAGS: tuple[str, ...] = (
     "-Z0",
     "-z9",
+    "--no-tiny-polygon-reduction",
+    f"--maximum-tile-bytes={_MAX_TILE_BYTES}",
     "--coalesce-smallest-as-needed",
     "--drop-densest-as-needed",
 )

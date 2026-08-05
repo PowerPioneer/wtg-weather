@@ -44,8 +44,19 @@ uv run wtg --help
 - Aggregation uses `exactextract` or `rasterstats` — NEVER write a manual
   point-in-polygon loop; it will be too slow.
 - Tippecanoe flags for PMTiles:
-  - free: `-Z0 -z5 --coalesce-smallest-as-needed`
-  - premium: `-Z0 -z9 --coalesce-smallest-as-needed --drop-densest-as-needed`
+  - free: `-Z0 -z5 --no-tiny-polygon-reduction --maximum-tile-bytes=2000000
+    --coalesce-smallest-as-needed`
+  - premium: the same plus `-z9` and `--drop-densest-as-needed`
+- `--no-tiny-polygon-reduction` and the raised byte ceiling are NOT tuning
+  knobs. At tippecanoe's 500KB default the 4,596-polygon 1:10m admin-1 layer
+  lost most of its features in the mid-zoom band (20% surviving at z3, 42% at
+  z4, 61% at z5), and each lost polygon is a hole on the map because the
+  country layer stops at zoom 3.5.
+- Levels carry a per-feature `tippecanoe.minzoom` matching the web's layer
+  `minzoom` (admin-1 → 3, admin-2 → 6), because `-Z` is global and tiling a
+  level below the zoom it renders at just crowds out the levels that do.
+  **Exception:** suppressed countries' admin-1 features stay unhinted — the
+  web paints them as a mosaic *below* zoom 3, so hinting them would empty it.
 - All intermediate files are cached. Re-running a step with the same inputs
   should be a no-op unless `--force` is passed.
 - Long-running steps must log progress every 30 seconds minimum.

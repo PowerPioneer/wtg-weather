@@ -16,15 +16,31 @@ from wtg_pipeline.tiles.tippecanoe import (
 def test_tier_flags_match_claudemd() -> None:
     # These MUST match pipeline/CLAUDE.md verbatim — downstream caching
     # assumptions depend on the tippecanoe invocation staying stable.
-    assert FREE_FLAGS == ("-Z0", "-z5", "--coalesce-smallest-as-needed")
+    assert FREE_FLAGS == (
+        "-Z0",
+        "-z5",
+        "--no-tiny-polygon-reduction",
+        "--maximum-tile-bytes=2000000",
+        "--coalesce-smallest-as-needed",
+    )
     assert PREMIUM_FLAGS == (
         "-Z0",
         "-z9",
+        "--no-tiny-polygon-reduction",
+        "--maximum-tile-bytes=2000000",
         "--coalesce-smallest-as-needed",
         "--drop-densest-as-needed",
     )
     assert tier_flags("free") == FREE_FLAGS
     assert tier_flags("premium") == PREMIUM_FLAGS
+
+
+def test_polygon_retention_flags_present_on_both_tiers() -> None:
+    # Without these, tippecanoe silently discards most admin-1 polygons in the
+    # mid-zoom band and the map renders holes where provinces should be.
+    for flags in (FREE_FLAGS, PREMIUM_FLAGS):
+        assert "--no-tiny-polygon-reduction" in flags
+        assert any(f.startswith("--maximum-tile-bytes=") for f in flags)
 
 
 def test_tier_flags_rejects_unknown() -> None:

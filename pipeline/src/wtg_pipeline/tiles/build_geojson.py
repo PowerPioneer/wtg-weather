@@ -51,6 +51,7 @@ from pathlib import Path
 from typing import Callable, Literal
 
 from wtg_pipeline.config import ensure_dir, final_dir
+from wtg_pipeline.processing.country_rules import SUPPRESSED_COUNTRIES
 from wtg_pipeline.processing.scoring import (
     DEFAULT_PREFERENCES,
     polygon_score,
@@ -144,7 +145,25 @@ PERCENTILE_STATS: tuple[str, ...] = ("p10", "p50", "p90")
 # low zoom means dropping *country and admin-1* polygons that the premium tier
 # does render. Emitting a per-feature `tippecanoe.minzoom` keeps admin-2 out of
 # the zoom range where it is invisible.
-LEVEL_MIN_ZOOM: dict[str, int] = {"admin2": 6}
+# admin-1 mirrors ZOOM_ADMIN1_MIN, admin-2 mirrors ZOOM_ADMIN2_MIN.
+LEVEL_MIN_ZOOM: dict[str, int] = {"admin1": 3, "admin2": 6}
+
+
+def feature_min_zoom(level: str, iso_a2: str) -> int | None:
+    """Lowest zoom a feature has to exist at, or ``None`` to leave it unhinted.
+
+    Suppressed countries are the exception that makes this a function rather
+    than a lookup: they emit no country-level row, so the web paints their
+    admin-1 polygons as a mosaic *below* the admin-1 handover zoom. Hinting
+    those to ``minzoom: 3`` would empty the mosaic and turn Argentina, Chile
+    and Kazakhstan back into the holes this whole change set exists to fix.
+    """
+    min_zoom = LEVEL_MIN_ZOOM.get(level)
+    if min_zoom is None:
+        return None
+    if level == "admin1" and iso_a2.upper() in SUPPRESSED_COUNTRIES:
+        return None
+    return min_zoom
 
 # The variables `polygon_score` consults, in the units it expects.
 SCORED_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours")
@@ -405,7 +424,7 @@ def build_feature_collection(
             "geometry": geometry.__geo_interface__,
             "properties": props,
         }
-        min_zoom = LEVEL_MIN_ZOOM.get(build_input.level)
+        min_zoom = feature_min_zoom(build_input.level, iso_a2)
         if min_zoom is not None:
             # Read by tippecanoe itself, not by the map — it is stripped from
             # the feature before the tile is written.
