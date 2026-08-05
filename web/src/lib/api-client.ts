@@ -118,9 +118,15 @@ export type TileUrlResponse = {
  *
  * Returns:
  *   - the {@link TileUrlResponse} on success (200)
- *   - `"forbidden"` when the session lacks the required entitlement (403) —
- *     callers must fall back to the free tier and surface an upgrade prompt.
+ *   - `"forbidden"` when the request is refused for want of a session or an
+ *     entitlement — 401 (not signed in) and 403 (signed in, not entitled) are
+ *     the same thing to the caller: fall back to the free tier and surface an
+ *     upgrade prompt.
  *   - throws for anything else.
+ *
+ * Treating 401 as fatal took the whole map down: an anonymous visitor was
+ * asking for premium tiles, the API correctly answered 401, and the thrown
+ * error blanked a map whose free tiles had already loaded fine.
  */
 export async function fetchTileUrl(
   tier: TileTier,
@@ -129,7 +135,7 @@ export async function fetchTileUrl(
     credentials: "same-origin",
     headers: { accept: "application/json" },
   });
-  if (res.status === 403) return "forbidden";
+  if (res.status === 401 || res.status === 403) return "forbidden";
   if (!res.ok) throw new Error(`fetchTileUrl(${tier}) failed: ${res.status}`);
   const raw = (await res.json()) as { url: string; expires_at: number };
   return { url: raw.url, expiresAt: raw.expires_at };

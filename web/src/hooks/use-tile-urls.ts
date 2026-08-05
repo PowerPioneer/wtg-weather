@@ -69,7 +69,15 @@ export function useTileUrls(entitlement: Pick<Entitlement, "premium">): TileUrls
         scheduleRefresh(tier, result.expiresAt);
       } catch (err) {
         if (cancelled) return;
-        setError(err instanceof Error ? err.message : String(err));
+        // Only the free tier is load-bearing. The premium archive is an
+        // enhancement, so any failure to obtain it degrades to the free map
+        // plus an upgrade prompt — it must never surface as a fatal error and
+        // replace a map the visitor can already use.
+        if (tier === "premium") {
+          setPremiumDenied(true);
+        } else {
+          setError(err instanceof Error ? err.message : String(err));
+        }
         markDone(tier);
       }
     };
