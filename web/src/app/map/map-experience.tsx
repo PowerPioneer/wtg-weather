@@ -16,7 +16,7 @@
  */
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type maplibregl from "maplibre-gl";
 
@@ -63,6 +63,12 @@ const MapCanvas = dynamic(
 
 export type MapExperienceProps = {
   isPremium: boolean;
+  /**
+   * Slugs whose SSR country page is actually built. The registry names every
+   * country on the map; only these have a page behind them until the real data
+   * path lands, and the panel must not offer a button to a 404.
+   */
+  publishedCountrySlugs?: readonly string[];
 };
 
 /** A feature the user is pointing at or has clicked, decoded from its tile properties. */
@@ -73,7 +79,10 @@ type FeatureSelection = {
 
 type HoverSelection = FeatureSelection & { point: { x: number; y: number } };
 
-export function MapExperience({ isPremium }: MapExperienceProps) {
+export function MapExperience({
+  isPremium,
+  publishedCountrySlugs = [],
+}: MapExperienceProps) {
   const { mode, month, setMode, setMonth } = useMapState();
   const tiles = useTileUrls({ premium: isPremium });
 
@@ -148,6 +157,14 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
   }, []);
 
   const closePanel = useCallback(() => setSelected(null), []);
+
+  const published = useMemo(
+    () => new Set(publishedCountrySlugs),
+    [publishedCountrySlugs],
+  );
+  const selectedCountry = selected
+    ? findCountryByIso2(selected.identity.iso2)
+    : undefined;
 
   // Escape closes the panel — it is a dialog over the map, and the map keeps
   // keyboard focus for panning, so the key has to be handled at the document.
@@ -224,7 +241,10 @@ export function MapExperience({ isPremium }: MapExperienceProps) {
           identity={selected.identity}
           properties={selected.properties}
           month={month}
-          country={findCountryByIso2(selected.identity.iso2)}
+          country={selectedCountry}
+          hasCountryPage={
+            selectedCountry != null && published.has(selectedCountry.slug)
+          }
           onClose={closePanel}
         />
       ) : null}

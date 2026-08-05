@@ -37,6 +37,13 @@ export type ClimatePanelProps = {
   month: number;
   /** Registry entry for the feature's ISO-2, when it has one. */
   country: CountryRef | undefined;
+  /**
+   * Whether `/{country.slug}` is actually built. The registry covers the whole
+   * world so the map can name every polygon, but the SSR pages only exist for
+   * countries the data path can answer for — offering a button to a 404 is
+   * worse than saying the page isn't there yet.
+   */
+  hasCountryPage?: boolean;
   onClose: () => void;
   className?: string;
 };
@@ -73,6 +80,7 @@ export function ClimatePanel({
   properties,
   month,
   country,
+  hasCountryPage = true,
   onClose,
   className,
 }: ClimatePanelProps) {
@@ -162,7 +170,7 @@ export function ClimatePanel({
       </div>
 
       <footer className="border-t border-border px-6 py-4">
-        {country ? (
+        {country && hasCountryPage ? (
           <div className="flex flex-col gap-2">
             <Link
               href={`/${country.slug}`}
@@ -178,6 +186,13 @@ export function ClimatePanel({
               {country.name} in {monthName}
             </Link>
           </div>
+        ) : country ? (
+          // Named, but its page is not built yet — the registry covers the
+          // whole world while the SSR pages wait on the real data path.
+          <p className="text-[12px] leading-relaxed text-text-muted">
+            The {country.name} country page is not published yet. The map data
+            above is live.
+          </p>
         ) : (
           // Somaliland, Northern Cyprus and the Siachen Glacier are painted but
           // carry no ISO-2 code, so there is no country page to send anyone to.

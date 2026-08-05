@@ -98,6 +98,14 @@ describe("ClimatePanel", () => {
     expect(screen.getByTestId("view-country-page")).toHaveAttribute("href", "/georgia");
   });
 
+  it("says so rather than linking when the country page is not published", () => {
+    renderPanel({ hasCountryPage: false });
+    expect(screen.queryByTestId("view-country-page")).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Georgia country page is not published yet/i),
+    ).toBeInTheDocument();
+  });
+
   it("explains itself for a polygon with no country code", () => {
     // Somaliland, Northern Cyprus and the Siachen Glacier are painted but the
     // pipeline blanks their `-99` ISO-2, so there is no page to link to.

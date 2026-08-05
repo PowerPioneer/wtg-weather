@@ -113,7 +113,7 @@ afterEach(() => {
 
 describe("MapExperience feature selection", () => {
   it("opens the climate panel for a country the old registry did not know", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "click georgia" }));
 
     const panel = await screen.findByTestId("climate-panel");
@@ -123,13 +123,13 @@ describe("MapExperience feature selection", () => {
   });
 
   it("outlines the selected polygon on the map", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "click georgia" }));
     expect(screen.getByTestId("canvas")).toHaveAttribute("data-selected-id", "GEO");
   });
 
   it("tracks the selection, including a registry miss", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "click georgia" }));
     expect(trackEvent).toHaveBeenCalledWith("map_feature_select", {
       iso_a2: "GE",
@@ -147,7 +147,7 @@ describe("MapExperience feature selection", () => {
   });
 
   it("still shows a panel for a polygon with no country page", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "click unknown" }));
 
     expect(await screen.findByTestId("climate-panel")).toBeInTheDocument();
@@ -156,7 +156,7 @@ describe("MapExperience feature selection", () => {
   });
 
   it("shows a hover card while the pointer is over a polygon", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "hover georgia" }));
 
     const card = await screen.findByRole("tooltip", { hidden: true });
@@ -167,8 +167,20 @@ describe("MapExperience feature selection", () => {
     expect(screen.queryByRole("tooltip", { hidden: true })).not.toBeInTheDocument();
   });
 
+  it("does not offer a country page that has not been published", async () => {
+    // The registry names all 237 countries; the SSR pages exist only for the
+    // slugs the data path can answer for, so the CTA has to be gated on the
+    // published set or it links straight into a 404.
+    render(<MapExperience isPremium={false} publishedCountrySlugs={[]} />);
+    await userEvent.click(await screen.findByRole("button", { name: "click georgia" }));
+
+    expect(await screen.findByTestId("climate-panel")).toBeInTheDocument();
+    expect(screen.queryByTestId("view-country-page")).not.toBeInTheDocument();
+    expect(screen.getByText(/Georgia country page is not published yet/i)).toBeInTheDocument();
+  });
+
   it("closes the panel on Escape", async () => {
-    render(<MapExperience isPremium={false} />);
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
     await userEvent.click(await screen.findByRole("button", { name: "click georgia" }));
     expect(await screen.findByTestId("climate-panel")).toBeInTheDocument();
 
