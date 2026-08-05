@@ -1,10 +1,18 @@
 /**
- * Country registry used by `generateStaticParams`. Keeping it a concrete list
- * (rather than deriving from mock data) means the page tree doesn't shrink
- * when mock data does. Expanded to ~195 countries in Phase 5.4 from the
- * pipeline's country table; for 5.3a we ship the three mock entries plus a
- * short neighbour set so the cross-linking on month pages resolves.
+ * Country registry — every ISO-3166-1 alpha-2 code a tile feature can carry,
+ * with the name and URL slug the site uses for it.
+ *
+ * The table itself lives in `countries.generated.ts` and is derived from the
+ * same Natural Earth admin-0 layer the pipeline builds the tiles' `country`
+ * level from (`pipeline/scripts/generate_country_registry.py`). It used to be
+ * nine hand-typed entries, which is why clicking the map did nothing for all
+ * but nine countries: the click handler looked the feature's `iso_a2` up here
+ * and silently gave up on a miss.
+ *
+ * Do not hand-edit the generated file — regenerate it and review the diff.
  */
+
+import { GENERATED_COUNTRIES } from "./countries.generated";
 
 export type CountryRef = {
   slug: string;
@@ -13,18 +21,30 @@ export type CountryRef = {
   region: string;
 };
 
-export const COUNTRIES: readonly CountryRef[] = [
-  { slug: "peru", name: "Peru", iso2: "PE", region: "South America" },
-  { slug: "japan", name: "Japan", iso2: "JP", region: "Asia" },
-  { slug: "iceland", name: "Iceland", iso2: "IS", region: "Europe" },
-  { slug: "ecuador", name: "Ecuador", iso2: "EC", region: "South America" },
-  { slug: "bolivia", name: "Bolivia", iso2: "BO", region: "South America" },
-  { slug: "colombia", name: "Colombia", iso2: "CO", region: "South America" },
-  { slug: "chile", name: "Chile", iso2: "CL", region: "South America" },
-  { slug: "brazil", name: "Brazil", iso2: "BR", region: "South America" },
-  { slug: "argentina", name: "Argentina", iso2: "AR", region: "South America" },
-];
+export const COUNTRIES: readonly CountryRef[] = GENERATED_COUNTRIES;
+
+// Lookups are on the map's hover/click path, which fires on every pointer
+// move over a polygon — a linear scan of 237 entries per event is avoidable
+// work, so both indexes are built once at module load.
+const BY_SLUG: ReadonlyMap<string, CountryRef> = new Map(
+  COUNTRIES.map((c) => [c.slug, c]),
+);
+
+const BY_ISO2: ReadonlyMap<string, CountryRef> = new Map(
+  COUNTRIES.map((c) => [c.iso2, c]),
+);
 
 export function findCountry(slug: string): CountryRef | undefined {
-  return COUNTRIES.find((c) => c.slug === slug);
+  return BY_SLUG.get(slug);
+}
+
+/**
+ * Resolve a feature's `iso_a2` to a country. Returns `undefined` for the
+ * codeless polygons the pipeline paints but deliberately leaves unroutable
+ * (Somaliland, Northern Cyprus, the Siachen Glacier), and for the empty string
+ * those features carry.
+ */
+export function findCountryByIso2(iso2: string): CountryRef | undefined {
+  if (!iso2) return undefined;
+  return BY_ISO2.get(iso2.toUpperCase());
 }

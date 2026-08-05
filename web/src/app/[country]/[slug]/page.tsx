@@ -16,7 +16,7 @@ import {
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { getCountry } from "@/lib/api-client";
-import { COUNTRIES } from "@/lib/countries";
+import { routableCountries } from "@/lib/country-routes";
 import { estimateMonthScore, monthRank } from "@/lib/country-derive";
 import {
   MONTH_NAMES,
@@ -60,7 +60,7 @@ export async function generateStaticParams() {
     seen.add(key);
     out.push({ country, slug });
   };
-  for (const c of COUNTRIES) {
+  for (const c of routableCountries()) {
     for (const m of MONTH_SLUGS) push(c.slug, m);
     const data = await getCountry(c.slug);
     if (!data) continue;

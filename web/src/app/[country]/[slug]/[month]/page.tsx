@@ -7,7 +7,7 @@ import { PlanCta, SafetySection } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { getCountry, getRegion } from "@/lib/api-client";
-import { COUNTRIES } from "@/lib/countries";
+import { routableCountries } from "@/lib/country-routes";
 import {
   MONTH_NAMES,
   MONTH_SHORT,
@@ -40,7 +40,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const out: { country: string; slug: string; month: string }[] = [];
-  for (const c of COUNTRIES) {
+  for (const c of routableCountries()) {
     const data = await getCountry(c.slug);
     if (!data) continue;
     for (const r of data.regions) {

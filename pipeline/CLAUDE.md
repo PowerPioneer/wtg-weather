@@ -38,6 +38,12 @@ uv run wtg --help
 - `MAINLAND_WHITELIST` is generated, not hand-edited — its codes are tied to
   the Natural Earth admin-1 vintage. Regenerate with
   `python scripts/generate_mainland_whitelist.py` and review the diff.
+- The web's country registry (`web/src/lib/countries.generated.ts`) is
+  generated from the **same admin-0 layer the tiles are built from**, with the
+  same `-99` blanking, by `python scripts/generate_country_registry.py`. It is
+  what turns a feature's `iso_a2` into a name and a URL, so it must not drift
+  from the boundary vintage: regenerate it whenever the admin-0 source changes
+  and review the diff. Never hand-edit the generated file.
 - Advisories: each government scraper inherits from `advisories/base.py`
   and returns the normalised schema: `{country_iso2, region_code|null,
   level: 1-4, summary, source_url, fetched_at}`.

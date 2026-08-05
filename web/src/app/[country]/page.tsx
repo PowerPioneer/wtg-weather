@@ -14,14 +14,14 @@ import {
 } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { getCountry } from "@/lib/api-client";
-import { COUNTRIES } from "@/lib/countries";
+import { routableCountries } from "@/lib/country-routes";
 import { countryJsonLd, countryMetadata } from "@/lib/seo";
 
 export const revalidate = 2592000;
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return COUNTRIES.map((c) => ({ country: c.slug }));
+  return routableCountries().map((c) => ({ country: c.slug }));
 }
 
 export async function generateMetadata({

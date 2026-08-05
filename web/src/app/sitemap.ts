@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { COUNTRIES } from "@/lib/countries";
+import { routableCountries } from "@/lib/country-routes";
 import { SITE_URL } from "@/lib/env";
 import { MONTH_SLUGS } from "@/lib/months";
 
@@ -25,7 +25,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  for (const country of COUNTRIES) {
+  // Only countries the data path can actually answer for — a sitemap full of
+  // 404s is worse than a short one.
+  for (const country of routableCountries()) {
     urls.push({
       url: `${SITE_URL}/${country.slug}`,
       lastModified: now,
