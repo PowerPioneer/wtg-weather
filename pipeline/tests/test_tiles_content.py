@@ -163,3 +163,87 @@ def test_free_tiles_reach_the_documented_max_zoom(free_tiles: Path) -> None:
         header = Reader(MmapSource(handle)).header()
     assert header["min_zoom"] == 0
     assert header["max_zoom"] >= 5
+
+
+def _admin1_ids_by_zoom(path: Path) -> dict[int, set[str]]:
+    """Distinct admin-1 polygon ids present at each zoom level."""
+    from pmtiles.reader import MmapSource, Reader, all_tiles
+
+    per_zoom: dict[int, set[str]] = defaultdict(set)
+    with path.open("rb") as handle:
+        reader = Reader(MmapSource(handle))
+        for (zoom, _x, _y), data in all_tiles(reader.get_bytes):
+            try:
+                raw = gzip.decompress(data)
+            except OSError:
+                raw = data
+            decoded = mapbox_vector_tile.decode(raw)
+            if "admin1" not in decoded:
+                continue
+            for feature in decoded["admin1"]["features"]:
+                per_zoom[zoom].add(str(feature.get("properties", {}).get("id", "")))
+    return per_zoom
+
+
+def _admin1_total(path: Path) -> int:
+    from pmtiles.reader import MmapSource, Reader
+
+    with path.open("rb") as handle:
+        metadata = Reader(MmapSource(handle)).metadata()
+    for layer in metadata.get("tilestats", {}).get("layers", []):
+        if layer.get("layer") == "admin1":
+            return int(layer["count"])
+    raise AssertionError("no admin1 entry in tilestats")
+
+
+@pytest.fixture(scope="module")
+def free_admin1_by_zoom(free_tiles: Path) -> dict[int, set[str]]:
+    return _admin1_ids_by_zoom(free_tiles)
+
+
+def test_admin1_is_complete_above_the_country_handover(
+    free_tiles: Path, free_admin1_by_zoom: dict[int, set[str]]
+) -> None:
+    """The regression that shipped holes into production.
+
+    Counting features across the whole archive is not enough — coverage is
+    per zoom, and tippecanoe was pruning polygons to fit the tile byte budget.
+    Above zoom 3.5 the country layer has handed over and nothing paints
+    underneath admin-1, so every pruned polygon there is a hole on the map.
+    Measured before the fix: 42% of source at z4, 61% at z5.
+    """
+    total = _admin1_total(free_tiles)
+    for zoom, ids in sorted(free_admin1_by_zoom.items()):
+        if zoom < 4:
+            continue
+        coverage = len(ids) / total
+        assert coverage >= 0.98, (
+            f"z{zoom} carries only {len(ids)}/{total} admin-1 polygons "
+            f"({coverage:.0%}) — every missing one is a hole on the map"
+        )
+
+
+def test_admin1_mostly_present_at_the_handover_zoom(
+    free_tiles: Path, free_admin1_by_zoom: dict[int, set[str]]
+) -> None:
+    # z3 tiles serve display zooms 3.0-3.99, and the country layer only covers
+    # the first half of that band, so coverage here still has to be high.
+    total = _admin1_total(free_tiles)
+    ids = free_admin1_by_zoom.get(3, set())
+    assert len(ids) / total >= 0.65
+
+
+def test_suppressed_country_mosaics_survive_the_minzoom_hint(
+    free_admin1_by_zoom: dict[int, set[str]],
+) -> None:
+    """admin-1 is hinted to minzoom 3 — except for suppressed countries.
+
+    Those emit no country-level row, so the web paints their admin-1 polygons
+    as a mosaic below zoom 3. If the hint were applied to them the mosaic
+    would be empty and they would be holes at world zoom.
+    """
+    low_zoom = free_admin1_by_zoom.get(0, set()) | free_admin1_by_zoom.get(1, set())
+    assert low_zoom, "no admin-1 features at world zoom — the mosaic is empty"
+    # Non-suppressed admin-1 should be largely hinted away down here, so the
+    # low-zoom set stays small; the mosaic countries alone account for it.
+    assert len(low_zoom) < 1000
