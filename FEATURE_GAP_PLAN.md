@@ -328,10 +328,9 @@ tested end-to-end on staging.
 
 ### WS-5 · API+Web: real SSR data path (kill the mocks)
 
-> **Status: code complete, production data publish outstanding.** See
-> § "WS-5 progress" at the end of this document for the two decisions the plan
-> left open, what the end-to-end run exposed, and the commands still to run on
-> the build box.
+> **Status: complete and deployed to v2, 2026-08-06.** See § "WS-5 progress"
+> for the two decisions the plan left open and what the end-to-end run exposed,
+> and § "WS-5 deploy, 2026-08-06" for what the real publish produced.
 
 1. Implement `GET /v1/countries/{slug}` and
    `/v1/countries/{slug}/regions/{region}` in `api/routers/public.py`
@@ -859,30 +858,6 @@ workstream's acceptance criterion. `/georgia/adjara` and
 404. `sitemap.xml` lists only published countries. Full suites green:
 pipeline 237, api 87, web 172.
 
-### Still to run on the build box
-
-```bash
-uv run --directory pipeline wtg download boundaries --source naturalearth
-uv run --directory pipeline wtg publish api-data
-docker compose up -d api          # picks up the new read-only mount
-docker compose build web && docker compose up -d web
-```
-
-The boundary download is not optional even though the two existing layers are
-cached: `ne_110m_populated_places` is new, and without it every country page
-omits its capital and timezone.
-
-Two things to check on the box:
-
-1. `wtg publish api-data` prints `skipped=<n>`. Those are countries with no
-   complete climate series, and they are absent from the route tree by design —
-   but a large number means the percentiles are thinner than expected, not that
-   the publish step is broken.
-2. The web image is built inside `docker build`, off the compose network, so
-   the country pages will render on demand rather than being pre-rendered
-   unless the build can reach the API. That is correct but not optimal; see the
-   follow-ups.
-
 ### Follow-ups this leaves for other workstreams
 
 1. **The web image builds without a pre-rendered country tree.** Everything
@@ -907,6 +882,48 @@ Two things to check on the box:
    internal-linking rule and it is *not* an editorial one; if these links are
    meant to carry travel meaning rather than SEO structure, that is a product
    decision with a different implementation behind it.
+
+## WS-5 deploy, 2026-08-06
+
+Shipped to v2 (`51.15.37.62`). **237 country payloads, 0 skipped** — every
+country in the registry had a complete climate series, so the route tree is the
+whole registry. All ten `SUPPRESSED_COUNTRIES` are covered from their regions,
+so `/argentina`, `/kazakhstan`, `/chile` and `/united-states` render with the
+mosaic sentence rather than 404ing. The bundle is 4.8 MB.
+
+The capital join resolved **196 of 243** places. The 43 countries left without
+one are dependencies and territories — Åland, Guam, Greenland, Hong Kong, Isle
+of Man, Antarctica — that Natural Earth's 110m layer either files under
+`Admin-0 region capital` or has no point for. Every sovereign state resolved.
+Those pages omit the capital and timezone rows, which is the designed
+behaviour.
+
+Live and verified: `/georgia` and `/argentina` render real data with no JS,
+`/georgia/adjara/june` renders on demand, `/atlantis` 404s, `/api/me` and
+premium tile signing both answer 401 to an anonymous request, the sitemap
+lists 3,084 URLs (3 + 237 × 13), and the API and web logs are clean.
+
+### Three things the deploy exposed
+
+1. **`docker compose up -d api` does not rebuild the image.** The container
+   came up with the new mount and the new env but the *old* code, so `/v1/*`
+   404'd. `docker compose build api` first. Generic Docker behaviour, but the
+   compose-file change made it look like the deploy step was config-only.
+2. **The sitemap shipped empty.** It is the one route whose entire content is
+   decided at build time, and the image is built inside `docker build` where
+   the API is unreachable — so it baked three marketing URLs and no countries
+   while the pages themselves were serving fine. Fixed with `force-dynamic`
+   (`d14add7`); the underlying index fetch keeps its own one-hour cache.
+3. **"United States's national averages".** About twenty country names end in
+   *s* and the possessive was naive. Fixed in the generator (`9f304ac`).
+
+That last one is also the useful worked example of how content updates
+propagate: republishing changed **30 of 237** payloads and left the rest
+byte-identical, the API served the new text with no restart (its cache is keyed
+on file mtime), and the *pages* still showed the old text because `/[country]`
+is ISR with a 30-day window. A content-only change therefore needs
+`docker compose up -d --force-recreate web` to clear the container's render
+cache. The same applies to a weekly advisory move.
 
 ## Part 4 — What was *not* verified in this audit
 
