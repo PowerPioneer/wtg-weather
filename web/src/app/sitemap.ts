@@ -12,6 +12,23 @@ type Entry = MetadataRoute.Sitemap[number];
  * trip-detail pages aren't listed — they're either dynamic per-user or
  * SSR with a `revalidate` that doesn't need pre-declaration.
  */
+
+/**
+ * Built per request, unlike the pages it lists.
+ *
+ * A prerendered sitemap is generated inside `docker build`, where the API is
+ * not reachable and `routableCountries()` correctly returns nothing — so the
+ * image shipped a sitemap listing three marketing URLs and no countries at
+ * all. The pages themselves are fine, because they render on demand against a
+ * live API; only this route bakes its whole content at build time, which makes
+ * it the one route that must not.
+ *
+ * The cost is near zero: the underlying `/v1/countries` fetch carries its own
+ * one-hour cache, so a request here assembles ~3,000 strings from a cached
+ * list. Crawlers ask for it a few times a day.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const urls: Entry[] = [
