@@ -305,8 +305,10 @@ unit tests green including the pipeline-parity case.
 
 ### WS-4 · Pipeline+API: safety/advisory data path
 
-> **Status: complete, pending a scrape + rebuild on the build box.** See
-> § "WS-4 progress" at the end of this document.
+> **Status: code complete; deploy blocked on upstream scraper quality.** The
+> join works and was exercised against a real six-source scrape on v2 — but
+> two scrapers produce levels that cannot be shipped. See § "WS-4 progress"
+> and § "WS-4 deploy attempt, 2026-08-06".
 
 1. Join the normalised advisory output into `build_geojson.py`: emit a
    month-less `safety` property (1–4) per feature — country-level from
@@ -614,6 +616,79 @@ speculative.
 4. Advisory mapping-table coverage is the ceiling on how much of the world
    Safety mode can colour. Widening `sources/advisories/mappings/*.json` is
    mechanical and independent of everything above.
+
+## WS-4 deploy attempt, 2026-08-06
+
+Ran on v2 (`51.15.37.62`) up to the point of rebuilding tiles, then stopped.
+**No tiles were rebuilt and the CDN was not purged** — `free.pmtiles` and
+`premium.pmtiles` are untouched, and nothing user-visible changed.
+
+### What the first real scrape found
+
+Five of six sources answered (uk_fcdo 83, canada 60, australia 198,
+germany 200, netherlands 224). Consolidation produced **227 country levels** —
+mapping-table coverage is far better than `mappings/README.md` suggests, well
+past the ≥100 the tile smoke test requires. The join itself behaved exactly as
+designed.
+
+The levels it produced cannot ship:
+
+| source | n | level distribution |
+|---|---|---|
+| australia | 179 | 1:64 2:75 3:14 4:26 |
+| us_state | 64 | 1:19 2:28 3:6 4:11 |
+| canada | 56 | 1:14 2:26 3:3 4:13 |
+| uk_fcdo | 63 | 1:57 3:1 4:5 |
+| **netherlands** | 224 | 1:78 2:60 3:25 **4:61** |
+| **germany** | 200 | 1:155 **2:0** 3:27 4:18 |
+
+62 countries came out at "Do Not Travel" — a quarter of the world — and for
+**36 of them the Netherlands is the only source saying 4**: Japan, South
+Korea, India, Thailand, Morocco, Turkey, UAE, Israel, Peru, Georgia, Mexico,
+Colombia, Egypt. Every other government rates those 1–2. `netherlands.py`
+takes the first colour word following the first "kleurcode" in the API's
+`introduction` blob, which for many countries is not the country-wide code.
+`germany.py` is separately suspect: 200 records, not one level 2, and
+summaries that are bare page titles.
+
+### Why this stopped the deploy rather than being a caveat
+
+`max` consensus is the right rule and the web legend advertises it — but it
+means one broken scraper poisons the whole map, and the failure is
+*confidently wrong* rather than blank. Painting Japan and Thailand dark red
+"Do Not Travel" is a false claim about real places and materially worse than
+the grey the mode shows today. Nothing about the tile join needs to change to
+fix it; the scrapers do.
+
+### State left on the box
+
+- Code pulled (`bc43fae`), inert. There is **no root crontab installed** on
+  v2, so `weekly-advisories.sh` is not scheduled and nothing ships this on its
+  own. The `Caddyfile`'s uncommitted production edits survived the pull and
+  were backed up to `/root/Caddyfile.backup-*` first.
+- Fresh raw dumps for the five working sources are kept — re-testing a scraper
+  fix needs no re-scrape.
+- `safety_index.json` is renamed to `safety_index.json.quarantined-2026-08-06`
+  so that the *next* tile build — WS-1's outstanding production rebuild, most
+  likely — cannot silently bake these levels in. `load_safety_index()` now
+  returns `None` there and `build geojson` logs its "Safety will paint grey"
+  warning. Re-running `wtg process advisories` regenerates it.
+
+### Two blockers found that are not WS-4's
+
+1. **`travel.state.gov` 403s from the v2 IP** (Cloudflare). The US State
+   scraper cannot run from that box at all. `process advisories` fell back to
+   the April dump still on disk, which is the designed behaviour but means US
+   data goes stale silently. Worth surfacing as a warning when a source's
+   newest dump is older than some threshold. Not something to work around by
+   disguising the client.
+2. **The geoBoundaries ADM2 sources are gone from the box** (`raw/geoboundaries/adm2/`
+   is empty), while `admin2_premium.geojson` (3.8 GB, Aug 4) and the old
+   percentiles remain. A both-tier `rebuild-tiles.sh` would therefore rebuild
+   premium's admin-2 layer from an empty frame and ship a premium archive with
+   no districts. This is WS-1 step 3's outstanding item and it now actively
+   booby-traps the rebuild script — **do not run `rebuild-tiles.sh` without
+   `TIERS=free` until the ADM2 download is re-run.**
 
 ## Part 4 — What was *not* verified in this audit
 
