@@ -5,6 +5,7 @@ import {
   ADMIN1_SELECTED_LAYER,
   COUNTRY_SELECTED_LAYER,
 } from "@/lib/map-style";
+import { DEFAULT_PREFERENCES } from "@/lib/scoring";
 
 /**
  * The regression these cover: signed tile URLs are re-issued about a minute
@@ -66,7 +67,10 @@ class FakeMap {
   getCanvas() {
     return { style: {} as Record<string, string> };
   }
-  setPaintProperty() {}
+  paintCalls: [string, string, unknown][] = [];
+  setPaintProperty(layerId: string, property: string, value: unknown) {
+    this.paintCalls.push([layerId, property, value]);
+  }
   setStyle(style: unknown) {
     this.setStyleCalls.push(style);
   }
@@ -269,6 +273,44 @@ describe("MapCanvas tile-URL handling", () => {
     expect(map.filters.length).toBeGreaterThan(0);
     for (const [, filter] of map.filters) {
       expect(JSON.stringify(filter)).not.toContain("GEO");
+    }
+  });
+
+  it("repaints in place when preferences change, without touching the style", () => {
+    // The hard rule from web/CLAUDE.md: a preference change is a
+    // `setPaintProperty` call, never a tile refetch. Every ingredient the score
+    // needs is already a property on the features in the loaded tiles.
+    const { rerender } = render(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        preferences={DEFAULT_PREFERENCES}
+      />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+    map.paintCalls = [];
+
+    rerender(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        preferences={{ ...DEFAULT_PREFERENCES, tempMax: 22 }}
+      />,
+    );
+
+    expect(map.setStyleCalls).toHaveLength(0);
+    const colours = map.paintCalls.filter(([, property]) => property === "fill-color");
+    expect(colours.length).toBeGreaterThan(0);
+    for (const [, , value] of colours) {
+      // Custom preferences score from the raw per-month values rather than the
+      // pipeline's baked default score.
+      expect(JSON.stringify(value)).toContain('"t_04"');
+      expect(JSON.stringify(value)).not.toContain("pref_04");
     }
   });
 

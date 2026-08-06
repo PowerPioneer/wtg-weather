@@ -24,6 +24,7 @@ import {
 import { registerPmtilesProtocol } from "@/lib/pmtiles";
 import type { DisplayModeId } from "@/lib/display-modes";
 import { DISPLAY_MODES } from "@/lib/display-modes";
+import { DEFAULT_PREFERENCES, type WeatherPreferences } from "@/lib/scoring";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -39,6 +40,12 @@ export type MapCanvasProps = {
   mode: DisplayModeId;
   /** 1-indexed month (1 = January). */
   month: number;
+  /**
+   * Weather preferences driving the `preferences` mode's colours. A change
+   * here is a paint update, never a restyle and never a tile fetch — the
+   * ingredients are already properties on every feature.
+   */
+  preferences?: WeatherPreferences;
   /** Polygon `id` to outline as selected. `null` clears the outline. */
   selectedFeatureId?: string | null;
   /** Fires when the user tries to zoom past the free tier's max zoom. */
@@ -60,6 +67,7 @@ function MapCanvasImpl({
   premiumTilesUrl,
   mode,
   month,
+  preferences = DEFAULT_PREFERENCES,
   selectedFeatureId = null,
   onPremiumZoomBlocked,
   onFeatureSelect,
@@ -96,6 +104,7 @@ function MapCanvasImpl({
         premiumTilesUrl,
         mode,
         month,
+        preferences,
       }),
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
@@ -124,9 +133,10 @@ function MapCanvasImpl({
       map.remove();
     };
     // Intentional: this effect owns the map's lifetime and must run exactly
-    // once per mount. The tile URLs, mode and month it reads are the values at
-    // construction; each is kept current afterwards by an effect of its own —
-    // URLs by the restyle effect below, mode/month by the paint effect.
+    // once per mount. The tile URLs, mode, month and preferences it reads are
+    // the values at construction; each is kept current afterwards by an effect
+    // of its own — URLs by the restyle effect below, the rest by the paint
+    // effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasTiles]);
 
@@ -136,27 +146,30 @@ function MapCanvasImpl({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !freeTilesUrl) return;
-    // Already applied at construction — mode/month changes must not restyle.
+    // Already applied at construction — mode/month/preference changes must not
+    // restyle, or a slider drag would tear down and refetch every tile.
     if (appliedUrlsRef.current === urlKey) return;
     appliedUrlsRef.current = urlKey;
 
     setStyleReady(false);
     map.setMaxZoom(premiumTilesUrl ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM);
-    map.setStyle(buildMapStyle({ freeTilesUrl, premiumTilesUrl, mode, month }));
-  }, [urlKey, freeTilesUrl, premiumTilesUrl, mode, month]);
+    map.setStyle(
+      buildMapStyle({ freeTilesUrl, premiumTilesUrl, mode, month, preferences }),
+    );
+  }, [urlKey, freeTilesUrl, premiumTilesUrl, mode, month, preferences]);
 
-  // Live paint updates — mode, month.
+  // Live paint updates — mode, month, preferences.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !styleReady) return;
-    const fillColor = buildFillColorExpression(mode, month);
+    const fillColor = buildFillColorExpression(mode, month, preferences);
     const opacity = buildFillOpacityExpression(mode);
     for (const layerId of FILL_LAYER_IDS) {
       if (!map.getLayer(layerId)) continue;
       map.setPaintProperty(layerId, "fill-color", fillColor);
       map.setPaintProperty(layerId, "fill-opacity", opacity);
     }
-  }, [mode, month, styleReady]);
+  }, [mode, month, preferences, styleReady]);
 
   // Hover + click interactivity, plus the premium-zoom gate.
   useEffect(() => {

@@ -19,6 +19,11 @@
  */
 
 import { DISPLAY_MODES, modeProperty, type DisplayModeId } from "./display-modes";
+import {
+  isDefaultPreferences,
+  preferenceScore,
+  type WeatherPreferences,
+} from "./scoring";
 
 export type FeatureLevel = "country" | "admin1" | "admin2";
 
@@ -117,17 +122,30 @@ export function readMonthlyBands(
 }
 
 /**
- * The baked default-preference score (0–100) for one month.
+ * The 0–100 match score for one month, under the given preferences.
  *
- * This is `pref_<mm>`, computed by the pipeline from `DEFAULT_PREFERENCES`.
- * Once WS-3 lands client-side scoring, the panel and the hover card should
- * take their score from the same expression the paint uses instead.
+ * With default preferences this reads `pref_<mm>` — the value the pipeline
+ * baked in from its own `DEFAULT_PREFERENCES`, and the value the paint
+ * expression uses on the same path. With anything else it scores the feature's
+ * `t_/r_/s_` p50s through the shared `preferenceScore`, so the number in the
+ * panel is the same number that picked the colour under the cursor.
  */
 export function readPreferenceScore(
   props: FeatureProperties,
   month: number,
+  preferences?: WeatherPreferences,
 ): number | null {
-  return readNumber(props, monthKey("pref", month));
+  if (!preferences || isDefaultPreferences(preferences)) {
+    return readNumber(props, monthKey("pref", month));
+  }
+  return preferenceScore(
+    {
+      t: readNumber(props, monthKey("t", month)),
+      r: readNumber(props, monthKey("r", month)),
+      s: readNumber(props, monthKey("s", month)),
+    },
+    preferences,
+  );
 }
 
 /** Value the active display mode paints for this feature, in display units. */

@@ -22,6 +22,7 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
+import { isDefaultPreferences, type WeatherPreferences } from "@/lib/scoring";
 
 export type MapHoverCardProps = {
   identity: FeatureIdentity;
@@ -31,6 +32,8 @@ export type MapHoverCardProps = {
   mode: DisplayModeId;
   /** 1-indexed month. */
   month: number;
+  /** Preferences the map is painting with; omitted means the baked defaults. */
+  preferences?: WeatherPreferences;
   /** Country name for the "Region, Country" second line, when known. */
   countryName?: string;
 };
@@ -45,6 +48,7 @@ export function MapHoverCard({
   point,
   mode,
   month,
+  preferences,
   countryName,
 }: MapHoverCardProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -72,7 +76,11 @@ export function MapHoverCard({
     bounds != null && point.y + OFFSET + ESTIMATED_HEIGHT > bounds.height;
 
   const monthSlug = MONTH_SLUGS[month - 1];
-  const score = readPreferenceScore(properties, month);
+  const score = readPreferenceScore(properties, month, preferences);
+  const prefLabel =
+    preferences != null && !isDefaultPreferences(preferences)
+      ? "your preferences"
+      : "default preferences";
   const place =
     identity.level === "country" || !countryName || identity.name === countryName
       ? identity.name || countryName || "Unnamed area"
@@ -91,7 +99,7 @@ export function MapHoverCard({
     >
       <MatchTooltip
         place={place}
-        context={`${MONTH_SHORT[monthSlug]} · default preferences`}
+        context={`${MONTH_SHORT[monthSlug]} · ${prefLabel}`}
         score={score ?? 0}
         stats={buildStats(properties, mode, month)}
         footer={score == null ? "No match score for this area" : undefined}

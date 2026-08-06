@@ -279,6 +279,8 @@ shows a tooltip; e2e-style test that a click on a mocked feature with
 
 ### WS-3 · Web: the Preferences feature
 
+> **Status: complete.** See § "WS-3 progress" at the end of this document.
+
 1. Implement a preference→score function in `web/src/lib/scoring.ts`:
    inputs (temp range, max rain, min sun hours — match
    `DEFAULT_PREFERENCES` in `pipeline/processing/scoring.py` so defaults
@@ -474,6 +476,41 @@ Two things to check on the box while this runs:
 3. `routableCountries()` is the only thing standing between the registry and
    2,844 country/month pages. WS-5 turning `USE_MOCK_DATA` off is what opens
    that gate, so the API must answer for every slug in the registry by then.
+
+## WS-3 progress
+
+### Changes landed
+
+| Change | File | Why |
+|---|---|---|
+| `preferenceScore` / `scoreBucket` + the `WeatherPreferences` model | `web/src/lib/scoring.ts` | RC-4. The module held only bin/label/colour helpers; the preference→score function `web/CLAUDE.md` requires was never written. It reproduces the pipeline's `polygon_score` bucket-for-bucket — **not** a nicer continuous score — because the map paints the baked `pref_<mm>` while preferences are default, and any other rule would make the map jump the moment a user dragged a slider back to where it started. |
+| Score computed inside the paint expression | `web/src/lib/map-style.ts` (`buildPreferenceScoreExpression`) | The hard rule: a preference change is a `setPaintProperty` call, never a tile refetch. The three ingredients (`t_<mm>`, `r_<mm>`, `s_<mm>`) are already properties on every feature, so the whole rule pushes down into the paint. Default preferences still resolve to a single `get pref_<mm>` — same number, one lookup instead of twelve comparisons per polygon per frame. |
+| `PreferencesPanel` — popout card on desktop, sheet on mobile | `web/src/components/map/preferences-panel.tsx`, `preferences-sheet.tsx`, `app/map/map-experience.tsx` | The Phase 5 deliverable that never shipped. Three controls, because three variables are what the score consults. |
+| `RangeSlider` / `DualRangeSlider` | `web/src/components/ui/range-slider.tsx` | Native `<input type="range">` under a painted track rather than a pointer-driven custom widget: keyboard operation, role and value semantics come from the browser. The Atlas mock's two-thumb track is the one thing a native slider cannot do, so the dual variant stacks two transparent sliders over one track and re-enables pointer events on the thumbs only. |
+| Preferences in the URL (`tmin`/`tmax`/`rmax`/`smin`) | `web/src/hooks/use-map-state.ts` | Shareability, and the only storage `web/CLAUDE.md` allows besides the API. nuqs drops a param equal to its default, so an untouched map keeps a clean URL and "default" and "absent" are the same state — which is what lets the store below know whether the URL had anything to say. |
+| Durable preferences for signed-in users | `web/src/hooks/use-stored-preferences.ts` | The onboarding record already persists arbitrary per-user JSON through `PATCH /api/onboarding`; this writes into it under `mapPreferences` rather than adding a second store and a migration. URL wins over stored, so a shared link shows the sender's map. A 401 on the first read disables writes for the session instead of retrying per slider drag. |
+| Panel + hover card score through the same function as the paint | `climate-panel.tsx`, `map-hover-card.tsx`, `lib/feature-climate.ts` | WS-2's follow-up #1. Both read `readPreferenceScore(props, month, preferences)`, which is the baked value under defaults and the computed one otherwise — so the number in the panel is the number that chose the colour. Both surfaces now say which of the two they are showing. |
+| Tuning a slider switches the display mode back to `preferences` | `app/map/map-experience.tsx` | Only that mode reads preferences. Without this, moving a slider while Temperature is painted looks like the control is broken. |
+
+### Tests added
+
+- `web/src/lib/scoring.test.ts` — parses `processing/scoring.py` and `tiles/build_geojson.py` and asserts the TypeScript ranges, buffers, scored-variable set and 0–100 bucket mapping match the Python tables. Plus the bucket rule, its boundaries, absent-variable handling, and `null`-not-zero for a feature with no data.
+- `web/src/lib/map-style.test.ts` — a small MapLibre expression evaluator runs the emitted paint expression across four preference sets × nine feature shapes and asserts it returns exactly what `preferenceScore` returns. These are two implementations of one rule and nothing else in the app compares them.
+- `web/src/components/map/map-canvas.test.tsx` — a preference change calls `setPaintProperty` and leaves `setStyle` untouched (a restyle would refetch every tile).
+- `web/src/components/map/preferences-panel.test.tsx` — control behaviour, thumbs that pin instead of crossing, Reset gated on being non-default, the premium gate, and an accessible name + `aria-valuetext` on all four sliders.
+- `web/src/app/map/map-experience.test.tsx` — end to end on a stateful `useMapState`: a slider reaches the canvas without changing the tile URL, Georgia's panel score moves from the baked 82 ("Good option") to a computed 60 ("Acceptable"), the display mode switches back, Reset restores the defaults, and a signed-out visitor never writes to the store.
+
+### Not verified
+
+The map itself was not exercised in a browser: there are no PMTiles archives on this machine and no API to sign a tile URL, so a dev server would only render the map's error state. The paint expression is covered by the evaluator test instead, which is the same arithmetic MapLibre would run.
+
+### Follow-ups this leaves for other workstreams
+
+1. `web/CLAUDE.md` says scoring is "shared between the map paint expressions and the SSR pages". The paint half is done; the SSR country pages still do not score at all. WS-5 should call `preferenceScore` from the same module when it renders real data, or the country page and the map will disagree.
+2. Premium variables are **not** scoring inputs anywhere — the pipeline's `SCORED_VARIABLES` is the free trio too. The panel's premium block is therefore worded as what it is today (four more map layers), not as extra matching criteria. Widening the score to premium variables is a product decision that needs the pipeline side first.
+3. Wind is now a free tile variable (RC-9) but is deliberately not scored, because the pipeline does not score it either and parity with the baked `pref_<mm>` is what keeps the default map stable. Adding it means changing both sides together and re-baking tiles.
+4. Anonymous visitors' preferences live only in the URL. That is the rule as written (no `localStorage`); if they should survive a fresh visit, it needs an HttpOnly cookie set via the API, which is an API change.
+5. The `unit` query param (metric/imperial) is still unused — the panel reads °C / mm / h like the rest of the map. Imperial display is its own pass across the legend, hover card, panel and SSR pages.
 
 ## Part 4 — What was *not* verified in this audit
 

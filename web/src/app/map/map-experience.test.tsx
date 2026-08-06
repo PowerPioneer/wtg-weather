@@ -1,8 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { monthKey } from "@/lib/feature-climate";
+import { DEFAULT_PREFERENCES } from "@/lib/scoring";
 
 /**
  * The bug this covers: `handleFeatureSelect` looked the clicked feature's
@@ -28,16 +29,49 @@ vi.mock("@/hooks/use-tile-urls", () => ({
   }),
 }));
 
-vi.mock("@/hooks/use-map-state", () => ({
-  useMapState: () => ({
-    mode: "preferences",
-    month: 4,
-    unit: "metric",
-    setMode: vi.fn(),
-    setMonth: vi.fn(),
-    setUnit: vi.fn(),
-  }),
+// A real, stateful stand-in for the nuqs-backed hook — the preference tests
+// need the map's state to actually move when a slider does.
+vi.mock("@/hooks/use-map-state", async () => {
+  const { useState } = await import("react");
+  const { DEFAULT_PREFERENCES: defaults, clampPreferences } = await import(
+    "@/lib/scoring"
+  );
+  return {
+    useMapState: () => {
+      const [mode, setMode] = useState("preferences");
+      const [month, setMonth] = useState(4);
+      const [preferences, setPrefs] = useState(defaults);
+      return {
+        mode,
+        month,
+        unit: "metric",
+        preferences,
+        setMode,
+        setMonth,
+        setUnit: vi.fn(),
+        setPreferences: (next: unknown) =>
+          setPrefs(clampPreferences(next as Partial<typeof defaults>)),
+        resetPreferences: () => setPrefs(defaults),
+      };
+    },
+  };
+});
+
+// The preference store is an API round trip; anonymous is the default here, so
+// nothing is read and nothing is written.
+const fetchOnboarding = vi.fn(async () => null);
+const patchOnboarding = vi.fn(async () => ({
+  kind: null,
+  step: 0,
+  completed: false,
+  data: {},
 }));
+vi.mock("@/lib/api-client", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/api-client")>(
+    "@/lib/api-client",
+  );
+  return { ...actual, fetchOnboarding, patchOnboarding };
+});
 
 // Stand-in for MapLibre: two buttons that hand the page the same feature
 // objects the real canvas would hand it on a click.
@@ -46,12 +80,21 @@ vi.mock("@/components/map/map-canvas", () => ({
     onFeatureSelect,
     onFeatureHover,
     selectedFeatureId,
+    preferences,
+    freeTilesUrl,
   }: {
     onFeatureSelect?: (feature: unknown) => void;
     onFeatureHover?: (hover: unknown) => void;
     selectedFeatureId?: string | null;
+    preferences?: unknown;
+    freeTilesUrl?: string | null;
   }) => (
-    <div data-testid="canvas" data-selected-id={selectedFeatureId ?? ""}>
+    <div
+      data-testid="canvas"
+      data-selected-id={selectedFeatureId ?? ""}
+      data-prefs={JSON.stringify(preferences ?? null)}
+      data-free-url={freeTilesUrl ?? ""}
+    >
       <button type="button" onClick={() => onFeatureSelect?.({ properties: GEORGIA })}>
         click georgia
       </button>
@@ -105,6 +148,8 @@ const { MapExperience } = await import("./map-experience");
 
 beforeEach(() => {
   trackEvent.mockClear();
+  fetchOnboarding.mockClear();
+  patchOnboarding.mockClear();
 });
 
 afterEach(() => {
@@ -186,5 +231,102 @@ describe("MapExperience feature selection", () => {
 
     await userEvent.keyboard("{Escape}");
     expect(screen.queryByTestId("climate-panel")).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * "My Preferences" was a display mode with no preferences behind it: the map
+ * painted `pref_<mm>`, a score the pipeline baked in from its own defaults, and
+ * no control anywhere could change it.
+ */
+describe("MapExperience preferences", () => {
+  const openPanel = async () => {
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
+    await userEvent.click(await screen.findByTestId("open-preferences"));
+    return screen.getByTestId("preferences-panel");
+  };
+
+  const setSlider = (name: string, value: number) =>
+    fireEvent.change(screen.getByLabelText(name), { target: { value: String(value) } });
+
+  /** Narrow the temperature band to 5–15°C, lower thumb first so it can move. */
+  const chooseCoolWeather = () => {
+    setSlider("Temperature — Coolest acceptable", 5);
+    setSlider("Temperature — Warmest acceptable", 15);
+  };
+
+  it("starts at the defaults the pipeline baked into the tiles", async () => {
+    await openPanel();
+    expect(screen.getByTestId("canvas")).toHaveAttribute(
+      "data-prefs",
+      JSON.stringify(DEFAULT_PREFERENCES),
+    );
+    expect(screen.getByTestId("open-preferences")).toHaveTextContent("Default");
+  });
+
+  it("hands changed preferences to the map without changing the tile URL", async () => {
+    await openPanel();
+    const before = screen.getByTestId("canvas").getAttribute("data-free-url");
+
+    chooseCoolWeather();
+
+    const canvas = screen.getByTestId("canvas");
+    expect(JSON.parse(canvas.getAttribute("data-prefs") ?? "{}")).toMatchObject({
+      tempMin: 5,
+      tempMax: 15,
+    });
+    // Preference changes must never re-sign or refetch tiles — the score is
+    // computed from properties already in the loaded features.
+    expect(canvas.getAttribute("data-free-url")).toBe(before);
+    expect(screen.getByTestId("open-preferences")).toHaveTextContent("Custom");
+  });
+
+  it("rescoring reaches the climate panel, not just the map colours", async () => {
+    // Georgia in April: 9°C, 5 mm/day, 7 h sun. The baked default score is 82
+    // ("Good option"); against a 5–15°C preference the rain is the only hard
+    // miss, which is 60 ("Acceptable").
+    await openPanel();
+    await userEvent.click(screen.getByRole("button", { name: "click georgia" }));
+    const panel = within(await screen.findByTestId("climate-panel"));
+    expect(panel.getByText("Good option")).toBeInTheDocument();
+    expect(panel.getByText(/default preferences/)).toBeInTheDocument();
+
+    chooseCoolWeather();
+
+    expect(panel.getByText("Acceptable")).toBeInTheDocument();
+    expect(panel.getByText(/your preferences/)).toBeInTheDocument();
+  });
+
+  it("switches back to the preferences layer so a slider visibly does something", async () => {
+    await openPanel();
+    await userEvent.click(screen.getByTestId("open-display-mode"));
+    await userEvent.click(await screen.findByRole("button", { name: /Temperature/ }));
+    expect(screen.getByTestId("open-display-mode")).toHaveTextContent("Temperature");
+
+    chooseCoolWeather();
+
+    expect(screen.getByTestId("open-display-mode")).toHaveTextContent("My Preferences");
+  });
+
+  it("restores the baked defaults on reset", async () => {
+    await openPanel();
+    chooseCoolWeather();
+    expect(screen.getByTestId("reset-preferences")).toBeEnabled();
+
+    await userEvent.click(screen.getByTestId("reset-preferences"));
+
+    expect(screen.getByTestId("canvas")).toHaveAttribute(
+      "data-prefs",
+      JSON.stringify(DEFAULT_PREFERENCES),
+    );
+  });
+
+  it("does not write preferences for a signed-out visitor", async () => {
+    // `fetchOnboarding` answers null on a 401; writing after that would be a
+    // request per slider drag that can only ever fail.
+    await openPanel();
+    chooseCoolWeather();
+    await vi.waitFor(() => expect(fetchOnboarding).toHaveBeenCalled());
+    expect(patchOnboarding).not.toHaveBeenCalled();
   });
 });

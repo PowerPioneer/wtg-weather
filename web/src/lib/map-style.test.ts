@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_PREFERENCES,
+  preferenceScore,
+  type ScoredValues,
+  type WeatherPreferences,
+} from "./scoring";
+import {
   ADMIN1_FILL_LAYER,
   ADMIN1_LINE_LAYER,
   ADMIN1_MOSAIC_FILL_LAYER,
@@ -14,6 +20,7 @@ import {
   activeFillLayerIds,
   buildFillColorExpression,
   buildMapStyle,
+  buildPreferenceScoreExpression,
 } from "./map-style";
 
 const FREE_URL = "https://example.test/free.pmtiles?exp=1&sig=abc";
@@ -39,6 +46,188 @@ describe("buildFillColorExpression", () => {
     expect(JSON.stringify(buildFillColorExpression("rainfall", 12))).toContain('"r_12"');
     expect(JSON.stringify(buildFillColorExpression("sunshine", 7))).toContain('"s_07"');
     expect(JSON.stringify(buildFillColorExpression("wind", 3))).toContain('"w_03"');
+  });
+});
+
+/**
+ * Just enough of the MapLibre expression language to run the expressions this
+ * module emits. The point is to check that the paint expression and
+ * `scoring.ts` agree on a score: they are two implementations of one rule, one
+ * in TypeScript for the panels and one pushed down into the GPU-side paint, and
+ * nothing else in the app compares them.
+ */
+function evaluateExpression(expr: unknown, props: Record<string, unknown>): unknown {
+  if (!Array.isArray(expr)) return expr;
+  const [op, ...args] = expr as [string, ...unknown[]];
+  const ev = (e: unknown) => evaluateExpression(e, props);
+  const num = (e: unknown) => Number(ev(e));
+
+  switch (op) {
+    case "literal":
+      return args[0];
+    case "get": {
+      const value = props[String(ev(args[0]))];
+      return value === undefined ? null : value;
+    }
+    case "has":
+      return Object.prototype.hasOwnProperty.call(props, String(ev(args[0])));
+    case "to-number": {
+      const value = ev(args[0]);
+      // Matches the spec: null and false convert to 0, which is why every
+      // comparison in the score expression is gated on `has`.
+      if (value === null || value === false) return 0;
+      return Number(value);
+    }
+    case "coalesce": {
+      for (const arg of args) {
+        const value = ev(arg);
+        if (value !== null && value !== undefined) return value;
+      }
+      return null;
+    }
+    case "+":
+      return args.reduce<number>((sum, arg) => sum + num(arg), 0);
+    case "==":
+      return ev(args[0]) === ev(args[1]);
+    case ">=":
+      return num(args[0]) >= num(args[1]);
+    case "<=":
+      return num(args[0]) <= num(args[1]);
+    case "all":
+      return args.every((arg) => ev(arg) === true);
+    case "!":
+      return ev(args[0]) !== true;
+    case "case": {
+      for (let i = 0; i + 1 < args.length; i += 2) {
+        if (ev(args[i]) === true) return ev(args[i + 1]);
+      }
+      return ev(args[args.length - 1]);
+    }
+    case "step": {
+      const input = num(args[0]);
+      let output = ev(args[1]);
+      for (let i = 2; i + 1 < args.length; i += 2) {
+        if (input < Number(args[i])) break;
+        output = ev(args[i + 1]);
+      }
+      return output;
+    }
+    default:
+      throw new Error(`test evaluator: unsupported operator ${op}`);
+  }
+}
+
+describe("buildPreferenceScoreExpression", () => {
+  const MONTH = 4;
+  const MISSING = -9999;
+
+  const toProps = (values: ScoredValues): Record<string, number> => {
+    const props: Record<string, number> = {};
+    if (values.t != null) props.t_04 = values.t;
+    if (values.r != null) props.r_04 = values.r;
+    if (values.s != null) props.s_04 = values.s;
+    return props;
+  };
+
+  const CASES: ScoredValues[] = [
+    { t: 22, r: 1, s: 8 }, // everything in range
+    { t: 30, r: 1, s: 8 }, // one in buffer
+    { t: 40, r: 1, s: 8 }, // one past buffer
+    { t: 40, r: 9, s: 8 }, // two past buffer
+    { t: 18, r: 0, s: 6 }, // exactly on the lower bounds
+    { t: 28, r: 2.7, s: 13 }, // exactly on the upper bounds
+    { t: 22, r: 1 }, // sunshine absent from this tier/level
+    { t: 22 }, // only temperature
+    {}, // nothing scoreable
+  ];
+
+  const PREFERENCE_SETS: WeatherPreferences[] = [
+    DEFAULT_PREFERENCES,
+    { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 },
+    { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10 },
+    { tempMin: -10, tempMax: 45, rainMax: 12, sunMin: 0 },
+  ];
+
+  it("computes the same score as scoring.ts for every case", () => {
+    for (const prefs of PREFERENCE_SETS) {
+      const expr = buildPreferenceScoreExpression(prefs, MONTH);
+      for (const values of CASES) {
+        const expected = preferenceScore(values, prefs) ?? MISSING;
+        expect(
+          evaluateExpression(expr, toProps(values)),
+          `${JSON.stringify(values)} under ${JSON.stringify(prefs)}`,
+        ).toBe(expected);
+      }
+    }
+  });
+
+  it("reads the month it was built for, and only that month", () => {
+    const expr = JSON.stringify(buildPreferenceScoreExpression(DEFAULT_PREFERENCES, 11));
+    expect(expr).toContain('"t_11"');
+    expect(expr).toContain('"r_11"');
+    expect(expr).toContain('"s_11"');
+    expect(expr).not.toContain("_04");
+  });
+
+  it("returns the missing sentinel rather than zero for an empty feature", () => {
+    // Zero would land in the "avoid" bin and paint an unmeasured polygon dark
+    // red; the sentinel routes it to the neutral missing-fill instead.
+    const expr = buildPreferenceScoreExpression(DEFAULT_PREFERENCES, MONTH);
+    expect(evaluateExpression(expr, {})).toBe(MISSING);
+    expect(evaluateExpression(expr, { name: "Nowhere" })).toBe(MISSING);
+  });
+});
+
+describe("preferences mode paint", () => {
+  const MISSING_FILL = "#D9D5C8";
+
+  it("keeps reading the baked pref_<mm> while preferences are default", () => {
+    // Default preferences reproduce the pipeline's baked score exactly, so the
+    // cheap `get` is the right expression — and it keeps the default map
+    // byte-identical to what shipped before preferences existed.
+    const expr = JSON.stringify(
+      buildFillColorExpression("preferences", 5, DEFAULT_PREFERENCES),
+    );
+    expect(expr).toContain("pref_05");
+    expect(expr).not.toContain("t_05");
+  });
+
+  it("scores from the raw per-month properties once preferences are custom", () => {
+    const expr = JSON.stringify(
+      buildFillColorExpression("preferences", 5, {
+        ...DEFAULT_PREFERENCES,
+        tempMax: 24,
+      }),
+    );
+    expect(expr).not.toContain("pref_05");
+    expect(expr).toContain('"t_05"');
+    expect(expr).toContain('"r_05"');
+    expect(expr).toContain('"s_05"');
+  });
+
+  it("colours a feature by the bin its custom score falls in", () => {
+    const chilly = { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 };
+    const expr = buildFillColorExpression("preferences", 4, chilly);
+    // 6°C, dry, sunny — a perfect match for someone who wants it cold.
+    expect(evaluateExpression(expr, { t_04: 6, r_04: 1, s_04: 8 })).toBe("#0B6E5F");
+    // 22°C is far outside a 0–10° band: one hard miss out of three.
+    expect(evaluateExpression(expr, { t_04: 22, r_04: 1, s_04: 8 })).toBe("#B8610E");
+    expect(evaluateExpression(expr, { name: "Nowhere" })).toBe(MISSING_FILL);
+  });
+
+  it("passes preferences through buildMapStyle to every fill layer", () => {
+    const style = buildMapStyle({
+      freeTilesUrl: FREE_URL,
+      premiumTilesUrl: PREMIUM_URL,
+      mode: "preferences",
+      month: 4,
+      preferences: { ...DEFAULT_PREFERENCES, sunMin: 9 },
+    });
+    for (const id of [COUNTRY_FILL_LAYER, ADMIN1_FILL_LAYER, ADMIN1_MOSAIC_FILL_LAYER, ADMIN2_FILL_LAYER]) {
+      const layer = style.layers.find((l) => l.id === id);
+      const paint = layer && "paint" in layer ? layer.paint : undefined;
+      expect(JSON.stringify(paint)).toContain('"s_04"');
+    }
   });
 });
 

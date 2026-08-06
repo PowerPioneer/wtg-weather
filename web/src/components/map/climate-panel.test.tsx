@@ -55,7 +55,7 @@ describe("ClimatePanel", () => {
   it("names the clicked feature and scores the selected month", () => {
     renderPanel();
     expect(screen.getByRole("heading", { name: "Georgia" })).toBeInTheDocument();
-    expect(screen.getByText("April match")).toBeInTheDocument();
+    expect(screen.getByText(/April match/)).toBeInTheDocument();
     expect(screen.getByText("Good option")).toBeInTheDocument();
   });
 

@@ -10,6 +10,7 @@ import {
   readNumber,
   readPreferenceScore,
 } from "./feature-climate";
+import { DEFAULT_PREFERENCES } from "./scoring";
 
 function monthly(prefix: string, base: number): Record<string, number> {
   const out: Record<string, number> = {};
@@ -94,6 +95,25 @@ describe("reading values", () => {
   it("reads the baked preference score for a month", () => {
     expect(readPreferenceScore(GEORGIA, 4)).toBe(64);
     expect(readPreferenceScore({}, 4)).toBeNull();
+    // Default preferences are the ones the pipeline baked in, so they must
+    // resolve to the baked value rather than recomputing it.
+    expect(readPreferenceScore(GEORGIA, 4, DEFAULT_PREFERENCES)).toBe(64);
+  });
+
+  it("scores from the raw values once preferences are custom", () => {
+    // Georgia in April: 9°C, 5 mm/day, 7 h sun. Under a 5–15°C band the rain
+    // is the only hard miss, which the shared rule buckets at 60.
+    expect(
+      readPreferenceScore(GEORGIA, 4, {
+        ...DEFAULT_PREFERENCES,
+        tempMin: 5,
+        tempMax: 15,
+      }),
+    ).toBe(60);
+    // Still null when the feature carries nothing to score.
+    expect(
+      readPreferenceScore({}, 4, { ...DEFAULT_PREFERENCES, tempMax: 24 }),
+    ).toBeNull();
   });
 
   it("reads the value the active display mode paints", () => {

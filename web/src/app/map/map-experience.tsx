@@ -7,9 +7,10 @@
  * out of every other route's JS payload.
  *
  * Responsibilities:
- *   - orchestrate URL state (mode, month) via `useMapState`
+ *   - orchestrate URL state (mode, month, preferences) via `useMapState`
  *   - fetch signed tile URLs via `useTileUrls`
  *   - show the display-mode picker (modal on desktop, sheet on mobile)
+ *   - show the preferences panel (popout card on desktop, sheet on mobile)
  *   - host the premium-zoom upgrade popover (403 / max-zoom triggers)
  *   - own hover / selection: the hover card and the climate panel
  *   - render the legend and top-level controls
@@ -26,6 +27,8 @@ import { MapHoverCard } from "@/components/map/map-hover-card";
 import { MapLegend } from "@/components/map/map-legend";
 import { DisplayModeModal } from "@/components/map/display-mode-modal";
 import { DisplayModeSheet } from "@/components/map/display-mode-sheet";
+import { PreferencesPanel } from "@/components/map/preferences-panel";
+import { PreferencesSheet } from "@/components/map/preferences-sheet";
 import {
   InlineUpgradePopover,
   type PremiumFeature,
@@ -33,6 +36,7 @@ import {
 import type { MapFeatureHover } from "@/components/map/map-canvas";
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
+import { useStoredPreferences } from "@/hooks/use-stored-preferences";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { findCountryByIso2 } from "@/lib/countries";
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
@@ -43,6 +47,7 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
+import { isDefaultPreferences } from "@/lib/scoring";
 
 const MapCanvas = dynamic(
   () => import("@/components/map/map-canvas").then((m) => m.MapCanvas),
@@ -83,11 +88,24 @@ export function MapExperience({
   isPremium,
   publishedCountrySlugs = [],
 }: MapExperienceProps) {
-  const { mode, month, setMode, setMonth } = useMapState();
+  const {
+    mode,
+    month,
+    preferences,
+    setMode,
+    setMonth,
+    setPreferences,
+    resetPreferences,
+  } = useMapState();
   const tiles = useTileUrls({ premium: isPremium });
+
+  // Signed-in users carry their preferences between devices; the URL still
+  // wins, so a shared link shows the sender's map rather than the reader's.
+  useStoredPreferences({ preferences, onHydrate: setPreferences });
 
   const [isMobile, setIsMobile] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [prefsOpen, setPrefsOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature | null>(null);
   const [selected, setSelected] = useState<FeatureSelection | null>(null);
   const [hovered, setHovered] = useState<HoverSelection | null>(null);
@@ -189,6 +207,17 @@ export function MapExperience({
     [mode, setMode],
   );
 
+  // Tuning preferences while another variable is painted would look like the
+  // sliders do nothing — only the `preferences` mode reads them. Switching is
+  // the honest response to "recolour the map as I change this".
+  const handlePreferencesChange = useCallback(
+    (next: Parameters<typeof setPreferences>[0]) => {
+      setPreferences(next);
+      if (mode !== "preferences") setMode("preferences");
+    },
+    [mode, setMode, setPreferences],
+  );
+
   const handleUpgradeFromMap = useCallback((feature: PremiumFeature) => {
     setUpgradeFeature(feature);
     trackEvent(ANALYTICS_EVENTS.upgradeClick, { source: "map_layer", feature });
@@ -205,6 +234,7 @@ export function MapExperience({
 
   const activeMode = DISPLAY_MODES[mode];
   const monthLabel = MONTH_SHORT[MONTH_SLUGS[month - 1]];
+  const prefsAreDefault = isDefaultPreferences(preferences);
 
   return (
     <div className="relative h-[calc(100vh-var(--size-header,56px))] w-full bg-surface-sunken">
@@ -216,6 +246,7 @@ export function MapExperience({
           premiumTilesUrl={tiles.premiumUrl}
           mode={mode}
           month={month}
+          preferences={preferences}
           selectedFeatureId={selected?.identity.id ?? null}
           onPremiumZoomBlocked={handlePremiumZoomBlocked}
           onFeatureSelect={handleFeatureSelect}
@@ -232,6 +263,7 @@ export function MapExperience({
           point={hovered.point}
           mode={mode}
           month={month}
+          preferences={preferences}
           countryName={findCountryByIso2(hovered.identity.iso2)?.name}
         />
       ) : null}
@@ -241,6 +273,7 @@ export function MapExperience({
           identity={selected.identity}
           properties={selected.properties}
           month={month}
+          preferences={preferences}
           country={selectedCountry}
           hasCountryPage={
             selectedCountry != null && published.has(selectedCountry.slug)
@@ -278,7 +311,47 @@ export function MapExperience({
             onClick={() => setMonth((month % 12) + 1)}
           />
         </div>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="pointer-events-auto shadow-sm"
+          onClick={() => setPrefsOpen((open) => !open)}
+          aria-haspopup="dialog"
+          aria-expanded={prefsOpen}
+          data-testid="open-preferences"
+        >
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
+            Prefs
+          </span>
+          <span className="ml-2 text-[13px] font-medium">
+            {prefsAreDefault ? "Default" : "Custom"}
+          </span>
+          {prefsAreDefault ? null : (
+            <span
+              aria-hidden="true"
+              className="ml-1.5 size-1.5 rounded-full bg-accent"
+            />
+          )}
+        </Button>
       </div>
+
+      {/* Preferences — popout card on desktop, anchored under the pills. */}
+      {prefsOpen && !isMobile ? (
+        <div
+          role="dialog"
+          aria-label="Weather preferences"
+          className="pointer-events-auto absolute left-4 top-[60px] z-20 w-[320px] rounded-lg border border-border bg-surface p-4 shadow-lg"
+        >
+          <PreferencesPanel
+            value={preferences}
+            onChange={handlePreferencesChange}
+            onReset={resetPreferences}
+            isPremium={isPremium}
+            onUpgradeClick={handleUpgradeFromMap}
+            onClose={() => setPrefsOpen(false)}
+          />
+        </div>
+      ) : null}
 
       {/* Bottom-left: legend */}
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 max-w-[calc(100%-2rem)]">
@@ -303,6 +376,18 @@ export function MapExperience({
           </div>
         </div>
       )}
+
+      {isMobile ? (
+        <PreferencesSheet
+          open={prefsOpen}
+          onOpenChange={setPrefsOpen}
+          value={preferences}
+          onChange={handlePreferencesChange}
+          onReset={resetPreferences}
+          isPremium={isPremium}
+          onUpgradeClick={handleUpgradeFromMap}
+        />
+      ) : null}
 
       {isMobile ? (
         <DisplayModeSheet

@@ -16,6 +16,13 @@ import {
   type DisplayMode,
   type DisplayModeId,
 } from "./display-modes";
+import {
+  BUCKET_SCORES,
+  DEFAULT_PREFERENCES,
+  isDefaultPreferences,
+  preferenceRanges,
+  type WeatherPreferences,
+} from "./scoring";
 
 export const FREE_SOURCE_ID = "wtg-free";
 export const PREMIUM_SOURCE_ID = "wtg-premium";
@@ -79,10 +86,77 @@ const WATER = "#E4E8EC";
 const LINE_COLOR = "#0F1B2D";
 const MISSING_FILL = "#D9D5C8";
 
+const MISSING_SENTINEL = -9999;
+
+/**
+ * The 0–100 preference score, computed inside the expression from the feature's
+ * own `t_<mm>` / `r_<mm>` / `s_<mm>` properties.
+ *
+ * This is what makes a preference change a `setPaintProperty` call instead of a
+ * tile rebuild: the ingredients are already baked into every polygon, so the
+ * whole scoring rule can be pushed down into the paint. It reproduces
+ * `scoreBucket` in `lib/scoring.ts` — count how many of the three variables
+ * miss their range, and by how much — and returns the same bucket centroids.
+ *
+ * A variable the tier or level does not carry is skipped rather than counted as
+ * a miss; a feature carrying none of the three returns the missing sentinel so
+ * the caller paints it grey instead of scoring it zero.
+ */
+export function buildPreferenceScoreExpression(
+  prefs: WeatherPreferences,
+  month: number,
+): ExpressionSpecification {
+  const mm = String(month).padStart(2, "0");
+
+  const present: ExpressionSpecification[] = [];
+  const missedBuffer: ExpressionSpecification[] = [];
+  const missedRange: ExpressionSpecification[] = [];
+
+  for (const range of preferenceRanges(prefs)) {
+    const key = `${range.alias}_${mm}`;
+    const has: ExpressionSpecification = ["has", key];
+    // `to-number` of an absent property is 0, which is a perfectly plausible
+    // temperature — every comparison below is therefore gated on `has`.
+    const value: ExpressionSpecification = ["to-number", ["get", key]];
+    const inRange: ExpressionSpecification = [
+      "all",
+      [">=", value, range.lo],
+      ["<=", value, range.hi],
+    ];
+    const inBuffer: ExpressionSpecification = [
+      "all",
+      [">=", value, range.lo - range.buffer],
+      ["<=", value, range.hi + range.buffer],
+    ];
+
+    present.push(["case", has, 1, 0]);
+    missedBuffer.push(["case", ["all", has, ["!", inBuffer]], 1, 0]);
+    missedRange.push(["case", ["all", has, inBuffer, ["!", inRange]], 1, 0]);
+  }
+
+  const evaluated: ExpressionSpecification = ["+", ...present];
+  const outOfBuffer: ExpressionSpecification = ["+", ...missedBuffer];
+  const inBufferOnly: ExpressionSpecification = ["+", ...missedRange];
+
+  return [
+    "case",
+    ["==", evaluated, 0],
+    MISSING_SENTINEL,
+    [">=", outOfBuffer, 2],
+    BUCKET_SCORES[0],
+    ["==", outOfBuffer, 1],
+    BUCKET_SCORES[1],
+    [">=", inBufferOnly, 1],
+    BUCKET_SCORES[2],
+    BUCKET_SCORES[3],
+  ];
+}
+
 /** Build the fill-color expression for a given mode + month. */
 export function buildFillColorExpression(
   modeId: DisplayModeId,
   month: number,
+  preferences: WeatherPreferences = DEFAULT_PREFERENCES,
 ): ExpressionSpecification {
   const mode = DISPLAY_MODES[modeId];
   const prop = modeProperty(mode, month);
@@ -91,18 +165,25 @@ export function buildFillColorExpression(
   // otherwise blank polygons silently fall into the lowest bin.
   const raw: ExpressionSpecification = [
     "to-number",
-    ["coalesce", ["get", prop], -9999],
+    ["coalesce", ["get", prop], MISSING_SENTINEL],
   ];
 
   if (mode.kind === "qualitative") {
+    // Default preferences read the score the pipeline already baked in — it is
+    // the same number by construction (see scoring.ts), and one `get` beats
+    // twelve comparisons per polygon per frame.
+    const score: ExpressionSpecification = isDefaultPreferences(preferences)
+      ? raw
+      : buildPreferenceScoreExpression(preferences, month);
+
     // Preferences score 0-100 → 4 Atlas bins. Mirrors scoring.ts SCORE_BINS.
     return [
       "case",
-      ["==", raw, -9999],
+      ["==", score, MISSING_SENTINEL],
       MISSING_FILL,
       [
         "step",
-        raw,
+        score,
         "#7A2E2E", // avoid   (< 50)
         50,
         "#B8610E", // acceptable (50–69)
@@ -118,7 +199,7 @@ export function buildFillColorExpression(
     // Safety 1-4 → discrete bins. -9999 (missing) → neutral grey.
     return [
       "case",
-      ["==", raw, -9999],
+      ["==", raw, MISSING_SENTINEL],
       MISSING_FILL,
       ["step", raw, "#4A5568", 2, "#B8763E", 3, "#B8610E", 4, "#7A2E2E"],
     ];
@@ -141,7 +222,7 @@ export function buildFillColorExpression(
     }
     return [
       "case",
-      ["==", raw, -9999],
+      ["==", raw, MISSING_SENTINEL],
       MISSING_FILL,
       expr as unknown as ExpressionSpecification,
     ];
@@ -179,11 +260,23 @@ export type StyleInput = {
   mode: DisplayModeId;
   /** 1-indexed month. Default: current month. */
   month: number;
+  /**
+   * The user's weather preferences. Only the `preferences` mode reads them,
+   * and only to build a paint expression — a preference change never touches
+   * the sources, so the canvas updates paint in place rather than restyling.
+   */
+  preferences?: WeatherPreferences;
 };
 
 export function buildMapStyle(input: StyleInput): StyleSpecification {
-  const { freeTilesUrl, premiumTilesUrl, mode, month } = input;
-  const fillColor = buildFillColorExpression(mode, month);
+  const {
+    freeTilesUrl,
+    premiumTilesUrl,
+    mode,
+    month,
+    preferences = DEFAULT_PREFERENCES,
+  } = input;
+  const fillColor = buildFillColorExpression(mode, month, preferences);
   const fillOpacity = buildFillOpacityExpression(mode);
 
   // A layer can only read properties from its own source — MapLibre has no

@@ -1,13 +1,27 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
+  BUCKET_SCORES,
+  DEFAULT_PREFERENCES,
+  PREFERENCE_LIMITS,
+  clampPreferences,
   clampScore,
+  isDefaultPreferences,
+  preferenceRanges,
+  preferenceScore,
   scoreBin,
+  scoreBucket,
   scoreHex,
   scoreLabel,
   scoreShortLabel,
   SCORE_HEX,
 } from "./scoring";
+
+const pipelineSource = (relative: string) =>
+  readFileSync(join(process.cwd(), "..", "pipeline/src/wtg_pipeline", relative), "utf8");
 
 describe("scoring", () => {
   it("buckets at bin boundaries", () => {
@@ -47,5 +61,171 @@ describe("scoring", () => {
     expect(scoreHex(75)).toBe(SCORE_HEX.good);
     expect(scoreHex(60)).toBe(SCORE_HEX.acceptable);
     expect(scoreHex(30)).toBe(SCORE_HEX.avoid);
+  });
+});
+
+/**
+ * The client scorer has to agree with the pipeline's `polygon_score` on the
+ * default preferences, because the map paints the pipeline's baked `pref_<mm>`
+ * whenever preferences are default and this function's output whenever they
+ * are not. Drift shows up as the map changing colour when a user drags a
+ * slider back to where it started.
+ */
+describe("preference scoring — parity with the pipeline", () => {
+  it("uses the Python DEFAULT_PREFERENCES ranges and buffers", () => {
+    const source = pipelineSource("processing/scoring.py");
+    const block = source.match(
+      /DEFAULT_PREFERENCES:\s*tuple\[VariablePreference,\s*\.\.\.\]\s*=\s*\(([\s\S]*?)\n\)/,
+    );
+    expect(block, "could not locate DEFAULT_PREFERENCES in scoring.py").toBeTruthy();
+
+    const python = [
+      ...block![1].matchAll(
+        /VariablePreference\(\s*"(\w+)",\s*lo=([-\d.]+),\s*hi=([-\d.]+),\s*buffer=([-\d.]+)\s*\)/g,
+      ),
+    ].map((m) => ({
+      variable: m[1],
+      lo: Number(m[2]),
+      hi: Number(m[3]),
+      buffer: Number(m[4]),
+    }));
+
+    expect(python).toHaveLength(3);
+    expect(preferenceRanges(DEFAULT_PREFERENCES)).toEqual(
+      python.map((p) => ({
+        alias: { t2m: "t", tp: "r", sun_hours: "s" }[p.variable],
+        variable: p.variable,
+        lo: p.lo,
+        hi: p.hi,
+        buffer: p.buffer,
+      })),
+    );
+  });
+
+  it("scores exactly the variables the pipeline scores", () => {
+    const source = pipelineSource("tiles/build_geojson.py");
+    const block = source.match(/SCORED_VARIABLES:\s*tuple\[str,\s*\.\.\.\]\s*=\s*\(([^)]*)\)/);
+    expect(block, "could not locate SCORED_VARIABLES in build_geojson.py").toBeTruthy();
+
+    const python = [...block![1].matchAll(/"(\w+)"/g)].map((m) => m[1]);
+    expect(preferenceRanges().map((r) => r.variable)).toEqual(python);
+  });
+
+  it("maps buckets onto the same 0–100 scale as SCORE_TO_PREF", () => {
+    const source = pipelineSource("tiles/build_geojson.py");
+    const block = source.match(/SCORE_TO_PREF:\s*dict\[int,\s*int\]\s*=\s*\{([^}]*)\}/);
+    expect(block, "could not locate SCORE_TO_PREF in build_geojson.py").toBeTruthy();
+
+    const python = [...block![1].matchAll(/(\d+):\s*(\d+)/g)].map((m) => [
+      Number(m[1]),
+      Number(m[2]),
+    ]);
+    expect(python).toHaveLength(4);
+    for (const [bucket, score] of python) {
+      expect(BUCKET_SCORES[bucket]).toBe(score);
+    }
+  });
+
+  it("reproduces the pipeline's bucket rule", () => {
+    // 3 — everything inside its range.
+    expect(scoreBucket({ t: 22, r: 1, s: 8 })).toBe(3);
+    // 2 — one variable outside its range but inside the buffer.
+    expect(scoreBucket({ t: 30, r: 1, s: 8 })).toBe(2);
+    // 1 — one variable past the buffer, whatever the others do.
+    expect(scoreBucket({ t: 40, r: 1, s: 8 })).toBe(1);
+    expect(scoreBucket({ t: 40, r: 3.5, s: 8 })).toBe(1);
+    // 0 — two or more past the buffer.
+    expect(scoreBucket({ t: 40, r: 9, s: 8 })).toBe(0);
+  });
+
+  it("scores on the boundary the same way Python's <= does", () => {
+    expect(scoreBucket({ t: 18, r: 0, s: 6 })).toBe(3);
+    expect(scoreBucket({ t: 28, r: 2.7, s: 13 })).toBe(3);
+    // 31 = hi + buffer, still inside the buffer.
+    expect(scoreBucket({ t: 31, r: 1, s: 8 })).toBe(2);
+    expect(scoreBucket({ t: 31.1, r: 1, s: 8 })).toBe(1);
+  });
+
+  it("ignores variables the feature does not carry", () => {
+    // A tier or level missing sunshine must not be punished for it — the
+    // pipeline skips absent variables rather than scoring them zero.
+    expect(scoreBucket({ t: 22, r: 1 })).toBe(3);
+    expect(scoreBucket({ t: 22, r: 1, s: null })).toBe(3);
+  });
+
+  it("returns null — not zero — for a feature with no scored data", () => {
+    // Zero would paint the polygon "Avoid"; the pipeline omits `pref_<mm>`
+    // entirely for these, and the map paints them missing-grey.
+    expect(scoreBucket({})).toBeNull();
+    expect(preferenceScore({ t: null, r: null, s: null })).toBeNull();
+  });
+
+  it("converts buckets to the 0–100 bins the map paints", () => {
+    expect(preferenceScore({ t: 22, r: 1, s: 8 })).toBe(90);
+    expect(scoreBin(preferenceScore({ t: 22, r: 1, s: 8 })!)).toBe("perfect");
+    expect(scoreBin(preferenceScore({ t: 30, r: 1, s: 8 })!)).toBe("good");
+    expect(scoreBin(preferenceScore({ t: 40, r: 1, s: 8 })!)).toBe("acceptable");
+    expect(scoreBin(preferenceScore({ t: 40, r: 9, s: 8 })!)).toBe("avoid");
+  });
+});
+
+describe("preference scoring — custom preferences", () => {
+  it("moves the score when the user's band moves", () => {
+    const cold = { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 };
+    expect(scoreBucket({ t: 22, r: 1, s: 8 })).toBe(3);
+    expect(scoreBucket({ t: 22, r: 1, s: 8 }, cold)).toBe(1);
+    expect(scoreBucket({ t: 6, r: 1, s: 8 }, cold)).toBe(3);
+  });
+
+  it("treats rainfall as a ceiling and sunshine as a floor", () => {
+    const strict = { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10 };
+    expect(scoreBucket({ t: 22, r: 4, s: 11 }, strict)).toBe(1);
+    expect(scoreBucket({ t: 22, r: 0.4, s: 4 }, strict)).toBe(1);
+    expect(scoreBucket({ t: 22, r: 0.4, s: 11 }, strict)).toBe(3);
+  });
+});
+
+describe("clampPreferences", () => {
+  it("returns the defaults for empty or nonsense input", () => {
+    expect(clampPreferences(null)).toEqual(DEFAULT_PREFERENCES);
+    expect(clampPreferences({})).toEqual(DEFAULT_PREFERENCES);
+    expect(clampPreferences({ tempMin: Number.NaN })).toEqual({
+      ...DEFAULT_PREFERENCES,
+      tempMin: PREFERENCE_LIMITS.temp.min,
+    });
+  });
+
+  it("holds every value inside its slider's range", () => {
+    const p = clampPreferences({
+      tempMin: -999,
+      tempMax: 999,
+      rainMax: 500,
+      sunMin: 99,
+    });
+    expect(p.tempMin).toBe(PREFERENCE_LIMITS.temp.min);
+    expect(p.tempMax).toBe(PREFERENCE_LIMITS.temp.max);
+    expect(p.rainMax).toBe(PREFERENCE_LIMITS.rain.max);
+    // A sunshine floor above the range's own ceiling would score nothing.
+    expect(p.sunMin).toBe(PREFERENCE_LIMITS.sun.max);
+    expect(p.sunMin).toBe(preferenceRanges(p)[2].hi);
+  });
+
+  it("swaps an inverted temperature band rather than dropping it", () => {
+    // A hand-edited `?tmin=30&tmax=10` is unambiguous about what was meant.
+    expect(clampPreferences({ tempMin: 30, tempMax: 10 })).toMatchObject({
+      tempMin: 10,
+      tempMax: 30,
+    });
+  });
+});
+
+describe("isDefaultPreferences", () => {
+  it("recognises the pipeline's baked defaults", () => {
+    expect(isDefaultPreferences(DEFAULT_PREFERENCES)).toBe(true);
+    expect(isDefaultPreferences({ ...DEFAULT_PREFERENCES, sunMin: 6.5 })).toBe(false);
+  });
+
+  it("treats an out-of-range value as the clamped one it will be scored as", () => {
+    expect(isDefaultPreferences({ ...DEFAULT_PREFERENCES, tempMax: 28.04 })).toBe(true);
   });
 });

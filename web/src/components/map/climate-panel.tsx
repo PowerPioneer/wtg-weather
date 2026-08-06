@@ -28,13 +28,19 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
-import { scoreLabel } from "@/lib/scoring";
+import { isDefaultPreferences, scoreLabel, type WeatherPreferences } from "@/lib/scoring";
 
 export type ClimatePanelProps = {
   identity: FeatureIdentity;
   properties: FeatureProperties;
   /** 1-indexed month currently selected on the map. */
   month: number;
+  /**
+   * The preferences the map is painting with. Passing them keeps the score in
+   * this panel the same number that chose the polygon's colour; omitting them
+   * falls back to the pipeline's baked default score.
+   */
+  preferences?: WeatherPreferences;
   /** Registry entry for the feature's ISO-2, when it has one. */
   country: CountryRef | undefined;
   /**
@@ -79,6 +85,7 @@ export function ClimatePanel({
   identity,
   properties,
   month,
+  preferences,
   country,
   hasCountryPage = true,
   onClose,
@@ -86,7 +93,8 @@ export function ClimatePanel({
 }: ClimatePanelProps) {
   const monthSlug = MONTH_SLUGS[month - 1];
   const monthName = MONTH_NAMES[monthSlug];
-  const score = readPreferenceScore(properties, month);
+  const score = readPreferenceScore(properties, month, preferences);
+  const custom = preferences != null && !isDefaultPreferences(preferences);
   const charts = CHART_SERIES.map((series) => ({
     kind: series.kind,
     months: buildMonths(properties, series.alias, series.variable),
@@ -140,7 +148,7 @@ export function ClimatePanel({
         <div className="flex items-center gap-3 rounded-md bg-surface-sunken px-4 py-3">
           <div className="flex-1">
             <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.12em] text-text-muted">
-              {monthName} match
+              {monthName} match · {custom ? "your preferences" : "default preferences"}
             </div>
             <div className="mt-0.5 font-display text-[17px] font-medium text-text">
               {score == null ? "No score for this area" : scoreLabel(score)}
