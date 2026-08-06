@@ -328,6 +328,11 @@ tested end-to-end on staging.
 
 ### WS-5 · API+Web: real SSR data path (kill the mocks)
 
+> **Status: code complete, production data publish outstanding.** See
+> § "WS-5 progress" at the end of this document for the two decisions the plan
+> left open, what the end-to-end run exposed, and the commands still to run on
+> the build box.
+
 1. Implement `GET /v1/countries/{slug}` and
    `/v1/countries/{slug}/regions/{region}` in `api/routers/public.py`
    returning the `CountryData` shape `web/src/lib/types.ts` expects (12-month
@@ -736,6 +741,172 @@ Also outstanding: **no root crontab exists on v2**, so `weekly-advisories.sh`
 is not actually scheduled despite `infra/CLAUDE.md` describing it (nor is the
 nightly Postgres backup). The script is correct and tested by hand; it just
 has nothing firing it.
+
+## WS-5 progress
+
+### The two decisions the plan left open
+
+**Where the API reads from.** Step 1 offered Postgres-at-deploy-time or a
+read-only mount. The mount, and not on taste: the pipeline runs on the *host*
+(`pipeline/CLAUDE.md`) while Postgres is on an internal-only Docker network
+that `infra/CLAUDE.md` forbids exposing to it, so a publish step that wrote
+rows would have to punch through that rule before it wrote anything. What the
+API serves is read-only reference data with no per-user state, regenerated
+whole by the yearly climate run and the weekly advisory run. `wtg publish
+api-data` writes a directory; compose mounts it at `/srv/wtg-data:ro`, exactly
+as Caddy already mounts `./tiles`.
+
+**What to do about the fields the pipeline cannot know.** The country page
+renders a capital, a timezone, a local-language name, a prose summary and
+twelve month notes. Natural Earth — the source of record for the boundary
+vintage — carries none of them except via one extra layer. Resolution, agreed
+with the owner:
+
+* `ne_110m_populated_places` is now downloaded alongside the boundary layers.
+  It is the only NE layer with a capital city and its IANA timezone. Nothing in
+  the tiles reads it; a country it cannot resolve omits those two rows.
+* `area` is computed from the country's own geometry in an equal-area
+  projection (EPSG:6933), so it is a measurement rather than a lookup.
+* `summary`, `monthNotes`, the best-month captions and the related-country
+  captions are **generated from the series printed on the same page** —
+  mechanically, deterministically, and drier than editorial copy. Every
+  sentence is checkable against the charts beside it.
+* local name, currency and official language are gone. A hand-kept table would
+  drift from the polygons it describes, and the alternative to a fact is not a
+  placeholder, it is an absent row.
+
+### Changes landed
+
+| Change | File | Why |
+|---|---|---|
+| `wtg publish api-data` | `publish/api_data.py` (new), `cli.py`, `pipeline_runner.py` | The step the plan asked for. Reads the percentiles Parquet, the boundary layers and `advisories.json`; writes `data/final/api/countries/<slug>.json` + `index.json`. Runs inside `wtg pipeline full` after the tiles, since a failure there costs the pages and not the map. Byte-stable and pruning, like `process advisories`. |
+| Series come through the **same** conversion the tiles use | `publish/api_data.py` → `tiles/build_geojson.widen_percentiles_for_polygon` | A country page and the map now cannot disagree about what April looks like, because there is one unit-conversion path and one sunshine derivation, not two. (The helper was private; it is now part of the module's surface.) |
+| Slug rule shared between the registry generator and the publish step | `processing/country_registry.py` (new), `scripts/generate_country_registry.py` | The web generates its route tree from the published index and fetches by slug. Two modules deriving slugs by their own copy of the rule is a page the API cannot answer for, waiting to happen. |
+| Suppressed countries get a payload from their regions | `publish/api_data.py` | `apply_country_rules` drops the ten `SUPPRESSED_COUNTRIES` from the country Parquet, so `/argentina` — named in this workstream's own acceptance criteria — had no data at all. Their payload is the mean of their admin-1 rows, marked `climateBasis: "admin1-mean"`, and the generated summary says so. |
+| Premium variables are **not** published | `publish/api_data.py`, `web/src/lib/types.ts`, `components/country/climate-grid.tsx` | Country pages are statically generated: one HTML document serves every visitor, so the four Premium charts' "blur" was CSS over numbers sitting in view-source. The pipeline already treats the tier boundary as a file boundary; this is the same boundary. The charts are now a named, empty offer. |
+| `GET /v1/countries`, `/v1/countries/{slug}`, `/v1/countries/{slug}/regions/{region}` | `api/routers/countries.py`, `services/country_data.py`, `schemas/__init__.py` | RC-6's contract mismatch, closed. Mounted at `/v1` rather than `/api/v1` so the Caddyfile does not route it: the SSR pages reach it over the docker network and a browser cannot reach it at all. |
+| `/api/public/country` placeholder deleted | — | It returned `{"climate": null}` and nothing called it. |
+| Payload cache keyed on file mtime | `services/country_data.py` | `rebuild-tiles.sh` and the weekly advisory cron rewrite the bundle underneath a running container and restart nothing. A cache keyed on anything else serves last year's climate until somebody notices. |
+| `USE_MOCK_DATA` inverted to opt-in | `web/src/lib/env.ts` | It defaulted **on**, so production had to remember to switch it off — and until this workstream there was nothing to switch it on to. |
+| Unauthenticated resolves to free | `web/src/lib/session.ts` | RC-6, and the reason the inversion above matters: the mock session defaulted to the *premium* persona, so a mock-backed production build served every anonymous visitor the paid tier. |
+| Route tree generated from the published index | `web/src/lib/country-routes.ts`, the three `generateStaticParams`, `sitemap.ts` | The registry is every ISO-2 code a *polygon* can carry, which is strictly larger than the set with a complete climate series. Generating from the index makes the two identical by construction rather than by hope. |
+| Region routes render on demand | `[country]/[slug]`, `[country]/[slug]/[month]` | ~4,600 admin-1 units × 12 months is ~55,000 pages. That is a batch job, not a build. Months (~2,800 pages) are still pre-rendered. |
+| SSR pages score through `preferenceScore` | `lib/country-derive.ts`, `lib/regions.ts` | WS-3's follow-up #1. They ran on a hand-rolled heuristic that agreed with nothing: a month could read 74/100 on the page and paint "Perfect match" on the map. Rainfall is read from the new `rDay` (mm/day) because that is the unit the rule is written in; `r` stays mm/month for display. |
+| Regions carry their own rainfall and sunshine | `publish/api_data.py`, `lib/regions.ts` | The Parquet always had them. The region page's "per-region coverage lands with the next pipeline cut" placeholder is retired. |
+| `regionalMax` surfaced on the country page | `components/country/safety-section.tsx` | WS-4's follow-up #2. The carve-out is deliberately absent from the tiles because it names no polygon; the page is where it can finally be said. |
+| Sixth government named correctly | `components/country/safety-section.tsx` | The code table had five entries and a `slice(0, 2)` fallback, so the Netherlands rendered as "NE". The heading said "five governments" too. |
+| Empty-account fallback | `lib/mock-data.ts`, `app/account/page.tsx` | The account surface is still fixture-backed (RC-6, Phase 6). With real sessions a user id matches no fixture, and `notFound()` would have 404'd `/account` for everyone who signs in. |
+
+### The thing the end-to-end run exposed
+
+Building the site against a live API showed `/[country]` and
+`/[country]/[slug]` marked **ƒ (Dynamic)** — server-rendered per request. Not a
+regression from this work: `app/layout.tsx` called `getSessionServer()`, and a
+dynamic API in the *root layout* opts every route in the app out of static
+generation. So the ~2,800 pages `web/CLAUDE.md` specifies as "static at build
+time, `revalidate: 60*60*24*30`" had never been static, `generateStaticParams`
+ran and its output went unused, and every country page made an `/api/me` round
+trip before rendering a page that does not depend on who is asking.
+
+The layout wanted the session for one decision: Plausible for anonymous
+traffic, PostHog for identified. That now resolves in the browser
+(`AnalyticsSwitch`), which costs one client-side `/api/me` that `useSession`
+was already making elsewhere and costs nothing for content — analytics are
+JavaScript either way, so a visitor with JS disabled sees the same page. With
+the layout static, the build reports `● /[country] 30d` and writes the HTML.
+
+Second, smaller: `pnpm build` runs inside `docker build`, which is not on the
+compose network, so `http://api:8000` does not resolve there and
+`generateStaticParams` cannot fetch the index. A *connection* failure is
+therefore a normal build condition and falls back to on-demand rendering with a
+warning; a *reachable* API answering badly (a 503 means the bundle is not
+mounted) still throws. `dynamicParams` is on everywhere for the same reason —
+an unknown slug still 404s, via `notFound()` at request time.
+
+### Tests added
+
+- `pipeline/tests/test_publish_api_data.py` — display-unit conversion, the
+  premium four never reaching a payload, Argentina published from its regions,
+  a country with no series being dropped rather than published with holes,
+  per-region rain and sun, region-slug collisions, the index matching the files
+  on disk, republish being a no-op, pruning, and the advisory mapping including
+  the carve-out and the no-national-level case.
+- `api/tests/test_countries.py` — the response shape, 404s for unknown country
+  and unknown region, path traversal through the slug, 503 rather than an empty
+  index when the mount is missing, a republished payload being picked up
+  without a restart, and a half-written payload costing one page rather than
+  the route.
+- `web/src/lib/session.test.ts` — an anonymous visitor resolving to no session
+  and no entitlement, under mocks and against the API.
+- `web/src/lib/api-client.test.ts` — the paths, since RC-6 *was* a path
+  mismatch that fixtures hid.
+- `web/src/lib/country-routes.test.ts` — the gate following the index, throwing
+  on a bad answer, and degrading on no answer.
+- `web/src/lib/country-derive.test.ts` — page scores equal `preferenceScore`,
+  including that rainfall is read in mm/day and not as the monthly total.
+- `web/src/components/country/climate-grid.test.tsx` — the tier boundary in the
+  rendered markup.
+- `web/src/components/country/safety-section.test.tsx` — NL, the government
+  count, the absent-advisory copy, and the carve-out.
+
+### Verified
+
+`/georgia` and `/argentina` were built and rendered against a real running API
+with a two-country bundle, and the emitted HTML carries the summary, capital,
+timezone, regions, advisory and carve-out with no JavaScript involved — the
+workstream's acceptance criterion. `/georgia/adjara` and
+`/georgia/adjara/june` render on demand; `/atlantis` and `/georgia/atlantis`
+404. `sitemap.xml` lists only published countries. Full suites green:
+pipeline 237, api 87, web 172.
+
+### Still to run on the build box
+
+```bash
+uv run --directory pipeline wtg download boundaries --source naturalearth
+uv run --directory pipeline wtg publish api-data
+docker compose up -d api          # picks up the new read-only mount
+docker compose build web && docker compose up -d web
+```
+
+The boundary download is not optional even though the two existing layers are
+cached: `ne_110m_populated_places` is new, and without it every country page
+omits its capital and timezone.
+
+Two things to check on the box:
+
+1. `wtg publish api-data` prints `skipped=<n>`. Those are countries with no
+   complete climate series, and they are absent from the route tree by design —
+   but a large number means the percentiles are thinner than expected, not that
+   the publish step is broken.
+2. The web image is built inside `docker build`, off the compose network, so
+   the country pages will render on demand rather than being pre-rendered
+   unless the build can reach the API. That is correct but not optimal; see the
+   follow-ups.
+
+### Follow-ups this leaves for other workstreams
+
+1. **The web image builds without a pre-rendered country tree.** Everything
+   still works — ISR fills the pages in on first request — but the first
+   visitor to each of ~2,800 pages pays for the render. Fixing it means giving
+   `docker build` a route to the API (a build-time network, or publishing the
+   bundle into the build context). Worth doing before the apex cutover, when
+   traffic stops being a trickle.
+2. **`/api/me` returns the API's shape, not `SessionUser`.** `plan` comes back
+   as `consumer_premium` where the web's type says `premium`, and the account
+   pages still read fixtures. The entitlement booleans happen to resolve
+   correctly through `startsWith("agency_")` and `!== "free"`, so nothing is
+   mis-gated — but the account/trips/favourites wiring is genuinely unbuilt
+   (RC-6, Phase 6) and this is where it starts.
+3. **`/pricing`, `/map` and `/account` are still dynamic.** For `/map` and
+   `/account` that is correct. `/pricing` is a static marketing page that reads
+   the session for its CTA and could be static with the same treatment the root
+   layout just got.
+4. **The `unit` query param is still unused** — WS-3's follow-up #5 stands, and
+   the SSR pages are now a fourth surface that would need imperial formatting.
+5. **`related` is nearest-climate within a continent.** It is a reasonable
+   internal-linking rule and it is *not* an editorial one; if these links are
+   meant to carry travel meaning rather than SEO structure, that is a product
+   decision with a different implementation behind it.
 
 ## Part 4 — What was *not* verified in this audit
 
