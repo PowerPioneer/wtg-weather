@@ -1,55 +1,122 @@
 [
   {
-    "id": "AFG",
-    "type": "reisadvies",
-    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/afghanistan",
-    "title": "Reisadvies Afghanistan",
-    "introduction": "<h2>In het kort</h2><p>De kleurcode van het reisadvies voor Afghanistan is rood. Reis er niet heen.</p>",
-    "location": "Afghanistan",
-    "isocode": "AFG",
-    "lastmodified": "2026-03-15T08:00:00.000Z"
+    "isocode": "DEU",
+    "location": "Duitsland",
+    "title": "Reisadvies Duitsland | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/duitsland",
+    "lastmodified": "2026-03-19T09:18:50.811Z",
+    "introduction": "<h2>In het kort</h2>\n       <p>De kleurcode van het reisadvies voor Duitsland is groen. U\n  kunt   erheen reizen. Lees welke veiligheidsrisico’s er zijn.</p>"
   },
   {
-    "id": "UKR",
-    "type": "reisadvies",
-    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/oekraine",
-    "title": "Reisadvies Oekraïne",
-    "introduction": "<p>De kleurcode van het reisadvies voor Oekraïne is oranje. Reis alleen als het echt moet.</p>",
-    "location": "Oekraïne",
-    "isocode": "UKR",
-    "lastmodified": "2026-03-10T10:00:00.000Z"
-  },
-  {
-    "id": "MEX",
-    "type": "reisadvies",
-    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/mexico",
-    "title": "Reisadvies Mexico",
-    "introduction": "<p>De kleurcode van het reisadvies voor Mexico is geel. Let op veiligheidsrisico's.</p>",
-    "location": "Mexico",
-    "isocode": "MEX",
-    "lastmodified": "2026-03-05T10:00:00.000Z"
-  },
-  {
-    "id": "JPN",
-    "type": "reisadvies",
-    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/japan",
-    "title": "Reisadvies Japan",
-    "introduction": "<p>De kleurcode van het reisadvies voor Japan is groen. U kunt erheen reizen.</p>",
-    "location": "Japan",
     "isocode": "JPN",
-    "lastmodified": "2026-02-20T10:00:00.000Z"
+    "location": "Japan",
+    "title": "Reisadvies Japan | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/japan",
+    "lastmodified": "2026-07-28T11:20:25.143Z",
+    "introduction": "<h2>In het kort</h2>\n  <ul>  <li>Op 28 juli 2026 was er een zware aardbeving in Kyushu, het\n    zuiden van Japan. Er is risico op meer bevingen. Lees meer onder\n  Actueel.</li>  <li>De kleurcode van het reisadvies voor het zuidoosten\n    van Fukushima is rood. Wat uw situatie ook is: reis er niet heen.\n    Het is er te gevaarlijk. Lees meer onder Regionale risico's.</li>\n    <li>Voor de rest van Japan geldt kleurcode groen. U kunt hierheen\n    reizen. Lees welke veiligheidsrisico’s er zijn.</li> </ul>"
   },
   {
-    "id": "NOCODE",
-    "type": "reisadvies",
-    "location": "Atlantis",
-    "introduction": "<p>De kleurcode van het reisadvies voor Atlantis is rood.</p>"
+    "isocode": "IND",
+    "location": "India",
+    "title": "Reisadvies India | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/india",
+    "lastmodified": "2026-07-24T07:49:34.155Z",
+    "introduction": "<h2>In het kort</h2>\n   <ul>  <li>De situatie in het Midden-Oosten kan gevolgen hebben voor\n    uw     reis naar India. Lees meer onder Actueel.</li>  <li>Sinds 10\n    mei     2025 is er een staakt-het-vuren tussen India en Pakistan. De\n    veiligheidssituatie in de grensgebieden blijft onvoorspelbaar. Lees\n    meer onder Actueel.</li>  <li>De kleurcode van het reisadvies van\n    India is rood voor de regio’s Jammu en Kasjmir, Aksai Chin, voor de\n    deelstaat Manipur en voor de grensstrook tussen India en Pakistan.\n    Wat uw situatie ook is: reis er niet heen. Het is er te gevaarlijk.\n    Lees meer onder Regionale risico’s.</li>  <li>Kleurcode oranje geldt\n    voor het grensgebied tussen India en Myanmar, Bangladesh en China,\n    voor de deelstaten Mizoram en Nagaland, en voor gebieden in\n    Centraal-India. Reis alleen hierheen als het noodzakelijk is. Het is\n    niet veilig er op vakantie te gaan. </li>  <li>Voor de rest van\n    India geldt kleurcode geel. U kunt hierheen reizen. Maar let op: er\n    zijn bijzondere veiligheidsrisico’s.</li> </ul>"
   },
   {
-    "id": "ATA",
-    "type": "reisadvies",
-    "location": "Antarctica",
+    "isocode": "ZAF",
+    "location": "Zuid-Afrika",
+    "title": "Reisadvies Zuid-Afrika | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/zuid-afrika",
+    "lastmodified": "2026-07-07T14:00:59.863Z",
+    "introduction": "<h2>In het kort</h2>\n   <p>De kleurcode voor het reisadvies voor Zuid-Afrika is geel. U kunt\n  erheen reizen. Maar let op: er zijn bijzondere veiligheidsrisico’s.</p>"
+  },
+  {
+    "isocode": "MAR",
+    "location": "Marokko",
+    "title": "Reisadvies Marokko | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/marokko",
+    "lastmodified": "2026-07-30T12:45:17.850Z",
+    "introduction": "<h2>In het kort</h2>\n   <ul>  <li>In delen van Marokko kunnen door droogte en hoge\n    temperaturen natuurbranden voorkomen. Lees meer onder\n  Natuurgeweld.</li>  <li>De kleurcode van het reisadvies is rood voor\n    het grensgebied tussen Marokko en Mauritanië. Wat uw situatie ook\n    is: reis niet hierheen. Het is er te gevaarlijk. Lees meer onder\n    Regionale risico’s.</li>  <li>Kleurcode oranje geldt voor het\n    grensgebied tussen Marokko en Algerije. Reis alleen hierheen als het\n    noodzakelijk is. Het is niet veilig er op vakantie te gaan.</li>\n    <li>Vor de rest van Marokko geldt kleurcode geel. U kunt erheen\n    reizen. Maar let op: er zijn bijzondere veiligheidsrisico’s.</li> </ul>"
+  },
+  {
+    "isocode": "PAK",
+    "location": "Pakistan",
+    "title": "Reisadvies Pakistan | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/pakistan",
+    "lastmodified": "2026-07-24T08:26:03.160Z",
+    "introduction": "<h2>In het kort</h2>\n   <ul>  <li>De situatie in het Midden-Oosten kan gevolgen hebben voor\n    uw     reis naar Pakistan. Lees meer onder Actueel.</li>  <li>De\n    veiligheidssituatie in het Midden-Oosten is onvoorspelbaar. Dit kan\n    leiden tot demonstraties in Pakistan. Lees meer onder Actueel.</li>\n    <li>De kleurcode van het reisadvies is rood voor het westen van\n    Pakistan, het grensgebied met India, het gebied rond de bestandslijn\n    tussen Pakistan en India, en een deel van het grensgebied met China.\n    Wat uw situatie ook is: reis niet hierheen. Het is er te gevaarlijk.\n    Lees meer onder Regionale risico’s.</li>  <li>Kleurcode oranje geldt\n    voor de provincies Sindh, delen van Punjab, de regio Jammu en\n    Kasjmir aan de Pakistaanse kant van de bestandslijn, en delen van\n    Gilgit Balistan. Reis alleen hierheen als het noodzakelijk is. Het\n    is niet veilig er op vakantie te gaan.</li>  <li>Voor de rest van\n    Pakistan, onder andere de hoofdstad Islamabad, geldt kleurcode geel.\n    U kunt hierheen reizen. Maar let op: er zijn bijzondere\n  veiligheidsrisico’s.</li> </ul>"
+  },
+  {
+    "isocode": "GBR",
+    "location": "Verenigd Koninkrijk",
+    "title": "Reisadvies Verenigd Koninkrijk | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/verenigd-koninkrijk",
+    "lastmodified": "2026-06-02T08:39:27.313Z",
+    "introduction": "<h2>In het kort</h2>\n     <ul>  <li>Reist u met een Nederlands paspoort naar het VK? Dan\n    heeft     u     een Electronic Travel Authorisation (ETA) nodig.\n    Lees meer     onder     Paspoort, ID-kaart, ETA, rijbewijs.</li>\n    <li>De kleurcode     van het     reisadvies voor het VK is groen. U\n    kunt erheen reizen.     Lees welke     veiligheidsrisico’s er\n  zijn.</li> </ul>"
+  },
+  {
+    "isocode": "IRQ",
+    "location": "Irak",
+    "title": "Reisadvies Irak | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/irak",
+    "lastmodified": "2026-07-24T10:01:29.258Z",
+    "introduction": "<h2>In het kort</h2>\n     <ul>  <li>Door spanningen in de regio is in heel Irak een verhoogd\n    risico op raketaanvallen. In sommige gebieden is een verhoogd risico\n    op aanslagen. Lees meer onder Actueel.</li>  <li>De kleurcode van\n    het reisadvies is rood voor grote delen van het westen en midden van\n    Irak. En voor de grensgebieden. Wat uw situatie ook is: reis niet\n    hierheen. Het is er te gevaarlijk. Lees meer onder Regionale\n  risico’s.</li>  <li>Voor de Koerdistan Regio Irak en de zuidelijke\n    provincies geldt grotendeels kleurcode oranje. Reis alleen hierheen\n    als het noodzakelijk is. Het is niet veilig er op vakantie te\n  gaan. </li> </ul>"
+  },
+  {
+    "isocode": "AFG",
+    "location": "Afghanistan",
+    "title": "Reisadvies Afghanistan | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/afghanistan",
+    "lastmodified": "2026-04-20T13:58:10.646Z",
+    "introduction": "<h2>In het kort</h2>\n      <ul>  <li>De veiligheidssituatie in Afghanistan is slecht,\n    instabiel     en onvoorspelbaar. Regelmatig worden aanslagen\n    gepleegd. Ook zijn er     gewapende confrontaties met buurlanden.\n    Lees meer onder   Actueel.</li>  <li>De kleurcode van het reisadvies\n    voor Afghanistan is     rood. Wat uw situatie ook is: reis er niet\n    heen. Het is er te   gevaarlijk.</li> </ul>"
+  },
+  {
+    "isocode": "UKR",
+    "location": "Oekraïne",
+    "title": "Reisadvies Oekraïne | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/oekraine",
+    "lastmodified": "2026-06-17T11:29:37.514Z",
+    "introduction": "<h2>In het kort</h2>\n         <ul>  <li>Rusland voert een oorlog tegen Oekraïne. Dagelijks\n    zijn     er     Russische luchtaanvallen, op de hoofdstad Kyiv\n    (Kiev) en     andere     steden. De Russische luchtaanvallen hebben\n    grote gevolgen     voor de     infrastructuur. Lees meer onder\n  Actueel.</li>  <li>De     kleurcode van     het reisadvies voor\n    Oekraïne is rood. Wat uw     situatie ook is: reis     er niet heen.\n    Het is er te gevaarlijk. De     Nederlandse ambassade kan     u niet\n    helpen als u in de problemen     komt. Bent u in Oekraïne?\n    Verlaat het land als dat op een     veilige manier kan.</li> </ul>"
+  },
+  {
+    "isocode": "MEX",
+    "location": "Mexico",
+    "title": "Reisadvies Mexico | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/mexico",
+    "lastmodified": "2026-07-22T12:47:54.603Z",
+    "introduction": "<h2>In het kort</h2>\n      <ul>  <li>De kleurcode van het reisadvies is rood voor de actieve\n    vulkanen Popocatépetl en Colima. Wat uw situatie ook is: reis er\n    niet heen. Het is er te gevaarlijk. Lees meer onder Regionale\n  risico’s.</li>  <li>Kleurcode oranje geldt voor meerdere deelstaten in\n    het zuiden en midden van Mexico. En ook voor het grensgebied tussen\n    Mexico en de Verenigde Staten, en het grensgebied tussen de\n    deelstaat Chiapas en Guatemala. Reis alleen hierheen als het\n    noodzakelijk is. Het is niet veilig er op vakantie te gaan. </li>\n    <li>Voor de rest van Mexico geldt kleurcode geel. U kunt hierheen\n    reizen. Maar let op: er zijn bijzondere veiligheidsrisico’s.</li> </ul>"
+  },
+  {
+    "isocode": "GEO",
+    "location": "Georgië",
+    "title": "Reisadvies Georgië | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/georgie",
+    "lastmodified": "2026-06-24T13:35:20.152Z",
+    "introduction": "<h2>In het kort</h2>\n                   <ul>  <li>De kleurcode van het reisadvies is rood\n    voor     de     regio’s     Abchazië en Zuid-Ossetië. Wat uw\n    situatie ook is:     reis     er niet heen.     Het is er te\n    gevaarlijk. Lees meer onder     Regionale   risico’s.</li>\n    <li>Voor de rest van Georgië geldt     kleurcode geel.     U kunt\n    erheen     reizen. Maar let op: er zijn     bijzondere\n  veiligheidsrisico’s.</li> </ul>"
+  },
+  {
+    "isocode": "FRA",
+    "location": "Frankrijk",
+    "title": "Reisadvies Frankrijk | Ministerie van Buitenlandse Zaken",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/frankrijk",
+    "lastmodified": "2026-07-28T15:20:09.620Z",
+    "introduction": "<h2>In het kort</h2>\n   <ul>  <li>In delen van Frankrijk zijn grote natuurbranden. Lees meer\n    onder Actueel.</li>  <li>De kleurcode van het reisadvies voor\n    Frankrijk is geel. U kunt erheen reizen. Maar let op: er zijn\n    bijzondere veiligheidsrisico’s.</li> </ul>"
+  },
+  {
+    "isocode": "",
+    "location": "Nergenshuizen",
+    "title": "Geen code",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/nergens",
+    "lastmodified": "2026-08-01T00:00:00Z",
+    "introduction": "<p>De kleurcode van het reisadvies voor Nergenshuizen is groen.</p>"
+  },
+  {
     "isocode": "ATA",
-    "introduction": "<h2>In het kort</h2><p>Geen reisadvies beschikbaar voor Antarctica.</p>"
+    "location": "Antarctica",
+    "title": "Antarctica",
+    "canonical": "https://www.nederlandwereldwijd.nl/reisadvies/antarctica",
+    "lastmodified": "2026-08-01T00:00:00Z",
+    "introduction": "<p>Voor Antarctica geldt geen reisadvies.</p>"
   }
 ]
