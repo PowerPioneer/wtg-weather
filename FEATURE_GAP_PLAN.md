@@ -305,10 +305,10 @@ unit tests green including the pipeline-parity case.
 
 ### WS-4 · Pipeline+API: safety/advisory data path
 
-> **Status: code complete; deploy blocked on upstream scraper quality.** The
-> join works and was exercised against a real six-source scrape on v2 — but
-> two scrapers produce levels that cannot be shipped. See § "WS-4 progress"
-> and § "WS-4 deploy attempt, 2026-08-06".
+> **Status: complete and deployed to v2 (free tier), 2026-08-06.** Getting
+> there required fixing two scrapers whose levels could not be shipped; see
+> § "WS-4 progress" for the join and § "WS-4 deploy, 2026-08-06" for what the
+> first real scrape exposed.
 
 1. Join the normalised advisory output into `build_geojson.py`: emit a
    month-less `safety` property (1–4) per feature — country-level from
@@ -617,11 +617,22 @@ speculative.
    Safety mode can colour. Widening `sources/advisories/mappings/*.json` is
    mechanical and independent of everything above.
 
-## WS-4 deploy attempt, 2026-08-06
+## WS-4 deploy, 2026-08-06
 
-Ran on v2 (`51.15.37.62`) up to the point of rebuilding tiles, then stopped.
-**No tiles were rebuilt and the CDN was not purged** — `free.pmtiles` and
-`premium.pmtiles` are untouched, and nothing user-visible changed.
+Shipped to v2 (`51.15.37.62`), **free tier only** — see the ADM2 blocker
+below. `free.pmtiles` rebuilt (39,866,203 B), bunny.net pull zone purged, and
+the CDN verified serving the new bytes (`content-range: bytes 0-1/39866203`,
+`cdn-cache: MISS`). `tests/test_tiles_content.py` runs green against the
+built archive, all 16 checks including the three new advisory ones.
+
+Final consensus across six governments: **227 countries**,
+`{1:76, 2:110, 3:15, 4:26}`, with 63 countries carrying a regional carve-out
+worse than their national level. Japan 1, South Korea 1, India 2, Thailand 2,
+France 2, US 1. No source single-handedly drives a bloc of high ratings
+(Australia is the strictest, sole driver of 8 countries at ≥3, which is what
+Australia is actually like).
+
+Getting there took two scraper fixes. The join itself needed no change.
 
 ### What the first real scrape found
 
@@ -651,28 +662,50 @@ takes the first colour word following the first "kleurcode" in the API's
 `germany.py` is separately suspect: 200 records, not one level 2, and
 summaries that are bare page titles.
 
-### Why this stopped the deploy rather than being a caveat
+### Why that stopped the deploy rather than being a caveat
 
 `max` consensus is the right rule and the web legend advertises it — but it
 means one broken scraper poisons the whole map, and the failure is
 *confidently wrong* rather than blank. Painting Japan and Thailand dark red
 "Do Not Travel" is a false claim about real places and materially worse than
-the grey the mode shows today. Nothing about the tile join needs to change to
-fix it; the scrapers do.
+the grey the mode showed before. Nothing about the tile join needed to change;
+the scrapers did.
 
-### State left on the box
+### The two scraper fixes
 
-- Code pulled (`bc43fae`), inert. There is **no root crontab installed** on
-  v2, so `weekly-advisories.sh` is not scheduled and nothing ships this on its
-  own. The `Caddyfile`'s uncommitted production edits survived the pull and
-  were backed up to `/root/Caddyfile.backup-*` first.
-- Fresh raw dumps for the five working sources are kept — re-testing a scraper
-  fix needs no re-scrape.
-- `safety_index.json` is renamed to `safety_index.json.quarantined-2026-08-06`
-  so that the *next* tile build — WS-1's outstanding production rebuild, most
-  likely — cannot silently bake these levels in. `load_safety_index()` now
-  returns `None` there and `build geojson` logs its "Safety will paint grey"
-  warning. Re-running `wtg process advisories` regenerates it.
+Both turned out to be **the same defect in different clothing: a statement
+about part of a country reported as a statement about the whole of it.** That
+is exactly the distinction the join was already built to handle, via the
+`regional-L<n>` sentinel — the scrapers just weren't using it.
+
+**`netherlands.py`** (`1652fa7`). Half the feed's records are an HTML list
+whose regional carve-outs come *before* the country-wide code, so "first
+colour after the first `kleurcode`" reads Japan — green with one red
+prefecture — as red. Each sentence is now reduced to a `(subject, colour)`
+pair using Dutch word order: `voor <X> is <kleur>` puts the subject first,
+`kleurcode <kleur> geldt voor <X>` puts it last. Two guards matter more than
+the patterns, both failing toward silence: a sentence whose region clause
+won't parse yields nothing rather than falling back to the no-location
+reading (that fallback is what made India red — its carve-out lists four areas
+in one clause), and an unrecognised country name yields nothing too. 222 of
+226 records now resolve; the two holdouts are Iraq and the Palestinian
+Territories, which the feed genuinely describes region by region with no
+national colour.
+
+**`germany.py`** (`da68d16`). A *Teilreisewarnung* is a Reisewarnung for part
+of a country — Japan's is the Fukushima exclusion zone, India's is Jammu and
+Kashmir. It was mapped to a country-wide 3. It is now country level 1 plus a
+`regional-L4` carve-out. Worth knowing: `situationWarning` and
+`situationPartWarning` are false for all 200 entries, so this source
+contributes only 1s and 4s country-wide and is effectively "Reisewarnung or
+nothing" plus carve-outs. That is what the feed publishes; the graded middle
+is not in it, and inventing one is what went wrong.
+
+Both fixtures were replaced with slices of the live feeds. The old ones were
+synthetic and contained text the APIs never emit — `"De kleurcode is groen."`,
+a `title` of `"Teilreisewarnung"` — which is precisely why parsers this wrong
+passed every test. **A synthetic fixture for a scraper tests the parser
+against your idea of the source, which is the thing in doubt.**
 
 ### Two blockers found that are not WS-4's
 
@@ -689,6 +722,20 @@ fix it; the scrapers do.
    no districts. This is WS-1 step 3's outstanding item and it now actively
    booby-traps the rebuild script — **do not run `rebuild-tiles.sh` without
    `TIERS=free` until the ADM2 download is re-run.**
+
+### What the free-tier-only deploy leaves outstanding
+
+`premium.pmtiles` on v2 is still the Aug 4 archive, so **premium sessions see
+no advisory colours at all** — RC-8 points their country and admin-1 layers at
+the premium file, which predates both this work and WS-1's boundary fix. They
+are already looking at 9-country admin-1 for the same reason. One premium
+rebuild clears both, and it needs the ADM2 re-download first. Free-tier users
+have the full Safety map now.
+
+Also outstanding: **no root crontab exists on v2**, so `weekly-advisories.sh`
+is not actually scheduled despite `infra/CLAUDE.md` describing it (nor is the
+nightly Postgres backup). The script is correct and tested by hand; it just
+has nothing firing it.
 
 ## Part 4 — What was *not* verified in this audit
 
