@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import os
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Literal
@@ -91,9 +92,29 @@ def _require_pandas():
     return pd
 
 
+def _require_pyarrow():
+    try:
+        import pyarrow as pa  # type: ignore[import-not-found]
+        import pyarrow.parquet as pq  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise RuntimeError("pyarrow required; run `uv sync` in pipeline/.") from exc
+    return pa, pq
+
+
 def aggregated_path(level: Level, base_dir: Path | None = None) -> Path:
     root = base_dir if base_dir is not None else intermediate_dir() / "aggregated"
     return ensure_dir(root) / f"{level}.parquet"
+
+
+def parts_dir(level: Level, base_dir: Path | None = None) -> Path:
+    """Directory holding one Parquet part per (variable, year).
+
+    Aggregation writes here first and streams the parts into the combined
+    Parquet afterwards, so peak memory is one variable-year rather than the
+    whole level. It also makes a run resumable: at admin-2 scale a single pass
+    is days long, and losing it to a crash on the last file is not acceptable.
+    """
+    return aggregated_path(level, base_dir=base_dir).with_suffix(".parts")
 
 
 def _open_era5_dataset(nc_path: Path):
@@ -261,39 +282,108 @@ def aggregate_level(
 ) -> Path:
     """Aggregate every (variable, year) file for one admin level and write Parquet.
 
-    Idempotent: if the output already exists, it is returned unchanged
-    unless ``force=True``. Heavy; logs progress every file.
+    Each (variable, year) is written to its own part under :func:`parts_dir`
+    and the parts are streamed into the combined Parquet at the end, so peak
+    memory is a single variable-year instead of the whole level. At admin-2
+    scale the difference is decisive: 49k polygons over 90 variable-years is
+    ~53 million rows, which does not fit in this server's RAM as one frame.
+
+    Caching, in precedence order:
+
+    * ``force=True`` — discard any existing parts and recompute everything.
+      Required whenever the *inputs* change (boundary vintage, polygon
+      identity), because a part is keyed only by variable and year and cannot
+      tell that the polygons underneath it moved.
+    * output already present — cache hit, returned untouched.
+    * output absent but parts present — resume, skipping completed parts.
+      This is the crash-recovery path for multi-day runs.
     """
-    pd = _require_pandas()
     out_path = aggregated_path(level, base_dir=base_dir)
     if not force and out_path.exists() and out_path.stat().st_size > 0:
         log.info("cache hit: %s", out_path.name)
         return out_path
 
+    parts = parts_dir(level, base_dir=base_dir)
+    if force and parts.exists():
+        # A stale part is indistinguishable from a fresh one, so `--force`
+        # has to clear them or it would quietly aggregate over old polygons.
+        shutil.rmtree(parts)
+        log.info("force: cleared %s", parts.name)
+    parts.mkdir(parents=True, exist_ok=True)
+
     var_list = list(variable_codes)
     year_list = list(years)
     total = len(var_list) * len(year_list)
-    frames: list[object] = []
+    written: list[Path] = []
     idx = 0
     for variable in var_list:
         for year in year_list:
             idx += 1
+            part_path = parts / f"{variable}_{year}.parquet"
+            if part_path.exists() and part_path.stat().st_size > 0:
+                log.info("[%d/%d] resume: %s already done", idx, total, part_path.name)
+                written.append(part_path)
+                continue
+
             nc_path = netcdf_dir / f"{variable}_{year}.nc"
             if not nc_path.exists():
                 log.warning("missing %s; skipping", nc_path)
                 continue
+
             log.info("[%d/%d] aggregating %s %d → %s", idx, total, variable, year, level)
             df = aggregate_variable_year(nc_path, variable, polygons)
-            frames.append(df)
+            # Write to a temp name first: a part is treated as complete purely
+            # because it exists, so a half-written file would poison a resume.
+            tmp_path = part_path.with_suffix(".parquet.tmp")
+            df.to_parquet(tmp_path, index=False)
+            tmp_path.replace(part_path)
+            log.info("[%d/%d] wrote %s (%d rows)", idx, total, part_path.name, len(df))
+            del df
+            written.append(part_path)
 
-    if not frames:
+    if not written:
         raise RuntimeError(f"no NetCDF inputs matched for level={level!r}")
 
-    merged = pd.concat(frames, ignore_index=True)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    merged.to_parquet(out_path, index=False)
-    log.info("wrote %s (%d rows)", out_path, len(merged))
+    rows = combine_parts(written, out_path)
+    log.info("wrote %s (%d rows from %d parts)", out_path, rows, len(written))
+    shutil.rmtree(parts, ignore_errors=True)
     return out_path
+
+
+def combine_parts(parts: list[Path], out_path: Path) -> int:
+    """Stream Parquet parts into one file without materialising them all.
+
+    Returns the total row count. Uses a single writer over row-group batches,
+    so memory stays at one batch regardless of how much total data there is.
+    """
+    pa, pq = _require_pyarrow()
+
+    writer = None
+    rows = 0
+    tmp_out = out_path.with_suffix(".parquet.tmp")
+    try:
+        for part in parts:
+            parquet_file = pq.ParquetFile(part)
+            for batch in parquet_file.iter_batches(batch_size=250_000):
+                table = pa.Table.from_batches([batch])
+                if writer is None:
+                    writer = pq.ParquetWriter(tmp_out, table.schema)
+                else:
+                    # Parts are produced by one code path so the schema is
+                    # stable, but Arrow can pick a different string width per
+                    # file; align rather than fail the whole run at the end.
+                    table = table.cast(writer.schema)
+                writer.write_table(table)
+                rows += batch.num_rows
+    finally:
+        if writer is not None:
+            writer.close()
+
+    if writer is None:
+        raise RuntimeError(f"no rows found across {len(parts)} part file(s)")
+    tmp_out.replace(out_path)
+    return rows
 
 
 def apply_country_rules(admin1_df: "object", country_df: "object") -> "object":

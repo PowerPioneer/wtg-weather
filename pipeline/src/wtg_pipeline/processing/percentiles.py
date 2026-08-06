@@ -79,10 +79,63 @@ def build_percentiles(
         log.info("cache hit: %s", out.name)
         return out
 
-    log.info("computing percentiles for %s from %s", level, aggregated_parquet.name)
-    df = pd.read_parquet(aggregated_parquet)
-    result = compute_percentiles(df)
     out.parent.mkdir(parents=True, exist_ok=True)
-    result.to_parquet(out, index=False)
-    log.info("wrote %s (%d rows)", out, len(result))
+    log.info("computing percentiles for %s from %s", level, aggregated_parquet.name)
+
+    # Percentile groups are keyed by (polygon, month, variable), so no group
+    # ever spans two variables — the work splits cleanly one variable at a
+    # time. Reading the whole aggregate at once is what this avoids: at
+    # admin-2 scale it is ~53 million rows, which will not fit in RAM.
+    variables = _distinct_variables(aggregated_parquet)
+    log.info("  %d variable(s) to process one at a time", len(variables))
+
+    pa, pq = _require_pyarrow()
+    writer = None
+    rows = 0
+    tmp_out = out.with_suffix(".parquet.tmp")
+    try:
+        for index, variable in enumerate(variables, start=1):
+            chunk = pd.read_parquet(
+                aggregated_parquet, filters=[("variable", "==", variable)]
+            )
+            if chunk.empty:
+                continue
+            result = compute_percentiles(chunk)
+            del chunk
+            table = pa.Table.from_pandas(result, preserve_index=False)
+            if writer is None:
+                writer = pq.ParquetWriter(tmp_out, table.schema)
+            else:
+                table = table.cast(writer.schema)
+            writer.write_table(table)
+            rows += len(result)
+            log.info(
+                "  [%d/%d] %s → %d rows (%d total)",
+                index, len(variables), variable, len(result), rows,
+            )
+            del result
+    finally:
+        if writer is not None:
+            writer.close()
+
+    if writer is None:
+        raise RuntimeError(f"no rows in {aggregated_parquet}")
+    tmp_out.replace(out)
+    log.info("wrote %s (%d rows)", out, rows)
     return out
+
+
+def _distinct_variables(aggregated_parquet: Path) -> list[str]:
+    """Variable codes present in the aggregate, read without loading values."""
+    _pa, pq = _require_pyarrow()
+    column = pq.read_table(aggregated_parquet, columns=["variable"])["variable"]
+    return sorted({str(v) for v in column.to_pylist() if v is not None})
+
+
+def _require_pyarrow():
+    try:
+        import pyarrow as pa  # type: ignore[import-not-found]
+        import pyarrow.parquet as pq  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise RuntimeError("pyarrow required; run `uv sync`.") from exc
+    return pa, pq
