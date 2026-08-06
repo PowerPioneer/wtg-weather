@@ -298,6 +298,16 @@ def test_generated_prose_reports_the_series_it_was_built_from(
 # ─── writing ─────────────────────────────────────────────────────────────
 
 
+def test_possessive_handles_country_names_ending_in_s() -> None:
+    """About twenty of them do, and they are not obscure ones."""
+    assert api_data.possessive("Peru") == "Peru's"
+    for name in ("United States", "Netherlands", "Philippines", "Maldives", "Bahamas"):
+        assert api_data.possessive(name) == f"{name}'"
+
+
+# ─── writing ─────────────────────────────────────────────────────────────
+
+
 def test_write_bundle_is_a_no_op_when_nothing_changed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

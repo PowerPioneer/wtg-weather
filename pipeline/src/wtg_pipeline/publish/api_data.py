@@ -373,6 +373,17 @@ def _preference_phrase() -> str:
     return ", ".join(parts)
 
 
+def possessive(name: str) -> str:
+    """``Peru`` → ``Peru's``, ``United States`` → ``United States'``.
+
+    Not a nicety: roughly twenty country names end in *s* — the United States,
+    the Netherlands, the Philippines, the Maldives, the Bahamas — and the naive
+    form put "United States's national averages" at the top of each of their
+    pages.
+    """
+    return f"{name}'" if name.endswith(("s", "S")) else f"{name}'s"
+
+
 def _extreme(values: Sequence[float], *, highest: bool) -> tuple[int, float]:
     index = max(range(12), key=lambda i: values[i]) if highest else min(range(12), key=lambda i: values[i])
     return index, values[index]
@@ -400,11 +411,12 @@ def build_summary(
     # genuinely has no seasonal swing worth naming; saying "from 26 °C in
     # January to 26 °C in January" reads as a bug in the sentence rather than a
     # fact about the tropics.
+    subject = possessive(name)
     if warm_i == cool_i or f"{warm_v:.0f}" == f"{cool_v:.0f}":
-        temperature = f"{name}'s national average holds near {warm_v:.0f} °C all year"
+        temperature = f"{subject} national average holds near {warm_v:.0f} °C all year"
     else:
         temperature = (
-            f"{name}'s national averages run from {cool_v:.0f} °C in "
+            f"{subject} national averages run from {cool_v:.0f} °C in "
             f"{MONTH_NAMES[cool_i]} to {warm_v:.0f} °C in {MONTH_NAMES[warm_i]}"
         )
     if wet_i == dry_i or f"{wet_v:.0f}" == f"{dry_v:.0f}":
