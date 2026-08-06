@@ -1,55 +1,157 @@
 {
   "response": {
     "1": {
+      "lastModified": 1780904216,
+      "effective": 1776779100,
+      "title": "Afghanistan: Reise- und Sicherheitshinweise",
       "countryCode": "AF",
+      "iso3CountryCode": "AFG",
       "countryName": "Afghanistan",
-      "title": "Reisewarnung",
       "warning": true,
       "partialWarning": false,
       "situationWarning": false,
       "situationPartWarning": false
     },
     "2": {
-      "countryCode": "EG",
-      "countryName": "Egypt",
-      "title": "Teilreisewarnung",
+      "lastModified": 1785923839,
+      "effective": 1785923100,
+      "title": "Ukraine: Reise- und Sicherheitshinweise",
+      "countryCode": "UA",
+      "iso3CountryCode": "UKR",
+      "countryName": "Ukraine",
+      "warning": true,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "3": {
+      "lastModified": 1783430993,
+      "effective": 1783431000,
+      "title": "Japan: Reise- und Sicherheitshinweise",
+      "countryCode": "JP",
+      "iso3CountryCode": "JPN",
+      "countryName": "Japan",
       "warning": false,
       "partialWarning": true,
       "situationWarning": false,
       "situationPartWarning": false
     },
-    "3": {
-      "countryCode": "MX",
-      "countryName": "Mexico",
-      "title": "Sicherheitshinweis",
+    "4": {
+      "lastModified": 1785845738,
+      "effective": 1785845700,
+      "title": "Indien: Reise- und Sicherheitshinweise",
+      "countryCode": "IN",
+      "iso3CountryCode": "IND",
+      "countryName": "Indien",
+      "warning": false,
+      "partialWarning": true,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "5": {
+      "lastModified": 1783432319,
+      "effective": 1783431900,
+      "title": "Thailand: Reise- und Sicherheitshinweise",
+      "countryCode": "TH",
+      "iso3CountryCode": "THA",
+      "countryName": "Thailand",
+      "warning": false,
+      "partialWarning": true,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "6": {
+      "lastModified": 1785758403,
+      "effective": 1785748500,
+      "title": "Ägypten: Reise- und Sicherheitshinweise",
+      "countryCode": "EG",
+      "iso3CountryCode": "EGY",
+      "countryName": "Ägypten",
+      "warning": false,
+      "partialWarning": true,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "7": {
+      "lastModified": 1783602654,
+      "effective": 1783602900,
+      "title": "Kolumbien: Reise- und Sicherheitshinweise",
+      "countryCode": "CO",
+      "iso3CountryCode": "COL",
+      "countryName": "Kolumbien",
+      "warning": false,
+      "partialWarning": true,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "8": {
+      "lastModified": 1785925404,
+      "effective": 1785924900,
+      "title": "Frankreich: Reise- und Sicherheitshinweise",
+      "countryCode": "FR",
+      "iso3CountryCode": "FRA",
+      "countryName": "Frankreich",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "9": {
+      "lastModified": 1785403502,
+      "effective": 1785402900,
+      "title": "Italien: Reise- und Sicherheitshinweise",
+      "countryCode": "IT",
+      "iso3CountryCode": "ITA",
+      "countryName": "Italien",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "10": {
+      "lastModified": 1783432026,
+      "effective": 1783431000,
+      "title": "Neuseeland: Reise- und Sicherheitshinweise",
+      "countryCode": "NZ",
+      "iso3CountryCode": "NZL",
+      "countryName": "Neuseeland",
+      "warning": false,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
+    },
+    "11": {
+      "countryCode": "mx",
+      "countryName": "Mexiko",
+      "iso3CountryCode": "MEX",
+      "title": "Mexiko: Reise- und Sicherheitshinweise",
+      "lastModified": 1783430993,
+      "effective": 1783431000,
       "warning": false,
       "partialWarning": false,
       "situationWarning": true,
       "situationPartWarning": false
     },
-    "4": {
-      "countryCode": "JP",
-      "countryName": "Japan",
-      "title": "Landesinformation",
-      "warning": false,
-      "partialWarning": false,
-      "situationWarning": false,
-      "situationPartWarning": false
-    },
-    "5": {
-      "countryCode": "co",
-      "countryName": "Colombia",
-      "title": "Teilsituation",
+    "12": {
+      "countryCode": "GH",
+      "countryName": "Ghana",
+      "iso3CountryCode": "GHA",
+      "title": "Ghana: Reise- und Sicherheitshinweise",
+      "lastModified": 1783430993,
+      "effective": 1783431000,
       "warning": false,
       "partialWarning": false,
       "situationWarning": false,
       "situationPartWarning": true
     },
-    "6": {
+    "13": {
       "countryName": "Atlantis",
-      "title": "Reisewarnung",
-      "warning": true
+      "title": "Atlantis: Reise- und Sicherheitshinweise",
+      "warning": true,
+      "partialWarning": false,
+      "situationWarning": false,
+      "situationPartWarning": false
     },
-    "timestamp": "2026-04-22T00:00:00Z"
+    "lastModified": 1757063288
   }
 }

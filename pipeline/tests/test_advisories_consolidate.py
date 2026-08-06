@@ -57,15 +57,17 @@ def _scrape_fixtures(advisory_fixture, *, fetched_at: datetime = SCRAPED_AT):
 
 def test_consensus_is_the_highest_level_any_government_publishes(advisory_fixture) -> None:
     # The web legend says "Highest of 5 sources"; Colombia is where the
-    # sources actually disagree (US 3, AU 3, DE 2).
+    # sources actually disagree. Germany reads 1 because its position on
+    # Colombia is a Teilreisewarnung — a carve-out, not a national level.
     consolidated = consolidate(_scrape_fixtures(advisory_fixture))
 
     assert consolidated["CO"].level == 3
     assert {s.source_id: s.level for s in consolidated["CO"].sources} == {
         "us_state": 3,
         "australia": 3,
-        "germany": 2,
+        "germany": 1,
     }
+    assert consolidated["CO"].regional_max == 4
 
 
 def test_unanimous_countries_keep_their_level(advisory_fixture) -> None:
@@ -80,8 +82,25 @@ def test_a_country_only_one_government_lists_still_appears(advisory_fixture) -> 
     # Egypt is in the German feed alone. Requiring a quorum would drop it.
     consolidated = consolidate(_scrape_fixtures(advisory_fixture))
 
-    assert consolidated["EG"].level == 3
+    assert consolidated["EG"].level == 1
     assert [s.source_id for s in consolidated["EG"].sources] == ["germany"]
+    # Germany's position on Egypt is a Teilreisewarnung, so the country reads
+    # as unwarned with a carve-out — not as a country-wide "reconsider".
+    assert consolidated["EG"].regional_max == 4
+
+
+def test_a_partial_warning_never_becomes_a_countrys_level(advisory_fixture) -> None:
+    """Japan end to end, across the two scrapers that used to get it wrong.
+
+    The Netherlands read the first colour in a blob whose carve-outs come
+    first, and Germany mapped a Teilreisewarnung to a country-wide 3. Either
+    one alone was enough, under `max`, to tell a traveller not to go to Japan.
+    """
+    consolidated = consolidate(_scrape_fixtures(advisory_fixture))
+
+    assert consolidated["JP"].level == 1
+    assert {s.level for s in consolidated["JP"].sources} == {1}
+    assert consolidated["JP"].regional_max == 4
 
 
 def test_every_country_carries_the_ladder_label(advisory_fixture) -> None:
