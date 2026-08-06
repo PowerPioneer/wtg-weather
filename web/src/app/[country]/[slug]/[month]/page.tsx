@@ -6,8 +6,7 @@ import { ClimateChart } from "@/components/charts";
 import { PlanCta, SafetySection } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
-import { getCountry, getRegion } from "@/lib/api-client";
-import { routableCountries } from "@/lib/country-routes";
+import { getRegion } from "@/lib/api-client";
 import {
   MONTH_NAMES,
   MONTH_SHORT,
@@ -22,7 +21,7 @@ import {
   estimateRegionMonthScore,
   regionBestMonthIndices,
   regionMonthRank,
-  regionSlug,
+  regionHref,
 } from "@/lib/regions";
 import { regionMonthJsonLd, regionMonthMetadata } from "@/lib/seo";
 import type { CountryData, RegionRow } from "@/lib/types";
@@ -30,27 +29,23 @@ import type { CountryData, RegionRow } from "@/lib/types";
 /**
  * Third-level route `/[country]/[slug]/[month]`. The parent `[slug]` segment
  * dispatches between months (e.g. `/peru/april`) and regions (e.g.
- * `/peru/cusco`); only region slugs extend into `[month]`. Month-as-slug
- * combinations are excluded from `generateStaticParams` and 404 via
- * `dynamicParams = false`.
+ * `/peru/cusco`); only region slugs extend into `[month]`, so a month-as-slug
+ * combination (`/peru/april/june`) finds no region and 404s.
  */
 
 export const revalidate = 2592000;
-export const dynamicParams = false;
+
+/**
+ * Entirely on demand. ~4,600 admin-1 units × 12 months is ~55,000 pages, which
+ * is not a build — it is a batch job. They render on first request and cache
+ * from there; `getRegion` returning `null` is still a 404, so a month slug
+ * attached to a region that does not exist behaves exactly as it did when this
+ * was pre-generated.
+ */
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const out: { country: string; slug: string; month: string }[] = [];
-  for (const c of routableCountries()) {
-    const data = await getCountry(c.slug);
-    if (!data) continue;
-    for (const r of data.regions) {
-      const slug = regionSlug(r.name);
-      for (const m of MONTH_SLUGS) {
-        out.push({ country: c.slug, slug, month: m });
-      }
-    }
-  }
-  return out;
+  return [] as { country: string; slug: string; month: string }[];
 }
 
 export async function generateMetadata({
@@ -111,7 +106,7 @@ export default async function RegionMonthPage({
             </Link>
             <span aria-hidden="true">·</span>
             <Link
-              href={`/${data.slug}/${regionSlug(reg.name)}`}
+              href={`/${data.slug}/${regionHref(reg)}`}
               className="hover:text-text"
             >
               {reg.name}
@@ -339,7 +334,7 @@ function RegionMonthPagerCard({
   const temp = region.tl[idx];
   return (
     <Link
-      href={`/${country.slug}/${regionSlug(region.name)}/${slug}`}
+      href={`/${country.slug}/${regionHref(region)}/${slug}`}
       className="flex items-center gap-5 rounded-md border border-border bg-surface p-5 hover:bg-surface-2"
     >
       <div className="flex-1">

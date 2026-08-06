@@ -5,8 +5,21 @@ import type { CountryData } from "@/lib/types";
  * guide rather than a dashboard. The numeric metadata (capital, area, TZ)
  * lives in a mono caption underneath so reader instincts match how we
  * weight "narrative" vs. "fact".
+ *
+ * Capital, timezone and area are optional: Natural Earth is the source of
+ * record for the boundary vintage and it has no capital for a handful of
+ * territories. A missing row is dropped rather than rendered as an em dash —
+ * an empty definition list entry reads as a data bug, and a placeholder reads
+ * as a fact.
  */
 export function CountryHero({ country }: { country: CountryData }) {
+  const facts: { label: string; value: string }[] = [
+    { label: "Region", value: country.region },
+  ];
+  if (country.capital) facts.unshift({ label: "Capital", value: country.capital });
+  if (country.tz) facts.push({ label: "TZ", value: country.tz });
+  if (country.area) facts.push({ label: "Area", value: country.area });
+
   return (
     <section className="relative overflow-hidden border-b border-border bg-surface">
       <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-6 py-12 md:grid-cols-[1.15fr_1fr] md:px-12 md:py-16">
@@ -22,22 +35,12 @@ export function CountryHero({ country }: { country: CountryData }) {
             {country.summary}
           </p>
           <dl className="grid max-w-[520px] grid-cols-2 gap-x-6 gap-y-2 font-mono text-[12px] text-text-muted">
-            <div className="flex gap-2">
-              <dt className="text-text-subtle">Capital</dt>
-              <dd className="text-text">{country.capital}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-text-subtle">Region</dt>
-              <dd className="text-text">{country.region}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-text-subtle">TZ</dt>
-              <dd className="text-text">{country.tz}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-text-subtle">Area</dt>
-              <dd className="text-text">{country.area}</dd>
-            </div>
+            {facts.map((fact) => (
+              <div key={fact.label} className="flex gap-2">
+                <dt className="text-text-subtle">{fact.label}</dt>
+                <dd className="text-text">{fact.value}</dd>
+              </div>
+            ))}
           </dl>
         </div>
         <div
@@ -52,7 +55,7 @@ export function CountryHero({ country }: { country: CountryData }) {
             }}
           />
           <div className="absolute bottom-6 left-6 right-6 font-mono text-[11px] uppercase tracking-[0.18em] text-[#E0C98A]">
-            {country.nameLocal}
+            {country.iso2} · {country.region}
           </div>
         </div>
       </div>

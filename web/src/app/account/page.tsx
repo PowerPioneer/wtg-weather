@@ -19,6 +19,8 @@ import {
 } from "@/components/account";
 import { PageFooter, PageHeader } from "@/components/layout";
 import {
+  EMPTY_AGENCY_ACCOUNT,
+  EMPTY_CONSUMER_ACCOUNT,
   findAgencyAccount,
   findConsumerAccount,
 } from "@/lib/mock-data";
@@ -88,8 +90,11 @@ function ConsumerAccountPage({
   session: SessionUser;
   activeParam: string | undefined;
 }) {
-  const account = findConsumerAccount(session.id);
-  if (!account) notFound();
+  // The account surface is still fixture-backed (RC-6, Phase 6). A real
+  // session id matches no fixture, so falling back to an empty account is what
+  // keeps /account rendering its empty states instead of 404ing for everyone
+  // who signs in.
+  const account = findConsumerAccount(session.id) ?? EMPTY_CONSUMER_ACCOUNT;
 
   const activeId: ConsumerSectionId = CONSUMER_SECTIONS.includes(
     activeParam as ConsumerSectionId,
@@ -152,8 +157,7 @@ function AgencyAccountPage({
 }) {
   const org = session.org;
   if (!org) notFound();
-  const account = findAgencyAccount(org.id);
-  if (!account) notFound();
+  const account = findAgencyAccount(org.id) ?? EMPTY_AGENCY_ACCOUNT;
 
   const activeId: AgencySectionId = AGENCY_SECTIONS.includes(
     activeParam as AgencySectionId,

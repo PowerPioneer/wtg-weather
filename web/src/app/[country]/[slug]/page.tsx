@@ -30,7 +30,7 @@ import {
   estimateRegionMonthScore,
   findRegion,
   regionBestMonthIndices,
-  regionSlug,
+  regionHref,
   regionTempRange,
 } from "@/lib/regions";
 import {
@@ -49,7 +49,20 @@ import type { CountryData, RegionRow } from "@/lib/types";
  */
 
 export const revalidate = 2592000;
-export const dynamicParams = false;
+
+/**
+ * Regions are rendered on demand, months are not.
+ *
+ * `[country] × MONTH_SLUGS` is ~2,800 pages and they are the SEO surface the
+ * plan asks for, so they are built up front. Regions are a different order of
+ * magnitude: the 1:10m admin-1 layer carries ~4,600 units, and pre-rendering
+ * each one here — never mind `[month]` below, which multiplies it by twelve —
+ * turns a build into an hour of work for pages that are a long tail by
+ * definition. `dynamicParams` therefore stays on: an unknown slug still 404s,
+ * it just does so at request time via `notFound()` rather than as a page baked
+ * into the build. Once rendered, `revalidate` caches it like any other.
+ */
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
@@ -60,11 +73,8 @@ export async function generateStaticParams() {
     seen.add(key);
     out.push({ country, slug });
   };
-  for (const c of routableCountries()) {
+  for (const c of await routableCountries()) {
     for (const m of MONTH_SLUGS) push(c.slug, m);
-    const data = await getCountry(c.slug);
-    if (!data) continue;
-    for (const r of data.regions) push(c.slug, regionSlug(r.name));
   }
   return out;
 }
@@ -248,9 +258,10 @@ function RegionView({
                 How the year moves in {region.name}
               </h2>
               <p className="mt-2 max-w-[680px] text-[14px] text-text-muted">
-                Monthly mean temperature from ERA5. Rainfall and sunshine are
-                currently shown at country level below — per-region coverage
-                lands with the next pipeline cut.
+                Monthly mean temperature from ERA5, aggregated over{" "}
+                {region.name} itself. The month-by-month scores below read this
+                region&rsquo;s own rainfall and sunshine too
+                {region.rl && region.sl ? "" : ", where the pipeline has them"}.
               </p>
             </div>
             <ClimateChart
@@ -262,7 +273,7 @@ function RegionView({
         </section>
 
         <MonthScoreTable country={country} region={region} />
-        <NeighbourRegions country={country} currentSlug={regionSlug(region.name)} />
+        <NeighbourRegions country={country} currentSlug={regionHref(region)} />
         <SafetySection advisories={country.advisories} countryName={country.name} />
         <PlanCta
           headline={`Plan a trip to ${region.name}.`}
@@ -384,7 +395,7 @@ function MonthScoreTable({
           {rows.map((r) => (
             <li key={r.slug}>
               <Link
-                href={`/${country.slug}/${regionSlug(region.name)}/${r.slug}`}
+                href={`/${country.slug}/${regionHref(region)}/${r.slug}`}
                 className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface p-4 hover:bg-surface-2"
               >
                 <div>
@@ -412,7 +423,7 @@ function NeighbourRegions({
   country: CountryData;
   currentSlug: string;
 }) {
-  const others = country.regions.filter((r) => regionSlug(r.name) !== currentSlug);
+  const others = country.regions.filter((r) => regionHref(r) !== currentSlug);
   if (others.length === 0) return null;
   const top = [...others].sort((a, b) => b.score - a.score).slice(0, 6);
   return (
@@ -430,7 +441,7 @@ function NeighbourRegions({
           {top.map((r) => (
             <li key={r.name}>
               <Link
-                href={`/${country.slug}/${regionSlug(r.name)}`}
+                href={`/${country.slug}/${regionHref(r)}`}
                 className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface p-3 hover:bg-surface-2"
               >
                 <span className="text-[13px] font-medium text-text">{r.name}</span>

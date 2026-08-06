@@ -1,41 +1,50 @@
 /**
  * Derived values on top of `CountryData`. Every function here is pure — given
- * the same country and inputs, it returns the same output — so callers can
- * use them inside RSC and client components alike without worrying about
- * fetching order.
+ * the same country and inputs, it returns the same output — so callers can use
+ * them inside RSC and client components alike without worrying about fetching
+ * order.
  *
- * These are Phase-5.3 placeholders. The real scoring lives in the pipeline
- * and will be baked into each region's `score` field; until the API wires
- * through per-month regional scores, we estimate from the national averages
- * so the SSR pages have something credible to render.
+ * These used to be a hand-rolled heuristic ("+points for moderate temperature,
+ * −points for rain") that agreed with nothing else in the app. `web/CLAUDE.md`
+ * says scoring is "shared between the map paint expressions and the SSR pages",
+ * and it now is: both go through `preferenceScore`, which reproduces the
+ * pipeline's `polygon_score` bucket for bucket. A country page and the map now
+ * put the same number on the same month.
  */
 
-import { clampScore } from "./scoring";
+import { DEFAULT_PREFERENCES, preferenceScore, type WeatherPreferences } from "./scoring";
 import type { CountryData } from "./types";
 
 /**
- * National per-month score. Leans on the simple heuristic:
- *   • +points for moderate temperature (15–24°C ideal)
- *   • −points for high rainfall
- *   • +points for sunshine
- * Bounded to 0–100. Purely illustrative; real scores come from preferences.
+ * National match score for one month, 0–100, or `null` when the country
+ * carries no series for it. The three inputs are the three the rule consults;
+ * rainfall is read from `rDay` because the rule is expressed in mm/day and
+ * `r` is the same series scaled up to a monthly total for display.
  */
+export function monthScore(
+  country: CountryData,
+  monthIdx: number,
+  prefs: WeatherPreferences = DEFAULT_PREFERENCES,
+): number | null {
+  const c = country.climate;
+  return preferenceScore(
+    { t: c.t[monthIdx], r: c.rDay[monthIdx], s: c.s[monthIdx] },
+    prefs,
+  );
+}
+
+/** Same, with `null` flattened to 0 for callers that must render a number. */
 export function estimateMonthScore(country: CountryData, monthIdx: number): number {
-  const t = country.climate.t[monthIdx];
-  const r = country.climate.r[monthIdx];
-  const s = country.climate.s[monthIdx];
-
-  const tScore = 100 - Math.min(100, Math.abs(t - 20) * 5);
-  const rScore = 100 - Math.min(100, r * 0.6);
-  const sScore = 50 + Math.min(50, (s - 4) * 10);
-
-  const raw = tScore * 0.5 + rScore * 0.3 + sScore * 0.2;
-  return Math.round(clampScore(raw));
+  return monthScore(country, monthIdx) ?? 0;
 }
 
 /**
  * Rank of a month among the year. 1 = best, 12 = worst. Stable tie-break
  * favours earlier months.
+ *
+ * The score has only four distinct values (the rule buckets rather than
+ * grades), so ties are the common case rather than the edge case — which is
+ * why the tie-break is part of the contract and not an implementation detail.
  */
 export function monthRank(country: CountryData, monthIdx: number): number {
   const scores = country.climate.t.map((_, i) => ({
@@ -43,6 +52,5 @@ export function monthRank(country: CountryData, monthIdx: number): number {
     score: estimateMonthScore(country, i),
   }));
   scores.sort((a, b) => (b.score - a.score) || (a.i - b.i));
-  const rank = scores.findIndex((x) => x.i === monthIdx) + 1;
-  return rank;
+  return scores.findIndex((x) => x.i === monthIdx) + 1;
 }

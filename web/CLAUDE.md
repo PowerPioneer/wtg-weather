@@ -17,7 +17,14 @@ pnpm dev
   the SSR country/region pages are Server Components that fetch from the API.
 - **Data fetching**: SSR pages use `fetch(...)` to the internal API via
   `INTERNAL_API_URL` (docker network hostname). Client components use the
-  typed `api-client.ts` wrapper.
+  typed `api-client.ts` wrapper. `WTG_USE_MOCK_DATA=1` swaps in the fixtures
+  for a `pnpm dev` with no API running — it is opt-**in**, and must stay that
+  way (it used to default on, which shipped a three-country site treating every
+  visitor as premium).
+- **Never read cookies or headers in the root layout.** A dynamic API there
+  opts every route in the app out of static generation, including the ~2,800
+  country pages below. The analytics split that used to need the session is
+  resolved client-side in `AnalyticsSwitch` for exactly this reason.
 - **Map stack**: `react-map-gl/maplibre` + `pmtiles` package registers the
   `pmtiles://` protocol on MapLibre. Style is a single JSON object in
   `lib/map-style.ts`. Paint expressions read `feature.properties.score`
@@ -76,10 +83,21 @@ re-litigate the design decisions listed in `HANDOFF.md` § "already made".
 
 ## Routes and SEO
 
-- `/[country]` — `generateStaticParams` over all ~195 countries, static
+- The route set comes from the API's published index (`/v1/countries`), not
+  from the country registry: the registry is every ISO-2 code a *polygon* can
+  carry, which is a larger set than the countries the pipeline has a complete
+  climate series for. `routableCountries()` is the single gate.
+- `/[country]` — `generateStaticParams` over every published country, static
   at build time, `revalidate: 60*60*24*30` (monthly).
-- `/[country]/[month]` — same, 195 × 12 = 2,340 pages.
-- `/[country]/[region]` and `/[country]/[region]/[month]` — admin-1 SSR.
+- `/[country]/[month]` — same, ~195 × 12 pages.
+- `/[country]/[region]` and `/[country]/[region]/[month]` — admin-1, rendered
+  on demand and cached. ~4,600 admin-1 units × 12 months is ~55,000 pages;
+  pre-rendering that is a batch job, not a build.
+- `dynamicParams` is **on** everywhere, because the image is built inside
+  `docker build` where the API is not reachable and `generateStaticParams` can
+  legitimately return nothing. An unknown slug still 404s — `getCountry`
+  returns `null` and the page calls `notFound()`. Build with the API up (dev,
+  or CI with the stack running) to get the full pre-rendered tree.
 - Every SSR page: canonical URL, OpenGraph image (generated at build),
   structured data (`TouristDestination` schema), internal links to
   related months and neighbouring countries.

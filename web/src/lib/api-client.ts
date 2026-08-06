@@ -6,12 +6,15 @@
  * - Client Components call `publicApi<T>(path)` which hits the same host the
  *   page was served from, via the public `/api/*` proxy in Caddy.
  *
- * Both paths fall back to mock data when `USE_MOCK_DATA` is true — the web
- * scaffold must render with zero network in dev even before the API is up.
+ * The SSR data path (`getCountryIndex` / `getCountry` / `getRegion`) falls back
+ * to the fixtures when `USE_MOCK_DATA` is set, so `pnpm dev` renders the page
+ * tree with no API running. That flag is opt-in — see `env.ts` for why it used
+ * to be the other way round and what it cost.
  */
 
 import { INTERNAL_API_URL, USE_MOCK_DATA } from "./env";
-import { findCountryData } from "./mock-data";
+import type { CountryRef } from "./countries";
+import { findCountryData, mockCountryRefs } from "./mock-data";
 import { findRegion } from "./regions";
 import type { CountryData, RegionRow, SessionUser } from "./types";
 
@@ -34,6 +37,30 @@ async function serverFetch(path: string, init: FetchInit = {}): Promise<Response
 }
 
 /**
+ * Every country the pipeline has published a payload for.
+ *
+ * This is the route manifest, not a convenience: `/[country]` sets
+ * `dynamicParams = false`, so a slug that `generateStaticParams` emits and the
+ * API cannot answer for becomes a 404 page baked into the build, plus a line
+ * in the sitemap advertising it. Generating from this list instead of from the
+ * country registry makes the two sets identical by construction.
+ *
+ * Throws rather than degrading: an empty list here is a site with no country
+ * pages at all, which is not something a build should complete quietly.
+ */
+export async function getCountryIndex(): Promise<readonly CountryRef[]> {
+  if (USE_MOCK_DATA) return mockCountryRefs();
+  const res = await serverFetch("/v1/countries", { revalidate: 60 * 60 });
+  if (!res.ok) {
+    throw new Error(
+      `getCountryIndex failed: ${res.status}. The API serves this from the ` +
+        `pipeline's \`wtg publish api-data\` bundle; check that it is mounted.`,
+    );
+  }
+  return (await res.json()) as readonly CountryRef[];
+}
+
+/**
  * Fetch a country payload for SSR. In dev / preview, returns mock fixtures.
  * Returns `null` if the country is unknown — callers should `notFound()`.
  */
@@ -46,10 +73,9 @@ export async function getCountry(slug: string): Promise<CountryData | null> {
 }
 
 /**
- * Fetch a region (admin-1) under a country. Mock path resolves via the country
- * fixture; real path will call `/v1/countries/:country/regions/:region` once
- * the pipeline ships per-region climatology. Returns `null` if either the
- * country or the region is unknown — callers should `notFound()`.
+ * Fetch a region (admin-1) under a country. The mock path resolves via the
+ * country fixture. Returns `null` if either the country or the region is
+ * unknown — callers should `notFound()`.
  */
 export async function getRegion(
   countrySlug: string,

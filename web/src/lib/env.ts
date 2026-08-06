@@ -14,10 +14,13 @@ export const INTERNAL_API_URL =
   process.env.INTERNAL_API_URL?.replace(/\/$/, "") ??
   "http://api:8000";
 
-// Opt-out flag. The scaffold ships with fixtures because the API contract
-// isn't finalised yet; prod builds set WTG_USE_MOCK_DATA=0 once the API is
-// wired up to cut over to real data.
-export const USE_MOCK_DATA = process.env.WTG_USE_MOCK_DATA !== "0";
+// Opt-*in* flag, and the direction matters. It used to default on, so the
+// production build had to remember to switch it off — and until WS-5 there was
+// nothing to switch it on to, which is how a site backed by three fixture
+// countries reached production with every visitor treated as premium
+// (`session.ts`). Real data is now the default; the fixtures are for tests and
+// for a `pnpm dev` with no API running.
+export const USE_MOCK_DATA = process.env.WTG_USE_MOCK_DATA === "1";
 
 // ─── Observability & analytics ───────────────────────────────────────
 //

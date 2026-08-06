@@ -20,9 +20,18 @@ export type AdvisorySource = {
 };
 
 export type AdvisorySummary = {
-  combined: { level: AdvisoryLevel; label: string; color: string };
+  combined: { level: AdvisoryLevel; label: string; color?: string };
   lastUpdated: string;
   sources: AdvisorySource[];
+  /**
+   * Somewhere in this country carries a higher advisory than the national
+   * level, but no scraper could resolve *where*. Deliberately absent from the
+   * tiles — it names no polygon and would paint the whole country at the
+   * carve-out's level — so the country page is the only surface that can
+   * report it. See `pipeline/processing/advisories.py` § regional carve-outs.
+   */
+  regionalMax?: AdvisoryLevel;
+  regionalMaxLabel?: string;
 };
 
 /** 12-length array, indexed Jan=0 ... Dec=11. */
@@ -31,18 +40,33 @@ export type Monthly = readonly [
   number, number, number, number, number, number,
 ];
 
+/**
+ * The free-tier climatology, as the API publishes it.
+ *
+ * The four premium variables (snow, sea-surface temperature, heat index,
+ * humidity) are **not** here and cannot be: country pages are statically
+ * generated, so one HTML document serves every visitor and anything in this
+ * type is in public view-source. The pipeline already treats the tier boundary
+ * as a file boundary (`FREE_VARIABLES` in `build_geojson.py`); this is the
+ * same boundary. The premium charts on the country page render as locked
+ * placeholders, and the real series live on the map, behind a signed tile URL.
+ */
 export type ClimateSeries = {
   months: readonly string[];
   t: Monthly;       // °C mean
-  tMin: Monthly;    // °C 10th percentile (Premium uses for bands)
+  tMin: Monthly;    // °C 10th percentile
   tMax: Monthly;    // °C 90th percentile
-  r: Monthly;       // mm / month
+  r: Monthly;       // mm / month — for display
+  /**
+   * mm / day — the unit the scoring rule consumes, and the one the map paints.
+   * `r` is this series times the length of each month; keeping both means the
+   * page can print a monthly total without the score having to round-trip
+   * through it. See `preferenceScore` in `scoring.ts`.
+   */
+  rDay: Monthly;
   s: Monthly;       // hr / day
-  w: Monthly;       // km / h
-  snow: Monthly;    // cm (Premium)
-  sst: Monthly;     // °C sea-surface (Premium)
-  heat: Monthly;    // °C feels-like (Premium)
-  hum: Monthly;     // % (Premium)
+  /** Absent where the polygon carries no wind series. */
+  w?: Monthly;
 };
 
 export type BestMonth = {
@@ -53,8 +77,17 @@ export type BestMonth = {
 
 export type RegionRow = {
   name: string;
+  /**
+   * URL slug, assigned by the pipeline so that two regions whose names slug
+   * identically still get one URL each. Falls back to slugifying `name`.
+   */
+  slug?: string;
   score: number;
-  tl: Monthly;
+  tl: Monthly;      // °C mean
+  /** mm / day. Absent on a region the pipeline has no rainfall for. */
+  rl?: Monthly;
+  /** hr / day. Absent on a region the pipeline has no sunshine for. */
+  sl?: Monthly;
 };
 
 export type RelatedCountry = {
@@ -64,26 +97,41 @@ export type RelatedCountry = {
   score: number;
 };
 
+/**
+ * One country, as `/v1/countries/{slug}` returns it.
+ *
+ * The optional fields are optional because the pipeline may genuinely not know
+ * them. Natural Earth is the source of record for the boundary vintage and it
+ * carries no local-language name, currency or official language at all, and no
+ * capital for a handful of territories; a country no government has published
+ * an advisory for has no advisory. Every surface that renders one of these
+ * omits the row rather than printing a placeholder — the alternative is a
+ * hand-kept table that drifts away from the polygons it describes.
+ */
 export type CountryData = {
   slug: string;
   name: string;
-  nameLocal: string;
-  capital: string;
+  iso2: string;
   region: string;
-  coastal: boolean;
-  hasSnow: boolean;
-  currency: string;
-  language: string;
-  tz: string;
-  area: string;
-  population: string;
+  /** Generated from the series below — factual, and checkable against them. */
   summary: string;
   bestMonths: readonly BestMonth[];
   climate: ClimateSeries;
   regions: readonly RegionRow[];
-  advisories: AdvisorySummary;
   related: readonly RelatedCountry[];
   monthNotes: Record<string, string>;
+  capital?: string;
+  /** IANA zone id, e.g. `America/Lima`. */
+  tz?: string;
+  area?: string;
+  advisories?: AdvisorySummary;
+  /**
+   * `"admin1-mean"` marks one of the ten suppressed countries: the map paints
+   * no national polygon for it (a single colour for Russia or Argentina is a
+   * claim the data does not support), so these figures are the mean of its own
+   * regions. The generated summary says so on the page.
+   */
+  climateBasis?: "country" | "admin1-mean";
 };
 
 export type MonthDetail = {

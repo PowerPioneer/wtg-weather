@@ -18,10 +18,20 @@ import { routableCountries } from "@/lib/country-routes";
 import { countryJsonLd, countryMetadata } from "@/lib/seo";
 
 export const revalidate = 2592000;
-export const dynamicParams = false;
+
+/**
+ * On, because `generateStaticParams` can legitimately come back empty: the
+ * image is built inside `docker build`, off the compose network, where the API
+ * cannot be reached (see `routableCountries`). With `dynamicParams = false`
+ * that would 404 every country page. An unknown slug still 404s — `getCountry`
+ * returns `null` and this page calls `notFound()` — it just does so at request
+ * time rather than as a page baked into the build.
+ */
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return routableCountries().map((c) => ({ country: c.slug }));
+  const countries = await routableCountries();
+  return countries.map((c) => ({ country: c.slug }));
 }
 
 export async function generateMetadata({

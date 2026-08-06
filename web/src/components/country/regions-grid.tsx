@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
 import { Sparkline } from "@/components/charts";
 import { MONTH_SLUGS } from "@/lib/months";
-import { regionSlug } from "@/lib/regions";
+import { regionHref } from "@/lib/regions";
 import type { CountryData, RegionRow } from "@/lib/types";
 
 /**
@@ -76,7 +76,7 @@ function RegionCard({
   const low = Math.min(...region.tl);
   const high = Math.max(...region.tl);
   const current = currentMonthIdx != null ? region.tl[currentMonthIdx] : undefined;
-  const slug = regionSlug(region.name);
+  const slug = regionHref(region);
   const href =
     currentMonthIdx != null
       ? `/${countrySlug}/${slug}/${MONTH_SLUGS[currentMonthIdx]}`

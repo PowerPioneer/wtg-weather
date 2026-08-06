@@ -1,14 +1,16 @@
 /**
- * Mock country data. In production, SSR pages fetch from the internal API
- * (`INTERNAL_API_URL`). In dev and previews, we read from here so the page
- * tree renders without the full pipeline running. `USE_MOCK_DATA` in `env.ts`
- * decides which path is taken.
+ * Mock country data. SSR pages fetch from the internal API
+ * (`INTERNAL_API_URL`); these fixtures are what `USE_MOCK_DATA` swaps in so
+ * that `pnpm dev` and the component tests render the page tree with no API and
+ * no pipeline outputs on disk. They are no longer what production runs on.
  *
  * Numbers are grounded placeholders (ERA5-shaped, realistic for each country)
- * copied from `web/design/country/peruData.js` — Phase 5.4 will replace these
- * with real API calls once the pipeline is wired end-to-end.
+ * copied from `web/design/country/peruData.js`. They carry only the free-tier
+ * series, because that is all the API publishes — see `ClimateSeries` for why
+ * a statically generated page cannot hold the premium four.
  */
 
+import type { CountryRef } from "./countries";
 import type {
   AgencyAccount,
   ClientRecord,
@@ -20,25 +22,31 @@ import type {
   TripData,
 } from "./types";
 
+/** mm/day from a monthly total — the unit the scoring rule consumes. */
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+
+function perDay(monthly: Monthly): Monthly {
+  return monthly.map(
+    (mm, i) => Math.round((mm / DAYS_IN_MONTH[i]) * 100) / 100,
+  ) as unknown as Monthly;
+}
+
 const zeros: Monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const MONTH_LABELS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ] as const;
 
+const PERU_RAIN: Monthly = [148, 168, 142, 72, 28, 12, 8, 12, 28, 62, 88, 118];
+
 const PERU: CountryData = {
   slug: "peru",
   name: "Peru",
-  nameLocal: "República del Perú",
+  iso2: "PE",
   capital: "Lima",
   region: "South America",
-  coastal: true,
-  hasSnow: true,
-  currency: "PEN",
-  language: "Spanish, Quechua, Aymara",
-  tz: "UTC−5",
+  tz: "America/Lima",
   area: "1,285,216 km²",
-  population: "34.0M",
   summary:
     "Peru spans three climates in one country: the rainless Pacific coast, the high Andean sierra with cool-dry days and cold nights, and the humid Amazon lowlands. The coast stays mild year-round; the sierra is best from May through September when skies are clear; the jungle is warm and wet almost always. National averages hide all of this — the regional view below is the one that matters.",
   bestMonths: [
@@ -51,13 +59,10 @@ const PERU: CountryData = {
     t: [22.1, 22.6, 22.2, 20.8, 18.7, 17.2, 16.4, 16.6, 17.3, 18.5, 19.8, 21.2],
     tMin: [15.8, 16.2, 15.9, 14.5, 12.1, 10.3, 9.4, 9.7, 10.8, 12.2, 13.5, 14.9],
     tMax: [28.4, 29.1, 28.7, 27.2, 25.3, 24.1, 23.3, 23.6, 24.2, 25.1, 26.3, 27.7],
-    r: [148, 168, 142, 72, 28, 12, 8, 12, 28, 62, 88, 118],
+    r: PERU_RAIN,
+    rDay: perDay(PERU_RAIN),
     s: [5.8, 5.6, 5.9, 6.8, 7.2, 7.4, 7.6, 7.5, 7.1, 6.6, 6.2, 5.9],
     w: [10.2, 10.8, 11.1, 10.4, 9.8, 10.1, 10.6, 11.2, 11.8, 11.5, 10.9, 10.5],
-    snow: [0, 0, 0, 0, 2, 6, 8, 7, 4, 1, 0, 0],
-    sst: [22.8, 23.4, 23.2, 22.1, 20.4, 18.9, 18.2, 18.0, 18.4, 19.2, 20.3, 21.6],
-    heat: [25.4, 26.1, 25.7, 23.8, 21.2, 19.5, 18.7, 19.0, 19.8, 21.0, 22.7, 24.5],
-    hum: [82, 83, 82, 80, 78, 76, 75, 76, 78, 80, 81, 82],
   },
   regions: [
     { name: "Amazonas", score: 71, tl: [26, 26, 26, 26, 25, 24, 24, 25, 26, 26, 26, 26] },
@@ -87,14 +92,17 @@ const PERU: CountryData = {
     { name: "Ucayali", score: 66, tl: [26, 26, 26, 26, 25, 24, 23, 24, 25, 26, 26, 26] },
   ],
   advisories: {
-    combined: { level: 2, label: "Exercise increased caution", color: "#B88A2E" },
-    lastUpdated: "Apr 18, 2026",
+    combined: { level: 2, label: "Exercise increased caution" },
+    lastUpdated: "2026-04-18",
+    regionalMax: 3,
+    regionalMaxLabel: "Reconsider travel",
     sources: [
-      { gov: "United States", level: 2, label: "Exercise increased caution", date: "Apr 12, 2026", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Peru.html" },
-      { gov: "United Kingdom", level: 2, label: "See our travel advice", date: "Apr 15, 2026", url: "https://www.gov.uk/foreign-travel-advice/peru" },
-      { gov: "Canada", level: 2, label: "Exercise a high degree of caution", date: "Apr 10, 2026", url: "https://travel.gc.ca/destinations/peru" },
-      { gov: "Australia", level: 1, label: "Exercise normal safety precautions", date: "Apr 16, 2026", url: "https://www.smartraveller.gov.au/destinations/americas/peru" },
-      { gov: "Germany", level: 2, label: "Teilreisewarnung", date: "Apr 14, 2026", url: "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/peru-node" },
+      { gov: "Australia", level: 1, label: "Exercise normal safety precautions", date: "2026-04-16", url: "https://www.smartraveller.gov.au/destinations/americas/peru" },
+      { gov: "Canada", level: 2, label: "Exercise a high degree of caution", date: "2026-04-10", url: "https://travel.gc.ca/destinations/peru" },
+      { gov: "Germany", level: 1, label: "Keine Reisewarnung", date: "2026-04-14", url: "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/peru-node" },
+      { gov: "Netherlands", level: 2, label: "Exercise increased caution", date: "2026-04-17", url: "https://www.nederlandwereldwijd.nl/peru/reisadvies" },
+      { gov: "United Kingdom", level: 2, label: "See our travel advice", date: "2026-04-15", url: "https://www.gov.uk/foreign-travel-advice/peru" },
+      { gov: "United States", level: 2, label: "Exercise increased caution", date: "2026-04-12", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Peru.html" },
     ],
   },
   related: [
@@ -133,19 +141,16 @@ function derive(base: Omit<CountryData, "regions"> & { regions?: readonly Region
   };
 }
 
+const JAPAN_RAIN: Monthly = [52, 56, 118, 124, 138, 168, 153, 168, 210, 197, 92, 51];
+
 const JAPAN: CountryData = derive({
   slug: "japan",
   name: "Japan",
-  nameLocal: "日本",
+  iso2: "JP",
   capital: "Tokyo",
   region: "Asia",
-  coastal: true,
-  hasSnow: true,
-  currency: "JPY",
-  language: "Japanese",
-  tz: "UTC+9",
+  tz: "Asia/Tokyo",
   area: "377,975 km²",
-  population: "125.7M",
   summary:
     "Japan stretches 3,000 km from subarctic Hokkaido to subtropical Okinawa, so the national average is almost meaningless. Cherry blossoms push north from late March; the rainy season (tsuyu) dominates most of the archipelago in June; autumn colours descend south through October and November. Pick a region, not a country.",
   bestMonths: [
@@ -158,24 +163,21 @@ const JAPAN: CountryData = derive({
     t: [5.2, 5.8, 8.9, 14.2, 18.6, 22.1, 25.8, 27.3, 23.4, 18.2, 12.8, 7.6],
     tMin: [1.2, 1.4, 4.1, 9.3, 14.1, 18.6, 22.9, 24.1, 20.2, 14.6, 8.9, 3.7],
     tMax: [9.8, 10.4, 14.0, 19.2, 23.2, 25.6, 28.8, 30.4, 26.8, 21.8, 16.7, 11.8],
-    r: [52, 56, 118, 124, 138, 168, 153, 168, 210, 197, 92, 51],
+    r: JAPAN_RAIN,
+    rDay: perDay(JAPAN_RAIN),
     s: [6.1, 6.0, 5.8, 6.0, 5.6, 4.4, 5.5, 6.3, 4.6, 4.8, 5.2, 5.4],
     w: [11.0, 11.4, 12.0, 12.2, 11.6, 11.0, 11.4, 11.8, 12.2, 11.6, 11.0, 10.8],
-    snow: [4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-    sst: [14.1, 13.6, 14.2, 16.1, 18.8, 21.8, 24.9, 26.4, 25.1, 22.2, 18.6, 15.4],
-    heat: [5.0, 5.6, 8.6, 14.0, 19.2, 24.3, 28.9, 30.7, 25.2, 18.8, 12.6, 7.2],
-    hum: [52, 53, 58, 62, 66, 75, 77, 73, 72, 66, 60, 55],
   },
   regions: [],
   advisories: {
-    combined: { level: 1, label: "Exercise normal precautions", color: "#7AA67A" },
-    lastUpdated: "Apr 18, 2026",
+    combined: { level: 1, label: "Exercise normal precautions" },
+    lastUpdated: "2026-04-18",
     sources: [
-      { gov: "United States", level: 1, label: "Exercise normal precautions", date: "Apr 12, 2026", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Japan.html" },
-      { gov: "United Kingdom", level: 1, label: "See our travel advice", date: "Apr 15, 2026", url: "https://www.gov.uk/foreign-travel-advice/japan" },
-      { gov: "Canada", level: 1, label: "Exercise normal security precautions", date: "Apr 10, 2026", url: "https://travel.gc.ca/destinations/japan" },
-      { gov: "Australia", level: 1, label: "Exercise normal safety precautions", date: "Apr 16, 2026", url: "https://www.smartraveller.gov.au/destinations/asia/japan" },
-      { gov: "Germany", level: 1, label: "Keine Reisewarnung", date: "Apr 14, 2026", url: "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/japan-node" },
+      { gov: "Australia", level: 1, label: "Exercise normal safety precautions", date: "2026-04-16", url: "https://www.smartraveller.gov.au/destinations/asia/japan" },
+      { gov: "Canada", level: 1, label: "Exercise normal security precautions", date: "2026-04-10", url: "https://travel.gc.ca/destinations/japan" },
+      { gov: "Germany", level: 1, label: "Keine Reisewarnung", date: "2026-04-14", url: "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/japan-node" },
+      { gov: "United Kingdom", level: 1, label: "See our travel advice", date: "2026-04-15", url: "https://www.gov.uk/foreign-travel-advice/japan" },
+      { gov: "United States", level: 1, label: "Exercise normal precautions", date: "2026-04-12", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Japan.html" },
     ],
   },
   related: [
@@ -198,19 +200,16 @@ const JAPAN: CountryData = derive({
   },
 });
 
+const ICELAND_RAIN: Monthly = [76, 72, 82, 58, 44, 50, 52, 62, 68, 86, 73, 79];
+
 const ICELAND: CountryData = derive({
   slug: "iceland",
   name: "Iceland",
-  nameLocal: "Ísland",
+  iso2: "IS",
   capital: "Reykjavík",
   region: "Europe",
-  coastal: true,
-  hasSnow: true,
-  currency: "ISK",
-  language: "Icelandic",
-  tz: "UTC+0",
+  tz: "Atlantic/Reykjavik",
   area: "103,000 km²",
-  population: "0.4M",
   summary:
     "Iceland's weather is not hot or cold so much as relentlessly variable. Summer (June–August) offers long daylight, open highlands, and the calmest seas. Winter trades weather for aurora: short days, storm windows, and dramatic light. Shoulder seasons are cheaper but less predictable; build slack into any itinerary.",
   bestMonths: [
@@ -223,26 +222,15 @@ const ICELAND: CountryData = derive({
     t: [-0.2, 0.4, 0.9, 3.1, 6.8, 9.9, 11.8, 11.2, 8.6, 5.2, 2.0, 0.0],
     tMin: [-4.1, -3.6, -3.0, -1.2, 2.4, 5.8, 8.2, 7.8, 5.0, 1.8, -1.6, -3.8],
     tMax: [3.4, 3.8, 4.4, 7.2, 11.1, 14.2, 15.8, 15.2, 12.4, 8.6, 5.4, 3.6],
-    r: [76, 72, 82, 58, 44, 50, 52, 62, 68, 86, 73, 79],
+    r: ICELAND_RAIN,
+    rDay: perDay(ICELAND_RAIN),
     s: [0.5, 1.9, 3.6, 4.8, 5.8, 6.2, 5.9, 5.4, 4.1, 2.6, 0.9, 0.2],
     w: [22.4, 21.8, 21.2, 19.6, 17.8, 16.4, 15.8, 16.2, 18.4, 20.1, 21.4, 22.2],
-    snow: [14, 12, 10, 4, 1, 0, 0, 0, 1, 3, 8, 12],
-    sst: [6.4, 5.8, 5.4, 5.6, 6.8, 8.4, 10.2, 10.6, 9.8, 8.4, 7.2, 6.6],
-    heat: [-0.2, 0.4, 0.9, 3.1, 6.8, 9.9, 11.8, 11.2, 8.6, 5.2, 2.0, 0.0],
-    hum: [80, 79, 77, 74, 74, 76, 78, 80, 80, 80, 81, 81],
   },
   regions: [],
-  advisories: {
-    combined: { level: 1, label: "Exercise normal precautions", color: "#7AA67A" },
-    lastUpdated: "Apr 18, 2026",
-    sources: [
-      { gov: "United States", level: 1, label: "Exercise normal precautions", date: "Apr 12, 2026", url: "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages/Iceland.html" },
-      { gov: "United Kingdom", level: 1, label: "See our travel advice", date: "Apr 15, 2026", url: "https://www.gov.uk/foreign-travel-advice/iceland" },
-      { gov: "Canada", level: 1, label: "Exercise normal security precautions", date: "Apr 10, 2026", url: "https://travel.gc.ca/destinations/iceland" },
-      { gov: "Australia", level: 1, label: "Exercise normal safety precautions", date: "Apr 16, 2026", url: "https://www.smartraveller.gov.au/destinations/europe/iceland" },
-      { gov: "Germany", level: 1, label: "Keine Reisewarnung", date: "Apr 14, 2026", url: "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/island-node" },
-    ],
-  },
+  // Nobody has published one. The section renders that, rather than asserting
+  // "normal precautions" on no government's authority.
+  advisories: undefined,
   related: [
     { slug: "japan", name: "Japan", sub: "Parallel autumn windows", score: 72 },
     { slug: "peru", name: "Peru", sub: "Highland-trek shoulder parallels", score: 68 },
@@ -277,6 +265,20 @@ export function findCountryData(slug: string): CountryData | null {
 /** All mocked country slugs — `generateStaticParams` uses this in dev. */
 export function mockCountrySlugs(): string[] {
   return Object.keys(COUNTRY_DATA);
+}
+
+/**
+ * The fixtures' stand-in for `/v1/countries`. Same shape, same job: it is what
+ * the route tree is generated from when `USE_MOCK_DATA` is on, so a `pnpm dev`
+ * with no API builds three countries' pages rather than 237 empty ones.
+ */
+export function mockCountryRefs(): readonly CountryRef[] {
+  return Object.values(COUNTRY_DATA).map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    iso2: c.iso2,
+    region: c.region,
+  }));
 }
 
 export { zeros as MONTHLY_ZEROS };
@@ -447,6 +449,25 @@ export const CONSUMER_ACCOUNTS: Record<string, ConsumerAccount> = {
   usr_lea: PREMIUM_ACCOUNT,
 };
 
+/**
+ * What a real, signed-in user's account looks like today.
+ *
+ * The account surface is still fixture-backed — the trips / favourites /
+ * alerts routers exist on the API but nothing on the page calls them (RC-6,
+ * deferred to Phase 6). Before WS-5 that was invisible, because
+ * `USE_MOCK_DATA` was on and every session resolved to a fixture persona. With
+ * real sessions, a user id that matches no fixture is the normal case, and
+ * `notFound()` would 404 the account page for everyone who signs in. Empty is
+ * both accurate and what the empty states in `web/design/` were drawn for.
+ */
+export const EMPTY_CONSUMER_ACCOUNT: ConsumerAccount = {
+  trips: [],
+  favourites: [],
+  alerts: [],
+  invoices: [],
+  activity: [],
+};
+
 export function findConsumerAccount(userId: string): ConsumerAccount | null {
   return CONSUMER_ACCOUNTS[userId] ?? null;
 }
@@ -504,6 +525,17 @@ const CORDILLERA_ACCOUNT: AgencyAccount = {
 
 export const AGENCY_ACCOUNTS: Record<string, AgencyAccount> = {
   org_cordillera: CORDILLERA_ACCOUNT,
+};
+
+/** Same reasoning as {@link EMPTY_CONSUMER_ACCOUNT}, for an agency org. */
+export const EMPTY_AGENCY_ACCOUNT: AgencyAccount = {
+  team: [],
+  clients: [],
+  activity: [],
+  tripsYTD: 0,
+  activeTrips: 0,
+  archivedThisMonth: 0,
+  invoices: [],
 };
 
 export function findAgencyAccount(orgId: string): AgencyAccount | null {

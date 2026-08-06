@@ -12,7 +12,7 @@ type Entry = MetadataRoute.Sitemap[number];
  * trip-detail pages aren't listed — they're either dynamic per-user or
  * SSR with a `revalidate` that doesn't need pre-declaration.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const urls: Entry[] = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Only countries the data path can actually answer for — a sitemap full of
   // 404s is worse than a short one.
-  for (const country of routableCountries()) {
+  for (const country of await routableCountries()) {
     urls.push({
       url: `${SITE_URL}/${country.slug}`,
       lastModified: now,

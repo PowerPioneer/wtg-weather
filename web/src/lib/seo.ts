@@ -8,7 +8,7 @@
 
 import type { Metadata } from "next";
 import { SITE_URL } from "./env";
-import { regionSlug } from "./regions";
+import { regionHref } from "./regions";
 import type { CountryData, MonthDetail, RegionRow } from "./types";
 
 export function canonical(path: string): string {
@@ -88,7 +88,7 @@ export function countryJsonLd(country: CountryData): string {
 }
 
 export function regionMetadata(country: CountryData, region: RegionRow): Metadata {
-  const slug = regionSlug(region.name);
+  const slug = regionHref(region);
   const title = `${region.name}, ${country.name} — weather by month · Atlas Weather`;
   const description = `Month-by-month climate for ${region.name} (${country.name}): temperature trend across the year, best-months ranking, and the latest travel-advisory levels for ${country.name}.`;
   const path = `/${country.slug}/${slug}`;
@@ -118,7 +118,7 @@ export function regionMonthMetadata(
   monthSlug: string,
   monthName: string,
 ): Metadata {
-  const slug = regionSlug(region.name);
+  const slug = regionHref(region);
   const title = `${region.name} in ${monthName} — weather & safety · Atlas Weather`;
   const description = `${region.name}, ${country.name} in ${monthName}: regional temperature, match score vs. the country average, and the latest travel-advisory levels from five governments.`;
   const path = `/${country.slug}/${slug}/${monthSlug}`;
@@ -144,7 +144,7 @@ export function regionMonthMetadata(
 
 /** `TouristDestination` JSON-LD for region pages — `containedInPlace` links to the country. */
 export function regionJsonLd(country: CountryData, region: RegionRow): string {
-  const slug = regionSlug(region.name);
+  const slug = regionHref(region);
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristDestination",
@@ -167,7 +167,7 @@ export function regionMonthJsonLd(
   monthSlug: string,
   monthName: string,
 ): string {
-  const slug = regionSlug(region.name);
+  const slug = regionHref(region);
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristTrip",

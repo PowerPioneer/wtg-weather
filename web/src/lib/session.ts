@@ -24,8 +24,13 @@ export async function getSessionServer(): Promise<SessionUser | null> {
   const c = await cookies();
 
   if (USE_MOCK_DATA) {
-    const key = c.get(MOCK_COOKIE)?.value ?? "premium";
-    return findSession(key);
+    // No cookie means nobody is signed in, and `getEntitlement(null)` resolves
+    // that to the free tier. This used to default to the "premium" persona, so
+    // every anonymous visitor of a mock-backed build was served the paid tier —
+    // including in production, where `USE_MOCK_DATA` was on by default. Setting
+    // the cookie is how the preview UI switches personas deliberately.
+    const key = c.get(MOCK_COOKIE)?.value;
+    return key ? findSession(key) : null;
   }
 
   const session = c.get(SESSION_COOKIE)?.value;

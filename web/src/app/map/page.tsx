@@ -18,10 +18,10 @@ export const metadata: Metadata = {
 export default async function MapPage() {
   const session = await getSessionServer();
   const entitlement = getEntitlement(session);
-  // Which country pages exist. Resolved on the server because the gate reads a
-  // server-only env var — passing the answer down keeps the panel's CTA honest
-  // without the client having to guess at the data path's state.
-  const publishedCountrySlugs = routableCountries().map((c) => c.slug);
+  // Which country pages exist. Resolved on the server because it comes from
+  // the API's published index — passing the answer down keeps the climate
+  // panel's "View country page" CTA honest without the client having to guess.
+  const publishedCountrySlugs = (await routableCountries()).map((c) => c.slug);
 
   return (
     <>

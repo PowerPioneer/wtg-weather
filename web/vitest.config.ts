@@ -7,6 +7,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // `server-only` throws on import outside an RSC, which would make
+      // `lib/session.ts` — where the entitlement default lives — untestable.
+      "server-only": fileURLToPath(
+        new URL("./src/test/server-only-stub.ts", import.meta.url),
+      ),
     },
   },
   test: {

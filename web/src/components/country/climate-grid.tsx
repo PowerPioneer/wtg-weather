@@ -2,10 +2,23 @@ import Link from "next/link";
 import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/components/charts";
 import type { CountryData, Monthly } from "@/lib/types";
 
+/** The four the Premium tier sells. Named here only to advertise them. */
+const PREMIUM_VARIABLES: readonly { kind: ClimateChartKind; title: string }[] = [
+  { kind: "snow", title: "Snow depth" },
+  { kind: "sst", title: "Sea surface temperature" },
+  { kind: "heat", title: "Heat index" },
+  { kind: "humidity", title: "Humidity" },
+];
+
 /**
- * "Climate at a glance" — 4 free charts + 4 Premium-locked charts.
- * Reads directly off `CountryData.climate` so no intermediate reshape is
- * needed at the page level.
+ * "Climate at a glance" — 4 free charts, plus the Premium four as an offer.
+ *
+ * The Premium block used to render real series behind a blur. That worked when
+ * the page ran on fixtures and stopped working the moment it ran on the API:
+ * country pages are statically generated, so one HTML document serves every
+ * visitor and a blurred chart still ships its numbers in view-source. The API
+ * no longer sends them (see `ClimateSeries`), so this is now a genuine lock
+ * rather than a CSS one.
  */
 export function ClimateGrid({ country }: { country: CountryData }) {
   const c = country.climate;
@@ -24,7 +37,7 @@ export function ClimateGrid({ country }: { country: CountryData }) {
           <ChartFromMonthly kind="temp" values={c.t} bands={{ p10: c.tMin, p90: c.tMax }} context={country.name} />
           <ChartFromMonthly kind="rain" values={c.r} context={country.name} />
           <ChartFromMonthly kind="sun" values={c.s} context={country.name} />
-          <ChartFromMonthly kind="wind" values={c.w} context={country.name} />
+          {c.w ? <ChartFromMonthly kind="wind" values={c.w} context={country.name} /> : null}
         </div>
         <div className="mt-6">
           <div className="mb-3 flex items-baseline justify-between">
@@ -36,14 +49,48 @@ export function ClimateGrid({ country }: { country: CountryData }) {
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <ChartFromMonthly kind="snow" values={c.snow} locked context={country.name} />
-            <ChartFromMonthly kind="sst" values={c.sst} locked context={country.name} />
-            <ChartFromMonthly kind="heat" values={c.heat} locked context={country.name} />
-            <ChartFromMonthly kind="humidity" values={c.hum} locked context={country.name} />
+            {PREMIUM_VARIABLES.map((variable) => (
+              <PremiumTeaser
+                key={variable.kind}
+                title={variable.title}
+                countryName={country.name}
+              />
+            ))}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * A named, empty slot. No chart, because there is no data to draw and drawing
+ * a plausible-looking one would be a lie with a paywall on it.
+ */
+function PremiumTeaser({
+  title,
+  countryName,
+}: {
+  title: string;
+  countryName: string;
+}) {
+  return (
+    <div className="flex min-h-[168px] flex-col justify-between rounded-md border border-dashed border-border bg-surface p-4">
+      <div>
+        <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted">
+          Premium
+        </div>
+        <div className="mt-1 font-display text-[18px] font-medium text-text">{title}</div>
+      </div>
+      <p className="text-[12px] leading-snug text-text-muted">
+        {title} for {countryName} is part of the Premium map and its
+        district-level detail.{" "}
+        <Link href="/pricing" className="text-text-link underline-offset-2 hover:underline">
+          See what Premium includes
+        </Link>
+        .
+      </p>
+    </div>
   );
 }
 

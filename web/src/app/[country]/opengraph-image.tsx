@@ -27,9 +27,7 @@ export default async function OG({
       <div style={frame}>
         <div style={eyebrow}>
           <span style={chip}>Country</span>
-          <span>
-            {data.region} · {data.tz}
-          </span>
+          <span>{[data.region, data.tz].filter(Boolean).join(" · ")}</span>
         </div>
         <div style={headline}>{data.name}</div>
         <div style={tagline}>weather, regions, safety</div>
@@ -116,7 +114,7 @@ function Footer() {
         </div>
         <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Atlas Weather</span>
       </div>
-      <span>ERA5 climate · 5-gov safety</span>
+      <span>ERA5 climate · government safety advisories</span>
     </div>
   );
 }
