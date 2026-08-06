@@ -82,7 +82,6 @@ from wtg_pipeline.processing.advisories import (
     write_json_if_changed,
 )
 from wtg_pipeline.processing.country_registry import (
-    CountryEntry,
     build_registry,
     registry_rows_from_gdf,
     slugify,
@@ -656,7 +655,6 @@ def build_payloads(
 ) -> tuple[dict[str, dict[str, object]], list[str]]:
     """Assemble every country payload. Returns ``(by_slug, skipped_names)``."""
     registry = build_registry(registry_rows_from_gdf(country_gdf))
-    by_iso: dict[str, CountryEntry] = {entry.iso2: entry for entry in registry}
     areas = land_areas_km2(country_gdf)
 
     country_groups = _polygon_groups(country_percentiles)
