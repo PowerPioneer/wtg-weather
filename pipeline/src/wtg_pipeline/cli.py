@@ -10,11 +10,13 @@ app = typer.Typer(help="Where to Go for Great Weather — data pipeline CLI.")
 download = typer.Typer(help="Download raw data from external sources.")
 process = typer.Typer(help="Process raw data into intermediate artifacts.")
 build = typer.Typer(help="Build final outputs (GeoJSON, PMTiles).")
+publish = typer.Typer(help="Publish processed outputs for the services that read them.")
 pipeline_app = typer.Typer(help="Run end-to-end pipeline stages.")
 
 app.add_typer(download, name="download")
 app.add_typer(process, name="process")
 app.add_typer(build, name="build")
+app.add_typer(publish, name="publish")
 app.add_typer(pipeline_app, name="pipeline")
 
 
@@ -210,6 +212,33 @@ def build_pmtiles(
 
     out = run_build_pmtiles(tier=tier)
     typer.echo(f"wrote {out}")
+
+
+@publish.command("api-data")
+def publish_api_data(
+    verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+) -> None:
+    """Write the per-country JSON bundle the API serves to the SSR pages.
+
+    Reads the percentiles Parquet, the boundary layers and `advisories.json`,
+    and writes `data/final/api/` — one payload per country plus an index. The
+    API mounts that directory read-only; the web generates its static route
+    tree from the index, so the pages that exist are exactly the countries
+    this step could answer for.
+
+    Unchanged payloads are left untouched, so re-running is a no-op.
+    """
+    _setup_logging(verbose)
+    from wtg_pipeline.publish.api_data import run_publish_api_data
+
+    result = run_publish_api_data()
+    typer.echo(
+        f"countries={result.published} changed={result.changed} "
+        f"pruned={result.pruned} skipped={len(result.skipped)}"
+    )
+    typer.echo(f"wrote {result.index}")
+    if result.skipped:
+        typer.echo(f"no complete climate series for: {', '.join(result.skipped)}")
 
 
 @pipeline_app.command("full")

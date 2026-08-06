@@ -97,6 +97,25 @@ def test_build_pmtiles_help() -> None:
     assert result.exit_code == 0
 
 
+def test_publish_api_data_help() -> None:
+    result = runner.invoke(app, ["publish", "api-data", "--help"])
+    assert result.exit_code == 0
+
+
+def test_publish_api_data_says_which_step_is_missing(tmp_path, monkeypatch) -> None:
+    """The failure has to name the step, not just the absent file.
+
+    This runs on the build box after a fresh checkout more often than not, and
+    "percentiles/country.parquet is missing" is only actionable if it also says
+    which command produces it.
+    """
+    monkeypatch.setenv("WTG_PIPELINE_DATA_DIR", str(tmp_path))
+    result = runner.invoke(app, ["publish", "api-data"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, FileNotFoundError)
+    assert "wtg process percentiles" in str(result.exception)
+
+
 def test_pipeline_full_help() -> None:
     result = runner.invoke(app, ["pipeline", "full", "--help"])
     assert result.exit_code == 0

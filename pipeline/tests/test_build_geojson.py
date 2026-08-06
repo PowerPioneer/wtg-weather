@@ -18,7 +18,7 @@ from wtg_pipeline.tiles.build_geojson import (
     PREMIUM_SOURCE_VARIABLES,
     SCORE_TO_PREF,
     WEB_PROP_ALIAS,
-    _widen_percentiles_for_polygon,
+    widen_percentiles_for_polygon,
     score_props,
     source_variables_for_tier,
     variables_for_tier,
@@ -55,7 +55,7 @@ def test_widen_converts_si_units_and_emits_short_aliases() -> None:
             _row("ssrd", 1, BRIGHT_SSRD),  # J/m²/day → sunshine hours
         ]
     )
-    props = _widen_percentiles_for_polygon(df, FREE_SOURCE_VARIABLES, latitude=0.0)
+    props = widen_percentiles_for_polygon(df, FREE_SOURCE_VARIABLES, latitude=0.0)
 
     # Long-form percentiles still emitted (analytical / SSR consumers),
     # now in display units.
@@ -71,12 +71,12 @@ def test_widen_converts_si_units_and_emits_short_aliases() -> None:
 
 
 def test_widen_derives_sunshine_from_ssrd_not_passthrough() -> None:
-    bright = _widen_percentiles_for_polygon(
+    bright = widen_percentiles_for_polygon(
         _percentiles_frame([_row("ssrd", 6, BRIGHT_SSRD)]),
         FREE_SOURCE_VARIABLES,
         latitude=0.0,
     )
-    dim = _widen_percentiles_for_polygon(
+    dim = widen_percentiles_for_polygon(
         _percentiles_frame([_row("ssrd", 6, DIM_SSRD)]),
         FREE_SOURCE_VARIABLES,
         latitude=0.0,
@@ -93,7 +93,7 @@ def test_widen_derives_humidity_and_heat_for_premium() -> None:
             _row("d2m", 7, 299.15),  # 26 °C dewpoint → humid
         ]
     )
-    props = _widen_percentiles_for_polygon(df, PREMIUM_SOURCE_VARIABLES, latitude=10.0)
+    props = widen_percentiles_for_polygon(df, PREMIUM_SOURCE_VARIABLES, latitude=10.0)
 
     assert 65.0 < props["hum_07"] < 80.0
     assert props["hum_07"] == props["rh_p50_07"]
@@ -107,7 +107,7 @@ def test_widen_handles_nan_p50() -> None:
     df = _percentiles_frame(
         [{"variable": "t2m", "month": 1, "p10": 280.0, "p50": float("nan"), "p90": 290.0}]
     )
-    props = _widen_percentiles_for_polygon(df, FREE_SOURCE_VARIABLES)
+    props = widen_percentiles_for_polygon(df, FREE_SOURCE_VARIABLES)
     # NaN p50 → no short alias (paint will fall through to MISSING_FILL).
     assert "t_01" not in props
     assert props["t2m_p10_01"] == pytest.approx(6.85)
@@ -168,7 +168,7 @@ def test_score_to_pref_centroids_fall_in_web_bins() -> None:
 
 
 def _pref_for(t2m_k: float, tp_m: float, ssrd: float, *, latitude: float) -> int:
-    converted = _widen_percentiles_for_polygon(
+    converted = widen_percentiles_for_polygon(
         _percentiles_frame(
             [_row("t2m", 1, t2m_k), _row("tp", 1, tp_m), _row("ssrd", 1, ssrd)]
         ),

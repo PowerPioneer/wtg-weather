@@ -231,7 +231,7 @@ def _score_row(values_by_var: dict[str, float]) -> int:
     return polygon_score(values_by_var, DEFAULT_PREFERENCES)  # type: ignore[arg-type]
 
 
-def _representative_latitude(geometry: object) -> float:
+def representative_latitude(geometry: object) -> float:
     """Latitude of a point guaranteed to lie inside the polygon.
 
     Feeds the sunshine derivation, which is latitude-dependent. Falls back
@@ -268,7 +268,7 @@ def _converter(source_variable: str, *, latitude: float, month: int) -> Callable
     return UNIT_CONVERSIONS.get(source_variable, lambda value: value)
 
 
-def _widen_percentiles_for_polygon(
+def widen_percentiles_for_polygon(
     poly_percentiles: "object",
     variables: tuple[str, ...],
     *,
@@ -353,7 +353,7 @@ def score_props(converted: dict[str, float]) -> dict[str, int]:
     """Per-month `score_<mm>` / `pref_<mm>` from converted p50 values.
 
     Reads back out of the props dict produced by
-    :func:`_widen_percentiles_for_polygon` so the score is computed from
+    :func:`widen_percentiles_for_polygon` so the score is computed from
     exactly the display-unit values the map paints. Scoring raw ERA5 SI
     units against :data:`DEFAULT_PREFERENCES` collapses every polygon on
     Earth into the same bucket — the map then renders as one flat colour.
@@ -428,8 +428,8 @@ def build_feature_collection(
             "name": name,
             "level": build_input.level,
         }
-        converted = _widen_percentiles_for_polygon(
-            poly_perc, source_variables, latitude=_representative_latitude(geometry)
+        converted = widen_percentiles_for_polygon(
+            poly_perc, source_variables, latitude=representative_latitude(geometry)
         )
         props.update(converted)
 

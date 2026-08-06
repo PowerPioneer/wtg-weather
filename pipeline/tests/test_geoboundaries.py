@@ -35,33 +35,39 @@ def _resp(body: bytes | str, *, status: int = 200, content_type: str = "applicat
     )
 
 
-def test_download_natural_earth_writes_two_zips(tmp_path: Path) -> None:
-    stub = _StubClient(
-        {
-            geoboundaries.NATURAL_EARTH_COUNTRY_URL: _resp(b"PK\x03\x04country-zip"),
-            geoboundaries.NATURAL_EARTH_ADMIN1_URL: _resp(b"PK\x03\x04admin1-zip"),
-        }
-    )
+def _natural_earth_responses() -> dict[str, httpx.Response]:
+    return {
+        geoboundaries.NATURAL_EARTH_COUNTRY_URL: _resp(b"PK\x03\x04country-zip"),
+        geoboundaries.NATURAL_EARTH_ADMIN1_URL: _resp(b"PK\x03\x04admin1-zip"),
+        geoboundaries.NATURAL_EARTH_PLACES_URL: _resp(b"PK\x03\x04places-zip"),
+    }
+
+
+def test_download_natural_earth_writes_every_layer(tmp_path: Path) -> None:
+    stub = _StubClient(_natural_earth_responses())
     paths = geoboundaries.download_natural_earth(client=stub, base_dir=tmp_path)
-    assert len(paths) == 2
+    assert len(paths) == 3
     for p in paths:
         assert p.exists()
         assert p.stat().st_size > 0
-    assert len(stub.calls) == 2
+    assert len(stub.calls) == 3
+    # Populated places is what `wtg publish api-data` reads capitals and
+    # timezones out of; losing it silently would empty two rows on every
+    # country page rather than fail anything.
+    assert {p.name for p in paths} == {
+        geoboundaries.NATURAL_EARTH_COUNTRY_FILENAME,
+        geoboundaries.NATURAL_EARTH_ADMIN1_FILENAME,
+        geoboundaries.NATURAL_EARTH_PLACES_FILENAME,
+    }
 
 
 def test_download_natural_earth_idempotent(tmp_path: Path) -> None:
-    stub = _StubClient(
-        {
-            geoboundaries.NATURAL_EARTH_COUNTRY_URL: _resp(b"PK\x03\x04country-zip"),
-            geoboundaries.NATURAL_EARTH_ADMIN1_URL: _resp(b"PK\x03\x04admin1-zip"),
-        }
-    )
+    stub = _StubClient(_natural_earth_responses())
     geoboundaries.download_natural_earth(client=stub, base_dir=tmp_path)
     # Second pass: no calls expected.
     stub2 = _StubClient({})
     paths = geoboundaries.download_natural_earth(client=stub2, base_dir=tmp_path)
-    assert len(paths) == 2
+    assert len(paths) == 3
     assert stub2.calls == []
 
 

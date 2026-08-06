@@ -626,4 +626,11 @@ def run_full(*, years_spec: str) -> None:
     run_build_geojson(tier="premium", force=False)
     log.info("=== build pmtiles (premium) ===")
     run_build_pmtiles(tier="premium")
+    log.info("=== publish api data ===")
+    # Same inputs as the tiles, different consumer: the SSR country and region
+    # pages. Last, because it reads `advisories.json` which the advisory step
+    # above writes, and because a failure here costs the pages, not the map.
+    from wtg_pipeline.publish.api_data import run_publish_api_data
+
+    run_publish_api_data()
     log.info("done.")

@@ -24,6 +24,8 @@ uv run wtg --help
 - `wtg build geojson` — produce `data/final/*.geojson`
 - `wtg build pmtiles --tier free` — produce `tiles/free.pmtiles`
 - `wtg build pmtiles --tier premium` — produce `tiles/premium.pmtiles`
+- `wtg publish api-data` — write `data/final/api/` (one JSON payload per
+  country + `index.json`), the bundle the API serves to the SSR pages
 - `wtg pipeline full` — end-to-end
 
 ## Rules
@@ -47,6 +49,24 @@ uv run wtg --help
   what turns a feature's `iso_a2` into a name and a URL, so it must not drift
   from the boundary vintage: regenerate it whenever the admin-0 source changes
   and review the diff. Never hand-edit the generated file.
+- The slug rule that script uses lives in `processing/country_registry.py` and
+  is shared with `wtg publish api-data`, which names its per-country files with
+  it. They must not diverge: the web generates its static route tree from the
+  published index, so a slug the two disagreed about is a page the API cannot
+  answer for.
+- `wtg publish api-data` emits **free-tier variables only**. Country pages are
+  statically generated, so one HTML document serves every visitor — a premium
+  series in the payload is a premium series in public view-source. Same tier
+  boundary the tiles draw, same reason. `test_publish_api_data.py` pins it.
+- The ten `SUPPRESSED_COUNTRIES` have no country-level percentile row (
+  `apply_country_rules` drops them, because a single national colour for Russia
+  or Argentina is a claim the data does not support). `publish api-data` builds
+  their payload from the mean of their admin-1 rows and marks it
+  `climateBasis: "admin1-mean"` — the map suppresses them, the page does not.
+- `ne_110m_populated_places` is downloaded for one reason: it is the only
+  Natural Earth layer carrying a capital city and its IANA timezone, both of
+  which the country page prints. Nothing in the tiles reads it, and a country
+  it cannot resolve simply omits those two rows.
 - Advisories: each government scraper inherits from `advisories/base.py`
   and returns the normalised schema: `{country_iso2, region_code|null,
   level: 1-4, summary, source_url, fetched_at}`.

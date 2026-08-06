@@ -44,11 +44,21 @@ NATURAL_EARTH_COUNTRY_URL = (
 NATURAL_EARTH_ADMIN1_URL = (
     "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_1_states_provinces.zip"
 )
+# Populated places at 1:110m — ~240 features, one per country plus a handful of
+# alternates. It is the only Natural Earth layer that carries a capital city
+# and its IANA timezone, which is the whole reason it is downloaded: the SSR
+# country page prints both, and every other candidate source for them would be
+# a hand-maintained table drifting away from the boundary vintage. Nothing in
+# the tiles reads it, so a failed download costs two lines on a page.
+NATURAL_EARTH_PLACES_URL = (
+    "https://naciscdn.org/naturalearth/110m/cultural/ne_110m_populated_places.zip"
+)
 
 # Filenames the downloader writes and the pipeline reads back. Exported so
 # `pipeline_runner` resolves the same paths instead of restating them.
 NATURAL_EARTH_COUNTRY_FILENAME = "ne_50m_admin_0_countries.zip"
 NATURAL_EARTH_ADMIN1_FILENAME = "ne_10m_admin_1_states_provinces.zip"
+NATURAL_EARTH_PLACES_FILENAME = "ne_110m_populated_places.zip"
 
 GEOBOUNDARIES_API = "https://www.geoboundaries.org/api/current/gbOpen"
 
@@ -114,6 +124,11 @@ def download_natural_earth(
                 "admin1",
                 NATURAL_EARTH_ADMIN1_URL,
                 out_dir / NATURAL_EARTH_ADMIN1_FILENAME,
+            ),
+            BoundaryArtifact(
+                "places",
+                NATURAL_EARTH_PLACES_URL,
+                out_dir / NATURAL_EARTH_PLACES_FILENAME,
             ),
         ]
         return [_download_binary(resolved, a.url, a.target, force=force) for a in artifacts]
