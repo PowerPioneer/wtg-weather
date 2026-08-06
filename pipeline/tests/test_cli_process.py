@@ -38,6 +38,54 @@ def test_process_sunshine_runs() -> None:
     assert result.exit_code == 0
 
 
+def test_process_advisories_help() -> None:
+    result = runner.invoke(app, ["process", "advisories", "--help"])
+    assert result.exit_code == 0
+
+
+def test_process_advisories_reports_what_changed(tmp_path, monkeypatch) -> None:
+    """The weekly cron branches on this output; keep it machine-readable.
+
+    `levels=unchanged` is what lets the cron skip a tile rebuild and a full
+    bunny.net purge on a week when no government moved.
+    """
+    from datetime import datetime, timezone
+
+    from wtg_pipeline.sources.advisories.base import Advisory, write_advisories
+
+    monkeypatch.setenv("WTG_PIPELINE_DATA_DIR", str(tmp_path))
+    write_advisories(
+        [
+            Advisory(
+                country_iso2="JP",
+                region_code=None,
+                level=1,
+                summary="Normal precautions",
+                source_url="https://example.gov/jp",
+                fetched_at=datetime(2026, 4, 1, tzinfo=timezone.utc),
+            )
+        ],
+        source_id="us_state",
+        base_dir=tmp_path / "raw" / "advisories",
+    )
+
+    first = runner.invoke(app, ["process", "advisories"])
+    assert first.exit_code == 0, first.output
+    assert "countries=1" in first.stdout
+    assert "levels=changed" in first.stdout
+
+    second = runner.invoke(app, ["process", "advisories"])
+    assert second.exit_code == 0
+    assert "levels=unchanged" in second.stdout
+
+
+def test_process_advisories_fails_without_a_scrape(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("WTG_PIPELINE_DATA_DIR", str(tmp_path))
+    result = runner.invoke(app, ["process", "advisories"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, FileNotFoundError)
+
+
 def test_build_geojson_help() -> None:
     result = runner.invoke(app, ["build", "geojson", "--help"])
     assert result.exit_code == 0

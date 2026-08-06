@@ -1,24 +1,39 @@
 #!/usr/bin/env bash
-# Weekly advisory refresh: scrape all five governments, re-aggregate, republish
-# the advisories layer, and purge the bunny.net cache so the map picks up the
-# new state within the CDN TTL window.
+# Weekly advisory refresh: scrape all five governments, consolidate, and — only
+# if some government actually moved a country's level — rebuild the PMTiles so
+# the map's Safety mode reflects it, purging the bunny.net cache on the way.
 #
-# Idempotent: each stage checks its own inputs-by-hash; re-running within the
-# week is a no-op for sources that haven't changed, and a small update for any
-# that have. Lock file under /tmp prevents two cron fires from colliding.
+# Why a tile rebuild rather than a JSON overlay: the advisory level is baked
+# into the tiles as a month-less `safety` feature property (see
+# `pipeline/src/wtg_pipeline/tiles/build_geojson.py`). Serving it separately
+# would mean the browser fetching climate-adjacent data at runtime, which
+# `web/CLAUDE.md` forbids ("never fetch climate data from the browser; it's
+# baked into PMTiles"). Keeping one source of truth costs a rebuild on the
+# weeks something changes and nothing on the weeks it doesn't.
+#
+# The pipeline runs on the host, not in a container — `uv` is the entrypoint,
+# same as `rebuild-tiles.sh`. (There is no `pipeline` service in
+# docker-compose.yml; an earlier version of this script assumed one and could
+# never have run.)
+#
+# Idempotent: `wtg process advisories` leaves both of its outputs untouched
+# when their content is unchanged, so re-running within the week is a no-op
+# and the rebuild is skipped. Lock file under /tmp prevents two cron fires
+# from colliding.
 #
 # Loggable: every stage prefixes its output with an RFC3339 timestamp.
 #
 # Optional env:
-#   COMPOSE              — default "docker compose"
-#   BUNNY_API_KEY        — if set, purges the advisories path on bunny.net
-#   BUNNY_PULL_ZONE_ID   — bunny.net pull-zone numeric id for purge
+#   UV                   — default "uv"
+#   FORCE_REBUILD        — set to 1 to rebuild tiles even if no level moved
+#   BUNNY_API_KEY        — passed through to rebuild-tiles.sh
+#   BUNNY_PULL_ZONE_ID   — passed through to rebuild-tiles.sh
 set -euo pipefail
 
 log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
 fail() { log "ERROR: $*" >&2; exit 1; }
 
-COMPOSE="${COMPOSE:-docker compose}"
+UV="${UV:-uv}"
 LOCK="/tmp/wtg-weekly-advisories.lock"
 
 # flock guards against overlap if cron misfires or a previous run hasn't
@@ -30,29 +45,37 @@ fi
 
 cd "$(dirname "$0")/../.."
 
+command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
+
+INDEX="pipeline/data/intermediate/advisories/safety_index.json"
+
+# Hash before and after. The index is byte-stable by construction (sorted
+# keys, no timestamps), so a changed hash means a government changed a level
+# — not that we scraped again. Rewording alone changes advisories.json, which
+# the API serves fresh without a tile rebuild.
+index_hash() { [[ -f "$INDEX" ]] && sha256sum "$INDEX" | cut -d' ' -f1 || printf 'absent'; }
+before="$(index_hash)"
+
 log "stage=download source=all"
-$COMPOSE exec -T pipeline uv run wtg download advisories --source all
+"$UV" run --directory pipeline wtg download advisories --source all
 
-log "stage=aggregate"
-$COMPOSE exec -T pipeline uv run wtg process aggregate --only advisories
+log "stage=consolidate"
+"$UV" run --directory pipeline wtg process advisories
 
-log "stage=publish"
-# The pipeline writes advisories.json into data/final/. Copy into the tiles
-# volume that Caddy mounts read-only so the API can serve the fresh file.
-$COMPOSE exec -T pipeline cp /app/data/final/advisories.json /tiles/advisories.json
+after="$(index_hash)"
+[[ "$after" != "absent" ]] || fail "consolidation produced no safety index at $INDEX"
 
-if [[ -n "${BUNNY_API_KEY:-}" && -n "${BUNNY_PULL_ZONE_ID:-}" ]]; then
-    log "stage=purge target=bunny.net path=/advisories.json"
-    # bunny.net pull-zone purge-url endpoint. Single URL, immediate.
-    purge_url="https://v2.wheretogoforgreatweather.com/advisories.json"
-    if ! curl --fail --silent --show-error \
-            -X POST "https://api.bunny.net/pullzone/${BUNNY_PULL_ZONE_ID}/purgeCache?url=${purge_url}" \
-            -H "AccessKey: ${BUNNY_API_KEY}" \
-            -o /dev/null; then
-        log "WARN: bunny.net purge failed — CDN will self-expire within TTL"
-    fi
-else
-    log "stage=purge skipped (no BUNNY_API_KEY / BUNNY_PULL_ZONE_ID)"
+if [[ "$before" == "$after" && "${FORCE_REBUILD:-0}" != "1" ]]; then
+    log "stage=rebuild skipped — no advisory level changed this week"
+    log "weekly-advisories OK (no-op)"
+    exit 0
 fi
 
-log "weekly-advisories OK"
+# `rebuild-tiles.sh` re-runs `wtg build geojson --force` for both tiers, which
+# is what picks the new levels up, then rebuilds the archives and purges the
+# pull zone. It reads BUNNY_* from the repo-root .env if not in the
+# environment, and holds its own lock.
+log "stage=rebuild reason=$( [[ "${FORCE_REBUILD:-0}" == "1" ]] && echo forced || echo levels-changed )"
+./infra/scripts/rebuild-tiles.sh
+
+log "weekly-advisories OK (tiles rebuilt)"

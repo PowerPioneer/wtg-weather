@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import os
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
@@ -19,6 +20,7 @@ from wtg_pipeline.config import (
     era5_raw_dir,
     intermediate_dir,
 )
+from wtg_pipeline.processing import advisories as advisories_mod
 from wtg_pipeline.processing import country_rules
 from wtg_pipeline.processing.aggregate import (
     LEVELS,
@@ -343,6 +345,78 @@ def _apply_country_rules_to_disk() -> None:
     )
 
 
+@dataclass(frozen=True)
+class AdvisoryConsolidation:
+    """Result of :func:`run_process_advisories`.
+
+    ``levels_changed`` is the only field a caller should branch on when
+    deciding whether to rebuild tiles: ``detail_changed`` also flips when a
+    government merely rewords its prose, and a reworded summary is not worth
+    a full CDN purge.
+    """
+
+    detail_path: Path
+    index_path: Path
+    detail_changed: bool
+    levels_changed: bool
+    countries: int
+    regions: int
+
+
+def run_process_advisories(
+    *,
+    raw_dir: Path | None = None,
+    final_path: Path | None = None,
+    index_path: Path | None = None,
+) -> AdvisoryConsolidation:
+    """Fold the newest scrape from every government into one state.
+
+    Writes ``data/final/advisories.json`` (full detail, for the API) and
+    ``data/intermediate/advisories/safety_index.json`` (levels only, for the
+    tile build). Neither file is touched when its content is unchanged, so
+    the weekly cron can hash the index to decide whether the map actually
+    needs rebuilding.
+    """
+    detail_target = final_path or advisories_mod.advisories_json_path()
+    index_target = index_path or advisories_mod.safety_index_path()
+
+    by_source = advisories_mod.load_advisories(raw_dir)
+    if not by_source:
+        raise FileNotFoundError(
+            f"no advisory dumps under {raw_dir or advisories_mod.advisories_raw_dir()}. "
+            f"Run `wtg download advisories --source all` first."
+        )
+
+    previous = advisories_mod.read_json(detail_target)
+    consolidated = advisories_mod.consolidate(by_source, previous=previous)
+    index = advisories_mod.safety_index(consolidated)
+
+    detail_changed = advisories_mod.write_json_if_changed(
+        advisories_mod.to_payload(consolidated), detail_target
+    )
+    levels_changed = advisories_mod.write_json_if_changed(
+        advisories_mod.index_payload(index), index_target
+    )
+
+    log.info(
+        "advisories: %d source(s), %d country level(s), %d subdivision level(s); "
+        "detail %s, levels %s",
+        len(by_source),
+        len(index.by_country),
+        len(index.by_region),
+        "changed" if detail_changed else "unchanged",
+        "changed" if levels_changed else "unchanged",
+    )
+    return AdvisoryConsolidation(
+        detail_path=detail_target,
+        index_path=index_target,
+        detail_changed=detail_changed,
+        levels_changed=levels_changed,
+        countries=len(index.by_country),
+        regions=len(index.by_region),
+    )
+
+
 def run_percentiles(*, level: str, force: bool) -> list[Path]:
     outputs: list[Path] = []
     for lv in _resolve_levels(level):
@@ -430,6 +504,21 @@ def run_build_geojson(*, tier: str, force: bool) -> list[Path]:
 
     suppressed = country_rules.SUPPRESSED_COUNTRIES
 
+    # Advisories are optional input. They refresh weekly while the climate
+    # data refreshes yearly, so a climate rebuild must not require a scrape
+    # to have succeeded — but a build that silently drops them would ship the
+    # grey Safety map that RC-5 describes, so say so loudly.
+    safety = advisories_mod.load_safety_index()
+    if safety is None:
+        log.warning(
+            "no advisory index at %s — the Safety display mode will paint every "
+            "polygon grey. Run `wtg download advisories --source all` followed by "
+            "`wtg process advisories` to populate it.",
+            advisories_mod.safety_index_path(),
+        )
+    else:
+        log.info("advisory index: %d country level(s)", len(safety.by_country))
+
     outputs: list[Path] = []
     levels: tuple[Level, ...] = (
         ("country", "admin1", "admin2") if tier == "premium" else ("country", "admin1")
@@ -460,7 +549,12 @@ def run_build_geojson(*, tier: str, force: bool) -> list[Path]:
         # At country-level, drop suppressed countries — the UI renders them
         # as an admin-1 mosaic instead.
         exclude = suppressed if lv == "country" else set()
-        fc = build_feature_collection(build_input, tier=tier, exclude_iso2=exclude)  # type: ignore[arg-type]
+        fc = build_feature_collection(
+            build_input,
+            tier=tier,  # type: ignore[arg-type]
+            exclude_iso2=exclude,
+            safety=safety,
+        )
         write_feature_collection(fc, out_path)
         outputs.append(out_path)
 
@@ -518,6 +612,12 @@ def run_full(*, years_spec: str) -> None:
     log.info("=== validate sunshine ===")
     if not validate_sunshine():
         raise RuntimeError("sunshine validation failed; see log")
+    log.info("=== consolidate advisories ===")
+    try:
+        run_process_advisories()
+    except FileNotFoundError as exc:
+        # A missing scrape degrades the Safety mode, not the climate map.
+        log.warning("skipping advisories: %s", exc)
     log.info("=== build geojson (free) ===")
     run_build_geojson(tier="free", force=False)
     log.info("=== build pmtiles (free) ===")

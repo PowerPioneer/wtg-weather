@@ -247,3 +247,95 @@ def test_suppressed_country_mosaics_survive_the_minzoom_hint(
     # Non-suppressed admin-1 should be largely hinted away down here, so the
     # low-zoom set stays small; the mosaic countries alone account for it.
     assert len(low_zoom) < 1000
+
+
+def _safety_by_iso(path: Path, layer_name: str, max_zoom: int) -> dict[str, set[object]]:
+    """Map `iso_a2` → the set of `safety` values its features carry.
+
+    A set rather than a value so that a country whose polygons disagree —
+    which would mean the join keyed off the wrong column — shows up as a
+    disagreement rather than as whichever tile was read last.
+    """
+    from pmtiles.reader import MmapSource, Reader, all_tiles
+
+    per_iso: dict[str, set[object]] = defaultdict(set)
+    with path.open("rb") as handle:
+        reader = Reader(MmapSource(handle))
+        for (zoom, _x, _y), data in all_tiles(reader.get_bytes):
+            if zoom > max_zoom:
+                continue
+            try:
+                raw = gzip.decompress(data)
+            except OSError:
+                raw = data
+            decoded = mapbox_vector_tile.decode(raw)
+            if layer_name not in decoded:
+                continue
+            for feature in decoded[layer_name]["features"]:
+                props = feature.get("properties", {})
+                iso = str(props.get("iso_a2", "")).upper()
+                if iso:
+                    per_iso[iso].add(props.get("safety"))
+    return per_iso
+
+
+@pytest.fixture(scope="module")
+def advisory_index():
+    """The index the tiles were supposed to be built from."""
+    from wtg_pipeline.processing.advisories import load_safety_index
+
+    index = load_safety_index()
+    if index is None or not index.by_country:
+        pytest.skip(
+            "no advisory index built — run `wtg download advisories --source all` "
+            "then `wtg process advisories`"
+        )
+    return index
+
+
+def test_country_layer_carries_the_advisory_levels(free_tiles: Path, advisory_index) -> None:
+    """RC-5: the Safety display mode had no data at all.
+
+    `web/src/lib/display-modes.ts` reads a month-less `safety` property that
+    nothing emitted, so every polygon painted missing-grey. A tile archive
+    built after an advisory scrape must agree with the index it was built
+    from, or the mode is silently back to grey.
+    """
+    in_tiles = _safety_by_iso(free_tiles, "country", max_zoom=2)
+    expected = advisory_index.by_country
+
+    shared = sorted(set(in_tiles) & set(expected))
+    assert len(shared) >= 100, (
+        f"only {len(shared)} countries are both in the tiles and in the advisory "
+        f"index — the join ran against the wrong vintage or not at all"
+    )
+    disagreements = {
+        iso: (sorted(in_tiles[iso], key=str), expected[iso])
+        for iso in shared
+        if in_tiles[iso] != {expected[iso]}
+    }
+    assert not disagreements, f"tile `safety` disagrees with the index: {disagreements}"
+
+
+def test_safety_levels_are_on_the_documented_ladder(free_tiles: Path, advisory_index) -> None:
+    # The web's four legend bins step at 2/3/4. Anything else paints as the
+    # top bin and misreports risk.
+    levels = {
+        value
+        for values in _safety_by_iso(free_tiles, "country", max_zoom=2).values()
+        for value in values
+        if value is not None
+    }
+    assert levels, "no country feature carries a `safety` property"
+    assert levels <= {1, 2, 3, 4}, f"off-ladder advisory levels in the tiles: {levels}"
+
+
+def test_admin1_inherits_advisory_levels(free_tiles: Path, advisory_index) -> None:
+    # The country layer stops at zoom 3.5. Without this the Safety map goes
+    # grey the moment a user zooms in.
+    in_tiles = _safety_by_iso(free_tiles, "admin1", max_zoom=4)
+    with_safety = [iso for iso, values in in_tiles.items() if values - {None}]
+    assert len(with_safety) >= 100, (
+        f"only {len(with_safety)} countries' admin-1 polygons carry an advisory "
+        f"level — Safety mode goes grey past the country handover zoom"
+    )

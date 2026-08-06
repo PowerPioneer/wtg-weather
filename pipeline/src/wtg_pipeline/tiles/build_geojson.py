@@ -22,7 +22,14 @@ Feature property schema (one per polygon)::
         "tp_p50_01": 150.0, ...,
         "sun_hours_p50_01": 6.5, ...,
         "score_01": 2, "score_02": 2, ..., "score_12": 3,
+        "safety": 2,
     }
+
+``safety`` is the one property with no month index — a travel advisory is a
+statement about now, not about April. It is present only where a government
+has published something (see :mod:`wtg_pipeline.processing.advisories`);
+absent means the web paints missing-grey, which is the truthful rendering of
+"nobody has said".
 
 Free tier keeps temperature, precipitation, sunshine (core three). Premium
 adds wind, snow, SST, humidity, plus admin-2 level.
@@ -51,6 +58,7 @@ from pathlib import Path
 from typing import Callable, Literal
 
 from wtg_pipeline.config import ensure_dir, final_dir
+from wtg_pipeline.processing.advisories import SafetyIndex
 from wtg_pipeline.processing.country_rules import SUPPRESSED_COUNTRIES
 from wtg_pipeline.processing.scoring import (
     DEFAULT_PREFERENCES,
@@ -371,11 +379,18 @@ def build_feature_collection(
     *,
     tier: Tier,
     exclude_iso2: set[str] | None = None,
+    safety: SafetyIndex | None = None,
 ) -> dict:
-    """Return a GeoJSON FeatureCollection dict for one (tier, level)."""
+    """Return a GeoJSON FeatureCollection dict for one (tier, level).
+
+    ``safety`` is optional: an advisory scrape that has never run, or has
+    failed, must not block a climate tile build. Its absence costs the Safety
+    display mode its colours and nothing else.
+    """
     pd, _gpd = _require_pandas_and_gpd()
     source_variables = source_variables_for_tier(tier)
     exclude = exclude_iso2 or set()
+    with_safety = 0
 
     gdf = build_input.polygons_gdf
     id_col = build_input.id_col
@@ -419,6 +434,13 @@ def build_feature_collection(
         props.update(converted)
 
         props.update(score_props(converted))
+
+        if safety is not None:
+            level = safety.level_for(iso_a2, admin1_code)
+            if level is not None:
+                props["safety"] = level
+                with_safety += 1
+
         feature: dict[str, object] = {
             "type": "Feature",
             "geometry": geometry.__geo_interface__,
@@ -430,6 +452,15 @@ def build_feature_collection(
             # the feature before the tile is written.
             feature["tippecanoe"] = {"minzoom": min_zoom}
         features.append(feature)
+
+    if safety is not None:
+        log.info(
+            "%s/%s: %d of %d feature(s) carry an advisory level",
+            tier,
+            build_input.level,
+            with_safety,
+            len(features),
+        )
 
     return {"type": "FeatureCollection", "features": features}
 

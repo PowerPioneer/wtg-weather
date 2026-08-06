@@ -305,6 +305,9 @@ unit tests green including the pipeline-parity case.
 
 ### WS-4 · Pipeline+API: safety/advisory data path
 
+> **Status: complete, pending a scrape + rebuild on the build box.** See
+> § "WS-4 progress" at the end of this document.
+
 1. Join the normalised advisory output into `build_geojson.py`: emit a
    month-less `safety` property (1–4) per feature — country-level from
    `country_iso2`, admin-level rows where `region_code` matches. Missing →
@@ -511,6 +514,106 @@ The map itself was not exercised in a browser: there are no PMTiles archives on 
 3. Wind is now a free tile variable (RC-9) but is deliberately not scored, because the pipeline does not score it either and parity with the baked `pref_<mm>` is what keeps the default map stable. Adding it means changing both sides together and re-baking tiles.
 4. Anonymous visitors' preferences live only in the URL. That is the rule as written (no `localStorage`); if they should survive a fresh visit, it needs an HttpOnly cookie set via the API, which is an API change.
 5. The `unit` query param (metric/imperial) is still unused — the panel reads °C / mm / h like the rest of the map. Imperial display is its own pass across the legend, hover card, panel and SSR pages.
+
+## WS-4 progress
+
+### The decision the plan left open
+
+Step 2 asked for a call between baking advisories into the tiles and serving
+them as a JSON overlay the map fetches. **Baked into the tiles**, with the
+weekly rebuild made conditional. The overlay would need an explicit exception
+to `web/CLAUDE.md`'s "never fetch climate data from the browser" rule plus a
+client-side join through `setFeatureState` on every rendered polygon; baking
+keeps one source of truth and costs a rebuild only in the weeks a government
+actually moves a level. Advisory levels are far more static than the weekly
+cadence suggests — most weeks the answer is "nothing changed", and the
+conditional rebuild turns those weeks into a no-op.
+
+### Changes landed
+
+| Change | File | Why |
+|---|---|---|
+| Advisory consolidation module | `processing/advisories.py` (new) | RC-5. Six scrapers were writing dated JSON dumps that nothing read. This folds the newest dump per government into one state per country: consensus level (`max`, matching the web legend's "Highest of 5 sources"), every government's own level/summary/URL, and resolved subdivisions. |
+| `safety` baked into both tiers | `tiles/build_geojson.py` | The property `web/src/lib/display-modes.ts` has always read and nothing ever wrote. Month-less, unlike every other mode's `<prop>_<mm>`. Emitted at country, admin-1 *and* admin-2 so the colour survives zooming past the country handover; in both tiers, because Safety is a free mode and premium sessions read the base levels from the premium archive (RC-8). |
+| `wtg process advisories` | `cli.py`, `pipeline_runner.py` | The step between `download advisories` and `build geojson` that did not exist. Also runs inside `wtg pipeline full`, where a missing scrape is a warning rather than a failure — a failed scrape degrades one display mode and must not block the yearly climate rebuild. |
+| Two outputs, deliberately split | `data/final/advisories.json` + `data/intermediate/advisories/safety_index.json` | The detail file (per-government levels, summaries, dates) is what WS-5's `AdvisorySummary` needs. The index is levels only, byte-stable by construction. Separating them is what lets a reworded advisory reach the country page without costing every user a re-download of the PMTiles archive. |
+| `last_changed` carried forward across scrapes | `processing/advisories.py` | A government saying the same thing this week as last week has not changed its advisory. Dating it "today" would both lie on the country page and make every weekly run a change, which would defeat the conditional rebuild. |
+| `generated_at` derived from the data, not the clock | `processing/advisories.py` | `pipeline/CLAUDE.md`: re-running a step with the same inputs is a no-op. A wall-clock timestamp would make every run a diff. |
+| `weekly-advisories.sh` rewritten | `infra/scripts/weekly-advisories.sh` | **The old script could never have run.** It called `docker compose exec pipeline`, and there is no `pipeline` service in `docker-compose.yml`; it invoked `wtg process aggregate --only advisories`, a flag that does not exist; and it purged `https://v2.…/advisories.json`, a path the Caddyfile does not route. It now runs `uv` on the host like `rebuild-tiles.sh`, hashes the safety index either side of the scrape, and delegates to `rebuild-tiles.sh` only when a level moved (`FORCE_REBUILD=1` overrides). |
+
+### The regional carve-out problem
+
+No scraper resolves a sub-national advisory to a polygon. What they emit is a
+sentinel — `region_code: "regional-L4"` — meaning "somewhere in this country
+is a level 4, we could not parse where". Three ways to handle it, and only one
+is honest:
+
+- Fold it into the country level → the whole of Mexico paints "Do Not Travel"
+  on the strength of four states. This is the claim the carve-out contradicts.
+- Drop it → the country page loses information the scrapers already extracted.
+- **Keep it out of the tiles, carry it in `advisories.json` as
+  `regional_max`.** The map shows the country-wide consensus; the country page
+  can say "parts of this country carry a higher advisory".
+
+The join for *real* ISO-3166-2 codes is already wired and tested against
+`admin1_code`, so the detail-page geocoding pass, when it lands, needs no
+build change — only scraper output. A region code whose prefix doesn't match
+its country is rejected, so a mis-parsed detail page cannot stamp one
+country's level onto another's subdivision.
+
+### Tests added
+
+- `pipeline/tests/test_advisories_consolidate.py` — runs the real scrapers over the recorded fixtures and pins: the `max` consensus where the sources disagree (Colombia: US 3, AU 3, DE 2 → 3), a country only one government lists surviving (Egypt), the sentinel never raising the country level, cross-country region codes rejected, `last_changed` surviving an unchanged rescrape but moving when a level moves, and a reworded summary changing the detail file while leaving the index byte-identical — the exact distinction the cron branches on.
+- `pipeline/tests/test_advisories_tiles.py` — the plan's step 3: a GeoJSON built from the three snapshot fixtures carries the expected `safety` values, at all three levels, in both tiers, with no `safety_<mm>` variant, and with the property absent for a country nobody lists. Plus `run_process_advisories` writing both artifacts and reporting the second run as unchanged.
+- `pipeline/tests/test_tiles_content.py` — three new checks against the built archives: the country layer's `safety` agrees with the index it was built from, every level is on the 1–4 ladder, and admin-1 carries levels too (without which Safety goes grey past zoom 3.5). Skipped until the archives exist.
+- `pipeline/tests/test_cli_process.py` — `changed` / `unchanged` in the CLI's output, since the shell script's control flow depends on the underlying no-op behaviour.
+
+### Still to run on the build box
+
+```bash
+uv run --directory pipeline wtg download advisories --source all
+uv run --directory pipeline wtg process advisories
+./infra/scripts/rebuild-tiles.sh          # or: FORCE_REBUILD=1 ./infra/scripts/weekly-advisories.sh
+uv run --directory pipeline pytest tests/test_tiles_content.py
+```
+
+The scrapers' mapping tables are the thing to watch: `mappings/README.md` says
+bootstrap coverage is "intentionally narrow — enough to exercise the parser".
+An unmapped country name is dropped with a debug-level log, so the first real
+scrape should be run with `-v` and the `unmapped country` lines counted. Low
+country coverage in `safety_index.json` means the mapping tables need filling,
+not that the join is broken — `test_country_layer_carries_the_advisory_levels`
+requires ≥100 countries to overlap and will fail loudly if they don't.
+
+### API: no change, by design
+
+Nothing in `api/` needed to move for the map. The advisory level reaches the
+browser inside the tiles, and the SSR country page's `AdvisorySummary` is
+WS-5's data path, not a second one. `advisories.json` is shaped as that
+handoff — `{iso2, level, label, sources[{source, level, label, summary, url,
+last_changed}], regional_max}` maps onto `web/src/lib/types.ts`
+`AdvisorySummary` field for field. WS-5 should load it alongside the climate
+data (its step 1 already proposes a `wtg publish api-data` step); it is
+deliberately *not* exposed as a public file, since no route serves it and
+adding an unauthenticated one for a consumer that doesn't exist yet is
+speculative.
+
+### Follow-ups this leaves for other workstreams
+
+1. `infra/scripts/yearly-era5.sh` has the same latent defect the old
+   `weekly-advisories.sh` had — it shells into a `pipeline` compose service
+   that `docker-compose.yml` does not define. Out of scope here, but it means
+   the yearly rebuild has never run as written either.
+2. The web has no UI for `regional_max`. The country page currently says
+   "regional variation in advisories ships with the next pipeline cut"
+   (`web/src/app/[country]/[slug]/[month]/page.tsx:388`); the data to replace
+   that sentence now exists in `advisories.json`.
+3. The hover card and climate panel show climate but never the advisory
+   level, even when Safety is the painted mode
+   (`map-hover-card.tsx` explicitly skips it). Small WS-2-shaped follow-up.
+4. Advisory mapping-table coverage is the ceiling on how much of the world
+   Safety mode can colour. Widening `sources/advisories/mappings/*.json` is
+   mechanical and independent of everything above.
 
 ## Part 4 — What was *not* verified in this audit
 

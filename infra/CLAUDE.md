@@ -19,7 +19,11 @@ without reading it end to end.
 
 ## Cron (on host, not in container)
 
-- Weekly Sun 03:00 UTC: `weekly-advisories.sh` — scrape + publish new advisories
+- Weekly Sun 03:00 UTC: `weekly-advisories.sh` — scrape + consolidate advisories,
+  and rebuild the tiles via `rebuild-tiles.sh` **only if a country's advisory
+  level actually moved** (the level is baked into the tiles as the `safety`
+  property, so a level change is a tile change). Runs `uv` on the host, not in
+  a container.
 - Weekly Mon 04:00 UTC: `weekly-alerts.sh` — recompute alert matches, email on transitions
 - Yearly Jan 15 04:00 UTC: `yearly-era5.sh` — full pipeline rebuild, old year swap
 - Nightly 02:00 UTC: `backup-postgres.sh` — dump, encrypt, upload to B2

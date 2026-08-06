@@ -18,6 +18,9 @@ uv run wtg --help
 - `wtg download boundaries` — geoBoundaries admin-2 + Natural Earth
 - `wtg process aggregate` — polygon aggregation
 - `wtg process percentiles` — 10/50/90 across 10-year window
+- `wtg process advisories` — consolidate the scrapes into `data/final/advisories.json`
+  (full detail, for the API) + `data/intermediate/advisories/safety_index.json`
+  (levels only, the input to `build geojson`)
 - `wtg build geojson` — produce `data/final/*.geojson`
 - `wtg build pmtiles --tier free` — produce `tiles/free.pmtiles`
 - `wtg build pmtiles --tier premium` — produce `tiles/premium.pmtiles`
@@ -47,6 +50,22 @@ uv run wtg --help
 - Advisories: each government scraper inherits from `advisories/base.py`
   and returns the normalised schema: `{country_iso2, region_code|null,
   level: 1-4, summary, source_url, fetched_at}`.
+- The advisory level reaches the map as a **month-less `safety` feature
+  property** baked into both tiers by `build_geojson`, never as a runtime
+  fetch — `web/CLAUDE.md` forbids the browser fetching anything that lives in
+  the tiles. Consensus across governments is `max` ("Highest of 5 sources" on
+  the web legend); a country no government lists carries no property at all,
+  which the web paints grey.
+- A `region_code` of `regional-L<n>` is the scrapers' sentinel for "somewhere
+  in this country is level n, we can't say where". It must never raise the
+  country level or reach the tiles — it names no polygon. It survives in
+  `advisories.json` as `regional_max`. Only a real ISO-3166-2 code whose
+  prefix matches the country paints a subdivision.
+- `wtg process advisories` leaves an output file untouched when its content
+  is unchanged, and `advisories.json`'s `generated_at` is derived from the
+  data rather than the clock. `weekly-advisories.sh` depends on this: it
+  hashes the safety index to decide whether to rebuild tiles and purge the
+  CDN, so a reworded advisory must not change those bytes.
 - Aggregation uses `exactextract` or `rasterstats` — NEVER write a manual
   point-in-polygon loop; it will be too slow.
 - Tippecanoe flags for PMTiles:

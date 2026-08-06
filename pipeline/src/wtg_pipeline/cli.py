@@ -139,6 +139,31 @@ def process_percentiles(
     run_percentiles(level=level, force=force)
 
 
+@process.command("advisories")
+def process_advisories(
+    verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+) -> None:
+    """Consolidate the scraped advisories into the tile + API artifacts.
+
+    Writes `data/final/advisories.json` (full detail per government) and
+    `data/intermediate/advisories/safety_index.json` (levels only, the input
+    to `wtg build geojson`). Both are left untouched when nothing changed, so
+    hashing the index tells the weekly cron whether a tile rebuild is
+    warranted.
+    """
+    _setup_logging(verbose)
+    from wtg_pipeline.pipeline_runner import run_process_advisories
+
+    result = run_process_advisories()
+    typer.echo(
+        f"countries={result.countries} regions={result.regions} "
+        f"detail={'changed' if result.detail_changed else 'unchanged'} "
+        f"levels={'changed' if result.levels_changed else 'unchanged'}"
+    )
+    typer.echo(f"wrote {result.detail_path}")
+    typer.echo(f"wrote {result.index_path}")
+
+
 @process.command("sunshine")
 def process_sunshine(
     verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
