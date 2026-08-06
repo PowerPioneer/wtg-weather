@@ -57,6 +57,15 @@ services:
       GLITCHTIP_DSN: ${GLITCHTIP_DSN_API}
       GLITCHTIP_RELEASE: ${GLITCHTIP_RELEASE}
       ENVIRONMENT: ${APP_ENV:-prod}
+      COUNTRY_DATA_DIR: /srv/wtg-data
+    volumes:
+      # The pipeline's `wtg publish api-data` bundle — one JSON payload per
+      # country, plus the index the web generates its route tree from. Read-only
+      # and mounted rather than loaded into Postgres because the pipeline runs
+      # on the host (`pipeline/CLAUDE.md`) and Postgres is on the internal-only
+      # network this file is forbidden from exposing to it. Same arrangement
+      # Caddy has with ./tiles.
+      - ./pipeline/data/final/api:/srv/wtg-data:ro
     depends_on:
       postgres:
         condition: service_healthy

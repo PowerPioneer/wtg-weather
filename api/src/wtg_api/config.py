@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     cdn_url: str = "https://cdn.wheretogoforgreatweather.com"
     public_web_origin: str = "http://localhost:3000"
 
+    # Where the pipeline's `wtg publish api-data` bundle is mounted. Compose
+    # binds `./pipeline/data/final/api` here read-only; a dev run against a
+    # local checkout points it at the same path outside the container.
+    country_data_dir: str = "/srv/wtg-data"
+
     google_client_id: str = ""
     google_client_secret: str = ""
     google_redirect_uri: str = "http://localhost:8000/api/auth/google/callback"

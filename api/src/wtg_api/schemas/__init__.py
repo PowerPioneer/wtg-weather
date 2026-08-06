@@ -159,6 +159,112 @@ class OnboardingPatch(BaseModel):
     data: dict[str, Any] | None = None
 
 
+# --- Public country data (SSR pages) ---
+#
+# These mirror `CountryData` in `web/src/lib/types.ts` field for field, in the
+# web's camelCase rather than the API's usual snake_case: the SSR pages hand
+# the parsed JSON straight to their components, and a rename here would mean a
+# reshaping layer on the other side for no gain.
+#
+# Every optional field is optional because the pipeline may genuinely not know
+# it — Natural Earth carries no capital for a handful of countries, a polygon
+# may have no wind series, and a country no government has published an
+# advisory for has no advisory. The web renders the absence rather than a
+# placeholder. The four *premium* variables are absent by design and have no
+# fields here at all: country pages are statically generated, so anything in
+# this schema is in the public HTML.
+
+
+class ClimateSeries(BaseModel):
+    months: list[str]
+    t: list[float]
+    tMin: list[float]  # noqa: N815 - mirrors the web's field name
+    tMax: list[float]  # noqa: N815
+    r: list[float]  # mm / month, for display
+    rDay: list[float]  # noqa: N815 - mm / day, what the scoring rule consumes
+    s: list[float]
+    w: list[float] | None = None
+
+
+class BestMonth(BaseModel):
+    month: str
+    score: int
+    note: str
+
+
+class RegionRow(BaseModel):
+    name: str
+    slug: str
+    score: int
+    tl: list[float]
+    rl: list[float]
+    sl: list[float]
+
+
+class AdvisoryCombined(BaseModel):
+    level: int = Field(ge=1, le=4)
+    label: str
+
+
+class AdvisorySource(BaseModel):
+    gov: str
+    level: int = Field(ge=1, le=4)
+    label: str
+    date: str
+    url: str
+
+
+class AdvisorySummary(BaseModel):
+    combined: AdvisoryCombined
+    lastUpdated: str  # noqa: N815
+    sources: list[AdvisorySource]
+    # WS-4's `regional-L<n>` sentinel: somewhere in this country is worse than
+    # the national level, but no scraper could say where. Deliberately absent
+    # from the tiles — it names no polygon — so the country page is the only
+    # surface that can report it.
+    regionalMax: int | None = Field(default=None, ge=1, le=4)  # noqa: N815
+    regionalMaxLabel: str | None = None  # noqa: N815
+
+
+class RelatedCountry(BaseModel):
+    slug: str
+    name: str
+    sub: str
+    score: int
+
+
+class CountryRef(BaseModel):
+    slug: str
+    name: str
+    iso2: str
+    region: str
+
+
+class CountryData(BaseModel):
+    slug: str
+    name: str
+    iso2: str
+    region: str
+    summary: str
+    climate: ClimateSeries
+    bestMonths: list[BestMonth]  # noqa: N815
+    regions: list[RegionRow]
+    related: list[RelatedCountry]
+    monthNotes: dict[str, str]  # noqa: N815
+    capital: str | None = None
+    tz: str | None = None
+    area: str | None = None
+    advisories: AdvisorySummary | None = None
+    # "admin1-mean" marks a country the map suppresses: it has no national
+    # polygon, so these figures are the mean of its own regions.
+    climateBasis: Literal["country", "admin1-mean"] = "country"  # noqa: N815
+
+
+class CountryRegion(BaseModel):
+    country: CountryData
+    region: RegionRow
+
+
 # --- Paddle ---
 
 

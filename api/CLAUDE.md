@@ -23,9 +23,20 @@ uv run uvicorn wtg_api.main:app --reload
   `organizations.plan` and `.seat_cap`. Idempotent by event ID.
 - **Entitlements**: all protected routes pass through `services.entitlements`
   which resolves `(user, plan)` and caches for 60 seconds in Redis.
+- **Country data**: `/v1/countries*` serves the pipeline's
+  `wtg publish api-data` bundle from a read-only bind mount
+  (`COUNTRY_DATA_DIR`, `/srv/wtg-data` in compose), via
+  `services.country_data`. No database, because there is nothing to write:
+  it is reference data regenerated whole by the yearly climate rebuild and the
+  weekly advisory run. It is mounted rather than loaded into Postgres because
+  the pipeline runs on the host and Postgres is on the internal-only network
+  this repo forbids exposing to it.
 
 ## Rules
 
+- `/v1/*` is deliberately **not** routed by Caddy — it is reachable only from
+  inside the docker network, which is where the SSR pages call it from. Adding
+  a public route for it means adding a public rate-limit surface for it.
 - All DB access is async. Never use sync SQLAlchemy.
 - All external HTTP uses `httpx.AsyncClient`; never `requests`.
 - Endpoints return Pydantic schemas, never raw model instances.
