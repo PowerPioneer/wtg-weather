@@ -641,8 +641,9 @@ speculative.
 
 ## WS-4 deploy, 2026-08-06
 
-Shipped to v2 (`51.15.37.62`), **free tier only** — see the ADM2 blocker
-below. `free.pmtiles` rebuilt (39,866,203 B), bunny.net pull zone purged, and
+Shipped to v2 (`51.15.37.62`), **free tier only** on the day — for an ADM2
+blocker that turned out not to exist (see the retraction below); premium was
+rebuilt on 2026-08-14 and carries the levels too. `free.pmtiles` rebuilt (39,866,203 B), bunny.net pull zone purged, and
 the CDN verified serving the new bytes (`content-range: bytes 0-1/39866203`,
 `cdn-cache: MISS`). `tests/test_tiles_content.py` runs green against the
 built archive, all 16 checks including the three new advisory ones.
@@ -737,27 +738,32 @@ against your idea of the source, which is the thing in doubt.**
    data goes stale silently. Worth surfacing as a warning when a source's
    newest dump is older than some threshold. Not something to work around by
    disguising the client.
-2. **The geoBoundaries ADM2 sources are gone from the box** (`raw/geoboundaries/adm2/`
-   is empty), while `admin2_premium.geojson` (3.8 GB, Aug 4) and the old
-   percentiles remain. A both-tier `rebuild-tiles.sh` would therefore rebuild
-   premium's admin-2 layer from an empty frame and ship a premium archive with
-   no districts. This is WS-1 step 3's outstanding item and it now actively
-   booby-traps the rebuild script — **do not run `rebuild-tiles.sh` without
-   `TIERS=free` until the ADM2 download is re-run.**
+2. ~~**The geoBoundaries ADM2 sources are gone from the box.**~~ **Wrong — I
+   checked the wrong directory.** The layout is
+   `<boundaries_raw_dir>/geoboundaries/adm2`, i.e. the segment *repeats*
+   (`raw/geoboundaries/geoboundaries/adm2`), and 179 `*_ADM2.geojson` files
+   are sitting there. `raw/geoboundaries/adm2/`, which I listed and found
+   empty, has never been the path. Nothing was ever at risk from a both-tier
+   rebuild on this account, and the premium rebuild on 2026-08-14 went through
+   without incident. The retraction is kept rather than deleted because the
+   claim was acted on: the deploy below was restricted to the free tier for a
+   reason that did not exist.
 
-### What the free-tier-only deploy leaves outstanding
+### What the free-tier-only deploy left outstanding — since resolved
 
-`premium.pmtiles` on v2 is still the Aug 4 archive, so **premium sessions see
-no advisory colours at all** — RC-8 points their country and admin-1 layers at
-the premium file, which predates both this work and WS-1's boundary fix. They
-are already looking at 9-country admin-1 for the same reason. One premium
-rebuild clears both, and it needs the ADM2 re-download first. Free-tier users
-have the full Safety map now.
+At the time, `premium.pmtiles` was still the Aug 4 archive, so premium
+sessions saw no advisory colours: RC-8 points their country and admin-1 layers
+at the premium file. **Premium was rebuilt on 2026-08-14** and now carries
+`safety` on all three layers — verified against the index by decoding the
+archive: 221 countries, zero disagreements, coverage country 745/806, admin1
+9480/9584, admin2 50155/50294 (the remainder are countries no government
+lists, which correctly carry no property).
 
-Also outstanding: **no root crontab exists on v2**, so `weekly-advisories.sh`
+Still outstanding: **no root crontab exists on v2**, so `weekly-advisories.sh`
 is not actually scheduled despite `infra/CLAUDE.md` describing it (nor is the
-nightly Postgres backup). The script is correct and tested by hand; it just
-has nothing firing it.
+nightly Postgres backup). The script is correct and tested stage by stage; it
+just has nothing firing it, and has never been run end to end as one
+invocation.
 
 ## WS-5 progress
 
