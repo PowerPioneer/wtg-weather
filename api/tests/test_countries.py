@@ -51,7 +51,16 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
                 "tl": _series(13.0),
                 "rl": _series(1.5),
                 "sl": _series(7.2),
-            }
+                "advisory": {"level": 4, "label": "Do not travel", "code": "PE-CUS"},
+            },
+            {
+                "name": "Lima",
+                "slug": "lima",
+                "score": 80,
+                "tl": _series(19.0),
+                "rl": _series(0.1),
+                "sl": _series(6.0),
+            },
         ],
         "related": [],
         "monthNotes": {m: f"Around 22 °C in {m}." for m in MONTHS},
@@ -261,3 +270,32 @@ async def test_a_corrupt_payload_is_404_not_500(
     country_data.reset_cache()
     res = await api.get("/v1/countries/peru")
     assert res.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_a_region_carve_out_survives_the_response_model(api: AsyncClient) -> None:
+    """The response model filters the payload, so a new field must be declared.
+
+    The pipeline resolved "do not travel to Ayacucho" to an ISO-3166-2 code
+    and put it on the region row; without `advisory` on the schema it was
+    silently dropped between the bundle and the page, and the region page
+    rendered as though no carve-out existed.
+    """
+    res = await api.get("/v1/countries/peru")
+    assert res.status_code == 200
+    regions = {r["slug"]: r for r in res.json()["regions"]}
+
+    assert regions["cusco"]["advisory"] == {
+        "level": 4,
+        "label": "Do not travel",
+        "code": "PE-CUS",
+    }
+    # A region with no carve-out carries the field as null, not as a level.
+    assert regions["lima"]["advisory"] is None
+
+
+@pytest.mark.anyio
+async def test_region_endpoint_carries_the_carve_out_too(api: AsyncClient) -> None:
+    res = await api.get("/v1/countries/peru/regions/cusco")
+    assert res.status_code == 200
+    assert res.json()["region"]["advisory"]["code"] == "PE-CUS"

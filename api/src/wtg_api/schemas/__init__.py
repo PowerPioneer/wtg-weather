@@ -192,6 +192,20 @@ class BestMonth(BaseModel):
     note: str
 
 
+class RegionAdvisory(BaseModel):
+    """A carve-out that applies to this region rather than its whole country.
+
+    Present only where a government named a specific subdivision *and* the
+    pipeline could resolve that prose to an ISO-3166-2 code, and only when the
+    level is worse than the country's — the country-wide summary already
+    states that one.
+    """
+
+    level: int = Field(ge=1, le=4)
+    label: str
+    code: str
+
+
 class RegionRow(BaseModel):
     name: str
     slug: str
@@ -201,6 +215,9 @@ class RegionRow(BaseModel):
     # published before the field existed must keep serving, not 500 every
     # region page until the pipeline is re-run.
     code: str | None = None
+    # Same reason `code` is optional: the response model filters the payload,
+    # so a bundle published before this field existed must keep serving.
+    advisory: RegionAdvisory | None = None
     score: int
     tl: list[float]
     rl: list[float]
