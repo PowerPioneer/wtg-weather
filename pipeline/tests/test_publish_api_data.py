@@ -422,3 +422,38 @@ def test_advisory_summary_omits_a_country_with_no_national_level() -> None:
     """A resolved carve-out alone is not a claim about the whole country."""
     payload = {"countries": [{"iso2": "IQ", "level": None, "sources": []}]}
     assert api_data.advisory_summaries(payload) == {}
+
+
+def test_region_advisory_levels_reads_resolved_carve_outs() -> None:
+    from wtg_pipeline.publish.api_data import region_advisory_levels
+
+    payload = {
+        "countries": [
+            {
+                "iso2": "PE",
+                "level": 2,
+                "regions": [{"code": "PE-AYA", "level": 4}, {"code": "PE-CUS", "level": 4}],
+            },
+            {"iso2": "FR", "level": 2},
+        ]
+    }
+
+    assert region_advisory_levels(payload) == {"PE": {"PE-AYA": 4, "PE-CUS": 4}}
+
+
+def test_a_region_row_carries_a_carve_out_worse_than_its_country() -> None:
+    from wtg_pipeline.publish.api_data import _region_advisory
+
+    assert _region_advisory({"PE-AYA": 4}, "PE-AYA", country_level=2) == {
+        "advisory": {"level": 4, "label": "Do not travel", "code": "PE-AYA"}
+    }
+
+
+def test_a_carve_out_matching_the_country_level_is_not_repeated() -> None:
+    # The country-wide safety panel renders on the region page too, so
+    # restating its level as a region-specific warning would be noise.
+    from wtg_pipeline.publish.api_data import _region_advisory
+
+    assert _region_advisory({"PE-AYA": 2}, "PE-AYA", country_level=2) == {}
+    assert _region_advisory({"PE-AYA": 4}, "PE-LIM", country_level=2) == {}
+    assert _region_advisory({}, "", country_level=2) == {}

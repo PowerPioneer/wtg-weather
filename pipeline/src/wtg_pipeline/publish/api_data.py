@@ -613,6 +613,59 @@ def advisory_summaries(payload: Mapping[str, object] | None) -> dict[str, dict[s
     return out
 
 
+def _region_advisory(
+    levels: Mapping[str, int], iso3166_2: str, *, country_level: int | None
+) -> dict[str, object]:
+    """The ``advisory`` block for one region row, or nothing.
+
+    Emitted only when the region carries a level **worse** than its country's.
+    A carve-out equal to the national level tells a reader nothing the
+    country-wide panel does not already say, and the region page renders that
+    panel too.
+    """
+    code = (iso3166_2 or "").strip().upper()
+    if not code:
+        return {}
+    level = levels.get(code)
+    if not isinstance(level, int):
+        return {}
+    if country_level is not None and level <= country_level:
+        return {}
+    return {"advisory": {"level": level, "label": LEVEL_LABELS[level], "code": code}}
+
+
+def region_advisory_levels(
+    payload: Mapping[str, object] | None,
+) -> dict[str, dict[str, int]]:
+    """``{ISO-2: {ISO-3166-2: level}}`` for carve-outs resolved to a polygon.
+
+    Only the ones a scraper could pin to a subdivision reach here — the
+    ``regional-L<n>`` sentinel names no polygon and stays on the country as
+    ``regionalMax``.
+    """
+    if not payload:
+        return {}
+    countries = payload.get("countries")
+    if not isinstance(countries, list):
+        return {}
+    out: dict[str, dict[str, int]] = {}
+    for entry in countries:
+        if not isinstance(entry, dict):
+            continue
+        iso2 = str(entry.get("iso2", "")).strip().upper()
+        regions = entry.get("regions")
+        if not iso2 or not isinstance(regions, list):
+            continue
+        levels = {
+            str(region.get("code", "")).strip().upper(): region["level"]
+            for region in regions
+            if isinstance(region, dict) and isinstance(region.get("level"), int)
+        }
+        if levels:
+            out[iso2] = levels
+    return out
+
+
 # ─── the build ───────────────────────────────────────────────────────────
 
 
@@ -652,6 +705,7 @@ def build_payloads(
     admin1_percentiles: object,
     capitals: Mapping[str, tuple[str, str]],
     advisories: Mapping[str, dict[str, object]],
+    region_levels: Mapping[str, Mapping[str, int]] | None = None,
 ) -> tuple[dict[str, dict[str, object]], list[str]]:
     """Assemble every country payload. Returns ``(by_slug, skipped_names)``."""
     registry = build_registry(registry_rows_from_gdf(country_gdf))
@@ -679,6 +733,11 @@ def build_payloads(
             {
                 "name": str(getattr(row, "name", "") or polygon_id),
                 "code": polygon_id,
+                # ISO-3166-2, which is what advisory carve-outs are keyed by.
+                # Distinct from `code` above: that is `adm1_code`, unique per
+                # polygon, while this is the published subdivision code and is
+                # not unique in the 10m layer.
+                "iso3166_2": str(getattr(row, "admin1_code", "") or "").strip().upper(),
                 "climate": climate,
             }
         )
@@ -723,6 +782,13 @@ def build_payloads(
         names = [str(r["name"]) for r in regions]
         codes = [str(r["code"]) for r in regions]
         slugs = _region_slugs(names, codes)
+        levels_here = (region_levels or {}).get(entry.iso2, {})
+        country_advisory = advisories.get(entry.iso2)
+        country_advisory_level = (
+            country_advisory["combined"]["level"]  # type: ignore[index]
+            if isinstance(country_advisory, dict)
+            else None
+        )
         region_rows: list[dict[str, object]] = []
         for region, slug in sorted(zip(regions, slugs), key=lambda pair: str(pair[0]["name"])):
             region_climate: PolygonClimate = region["climate"]  # type: ignore[assignment]
@@ -737,6 +803,11 @@ def build_payloads(
                     # deriving it from a name alone is ambiguous by design.
                     "code": region["code"],
                     "score": max(region_climate.scores()),
+                    **_region_advisory(
+                        levels_here,
+                        str(region.get("iso3166_2", "")),
+                        country_level=country_advisory_level,
+                    ),
                     "tl": region_climate.t,
                     "rl": region_climate.rain_day,
                     "sl": region_climate.sun,
@@ -864,7 +935,9 @@ def run_publish_api_data(*, base_dir: Path | None = None) -> PublishResult:
             )
 
     frames = _load_boundary_frames(("country", "admin1"))
-    advisories = advisory_summaries(read_json(advisories_json_path()))
+    advisory_payload = read_json(advisories_json_path())
+    advisories = advisory_summaries(advisory_payload)
+    region_levels = region_advisory_levels(advisory_payload)
     if not advisories:
         log.warning(
             "no advisory detail at %s — country pages will render without the "
@@ -879,6 +952,7 @@ def run_publish_api_data(*, base_dir: Path | None = None) -> PublishResult:
         admin1_percentiles=pd.read_parquet(admin1_perc),
         capitals=load_capitals(),
         advisories=advisories,
+        region_levels=region_levels,
     )
     changed, pruned = write_bundle(entries, base_dir=base_dir)
 

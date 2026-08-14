@@ -88,6 +88,14 @@ export type RegionRow = {
    * field existed.
    */
   code?: string;
+  /**
+   * A travel advisory that applies to *this region* and is worse than the
+   * country-wide one — the case where a government carved out a specific
+   * subdivision and a scraper could resolve it to an ISO-3166-2 code. Absent
+   * when the region carries only its country's level, which the country-wide
+   * safety panel on the same page already states.
+   */
+  advisory?: { level: AdvisoryLevel; label: string; code: string };
   score: number;
   tl: Monthly;      // °C mean
   /** mm / day. Absent on a region the pipeline has no rainfall for. */

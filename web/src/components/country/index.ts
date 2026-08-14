@@ -4,6 +4,7 @@ export { MonthAccordion } from "./month-accordion";
 export { ClimateGrid } from "./climate-grid";
 export { RegionsGrid } from "./regions-grid";
 export { SafetySection } from "./safety-section";
+export { RegionAdvisoryNotice } from "./region-advisory-notice";
 export { RelatedCountries } from "./related-countries";
 export { PlanCta } from "./plan-cta";
 export { MonthHero } from "./month-hero";

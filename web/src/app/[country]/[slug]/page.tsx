@@ -11,6 +11,7 @@ import {
   PlanCta,
   RegionsGrid,
   RelatedCountries,
+  RegionAdvisoryNotice,
   SafetySection,
 } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
@@ -247,6 +248,8 @@ function RegionView({
           bestLabel={bestLabel}
           delta={delta}
         />
+
+        <RegionAdvisoryNotice region={region} countryName={country.name} />
 
         <section className="border-b border-border bg-surface">
           <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">

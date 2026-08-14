@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ClimateChart } from "@/components/charts";
-import { PlanCta, SafetySection } from "@/components/country";
+import { PlanCta, RegionAdvisoryNotice, SafetySection } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { getRegion } from "@/lib/api-client";
@@ -124,6 +124,8 @@ export default async function RegionMonthPage({
           rank={rank}
           narrative={narrative}
         />
+
+        <RegionAdvisoryNotice region={reg} countryName={data.name} />
 
         <RegionMonthStats
           region={reg}
