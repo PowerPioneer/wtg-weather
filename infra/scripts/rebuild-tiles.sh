@@ -73,6 +73,13 @@ BUNNY_PULL_ZONE_ID="${BUNNY_PULL_ZONE_ID:-$(env_value BUNNY_PULL_ZONE_ID)}"
 
 command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
 
+# Where the pre-rebuild copy of each archive goes. Defaults onto the big
+# `pipeline/data` volume rather than the small root filesystem that holds
+# `tiles/`; override with BACKUP_DIR if the two are the same disk.
+BACKUP_DIR="${BACKUP_DIR:-./pipeline/data/intermediate/tile-backups}"
+SAFETY_MARGIN_BYTES="${SAFETY_MARGIN_BYTES:-536870912}"   # 512 MB
+mkdir -p "$BACKUP_DIR"
+
 for tier in $TIERS; do
     # GeoJSON build is a prerequisite for pmtiles, and the CLI's `--tier`
     # flag selects WHICH set of geojson layers gets emitted into
@@ -89,10 +96,21 @@ for tier in $TIERS; do
 
     log "stage=build-pmtiles tier=${tier}"
     final="./tiles/${tier}.pmtiles"
-    backup="./tiles/${tier}.pmtiles.bak"
+    backup="${BACKUP_DIR}/${tier}.pmtiles.bak"
 
     # Preserve the previous file in case the build fails partway through.
+    #
+    # Deliberately NOT alongside the tiles. On the production box `tiles/`
+    # lives on a 7.9 GB root filesystem while `pipeline/data` is a separate
+    # 92 GB volume, and premium.pmtiles is 1.5 GB — copying it next to itself
+    # leaves ~1.3 GB to write a 1.5 GB replacement into. The safety net was
+    # what would have caused the failure.
     if [[ -f "$final" ]]; then
+        need=$(stat -c '%s' "$final")
+        avail=$(df --output=avail -B1 "$BACKUP_DIR" | tail -1)
+        if [[ "$avail" -lt $((need + SAFETY_MARGIN_BYTES)) ]]; then
+            fail "only ${avail}B free on ${BACKUP_DIR} — need ${need}B for the ${tier} backup"
+        fi
         cp -f "$final" "$backup"
     fi
 
