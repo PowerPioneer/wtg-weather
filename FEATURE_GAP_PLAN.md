@@ -730,6 +730,59 @@ a `title` of `"Teilreisewarnung"` — which is precisely why parsers this wrong
 passed every test. **A synthetic fixture for a scraper tests the parser
 against your idea of the source, which is the thing in doubt.**
 
+### Regional carve-outs, resolved (2026-08-15)
+
+The plan's step 1 said "admin-level rows where `region_code` matches", and
+WS-4 built the whole consumption side for it — `SafetyIndex.by_region`, the
+max-with-country rule, the tile join, `regionalMax` on the country page — with
+nothing to populate it, because no scraper could turn "Arauca, Cauca, and
+Norte de Santander departments" into a code. That gap is closed.
+
+**The gazetteer** (`scripts/generate_subdivisions.py` →
+`processing/subdivisions.json`): folded name → ISO-3166-2 for 199 countries,
+5,278 names, built from the *same* `ne_10m_admin_1_states_provinces` layer the
+tiles' admin-1 level comes from, so a resolved code always names a polygon
+that exists. Natural Earth's ~200 `AQ-X01~` placeholders are excluded; names
+ambiguous within a country are dropped rather than resolved to whichever row
+came first.
+
+**The extraction** is US-only, and the trailing colon is what makes it safe:
+`Do Not Travel to:` introduces a list of areas, while `Do not travel to
+Afghanistan due to…` is the country-wide sentence. Resolution then
+disambiguates by itself — prose naming only the country matches no
+subdivision and yields nothing. The other five sources stay on sentinels: the
+Dutch feed names areas in Dutch against an English gazetteer, Germany names
+none at all, and the UK/Canada/Australia scrapers emit only the sentinel.
+
+Three defects, all found by running it against the live feed rather than by
+reasoning about it:
+
+| Defect | Effect |
+|---|---|
+| Read every `<li>` after a heading | Guatemala's summary continues into "tourist police patrol popular areas like Antigua, Lake Atitlán, Tikal, **Quetzaltenango**" — which painted Quetzaltenango "do not travel". Only the first `<ul>` after the heading is read now. |
+| Substring matching | "Santander" matched inside "Norte de Santander", stamping a department the advisory never mentioned. Overlaps resolve longest-first. |
+| Entities never decoded | `Jun&#237;n` reached the gazetteer as "jun 237 n". Decoding completes Peru's VRAEM set. |
+
+**In production: 38 subdivisions across 12 countries**, plus 16 sentinels for
+areas that name no polygon ("the Colombia-Venezuela border region"). Peru
+verified end to end — country level 2, with Apurímac, Ayacucho, Cusco,
+Huancavelica, Junín and Loreto at 4, and the tiles painting exactly those six
+departments differently from the other nineteen.
+
+**Known imprecision, stated rather than hidden.** Governments write "some
+areas within the regions of Ayacucho, Cusco, Huancavelica", and admin-1 is the
+finest boundary the pipeline can attach that to. So `RegionAdvisoryNotice`
+says the advisory *may apply to part of the region rather than all of it*.
+Claiming the whole region would overstate the source — the same overstatement
+that made Japan red twice earlier in this workstream.
+
+**One thing the tests did not catch.** `publish api-data` emitted the field,
+the pipeline tests passed, and the live region page rendered nothing: the
+API's `RegionRow` is a Pydantic response model, and a key it does not declare
+never reaches the client. Adding a field to the bundle is therefore always a
+two-repo change. The test added for it asserts the field survives the round
+trip, not merely that the pipeline emits it.
+
 ### Two blockers found that are not WS-4's
 
 1. **`travel.state.gov` 403s from the v2 IP** (Cloudflare). The US State
