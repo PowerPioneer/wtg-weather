@@ -18,9 +18,11 @@ import Link from "next/link";
 
 import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/components/charts";
 import { ScoreBadge } from "@/components/match";
+import { SafetyBadge } from "@/components/safety";
 import { cn } from "@/lib/cn";
 import type { CountryRef } from "@/lib/countries";
 import {
+  readAdvisoryLevel,
   readMonthlyBands,
   readMonthlySeries,
   readPreferenceScore,
@@ -94,6 +96,7 @@ export function ClimatePanel({
   const monthSlug = MONTH_SLUGS[month - 1];
   const monthName = MONTH_NAMES[monthSlug];
   const score = readPreferenceScore(properties, month, preferences);
+  const advisory = readAdvisoryLevel(properties);
   const custom = preferences != null && !isDefaultPreferences(preferences);
   const charts = CHART_SERIES.map((series) => ({
     kind: series.kind,
@@ -157,6 +160,21 @@ export function ClimatePanel({
           {score == null ? null : <ScoreBadge score={score} size="lg" label="number" />}
         </div>
 
+        {/* The advisory the Safety mode paints. Month-less, and absent for a
+            country no government lists — which the map renders grey, so the
+            panel says nothing rather than implying "level 1". */}
+        {advisory == null ? null : (
+          <div
+            className="mt-3 rounded-md border border-border px-4 py-3"
+            data-testid="panel-advisory"
+          >
+            <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.12em] text-text-muted">
+              Travel advisory · highest of 5 sources
+            </div>
+            <SafetyBadge level={advisory} size="sm" className="mt-2" />
+          </div>
+        )}
+
         {charts.length === 0 ? (
           <p className="mt-5 text-[13px] leading-relaxed text-text-muted">
             This polygon carries no climate values in the tiles you are signed
@@ -180,10 +198,30 @@ export function ClimatePanel({
       <footer className="border-t border-border px-6 py-4">
         {country && hasCountryPage ? (
           <div className="flex flex-col gap-2">
+            {/* An admin-1 click leads to that region's own page. The href goes
+                through the resolver because the tiles carry the polygon id and
+                the name, never the de-duplicated slug the page is filed under.
+                Districts (admin-2) have no page of their own, so they keep the
+                country as their destination. */}
+            {identity.level === "admin1" ? (
+              <Link
+                href={regionResolverHref(country.slug, identity)}
+                prefetch={false}
+                data-testid="view-region-page"
+                className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+              >
+                View {identity.name || "region"} region page
+              </Link>
+            ) : null}
             <Link
               href={`/${country.slug}`}
               data-testid="view-country-page"
-              className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+              className={cn(
+                "inline-flex h-10 w-full items-center justify-center rounded-md px-4 text-[14px] font-medium transition-colors",
+                identity.level === "admin1"
+                  ? "border border-border-strong bg-surface text-text hover:bg-surface-2"
+                  : "bg-primary text-primary-foreground hover:bg-primary-hover",
+              )}
             >
               View {country.name} country page
             </Link>
@@ -212,6 +250,19 @@ export function ClimatePanel({
       </footer>
     </aside>
   );
+}
+
+/**
+ * Link to the region resolver (`app/region/[country]/[code]/route.ts`), which
+ * turns the clicked polygon's id into that region's canonical URL. The name
+ * rides along so the resolver can still find the region in a bundle published
+ * before region rows carried their code.
+ */
+function regionResolverHref(countrySlug: string, identity: FeatureIdentity): string {
+  const base = `/region/${countrySlug}/${encodeURIComponent(identity.id)}`;
+  return identity.name
+    ? `${base}?name=${encodeURIComponent(identity.name)}`
+    : base;
 }
 
 /**

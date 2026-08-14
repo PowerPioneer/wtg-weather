@@ -80,6 +80,23 @@ describe("ClimatePanel", () => {
     expect(screen.queryByText("Snow depth")).not.toBeInTheDocument();
   });
 
+  it("shows the advisory level the Safety mode paints", () => {
+    // WS-4 bakes a month-less `safety` property into both tiers. Without this
+    // the panel charted climate and never mentioned the advisory, so Safety
+    // mode painted a colour nothing on screen explained.
+    const flagged = { ...GEORGIA, safety: 2 };
+    renderPanel({ identity: readFeatureIdentity(flagged)!, properties: flagged });
+    expect(screen.getByTestId("panel-advisory")).toBeInTheDocument();
+    expect(screen.getByText("Exercise increased caution")).toBeInTheDocument();
+  });
+
+  it("says nothing about safety for a country no government lists", () => {
+    // Absent means "unlisted", which the map paints grey — rendering it as
+    // level 1 would invent an all-clear the data never gave.
+    renderPanel();
+    expect(screen.queryByTestId("panel-advisory")).not.toBeInTheDocument();
+  });
+
   it("names the parent country on a region feature", () => {
     const region = {
       ...GEORGIA,
@@ -94,7 +111,29 @@ describe("ClimatePanel", () => {
     });
     expect(screen.getByRole("heading", { name: "Kakheti" })).toBeInTheDocument();
     expect(screen.getByText("Region in Georgia")).toBeInTheDocument();
-    // Until the region data path lands, the CTA is the parent country page.
+    // The region's own page leads, the country page stays as the way up.
+    expect(screen.getByTestId("view-region-page")).toHaveAttribute(
+      "href",
+      "/region/georgia/GEO-1?name=Kakheti",
+    );
+    expect(screen.getByTestId("view-country-page")).toHaveAttribute("href", "/georgia");
+  });
+
+  it("sends a district to its country, having no page of its own", () => {
+    // geoBoundaries admin-2 rows carry no parent admin-1 code, so a district
+    // cannot address the region page even though it sits inside one.
+    const district = {
+      ...GEORGIA,
+      id: "GEO-ADM2-7",
+      name: "Telavi",
+      level: "admin2",
+    };
+    renderPanel({
+      identity: readFeatureIdentity(district)!,
+      properties: district,
+    });
+    expect(screen.getByText("District in Georgia")).toBeInTheDocument();
+    expect(screen.queryByTestId("view-region-page")).not.toBeInTheDocument();
     expect(screen.getByTestId("view-country-page")).toHaveAttribute("href", "/georgia");
   });
 
