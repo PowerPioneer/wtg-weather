@@ -93,11 +93,18 @@ re-litigate the design decisions listed in `HANDOFF.md` § "already made".
 - `/[country]/[region]` and `/[country]/[region]/[month]` — admin-1, rendered
   on demand and cached. ~4,600 admin-1 units × 12 months is ~55,000 pages;
   pre-rendering that is a batch job, not a build.
-- `dynamicParams` is **on** everywhere, because the image is built inside
-  `docker build` where the API is not reachable and `generateStaticParams` can
-  legitimately return nothing. An unknown slug still 404s — `getCountry`
-  returns `null` and the page calls `notFound()`. Build with the API up (dev,
-  or CI with the stack running) to get the full pre-rendered tree.
+- `dynamicParams` is **on** everywhere, because `generateStaticParams` can
+  legitimately return nothing when the API is unreachable (a `pnpm build` with
+  no stack up). An unknown slug still 404s — `getCountry` returns `null` and
+  the page calls `notFound()`.
+- A production image is built **on the compose network** so the country tree
+  actually pre-renders: `./infra/scripts/setup-build-builder.sh` then
+  `BUILDX_BUILDER=wtg-internal docker compose build web`. BuildKit's default
+  driver cannot join a named network, which is why a builder exists at all.
+  Without it the build still succeeds and the site is still correct — every
+  country page just renders on its first request instead. Check for
+  `● /[country]` and a non-trivial "Generating static pages" count in the build
+  log; `[country-routes] the API is not reachable` means you got the fallback.
 - Every SSR page: canonical URL, OpenGraph image (generated at build),
   structured data (`TouristDestination` schema), internal links to
   related months and neighbouring countries.

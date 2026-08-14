@@ -10,6 +10,34 @@ Docker Compose on a 16GB Ubuntu server, Caddy front, bunny.net CDN in front.
 - `./infra/scripts/backup-postgres.sh` — manual backup (also runs nightly)
 - `./infra/scripts/restore-postgres.sh <db> <stamp|latest>` — restore from B2
 - `./infra/scripts/rebuild-tiles.sh` — regenerate PMTiles and purge bunny.net cache
+- `./infra/scripts/setup-build-builder.sh` — create the buildx builder that can
+  reach `api` during a build (idempotent; run it before building `web`)
+
+## Deploying
+
+There is **no image registry** — compose builds from source on the box:
+
+```bash
+git pull --ff-only
+docker compose build api && docker compose up -d api
+./infra/scripts/setup-build-builder.sh
+BUILDX_BUILDER=wtg-internal docker compose build web && docker compose up -d web
+```
+
+`docker compose up -d` does **not** rebuild an image. A deploy that only
+changes compose (a new volume, a new env var) still needs `build` if the code
+moved too, or the container comes up with the new wiring and the old code.
+
+The `web` build goes through a named builder because `next build` pre-renders
+the ~2,800 country pages against `/v1/countries`, and BuildKit's default driver
+cannot attach a build to the compose network. Without the builder the image
+still works — those pages just render on first request.
+
+Country data (`pipeline/data/final/api/`) is served off a read-only mount and
+cached on file mtime, so `wtg publish api-data` reaches the API with no
+restart. It does **not** reach already-rendered pages, which are ISR-cached for
+30 days: a content-only change needs
+`docker compose up -d --force-recreate web`.
 
 ## Cutover
 

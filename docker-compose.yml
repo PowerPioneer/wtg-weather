@@ -74,7 +74,14 @@ services:
     networks: [internal]
 
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        # Same value as the runtime env below. It is passed at build time too
+        # because `next build` pre-renders the country pages against it — see
+        # infra/scripts/setup-build-builder.sh for the builder that can reach
+        # it, and web/Dockerfile for what happens when it cannot.
+        INTERNAL_API_URL: http://api:8000
     restart: unless-stopped
     environment:
       INTERNAL_API_URL: http://api:8000

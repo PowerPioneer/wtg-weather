@@ -9,7 +9,20 @@ WORKDIR /app
 RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED=1
+
+# `next build` calls generateStaticParams, which fetches the API's published
+# country index to decide which pages to pre-render. Whether that fetch can
+# connect decides whether ~2,800 country pages ship as HTML in the image or
+# render on demand — the site is correct either way, so the build does not
+# fail without it (see lib/country-routes.ts).
+#
+# Reaching the API needs a builder attached to the compose network:
+#   ./infra/scripts/setup-build-builder.sh
+#   BUILDX_BUILDER=wtg-internal docker compose build web
+# The default matches the runtime value, so on that builder it just works.
+ARG INTERNAL_API_URL=http://api:8000
+ENV INTERNAL_API_URL=${INTERNAL_API_URL} \
+    NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
 FROM node:22-alpine AS runner
