@@ -131,7 +131,7 @@ def test_a_country_no_government_lists_carries_no_safety_property(advisory_fixtu
     # The web paints an absent property as missing-grey, which is the
     # truthful rendering of "nobody has published anything".
     fc = build_feature_collection(
-        _build_input("country", [("PER", "PE", "")]),
+        _build_input("country", [("ISL", "IS", "")]),
         tier="free",
         safety=_safety_from_fixtures(advisory_fixture),
     )
@@ -245,3 +245,30 @@ def test_runner_fails_loudly_with_no_scrape(tmp_path: Path) -> None:
             final_path=tmp_path / "advisories.json",
             index_path=tmp_path / "safety_index.json",
         )
+
+
+def test_a_resolved_carve_out_reaches_the_tiles_from_a_real_scrape(
+    advisory_fixture,
+) -> None:
+    """End to end: US summary prose -> ISO-3166-2 -> a painted admin-1 polygon.
+
+    Peru is level 2 country-wide and its VRAEM departments are level 4. Before
+    the gazetteer this could only travel as a sentinel, which names no polygon
+    — so the map showed the whole country at 2 and the carve-out nowhere.
+    """
+    safety = _safety_from_fixtures(advisory_fixture)
+    assert safety.by_country["PE"] == 2
+    assert safety.by_region["PE-AYA"] == 4
+
+    fc = build_feature_collection(
+        _build_input(
+            "admin1",
+            [("PER-1", "PE", "PE-AYA"), ("PER-2", "PE", "PE-LIM")],
+        ),
+        tier="free",
+        safety=safety,
+    )
+    by_id = {f["properties"]["id"]: f["properties"] for f in fc["features"]}
+
+    assert by_id["PER-1"]["safety"] == 4, "the carve-out department"
+    assert by_id["PER-2"]["safety"] == 2, "the rest of the country"

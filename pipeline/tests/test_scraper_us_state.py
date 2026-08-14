@@ -229,3 +229,67 @@ def test_persistent_emptiness_raises_rather_than_returning_nothing(monkeypatch) 
         USStateScraper(client=client).fetch_raw()
 
     assert client.calls == 3
+
+
+def _regions(advisory_fixture, iso2: str) -> dict[str, int]:
+    return {
+        a.region_code: a.level
+        for a in _parse(advisory_fixture)
+        if a.country_iso2 == iso2 and a.region_code is not None
+    }
+
+
+def test_carve_outs_resolve_to_the_departments_named(advisory_fixture) -> None:
+    # Colombia's real list item: "Arauca, Cauca (excluding Popayán), and
+    # Norte de Santander departments". Popayán is a city, not a department,
+    # and "Santander" must not be matched inside "Norte de Santander".
+    regions = _regions(advisory_fixture, "CO")
+
+    assert regions["CO-ARA"] == 4
+    assert regions["CO-CAU"] == 4
+    assert regions["CO-NSA"] == 4
+    assert "CO-SAN" not in regions
+
+
+def test_an_area_that_is_no_subdivision_still_travels_as_a_sentinel(
+    advisory_fixture,
+) -> None:
+    # "The Colombia-Venezuela border region" names no polygon, but the fact
+    # that somewhere is level 4 is worth keeping.
+    assert _regions(advisory_fixture, "CO")["regional-L4"] == 4
+
+
+def test_only_the_list_belonging_to_the_heading_is_read(advisory_fixture) -> None:
+    """The false positive that made Quetzaltenango "do not travel".
+
+    Guatemala's summary continues past the carve-out list into a section
+    saying tourist police patrol "popular areas like Antigua, Lake Atitlán,
+    Tikal, Quetzaltenango" — areas named for the opposite reason.
+    """
+    regions = _regions(advisory_fixture, "GT")
+
+    assert regions["GT-SM"] == 4
+    assert regions["GT-HU"] == 4
+    assert "GT-QZ" not in regions, "read a list that does not belong to the heading"
+
+
+def test_entity_encoded_place_names_resolve(advisory_fixture) -> None:
+    """`Jun&#237;n` reaches the gazetteer as "jun 237 n" without decoding.
+
+    Peru's carve-out is the VRAEM — Apurímac, Ayacucho, Cusco, Huancavelica
+    and Junín — and three of those five carry an accent.
+    """
+    regions = _regions(advisory_fixture, "PE")
+
+    assert {"PE-APU", "PE-AYA", "PE-CUS", "PE-HUV", "PE-JUN"} <= set(regions)
+    assert all(level == 4 for code, level in regions.items() if code.startswith("PE-"))
+
+
+def test_a_carve_out_no_worse_than_the_country_is_dropped(advisory_fixture) -> None:
+    # Afghanistan is level 4 country-wide; nothing inside it can be worse.
+    assert _regions(advisory_fixture, "AF") == {}
+
+
+def test_clean_summary_decodes_entities() -> None:
+    assert clean_summary("Jun&#237;n and Apur&#237;mac") == "Junín and Apurímac"
+    assert clean_summary("<p>a&nbsp;b</p>") == "a b"

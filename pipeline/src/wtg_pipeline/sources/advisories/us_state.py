@@ -82,6 +82,7 @@ the ``regional-L<n>`` sentinel the other scrapers use. The information that
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import re
@@ -109,7 +110,6 @@ INDEX_URL = (
 # "Mexico - Level 2: Exercise Increased Caution" → ("Mexico", "2")
 _TITLE_RE = re.compile(r"^(?P<name>.*?)\s+-\s+Level\s+(?P<level>[1-4])\b", re.I)
 _TAG_RE = re.compile(r"<[^>]+>")
-_ENTITY_RE = re.compile(r"&(?:nbsp|#160);")
 
 # The API is slow to first byte and returns ~940 KB in one response.
 READ_TIMEOUT_S = 90.0
@@ -130,16 +130,16 @@ _CARVE_OUT_HEADING = re.compile(
     re.I,
 )
 _LIST_ITEM = re.compile(r"<li\b[^>]*>(.*?)</li>", re.S | re.I)
+# The single list belonging to a heading — not every `<li>` that follows it.
+_FIRST_LIST = re.compile(r"<ul\b[^>]*>(.*?)</ul>", re.S | re.I)
 _HEADING_LEVEL = {
     "do not travel": 4,
     "reconsider travel": 3,
     "exercise increased caution": 2,
 }
-# How far past a heading to look for its list, and how many items to take.
-# Both bounds exist so a summary whose heading is not followed by a list
-# cannot hoover up areas named further down under a different heading.
-_HEADING_WINDOW_CHARS = 2500
-_MAX_ITEMS = 12
+# How far past a heading its list may start. The heading is a `<p>` and the
+# list is the next element, so this only has to span the closing tags.
+_LIST_MUST_START_WITHIN = 200
 
 
 def extract_carve_outs(summary: str, country_iso2: str) -> dict[str, int]:
@@ -147,12 +147,22 @@ def extract_carve_outs(summary: str, country_iso2: str) -> dict[str, int]:
 
     The ``""`` key carries a level whose area named no resolvable subdivision
     — the caller turns that into the ``regional-L<n>`` sentinel.
+
+    Only the **first ``<ul>`` immediately after the heading** is read. A wider
+    window walks straight out of the carve-out list and into the sections that
+    follow it, where areas are named for the opposite reason: Guatemala's
+    summary goes on to say tourist police patrol "popular areas like Antigua,
+    Lake Atitlán, Tikal, Quetzaltenango", and reading that list painted
+    Quetzaltenango "do not travel".
     """
     out: dict[str, int] = {}
     for heading in _CARVE_OUT_HEADING.finditer(summary or ""):
         level = _HEADING_LEVEL[heading.group(1).lower()]
-        window = summary[heading.end() : heading.end() + _HEADING_WINDOW_CHARS]
-        for item in _LIST_ITEM.findall(window)[:_MAX_ITEMS]:
+        tail = summary[heading.end() : heading.end() + _LIST_MUST_START_WITHIN]
+        block = _FIRST_LIST.search(summary, heading.end())
+        if block is None or block.start() - heading.end() > len(tail):
+            continue
+        for item in _LIST_ITEM.findall(block.group(1)):
             prose = clean_summary(item)
             codes = subdivisions.resolve(country_iso2, prose)
             for code in codes:
@@ -189,8 +199,15 @@ def fold_name(name: str) -> str:
 
 
 def clean_summary(summary: str) -> str:
-    """The advisory prose with markup and non-breaking spaces removed."""
-    text = _ENTITY_RE.sub(" ", summary or "")
+    """The advisory prose with markup stripped and entities decoded.
+
+    Decoding matters beyond tidiness: the feed writes accented place names as
+    numeric entities, so ``Jun&#237;n`` reaches the gazetteer as "jun 237 n"
+    and Junín silently fails to resolve. Non-breaking spaces become ordinary
+    ones so word boundaries survive.
+    """
+    text = html.unescape(summary or "")
+    text = text.replace(" ", " ").replace(" ", " ")
     return " ".join(_TAG_RE.sub(" ", text).split())
 
 

@@ -19,10 +19,8 @@
 "emirate of ras al khaimah": "AE-RK",
 "emirate of sharjah": "AE-SH",
 "emirate of umm al quwain": "AE-UQ",
-"fujairah": "AE-X01~",
 "fujayrah": "AE-FU",
 "ras al khaymah": "AE-RK",
-"sayh mudayrah": "AE-X02~",
 "sharjah": "AE-SH",
 "umm al qaywayn": "AE-UQ"
 },
@@ -78,23 +76,6 @@
 "saint peter": "AG-07",
 "saint philip": "AG-08"
 },
-"AI": {
-"blowing point": "AI-X01~",
-"east end": "AI-X02~",
-"george hill": "AI-X03~",
-"island harbour": "AI-X04~",
-"north hill": "AI-X05~",
-"north side": "AI-X06~",
-"sandy ground": "AI-X07~",
-"sandy hill": "AI-X08~",
-"sandy hill bay": "AI-X08~",
-"south hill": "AI-X09~",
-"stoney ground": "AI-X10~",
-"the farrington": "AI-X11~",
-"the quarter": "AI-X12~",
-"the valley": "AI-X13~",
-"west end": "AI-X14~"
-},
 "AL": {
 "berat": "AL-01",
 "diber": "AL-09",
@@ -143,9 +124,6 @@
 "uige": "AO-UIG",
 "zaire": "AO-ZAI"
 },
-"AQ": {
-"antarctica": "AQ-X01~"
-},
 "AR": {
 "catamarca": "AR-K",
 "chaco": "AR-H",
@@ -171,17 +149,6 @@
 "tierra del fuego": "AR-V",
 "tucuman": "AR-T"
 },
-"AS": {
-"eastern": "AS-X01~",
-"eastern district": "AS-X01~",
-"manu a islands": "AS-X02~",
-"manu s": "AS-X02~",
-"rose atoll": "AS-X03~",
-"swain s island": "AS-X04~",
-"swains island": "AS-X04~",
-"western": "AS-X05~",
-"western district": "AS-X05~"
-},
 "AT": {
 "burgenland": "AT-1",
 "carinthia": "AT-2",
@@ -200,11 +167,8 @@
 "wien": "AT-9"
 },
 "AU": {
-"ashmore and cartier islands": "AU-X04~",
 "australian capital territory": "AU-ACT",
-"jervis bay territory": "AU-X02~",
 "lord howe island": "AU-NSW",
-"macquarie island": "AU-X03~",
 "new south wales": "AU-NSW",
 "northern territory": "AU-NT",
 "queensland": "AU-QLD",
@@ -212,22 +176,6 @@
 "tasmania": "AU-TAS",
 "victoria": "AU-VIC",
 "western australia": "AU-WA"
-},
-"AW": {
-"aruba": "AW-X01~"
-},
-"AX": {
-"brando": "AX-X15~",
-"eckero": "AX-X04~",
-"foglo": "AX-X06~",
-"jomala": "AX-X02~",
-"kokar": "AX-X16~",
-"kumlinge": "AX-X14~",
-"lemland": "AX-X10~",
-"lumparland": "AX-X11~",
-"mariehamn": "AX-X09~",
-"sottunga": "AX-X13~",
-"vardo": "AX-X12~"
 },
 "AZ": {
 "abseron": "AZ-ABS",
@@ -326,13 +274,13 @@
 "sharur": "AZ-SAR",
 "sheki": "AZ-SA",
 "shirvan": "AZ-SR",
-"shusha": "AZ-X01~",
 "sirvan": "AZ-SR",
 "siy z n": "AZ-SIY",
 "siyazan": "AZ-SIY",
 "stepanakert": "AZ-XA",
 "sumqay t": "AZ-SM",
 "sumqayit": "AZ-SM",
+"susa": "AZ-SUS",
 "t rt r": "AZ-TAR",
 "tartar": "AZ-TAR",
 "tovuz": "AZ-TOV",
@@ -353,16 +301,12 @@
 "zardab": "AZ-ZAR"
 },
 "BA": {
-"banja luka": "BA-X02~",
-"bijeljina": "BA-X03~",
 "bosnian podrinje": "BA-BIH",
 "bosnian podrinje canton": "BA-BIH",
 "brcko": "BA-BRC",
 "brcko distrikt": "BA-BRC",
 "central bosnia": "BA-BIH",
 "central bosnia canton": "BA-BIH",
-"doboj": "BA-X01~",
-"foca": "BA-X06~",
 "herzegovina neretva": "BA-BIH",
 "herzegovina neretva canton": "BA-BIH",
 "livno": "BA-BIH",
@@ -370,13 +314,10 @@
 "posavina canton": "BA-SRP",
 "sarajevo": "BA-BIH",
 "sarajevo canton": "BA-BIH",
-"sarajevo romanija": "BA-X05~",
-"trebinje": "BA-X07~",
 "tuzla": "BA-BIH",
 "tuzla canton": "BA-BIH",
 "una sana": "BA-BIH",
 "una sana canton": "BA-BIH",
-"vlasenica": "BA-X04~",
 "west bosnia": "BA-BIH",
 "west herzegovina": "BA-BIH",
 "west herzegovina canton": "BA-BIH",
@@ -540,9 +481,6 @@
 "oueme": "BJ-OU",
 "plateau": "BJ-PL"
 },
-"BL": {
-"saint barthelemy": "BL-X00~"
-},
 "BM": {
 "city of hamilton": "BM-HA",
 "city of saint george": "BM-SG",
@@ -631,7 +569,6 @@
 "mangrove cay": "BS-MC",
 "mayaguana": "BS-MG",
 "moore s island": "BS-MI",
-"new providence": "BS-X01~",
 "north abaco": "BS-NO",
 "north andros": "BS-NS",
 "north eleuthera": "BS-NE",
@@ -841,21 +778,6 @@
 "worodougou": "CI-14",
 "zanzan": "CI-08"
 },
-"CK": {
-"aitutaki": "CK-X02~",
-"atiu": "CK-X01~",
-"mangaia": "CK-X03~",
-"manihiki": "CK-X10~",
-"mauke": "CK-X06~",
-"mitiaro": "CK-X05~",
-"palmerston": "CK-X07~",
-"palmerston island": "CK-X07~",
-"penrhyn": "CK-X11~",
-"penrhyn atoll": "CK-X11~",
-"pukapuka": "CK-X08~",
-"rakahanga": "CK-X09~",
-"rarotonga": "CK-X04~"
-},
 "CL": {
 "aisen del general carlos ibanez del campo": "CL-AI",
 "antofagasta": "CL-AN",
@@ -920,7 +842,6 @@
 "jilin": "CN-JL",
 "liaoning": "CN-LN",
 "ningxia": "CN-NX",
-"paracel islands": "CN-X01~",
 "qinghai": "CN-QH",
 "shaanxi": "CN-SN",
 "shandong": "CN-SD",
@@ -1020,9 +941,6 @@
 "sao vicente": "CV-SV",
 "tarrafal": "CV-TA",
 "tarrafal de sao nicolau": "CV-TS"
-},
-"CW": {
-"curacao": "CW-X01~"
 },
 "CY": {
 "famagusta": "CY-04",
@@ -1305,9 +1223,6 @@
 "suez": "EG-SUZ",
 "suhaj": "EG-SHG"
 },
-"EH": {
-"western sahara": "EH-X01~"
-},
 "ER": {
 "anseba": "ER-AN",
 "debub": "ER-DU",
@@ -1428,9 +1343,6 @@
 "rotuma": "FJ-R",
 "western": "FJ-W"
 },
-"FK": {
-"falkland islands": "FK-X01~"
-},
 "FM": {
 "chuuk": "FM-TRK",
 "chuuk state": "FM-TRK",
@@ -1438,10 +1350,6 @@
 "pohnpei": "FM-PNI",
 "pohnpei state": "FM-PNI",
 "yap state": "FM-YAP"
-},
-"FO": {
-"eysturoy": "FO-X00~",
-"eysturoyar": "FO-X00~"
 },
 "FR": {
 "aisne": "FR-02",
@@ -1825,9 +1733,6 @@
 "shida kartli": "GE-SK",
 "tbilisi": "GE-TB"
 },
-"GG": {
-"sark": "GG-X01~"
-},
 "GH": {
 "ashanti": "GH-AH",
 "brong ahafo": "GH-BA",
@@ -1839,9 +1744,6 @@
 "upper west": "GH-UW",
 "volta": "GH-TV",
 "western": "GH-WP"
-},
-"GI": {
-"gibraltar": "GI-X01~"
 },
 "GL": {
 "kommune kujalleq": "GL-KU",
@@ -1967,9 +1869,6 @@
 "west greece": "GR-G",
 "west macedonia": "GR-C"
 },
-"GS": {
-"south georgia and the south sandwich islands": "GS-X01~"
-},
 "GT": {
 "alta verapaz": "GT-AV",
 "baja verapaz": "GT-BV",
@@ -1995,9 +1894,6 @@
 "totonicapan": "GT-TO",
 "zacapa": "GT-ZA"
 },
-"GU": {
-"guam": "GU-X01~"
-},
 "GW": {
 "bafata": "GW-BA",
 "biombo": "GW-BM",
@@ -2018,35 +1914,6 @@
 "potaro siparuni": "GY-PT",
 "upper demerara berbice": "GY-UD",
 "upper takutu upper essequibo": "GY-UT"
-},
-"HK": {
-"central and western": "HK-X01~",
-"central and western district": "HK-X01~",
-"eastern": "HK-X03~",
-"islands": "HK-X18~",
-"kowloon city": "HK-X06~",
-"kwai tsing": "HK-X12~",
-"kwun tong": "HK-X09~",
-"lantau island": "HK-X18~",
-"north": "HK-X16~",
-"north district": "HK-X16~",
-"sai kung": "HK-X10~",
-"sha tin": "HK-X11~",
-"sham shui po": "HK-X07~",
-"siu ma shan": "HK-X03~",
-"southern": "HK-X04~",
-"southern district": "HK-X04~",
-"tai po": "HK-X17~",
-"tsuen wan": "HK-X13~",
-"tuen mun": "HK-X14~",
-"wan chai": "HK-X02~",
-"wong tai sin": "HK-X08~",
-"wong tai sin district": "HK-X08~",
-"yau tsim mong": "HK-X05~",
-"yuen long": "HK-X15~"
-},
-"HM": {
-"heard island and mcdonald islands": "HM-X01~"
 },
 "HN": {
 "atlantida": "HN-AT",
@@ -2266,9 +2133,6 @@
 "southern": "IL-D",
 "tel aviv": "IL-TA"
 },
-"IM": {
-"isle of man": "IM-X01~"
-},
 "IN": {
 "andaman and nicobar": "IN-AN",
 "andaman and nicobar islands": "IN-AN",
@@ -2306,9 +2170,6 @@
 "uttar pradesh": "IN-UP",
 "uttarakhand": "IN-UT",
 "west bengal": "IN-WB"
-},
-"IO": {
-"british indian ocean territory": "IO-X01~"
 },
 "IQ": {
 "al anbar": "IQ-AN",
@@ -2525,9 +2386,6 @@
 "vicenza": "IT-VI",
 "viterbo": "IT-VT"
 },
-"JE": {
-"jersey": "JE-X01~"
-},
 "JM": {
 "clarendon": "JM-13",
 "hanover": "JM-09",
@@ -2711,9 +2569,6 @@
 "takeo": "KH-21",
 "takev": "KH-21"
 },
-"KI": {
-"kiribati": "KI-X01~"
-},
 "KM": {
 "andjazidja": "KM-G",
 "andjouan": "KM-A",
@@ -2790,9 +2645,6 @@
 "hawalli": "KW-HA",
 "hawally": "KW-HA",
 "mubarak al kabeer": "KW-MU"
-},
-"KY": {
-"cayman islands": "KY-X01~"
 },
 "KZ": {
 "akmola": "KZ-AKM",
@@ -2944,8 +2796,6 @@
 "LR": {
 "bomi": "LR-BM",
 "bong": "LR-BG",
-"gbapolu": "LR-X1~",
-"gbarpolu": "LR-X1~",
 "grand bassa": "LR-GB",
 "grand cape mount": "LR-CM",
 "grand gedeh": "LR-GG",
@@ -2956,7 +2806,6 @@
 "montserrado": "LR-MO",
 "nimba": "LR-NI",
 "river cess": "LR-RI",
-"river gee": "LR-X2~",
 "sinoe": "LR-SI"
 },
 "LS": {
@@ -3242,9 +3091,6 @@
 "tangier tetouan": "MA-01",
 "taza al hoceima taounate": "MA-03"
 },
-"MC": {
-"monaco": "MC-X01~"
-},
 "MD": {
 "anenii noi": "MD-AN",
 "balti": "MD-BA",
@@ -3307,10 +3153,6 @@
 "tivat": "ME-19",
 "ulcinj": "ME-20",
 "zabljak": "ME-21"
-},
-"MF": {
-"saint martin": "MF-X00~",
-"st martin": "MF-X00~"
 },
 "MG": {
 "alaotra mangoro": "MG-A",
@@ -3503,13 +3345,6 @@
 },
 "MO": {
 "macau": "MO-M"
-},
-"MP": {
-"northern islands": "MP-X04~",
-"northern mariana islands": "MP-X04~",
-"rota": "MP-X01~",
-"saipan": "MP-X03~",
-"tinian": "MP-X02~"
 },
 "MR": {
 "adrar": "MR-07",
@@ -3775,13 +3610,6 @@
 "otjozondjupa": "NA-OD",
 "zambezi": "NA-CA"
 },
-"NC": {
-"iles loyaute": "NC-X01~",
-"loyalty islands": "NC-X01~",
-"nord": "NC-X03~",
-"north": "NC-X03~",
-"south": "NC-X02~"
-},
 "NE": {
 "agadez": "NE-1",
 "diffa": "NE-2",
@@ -3791,9 +3619,6 @@
 "tahoua": "NE-5",
 "tillaberi": "NE-6",
 "zinder": "NE-7"
-},
-"NF": {
-"norfolk island": "NF-X01~"
 },
 "NG": {
 "abia": "NG-AB",
@@ -3911,7 +3736,6 @@
 "NO": {
 "akershus": "NO-02",
 "aust agder": "NO-09",
-"bouvet island": "NO-X01~",
 "buskerud": "NO-06",
 "finnmark": "NO-20",
 "hedmark": "NO-04",
@@ -3974,22 +3798,15 @@
 "uaboe": "NR-13",
 "yaren": "NR-14"
 },
-"NU": {
-"niue": "NU-X01~"
-},
 "NZ": {
-"antipodes islands": "NZ-X04~",
 "auckland": "NZ-AUK",
-"auckland islands": "NZ-X06~",
 "bay of plenty": "NZ-BOP",
-"campbell islands": "NZ-X05~",
 "canterbury": "NZ-CAN",
 "chatham islands": "NZ-CIT",
 "chatham islands territory": "NZ-CIT",
 "gisborne": "NZ-GIS",
 "gisborne district": "NZ-GIS",
 "hawke s bay": "NZ-HKB",
-"kermadec islands": "NZ-X01~",
 "manawatu wanganui": "NZ-MWT",
 "manawatu whanganui": "NZ-MWT",
 "marlborough": "NZ-MBH",
@@ -3998,13 +3815,10 @@
 "nelson city": "NZ-NSN",
 "northland": "NZ-NTL",
 "otago": "NZ-OTA",
-"snares islands": "NZ-X07~",
 "southland": "NZ-STL",
 "taranaki": "NZ-TKI",
 "tasman": "NZ-TAS",
 "tasman district": "NZ-TAS",
-"the snares": "NZ-X07~",
-"three kings islands": "NZ-X03~",
 "waikato": "NZ-WKO",
 "wellington": "NZ-WGN",
 "west coast": "NZ-WTC"
@@ -4073,14 +3887,6 @@
 "tacna": "PE-TAC",
 "tumbes": "PE-TUM",
 "ucayali": "PE-UCA"
-},
-"PF": {
-"austral islands": "PF-X04~",
-"leeward islands": "PF-X02~",
-"marquesas islands": "PF-X05~",
-"tuamotu archipelago": "PF-X03~",
-"tuamotu gambier": "PF-X03~",
-"windward islands": "PF-X01~"
 },
 "PG": {
 "central": "PG-CPM",
@@ -4280,14 +4086,6 @@
 "warmian masurian voivodeship": "PL-WN",
 "west pomeranian": "PL-ZP",
 "west pomeranian voivodeship": "PL-ZP"
-},
-"PM": {
-"miquelon langlade": "PM-X02~",
-"saint pierre": "PM-X01~",
-"saint pierre and miquelon": "PM-X01~"
-},
-"PN": {
-"pitcairn islands": "PN-X01~"
 },
 "PS": {
 "gaza": "PS-GZZ",
@@ -4638,7 +4436,6 @@
 "bel air": "SC-09",
 "bel ombre": "SC-10",
 "cascade": "SC-11",
-"coralline seychelles": "SC-X02~",
 "english river": "SC-16",
 "glacis": "SC-12",
 "grand anse": "SC-13",
@@ -4648,7 +4445,6 @@
 "les mamelles": "SC-24",
 "mont buxton": "SC-17",
 "mont fleuri": "SC-18",
-"outer islands": "SC-X02~",
 "plaisance": "SC-19",
 "pointe la rue": "SC-20",
 "port glaud": "SC-21",
@@ -5057,9 +4853,7 @@
 "lattakia": "SY-LA",
 "quneitra": "SY-QU",
 "rif dimashq": "SY-RD",
-"tartus": "SY-TA",
-"undof": "SY-X01~",
-"western al samadania": "SY-X01~"
+"tartus": "SY-TA"
 },
 "SZ": {
 "hhohho": "SZ-HH",
@@ -5067,21 +4861,12 @@
 "manzini": "SZ-MA",
 "shiselweni": "SZ-SH"
 },
-"TC": {
-"grand turk": "TC-X05~",
-"middle caicos": "TC-X01~",
-"north caicos": "TC-X02~",
-"providenciales and west caicos": "TC-X03~",
-"salt cay": "TC-X06~",
-"south caicos and east caicos": "TC-X04~"
-},
 "TD": {
 "bahr el gazel": "TD-BG",
 "barh el gazel": "TD-BG",
 "batha": "TD-BA",
 "borkou": "TD-BO",
 "chari baguirmi": "TD-CB",
-"ennedi": "TD-X01~",
 "guera": "TD-GR",
 "hadjer lamis": "TD-HL",
 "kanem": "TD-KA",
@@ -5099,16 +4884,6 @@
 "tibesti": "TD-TI",
 "ville de n djamena": "TD-ND",
 "wadi fira": "TD-WF"
-},
-"TF": {
-"amsterdam and saint paul islands": "TF-X1~",
-"archipel des crozet": "TF-X02~",
-"archipel des kerguelen": "TF-X01~",
-"crozet islands": "TF-X02~",
-"iles eparses de l ocean indien": "TF-X03~",
-"iles saint paul et nouvelle amsterdam": "TF-X1~",
-"kerguelen islands": "TF-X01~",
-"scattered islands in the indian ocean": "TF-X03~"
 },
 "TG": {
 "centre": "TG-C",
@@ -5198,16 +4973,11 @@
 "yasothon": "TH-35"
 },
 "TJ": {
-"districts of republican subordination": "TJ-X01~",
 "dushanbe": "TJ-DU",
 "gorno badakhshan": "TJ-GB",
 "khatlon": "TJ-KT",
 "khujand": "TJ-SU",
-"leninabad": "TJ-SU",
-"tadzhikistan territories": "TJ-X01~"
-},
-"TK": {
-"tokelau": "TK-X01~"
+"leninabad": "TJ-SU"
 },
 "TL": {
 "aileu": "TL-AL",
@@ -5386,9 +5156,6 @@
 "tunapuna piarco": "TT-TUP",
 "tunapuna piarco regional corporation": "TT-TUP",
 "western tobago": "TT-WTO"
-},
-"TV": {
-"tuvalu": "TV-X01~"
 },
 "TW": {
 "changhua": "TW-CHA",
@@ -5713,10 +5480,6 @@
 "surxondaryo": "UZ-SU",
 "xorazm": "UZ-XO"
 },
-"VA": {
-"vatican": "VA-X01~",
-"vatican city": "VA-X01~"
-},
 "VC": {
 "charlotte": "VC-01",
 "grenadines": "VC-06",
@@ -5755,14 +5518,6 @@
 "vargas state": "VE-X",
 "yaracuy": "VE-U",
 "zulia": "VE-V"
-},
-"VG": {
-"british virgin islands": "VG-X01~"
-},
-"VI": {
-"saint croix": "VI-X01~",
-"saint john": "VI-X03~",
-"saint thomas": "VI-X02~"
 },
 "VN": {
 "a nang": "VN-DN",
@@ -5859,47 +5614,6 @@
 "tuamasaga": "WS-TU",
 "va a o fonoti": "WS-VF",
 "vaisigano": "WS-VS"
-},
-"XK": {
-"akovica": "XK-X01~",
-"decani": "XK-X02~",
-"dragas": "XK-X03~",
-"gjakova": "XK-X01~",
-"glogovac": "XK-X04~",
-"gnjilane": "XK-X05~",
-"istok": "XK-X06~",
-"kacanik": "XK-X07~",
-"klina": "XK-X08~",
-"kosovo and metohija": "XK-X20~",
-"kosovo polje": "XK-X09~",
-"kosovo pomoravlje": "XK-X10~",
-"kosovska kamenica": "XK-X10~",
-"kosovska mitrovica": "XK-X11~",
-"leposavic": "XK-X12~",
-"lipljan": "XK-X13~",
-"malisevo": "XK-X14~",
-"novo brdo": "XK-X15~",
-"obilic": "XK-X16~",
-"obiliq": "XK-X16~",
-"orahovac": "XK-X17~",
-"peja": "XK-X18~",
-"pluzine": "XK-X21~",
-"podujevo": "XK-X19~",
-"podujevo podujeva": "XK-X19~",
-"pristina": "XK-X20~",
-"prizren": "XK-X21~",
-"skenderaj srbica": "XK-X22~",
-"srbica": "XK-X22~",
-"stimlje": "XK-X23~",
-"strpce": "XK-X24~",
-"suva reka": "XK-X25~",
-"urosevac": "XK-X26~",
-"urosevac ferizaj": "XK-X26~",
-"viti vitina": "XK-X27~",
-"vitina": "XK-X27~",
-"vucitrn": "XK-X28~",
-"zubin potok": "XK-X29~",
-"zvecan": "XK-X30~"
 },
 "YE": {
 "abyan": "YE-AB",
