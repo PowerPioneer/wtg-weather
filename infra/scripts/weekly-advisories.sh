@@ -71,11 +71,37 @@ if [[ "$before" == "$after" && "${FORCE_REBUILD:-0}" != "1" ]]; then
     exit 0
 fi
 
-# `rebuild-tiles.sh` re-runs `wtg build geojson --force` for both tiers, which
-# is what picks the new levels up, then rebuilds the archives and purges the
-# pull zone. It reads BUNNY_* from the repo-root .env if not in the
-# environment, and holds its own lock.
-log "stage=rebuild reason=$( [[ "${FORCE_REBUILD:-0}" == "1" ]] && echo forced || echo levels-changed )"
-./infra/scripts/rebuild-tiles.sh
+# The premium tier is built from ~3.5 GB of geoBoundaries ADM2 sources. If
+# they are ever absent, `wtg build geojson --tier premium` fails loudly rather
+# than shipping an empty admin-2 layer — but `rebuild-tiles.sh` purges the CDN
+# only after *every* tier succeeds, and builds free first. An unconditional
+# both-tier run would therefore rebuild free, fail on premium, and exit before
+# the purge, leaving the new free tiles on disk and the old ones still served.
+# So pick the tiers we can actually build.
+#
+# The directory is resolved from the pipeline's own config rather than spelled
+# out here: the layout is `<boundaries_raw_dir>/geoboundaries/adm2`, i.e. the
+# segment repeats, and hardcoding a plausible-looking path silently degrades
+# every run to free-only.
+ADM2_DIR="$("$UV" run --directory pipeline python -c \
+    "from wtg_pipeline.config import boundaries_raw_dir
+print(boundaries_raw_dir() / 'geoboundaries' / 'adm2')")"
+adm2_count=$(find "$ADM2_DIR" -maxdepth 1 -name '*_ADM2.geojson' 2>/dev/null | wc -l)
+if [[ "$adm2_count" -gt 0 ]]; then
+    TIERS="free premium"
+    log "adm2 sources: ${adm2_count} file(s) under ${ADM2_DIR}"
+else
+    TIERS="free"
+    log "WARN: no *_ADM2.geojson under ${ADM2_DIR} — rebuilding the FREE tier only."
+    log "WARN: premium keeps its current advisory levels until someone runs"
+    log "WARN: \`wtg download boundaries --source geoboundaries\` and rebuilds it."
+fi
 
-log "weekly-advisories OK (tiles rebuilt)"
+# `rebuild-tiles.sh` re-runs `wtg build geojson --force` per tier, which is
+# what picks the new levels up, then rebuilds the archives and purges the pull
+# zone. It reads BUNNY_* from the repo-root .env if not in the environment,
+# and holds its own lock.
+log "stage=rebuild tiers=${TIERS} reason=$( [[ "${FORCE_REBUILD:-0}" == "1" ]] && echo forced || echo levels-changed )"
+TIERS="$TIERS" ./infra/scripts/rebuild-tiles.sh
+
+log "weekly-advisories OK (tiles rebuilt: ${TIERS})"
