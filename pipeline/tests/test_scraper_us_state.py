@@ -27,6 +27,13 @@ def _parse(advisory_fixture):
     )
 
 
+def _country_levels(advisory_fixture) -> dict[str, int]:
+    """Country-wide rows only — carve-outs are separate records."""
+    return {
+        a.country_iso2: a.level for a in _parse(advisory_fixture) if a.region_code is None
+    }
+
+
 def test_parse_title_splits_country_from_level() -> None:
     assert parse_title("Mexico - Level 2: Exercise Increased Caution") == ("Mexico", 2)
     assert parse_title("Afghanistan - Level 4: Do Not Travel") == ("Afghanistan", 4)
@@ -40,7 +47,7 @@ def test_parse_title_splits_country_from_level() -> None:
 
 
 def test_the_ladder_is_read_off_the_title(advisory_fixture) -> None:
-    by_iso = {a.country_iso2: a.level for a in _parse(advisory_fixture)}
+    by_iso = _country_levels(advisory_fixture)
 
     assert by_iso["AF"] == 4
     assert by_iso["CO"] == 3
@@ -56,7 +63,7 @@ def test_the_category_field_is_never_read_as_an_iso_code(advisory_fixture) -> No
     a plausible-looking code for almost every record and paints Serbia with
     Russia's "Do Not Travel".
     """
-    by_iso = {a.country_iso2: a.level for a in _parse(advisory_fixture)}
+    by_iso = _country_levels(advisory_fixture)
 
     # Russia's Category is "RS", which is Serbia's real ISO-3166 code.
     assert by_iso["RU"] == 4
@@ -92,11 +99,18 @@ def test_every_record_satisfies_the_shared_schema(advisory_fixture) -> None:
         assert advisory.summary
 
 
-def test_country_rows_never_claim_a_region(advisory_fixture) -> None:
-    # Carve-outs are deliberately not extracted from this source; the prose
-    # says "do not travel to <country>" as often as it names a region.
+def test_a_region_code_is_either_a_real_subdivision_or_the_sentinel(
+    advisory_fixture,
+) -> None:
+    # Anything else reaches `processing.advisories`, which would either reject
+    # it or — worse, if it looked plausible — paint the wrong polygon.
     for advisory in _parse(advisory_fixture):
-        assert advisory.region_code is None
+        if advisory.region_code is None:
+            continue
+        assert re.fullmatch(r"[A-Z]{2}-[A-Z0-9]{1,3}|regional-L[1-4]", advisory.region_code)
+        if advisory.region_code.startswith("regional-"):
+            continue
+        assert advisory.region_code.startswith(f"{advisory.country_iso2}-")
 
 
 def test_summary_is_prose_not_markup(advisory_fixture) -> None:
@@ -115,8 +129,8 @@ def test_clean_summary_strips_markup_and_entities() -> None:
     assert clean_summary("") == ""
 
 
-def test_one_row_per_country(advisory_fixture) -> None:
-    out = _parse(advisory_fixture)
+def test_one_country_row_per_country(advisory_fixture) -> None:
+    out = [a for a in _parse(advisory_fixture) if a.region_code is None]
     codes = [a.country_iso2 for a in out]
     assert len(codes) == len(set(codes))
 

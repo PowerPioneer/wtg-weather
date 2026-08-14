@@ -16,8 +16,13 @@ Output: ``src/wtg_pipeline/processing/subdivisions.json``, shaped
 
 Rules, all of them about not being wrong:
 
-* Only subdivisions whose ``iso_3166_2`` is populated and prefixed with their
-  country's ISO-2 code. The 10m layer has blanks and a few mismatches.
+* Only subdivisions whose ``iso_3166_2`` is populated, prefixed with their
+  country's ISO-2 code, and shaped like a real ISO-3166-2 code. The 10m layer
+  has blanks, a few mismatches, and ~200 Natural Earth placeholders of the
+  form ``AQ-X01~`` for units ISO has not assigned a code to. A placeholder
+  resolves to no polygon the web can key off and is rejected downstream by
+  ``processing.advisories.REGION_CODE_RE`` anyway; keeping it out here means
+  the gazetteer cannot suggest one in the first place.
 * Both ``name_en`` and the local ``name`` are indexed — governments use either.
 * A name shorter than four characters is dropped. Two- and three-letter names
   ("Ica", "Uri") match inside unrelated words and prose far too easily.
@@ -38,6 +43,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from wtg_pipeline.config import boundaries_raw_dir  # noqa: E402
+from wtg_pipeline.processing.advisories import REGION_CODE_RE  # noqa: E402
 from wtg_pipeline.sources import geoboundaries  # noqa: E402
 
 OUT_PATH = (
@@ -80,6 +86,9 @@ def main() -> int:
         code = str(getattr(row, "iso_3166_2", "") or "").strip().upper()
         country = str(getattr(row, "iso_a2", "") or "").strip().upper()
         if not code or not country or country == "-99":
+            continue
+        if not REGION_CODE_RE.match(code):
+            # Natural Earth placeholder (`AQ-X01~`) or otherwise not a code.
             continue
         if not code.startswith(f"{country}-"):
             # The 10m layer carries a few subdivisions whose code does not
