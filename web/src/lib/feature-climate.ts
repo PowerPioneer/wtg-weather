@@ -148,6 +148,23 @@ export function readPreferenceScore(
   );
 }
 
+/**
+ * The travel-advisory level (1–4) baked into the feature by WS-4, or `null`.
+ *
+ * Month-less on purpose: it is one consensus scalar per polygon ("highest of
+ * 5 sources"), and a country no government lists carries no property at all,
+ * which the map paints grey. Anything outside 1–4 is treated as absent rather
+ * than clamped — a level the legend has no colour for is a pipeline bug, not
+ * something to render confidently.
+ */
+export function readAdvisoryLevel(
+  props: FeatureProperties,
+): 1 | 2 | 3 | 4 | null {
+  const value = readNumber(props, "safety");
+  if (value == null || !Number.isInteger(value)) return null;
+  return value >= 1 && value <= 4 ? (value as 1 | 2 | 3 | 4) : null;
+}
+
 /** Value the active display mode paints for this feature, in display units. */
 export function readModeValue(
   props: FeatureProperties,

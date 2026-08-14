@@ -12,8 +12,10 @@
 import { useEffect, useRef, useState } from "react";
 
 import { MatchTooltip, type MatchTooltipStat } from "@/components/match";
+import { ADVISORY_LABEL } from "@/components/safety";
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
 import {
+  readAdvisoryLevel,
   readModeValue,
   readNumber,
   readPreferenceScore,
@@ -102,10 +104,27 @@ export function MapHoverCard({
         context={`${MONTH_SHORT[monthSlug]} · ${prefLabel}`}
         score={score ?? 0}
         stats={buildStats(properties, mode, month)}
-        footer={score == null ? "No match score for this area" : undefined}
+        footer={buildFooter(properties, score)}
       />
     </div>
   );
+}
+
+/**
+ * The advisory the Safety mode paints, when the polygon carries one. Without
+ * it, hovering in Safety mode reported temperature, rain and sun and never the
+ * level that actually chose the colour. A polygon no government lists carries
+ * no property at all — the map paints that grey and the card stays quiet.
+ */
+function buildFooter(
+  properties: FeatureProperties,
+  score: number | null,
+): string | undefined {
+  const advisory = readAdvisoryLevel(properties);
+  if (advisory != null) {
+    return `Advisory level ${advisory} · ${ADVISORY_LABEL[advisory]}`;
+  }
+  return score == null ? "No match score for this area" : undefined;
 }
 
 /**
