@@ -392,7 +392,12 @@ def _safety_by_iso(path: Path, layer_name: str, max_zoom: int) -> dict[str, set[
         reader = Reader(MmapSource(handle))
         for (zoom, _x, _y), data in all_tiles(reader.get_bytes):
             if zoom > max_zoom:
-                continue
+                # PMTiles orders entries by tile id, which is monotonic in
+                # zoom, so there is nothing lower left to find. Stopping here
+                # is what keeps the 1.5 GB premium archive cheap to check; a
+                # vintage that broke the ordering would fail the coverage
+                # assertions below rather than pass vacuously.
+                break
             try:
                 raw = gzip.decompress(data)
             except OSError:
@@ -422,7 +427,27 @@ def advisory_index():
     return index
 
 
-def test_country_layer_carries_the_advisory_levels(free_tiles: Path, advisory_index) -> None:
+@pytest.fixture(scope="module", params=["free", "premium"])
+def tier_safety(request, advisory_index) -> tuple[str, dict[str, dict[str, set[object]]]]:
+    """Per-tier `safety` values, scanned once and shared across the checks.
+
+    Parametrised over both archives because RC-8 points an entitled session's
+    country and admin-1 layers at the **premium** file. These assertions used
+    to run against `free.pmtiles` alone, so a premium rebuild that ran without
+    the advisory index would have blanked Safety for paying users at every
+    zoom, with nothing to catch it — the same silent-empty shape as RC-1
+    and RC-2.
+    """
+    path = TILE_DIR / f"{request.param}.pmtiles"
+    if not path.exists():
+        pytest.skip(f"{path} not built")
+    return request.param, {
+        "country": _safety_by_iso(path, "country", max_zoom=2),
+        "admin1": _safety_by_iso(path, "admin1", max_zoom=4),
+    }
+
+
+def test_country_layer_carries_the_advisory_levels(tier_safety, advisory_index) -> None:
     """RC-5: the Safety display mode had no data at all.
 
     `web/src/lib/display-modes.ts` reads a month-less `safety` property that
@@ -430,41 +455,45 @@ def test_country_layer_carries_the_advisory_levels(free_tiles: Path, advisory_in
     built after an advisory scrape must agree with the index it was built
     from, or the mode is silently back to grey.
     """
-    in_tiles = _safety_by_iso(free_tiles, "country", max_zoom=2)
+    tier, layers = tier_safety
+    in_tiles = layers["country"]
     expected = advisory_index.by_country
 
     shared = sorted(set(in_tiles) & set(expected))
     assert len(shared) >= 100, (
-        f"only {len(shared)} countries are both in the tiles and in the advisory "
-        f"index — the join ran against the wrong vintage or not at all"
+        f"only {len(shared)} countries are both in the {tier} tiles and in the "
+        f"advisory index — the join ran against the wrong vintage or not at all"
     )
     disagreements = {
         iso: (sorted(in_tiles[iso], key=str), expected[iso])
         for iso in shared
         if in_tiles[iso] != {expected[iso]}
     }
-    assert not disagreements, f"tile `safety` disagrees with the index: {disagreements}"
+    assert not disagreements, (
+        f"{tier} tile `safety` disagrees with the index: {disagreements}"
+    )
 
 
-def test_safety_levels_are_on_the_documented_ladder(free_tiles: Path, advisory_index) -> None:
+def test_safety_levels_are_on_the_documented_ladder(tier_safety) -> None:
     # The web's four legend bins step at 2/3/4. Anything else paints as the
     # top bin and misreports risk.
+    tier, layers = tier_safety
     levels = {
         value
-        for values in _safety_by_iso(free_tiles, "country", max_zoom=2).values()
+        for values in layers["country"].values()
         for value in values
         if value is not None
     }
-    assert levels, "no country feature carries a `safety` property"
-    assert levels <= {1, 2, 3, 4}, f"off-ladder advisory levels in the tiles: {levels}"
+    assert levels, f"no {tier} country feature carries a `safety` property"
+    assert levels <= {1, 2, 3, 4}, f"off-ladder advisory levels in {tier}: {levels}"
 
 
-def test_admin1_inherits_advisory_levels(free_tiles: Path, advisory_index) -> None:
+def test_admin1_inherits_advisory_levels(tier_safety) -> None:
     # The country layer stops at zoom 3.5. Without this the Safety map goes
-    # grey the moment a user zooms in.
-    in_tiles = _safety_by_iso(free_tiles, "admin1", max_zoom=4)
-    with_safety = [iso for iso, values in in_tiles.items() if values - {None}]
+    # grey the moment a user zooms in — on either tier.
+    tier, layers = tier_safety
+    with_safety = [iso for iso, values in layers["admin1"].items() if values - {None}]
     assert len(with_safety) >= 100, (
         f"only {len(with_safety)} countries' admin-1 polygons carry an advisory "
-        f"level — Safety mode goes grey past the country handover zoom"
+        f"level in the {tier} archive — Safety goes grey past the handover zoom"
     )

@@ -51,6 +51,10 @@ log = logging.getLogger(__name__)
 
 TILE_DIR = Path(__file__).resolve().parents[3] / "tiles"
 
+# `{"type": "FeatureCollection", "features": []}` is 48 bytes. Any real layer
+# is orders of magnitude larger, so this only ever catches the empty case.
+_MIN_GEOJSON_BYTES = 200
+
 
 def _load_boundary_frames(
     levels: Iterable[Level] = LEVELS,
@@ -246,6 +250,21 @@ def _load_admin2_frame(gpd: object, base: Path) -> PolygonFrame:
 
     admin2_dir = base / "geoboundaries" / "adm2"
     paths = sorted(admin2_dir.glob("*_ADM2.geojson"))
+    if not paths:
+        # An empty directory used to produce an empty GeoDataFrame, which
+        # produced a GeoJSON with zero features, which `run_build_pmtiles`
+        # accepted because the file existed — shipping a premium archive with
+        # no districts. The sources are ~3.5 GB and get reclaimed for disk on
+        # the build box, so "the directory is empty" is a routine state, not
+        # an exotic one, and the weekly advisory rebuild walks straight into
+        # it. Same call WS-1 made for a missing admin-2 GeoJSON: fail loudly.
+        raise FileNotFoundError(
+            f"no *_ADM2.geojson under {admin2_dir}. The premium tier is built "
+            f"from these; without them the admin-2 layer would be silently "
+            f"empty. Run `wtg download boundaries --source geoboundaries`, or "
+            f"build the free tier only (`TIERS=free ./infra/scripts/"
+            f"rebuild-tiles.sh`)."
+        )
     iso3_to_iso2 = _iso3_to_iso2()
     admin2_frames = []
     for index, geojson in enumerate(paths, start=1):
@@ -555,6 +574,21 @@ def run_build_geojson(*, tier: str, force: bool) -> list[Path]:
             exclude_iso2=exclude,
             safety=safety,
         )
+        if not fc.get("features"):
+            # Reaching here means the polygons and the percentiles did not
+            # join — an empty boundary frame, or ids from two different
+            # vintages. Writing the file anyway is what makes it invisible:
+            # `run_build_pmtiles` only checks that the path exists, so an
+            # empty FeatureCollection ships as an empty layer and overwrites
+            # a good build's output on the way.
+            raise RuntimeError(
+                f"{lv} produced zero features for the {tier} tier. Its "
+                f"percentiles ({perc_path.name}, {len(perc)} rows) did not "
+                f"join to any polygon — check that the boundary sources for "
+                f"{lv} are present and are the vintage the aggregate was "
+                f"built from. Refusing to overwrite {out_path.name} with an "
+                f"empty layer."
+            )
         write_feature_collection(fc, out_path)
         outputs.append(out_path)
 
@@ -586,6 +620,17 @@ def run_build_pmtiles(*, tier: str) -> Path:
                 f"the {lv} layer. Run `wtg process aggregate --level {lv}`, "
                 f"`wtg process percentiles --level {lv}` and "
                 f"`wtg build geojson --tier {tier_typed}` first."
+            )
+        if path.stat().st_size < _MIN_GEOJSON_BYTES:
+            # An empty FeatureCollection is 48 bytes and passes `exists()`.
+            # Left to run, tippecanoe would happily produce the layer with no
+            # features in it — the same silent-empty failure as a missing file,
+            # wearing a filename.
+            raise RuntimeError(
+                f"{path} is {path.stat().st_size} bytes — that is an empty "
+                f"FeatureCollection, not a {lv} layer. Rebuild it with "
+                f"`wtg build geojson --tier {tier_typed} --force` and fix "
+                f"whatever it reports rather than tiling an empty layer."
             )
         layers.append((lv, path))
 
