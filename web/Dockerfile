@@ -16,10 +16,11 @@ COPY . .
 # render on demand — the site is correct either way, so the build does not
 # fail without it (see lib/country-routes.ts).
 #
-# Reaching the API needs a builder attached to the compose network:
-#   ./infra/scripts/setup-build-builder.sh
-#   BUILDX_BUILDER=wtg-internal docker compose build web
-# The default matches the runtime value, so on that builder it just works.
+# Use ./infra/scripts/build-web.sh to build with it reachable. That passes the
+# API's IP, because a build step's network namespace can route to the compose
+# subnet but cannot resolve `api` in it. The default below is the runtime
+# value: honest about what this talks to, and it simply falls back when the
+# name does not resolve.
 ARG INTERNAL_API_URL=http://api:8000
 ENV INTERNAL_API_URL=${INTERNAL_API_URL} \
     NEXT_TELEMETRY_DISABLED=1

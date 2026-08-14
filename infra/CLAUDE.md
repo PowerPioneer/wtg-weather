@@ -10,8 +10,8 @@ Docker Compose on a 16GB Ubuntu server, Caddy front, bunny.net CDN in front.
 - `./infra/scripts/backup-postgres.sh` — manual backup (also runs nightly)
 - `./infra/scripts/restore-postgres.sh <db> <stamp|latest>` — restore from B2
 - `./infra/scripts/rebuild-tiles.sh` — regenerate PMTiles and purge bunny.net cache
-- `./infra/scripts/setup-build-builder.sh` — create the buildx builder that can
-  reach `api` during a build (idempotent; run it before building `web`)
+- `./infra/scripts/build-web.sh` — build the web image with the country pages
+  pre-rendered (idempotent; use instead of `docker compose build web`)
 
 ## Deploying
 
@@ -20,18 +20,25 @@ There is **no image registry** — compose builds from source on the box:
 ```bash
 git pull --ff-only
 docker compose build api && docker compose up -d api
-./infra/scripts/setup-build-builder.sh
-BUILDX_BUILDER=wtg-internal docker compose build web && docker compose up -d web
+./infra/scripts/build-web.sh && docker compose up -d web
 ```
 
 `docker compose up -d` does **not** rebuild an image. A deploy that only
 changes compose (a new volume, a new env var) still needs `build` if the code
 moved too, or the container comes up with the new wiring and the old code.
 
-The `web` build goes through a named builder because `next build` pre-renders
-the ~2,800 country pages against `/v1/countries`, and BuildKit's default driver
-cannot attach a build to the compose network. Without the builder the image
-still works — those pages just render on first request.
+`build-web.sh` exists because `next build` pre-renders the ~2,800 country
+pages against `/v1/countries`, and a plain build cannot reach the API:
+BuildKit's default driver will not attach a build to the compose network at
+all, and even on a builder that lives there, a build step's sandbox can route
+to the subnet but cannot resolve `api` in it. So the script keeps a
+`docker-container` builder on the network and passes the API's **IP**. It
+verifies the pre-render happened rather than assuming it — an unrendered image
+looks identical at runtime, just slower on each page's first hit — and fails
+unless `ALLOW_UNRENDERED=1`.
+
+Note the API container's IP changes whenever it is recreated, which is why the
+script resolves it per build rather than pinning it anywhere.
 
 Country data (`pipeline/data/final/api/`) is served off a read-only mount and
 cached on file mtime, so `wtg publish api-data` reaches the API with no

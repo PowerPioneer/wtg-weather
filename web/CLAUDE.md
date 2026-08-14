@@ -97,14 +97,13 @@ re-litigate the design decisions listed in `HANDOFF.md` § "already made".
   legitimately return nothing when the API is unreachable (a `pnpm build` with
   no stack up). An unknown slug still 404s — `getCountry` returns `null` and
   the page calls `notFound()`.
-- A production image is built **on the compose network** so the country tree
-  actually pre-renders: `./infra/scripts/setup-build-builder.sh` then
-  `BUILDX_BUILDER=wtg-internal docker compose build web`. BuildKit's default
-  driver cannot join a named network, which is why a builder exists at all.
-  Without it the build still succeeds and the site is still correct — every
-  country page just renders on its first request instead. Check for
-  `● /[country]` and a non-trivial "Generating static pages" count in the build
-  log; `[country-routes] the API is not reachable` means you got the fallback.
+- A production image is built with the API reachable so the country tree
+  actually pre-renders — use `./infra/scripts/build-web.sh`, not
+  `docker compose build web`. It puts the build on the compose network and
+  passes the API by IP (the sandbox can route there but cannot resolve `api`),
+  then checks the pre-render happened. Without it the build still succeeds and
+  the site is still correct; every country page just renders on its first
+  request instead.
 - Every SSR page: canonical URL, OpenGraph image (generated at build),
   structured data (`TouristDestination` schema), internal links to
   related months and neighbouring countries.
