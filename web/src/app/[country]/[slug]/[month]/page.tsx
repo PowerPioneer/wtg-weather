@@ -380,5 +380,5 @@ function buildNarrative({
       : tempDelta > 0
         ? `warmer than the yearly mean by ${tempDelta.toFixed(1)}°C`
         : `cooler than the yearly mean by ${Math.abs(tempDelta).toFixed(1)}°C`;
-  return `${monthName} is ${rankPhrase} inside ${countryName}, with ${tempPhrase}. The country-level safety bulletins below apply — regional variation in advisories ships with the next pipeline cut.`;
+  return `${monthName} is ${rankPhrase} inside ${countryName}, with ${tempPhrase}. The safety bulletins below apply.`;
 }
