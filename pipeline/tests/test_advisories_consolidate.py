@@ -474,3 +474,30 @@ def test_a_single_source_cannot_be_behind_anything(tmp_path: Path) -> None:
     _dump(tmp_path, "us_state", datetime(2024, 1, 1, tzinfo=timezone.utc))
 
     assert stale_sources(latest_source_files(tmp_path)) == {}
+
+
+def test_an_empty_dump_falls_back_to_the_last_good_one(tmp_path: Path) -> None:
+    """A zero-record scrape is a failure, not a country list that emptied.
+
+    The Consular Affairs API intermittently answers 200 with `[]`. That dump
+    landed as the newest file and took the US out of the consensus entirely,
+    with nothing louder than an INFO line to say so.
+    """
+    good = datetime(2026, 8, 14, 10, tzinfo=timezone.utc)
+    empty = datetime(2026, 8, 14, 11, tzinfo=timezone.utc)
+    _dump(tmp_path, "us_state", good)
+    write_advisories([], source_id="us_state", base_dir=tmp_path, timestamp=empty)
+
+    chosen = latest_source_files(tmp_path)["us_state"]
+
+    assert chosen.name.startswith("2026-08-14T10")
+    assert load_advisories(tmp_path)["us_state"]
+
+
+def test_a_source_with_only_empty_dumps_is_skipped(tmp_path: Path) -> None:
+    write_advisories(
+        [], source_id="us_state", base_dir=tmp_path,
+        timestamp=datetime(2026, 8, 14, tzinfo=timezone.utc),
+    )
+
+    assert "us_state" not in latest_source_files(tmp_path)

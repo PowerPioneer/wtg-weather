@@ -183,8 +183,34 @@ def latest_source_files(base_dir: Path | None = None) -> dict[str, Path]:
         if not dumps:
             log.warning("no advisory dumps under %s", source_dir)
             continue
-        latest[source_dir.name] = dumps[-1]
+        # Walk back past empty dumps. A zero-record file is a scrape that
+        # failed, not a government with nothing to say — the CA API answers
+        # 200 with `[]` often enough to have done this in production. The CLI
+        # refuses to write one now; this handles the ones already on disk.
+        chosen = None
+        for dump in reversed(dumps):
+            if _record_count(dump):
+                chosen = dump
+                break
+            log.warning(
+                "%s holds no records — a failed scrape. Falling back to the "
+                "previous dump for %s.",
+                dump.name,
+                source_dir.name,
+            )
+        if chosen is None:
+            log.warning("every dump under %s is empty; skipping the source", source_dir)
+            continue
+        latest[source_dir.name] = chosen
     return latest
+
+
+def _record_count(path: Path) -> int:
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return 0
+    return len(loaded) if isinstance(loaded, list) else 0
 
 
 # A source whose newest dump lags the freshest by more than this is reported.

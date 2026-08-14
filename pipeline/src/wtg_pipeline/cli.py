@@ -100,12 +100,40 @@ def download_advisories(
     if unknown:
         raise typer.BadParameter(f"unknown advisory source(s): {', '.join(unknown)}")
 
+    failed: list[str] = []
     for key in targets:
         cls = SCRAPERS[key]
-        with cls() as scraper:
-            advisories = scraper.run()
+        # One government being down must not cost us the other five. This
+        # loop used to abort on the first exception, so a single 403 meant a
+        # `--source all` run scraped *nothing* and consolidation quietly
+        # carried on with whatever was last on disk.
+        try:
+            with cls() as scraper:
+                advisories = scraper.run()
+        except Exception as exc:  # noqa: BLE001 — one source, not the run
+            failed.append(key)
+            typer.echo(f"{cls.source_id}: FAILED ({type(exc).__name__}: {exc})")
+            continue
+
+        if not advisories:
+            # An empty result is not a country with no advisories, it is a
+            # scrape that did not work — the CA API intermittently answers
+            # 200 with `[]`. Writing it would make it the newest dump and
+            # silently replace a good one.
+            failed.append(key)
+            typer.echo(
+                f"{cls.source_id}: FAILED (returned no records; keeping the previous dump)"
+            )
+            continue
+
         path = write_advisories(advisories, source_id=cls.source_id)
         typer.echo(f"{cls.source_id}: {len(advisories)} record(s) -> {path}")
+
+    if failed:
+        # Non-zero so cron notices, but only after every other source has had
+        # its turn and written its dump.
+        typer.echo(f"{len(failed)} source(s) failed: {', '.join(sorted(failed))}")
+        raise typer.Exit(code=1)
 
 
 @process.command("aggregate")
