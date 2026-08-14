@@ -47,6 +47,23 @@ export function findRegion(country: CountryData, slug: string): RegionRow | null
   return country.regions.find((r) => regionHref(r) === slug) ?? null;
 }
 
+/**
+ * Resolve a region by its admin-1 polygon id (`adm1_code`).
+ *
+ * This is the map's way in: a clicked feature knows its polygon id and its
+ * name, but not the slug — which the pipeline de-duplicates, so two regions
+ * whose names slug identically differ only by a suffix the tiles never saw.
+ * Returns `null` for a payload published before regions carried the code, and
+ * the caller falls back to the slug.
+ */
+export function findRegionByCode(
+  country: CountryData,
+  code: string,
+): RegionRow | null {
+  if (!code) return null;
+  return country.regions.find((r) => r.code === code) ?? null;
+}
+
 /** Annual temperature range for the region sparkline caption. */
 export function regionTempRange(region: RegionRow): { low: number; high: number } {
   return { low: Math.min(...region.tl), high: Math.max(...region.tl) };

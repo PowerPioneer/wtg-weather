@@ -82,6 +82,12 @@ export type RegionRow = {
    * identically still get one URL each. Falls back to slugifying `name`.
    */
   slug?: string;
+  /**
+   * Admin-1 polygon id (`adm1_code`) — the same value the tiles carry as a
+   * feature's `id`. Absent on a fixture, or on a bundle published before the
+   * field existed.
+   */
+  code?: string;
   score: number;
   tl: Monthly;      // °C mean
   /** mm / day. Absent on a region the pipeline has no rainfall for. */

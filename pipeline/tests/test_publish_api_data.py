@@ -238,6 +238,22 @@ def test_regions_carry_their_own_rain_and_sun(
     assert cusco["slug"] == "cusco"
 
 
+def test_regions_carry_the_admin1_code_the_tiles_use(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The polygon id travels with the region row.
+
+    A click on the map knows the polygon's `adm1_code` and its name, but not
+    the de-duplicated slug this module assigns. Publishing the code is what
+    lets the region page resolve the exact polygon that was clicked instead of
+    the first region whose name happens to slug the same way.
+    """
+    entries, _skipped = _build(monkeypatch)
+    codes = [r["code"] for r in entries["peru"]["regions"]]
+    assert all(codes), "every region row needs the admin-1 polygon id"
+    assert len(set(codes)) == len(codes)
+
+
 def test_region_slugs_are_unique_within_a_country() -> None:
     """Two regions whose names slug identically must not share a URL.
 

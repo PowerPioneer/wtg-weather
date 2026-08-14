@@ -730,6 +730,12 @@ def build_payloads(
                 {
                     "name": region["name"],
                     "slug": slug,
+                    # The admin-1 polygon id — the same `adm1_code` the tiles
+                    # carry as a feature's `id`. It is what lets a click on the
+                    # map name the exact region rather than one that happens to
+                    # slug the same way; the slug above is de-duplicated, so
+                    # deriving it from a name alone is ambiguous by design.
+                    "code": region["code"],
                     "score": max(region_climate.scores()),
                     "tl": region_climate.t,
                     "rl": region_climate.rain_day,

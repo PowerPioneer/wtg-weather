@@ -195,6 +195,12 @@ class BestMonth(BaseModel):
 class RegionRow(BaseModel):
     name: str
     slug: str
+    # The admin-1 polygon id (`adm1_code`), which is also the feature `id` the
+    # tiles carry — it is how a click on the map addresses one exact region.
+    # Optional because the response model filters the payload: a bundle
+    # published before the field existed must keep serving, not 500 every
+    # region page until the pipeline is re-run.
+    code: str | None = None
     score: int
     tl: list[float]
     rl: list[float]
