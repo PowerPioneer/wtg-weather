@@ -249,6 +249,135 @@ def test_suppressed_country_mosaics_survive_the_minzoom_hint(
     assert len(low_zoom) < 1000
 
 
+# Short per-month aliases the web's preference scoring reads. `scoring.ts`
+# scores these three directly when a user has set their own preferences, and
+# falls back to the baked `pref_<mm>` when they are default — so a level
+# missing either is a level the map's hero display mode paints grey.
+SCORING_ALIASES = ("t", "r", "s")
+MONTH_SUFFIXES = tuple(f"{month:02d}" for month in range(1, 13))
+
+
+def _sample_scoring_props(
+    path: Path, max_zoom: int, per_zoom_budget: int = 40
+) -> dict[str, dict[str, object]]:
+    """Per layer: how many sampled features carry a full year of each alias.
+
+    Sampled rather than exhaustive because the premium archive is ~1.5GB and
+    this is a shape check, not a coverage check — the coverage tests above
+    already scan the free archive in full.
+    """
+    from pmtiles.reader import MmapSource, Reader, all_tiles
+
+    stats: dict[str, dict[str, object]] = defaultdict(
+        lambda: {"features": 0, "missing": [], "pref_values": set()}
+    )
+    budget: dict[int, int] = defaultdict(int)
+
+    with path.open("rb") as handle:
+        reader = Reader(MmapSource(handle))
+        for (zoom, _x, _y), data in all_tiles(reader.get_bytes):
+            if zoom > max_zoom or budget[zoom] >= per_zoom_budget:
+                continue
+            budget[zoom] += 1
+            try:
+                raw = gzip.decompress(data)
+            except OSError:
+                raw = data
+            for layer_name, layer in mapbox_vector_tile.decode(raw).items():
+                entry = stats[layer_name]
+                for feature in layer["features"]:
+                    props = feature.get("properties", {})
+                    entry["features"] = int(entry["features"]) + 1
+                    absent = [
+                        f"{alias}_{mm}"
+                        for alias in (*SCORING_ALIASES, "pref")
+                        for mm in MONTH_SUFFIXES
+                        if f"{alias}_{mm}" not in props
+                    ]
+                    if absent:
+                        missing = entry["missing"]
+                        assert isinstance(missing, list)
+                        if len(missing) < 5:
+                            missing.append(
+                                (str(props.get("id", "?")), absent[:4], len(absent))
+                            )
+                    pref = props.get("pref_01")
+                    if pref is not None:
+                        values = entry["pref_values"]
+                        assert isinstance(values, set)
+                        values.add(pref)
+    return stats
+
+
+@pytest.fixture(scope="module")
+def free_scoring_props(free_tiles: Path) -> dict[str, dict[str, object]]:
+    return _sample_scoring_props(free_tiles, max_zoom=3)
+
+
+@pytest.fixture(scope="module")
+def premium_scoring_props(premium_tiles: Path) -> dict[str, dict[str, object]]:
+    # Reaches zoom 6 so the admin-2 layer — hinted to minzoom 6 — is sampled
+    # at all. It is the level that never existed before the premium rebuild,
+    # and the one nothing had ever checked the scoring inputs on.
+    return _sample_scoring_props(premium_tiles, max_zoom=6)
+
+
+@pytest.mark.parametrize("layer", ["country", "admin1"])
+def test_free_levels_carry_the_preference_scoring_inputs(
+    free_scoring_props: dict[str, dict[str, object]], layer: str
+) -> None:
+    _assert_scoring_inputs(free_scoring_props, layer)
+
+
+@pytest.mark.parametrize("layer", ["country", "admin1", "admin2"])
+def test_premium_levels_carry_the_preference_scoring_inputs(
+    premium_scoring_props: dict[str, dict[str, object]], layer: str
+) -> None:
+    """The gap the premium rebuild finally made checkable.
+
+    Nothing verified that a feature carries what the map scores from. A level
+    missing `t_/r_/s_` cannot be scored against a user's own preferences, and
+    one missing `pref_<mm>` paints grey on the default map — silently, in the
+    one display mode the site leads with.
+    """
+    _assert_scoring_inputs(premium_scoring_props, layer)
+
+
+def _assert_scoring_inputs(stats: dict[str, dict[str, object]], layer: str) -> None:
+    entry = stats.get(layer)
+    assert entry and entry["features"], f"no {layer} features sampled"
+    missing = entry["missing"]
+    assert not missing, (
+        f"{layer}: features missing preference-scoring properties "
+        f"(id, first absent keys, total absent): {missing}"
+    )
+
+
+def test_baked_preference_scores_are_on_the_documented_ladder(
+    free_scoring_props: dict[str, dict[str, object]],
+    premium_scoring_props: dict[str, dict[str, object]],
+) -> None:
+    """`pref_<mm>` must be exactly the four values the web bins on.
+
+    `web/src/lib/scoring.ts` mirrors this table as `BUCKET_SCORES`, and its
+    paint expression reads the baked property verbatim whenever preferences
+    are default. A fifth value here, or a shifted one, lands in a bin nobody
+    intended and the mirror test on the web side would not see it.
+    """
+    from wtg_pipeline.tiles.build_geojson import SCORE_TO_PREF
+
+    allowed = set(SCORE_TO_PREF.values())
+    for tier, stats in (("free", free_scoring_props), ("premium", premium_scoring_props)):
+        for layer, entry in sorted(stats.items()):
+            values = entry["pref_values"]
+            assert isinstance(values, set)
+            assert values, f"{tier}/{layer}: no feature carries pref_01"
+            assert values <= allowed, (
+                f"{tier}/{layer}: pref_01 carries {sorted(values - allowed)}, "
+                f"outside the documented ladder {sorted(allowed)}"
+            )
+
+
 def _safety_by_iso(path: Path, layer_name: str, max_zoom: int) -> dict[str, set[object]]:
     """Map `iso_a2` → the set of `safety` values its features carry.
 
