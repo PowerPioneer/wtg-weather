@@ -486,6 +486,24 @@ Two things to check on the box while this runs:
    2,844 country/month pages. WS-5 turning `USE_MOCK_DATA` off is what opens
    that gate, so the API must answer for every slug in the registry by then.
 
+All three are now closed: #1 by WS-3, #3 by WS-5 (which rebased the gate onto
+the API's published index), and #2 by the round below.
+
+### WS-2 closed out, 2026-08-14
+
+Two things were left open until other workstreams landed. Both are done, and
+with all tiers of tiles built there is nothing outstanding in WS-2.
+
+| Change | File | Why |
+|---|---|---|
+| Region rows carry their `code` | `publish/api_data.py`, `api/schemas`, `web/lib/types.ts` | The de-duplicated slug is the one thing a map click cannot know. Publishing the `adm1_code` — which is also the tile feature's `id` — gives both sides a key they already share. Optional in the API schema on purpose: the response model filters the payload, so a bundle published before the field must keep serving rather than 500 every region page. |
+| Region clicks reach the region page | `app/region/[country]/[code]/route.ts`, `climate-panel.tsx` | Follow-up #2. A resolver route redirects the polygon id to that region's canonical URL. Passing the code to the page as a search param was the alternative and would have cost `/[country]/[region]` its full-route cache for every visitor; the pages stay ● SSG. An unresolvable code lands on the country page rather than a 404. Districts keep the country CTA — geoBoundaries admin-2 rows carry no parent admin-1 code (`pipeline_runner.py`), so there is nothing to resolve with. |
+| Advisory level in the panel and hover card | `climate-panel.tsx`, `map-hover-card.tsx`, `lib/feature-climate.ts` | WS-4's follow-up #3. The tiles have carried `safety` since WS-4 and neither surface read it, so hovering in Safety mode reported temperature, rain and sun and never the level that chose the colour. Shown in every mode, absent (not "level 1") for a polygon no government lists, and ignored outside 1–4. |
+
+Verified on v2 after redeploy and a bundle republish (237 payloads, all changed
+by the new field): `/region/georgia/GEO-3015` → 307 → `/georgia/abkhazia` → 200;
+an unknown code → 307 → `/georgia`; sitemap now lists 3,084 URLs.
+
 ## WS-3 progress
 
 ### Changes landed
@@ -614,9 +632,9 @@ speculative.
    "regional variation in advisories ships with the next pipeline cut"
    (`web/src/app/[country]/[slug]/[month]/page.tsx:388`); the data to replace
    that sentence now exists in `advisories.json`.
-3. The hover card and climate panel show climate but never the advisory
-   level, even when Safety is the painted mode
-   (`map-hover-card.tsx` explicitly skips it). Small WS-2-shaped follow-up.
+3. ~~The hover card and climate panel show climate but never the advisory
+   level, even when Safety is the painted mode~~ — done 2026-08-14, see
+   § "WS-2 closed out".
 4. Advisory mapping-table coverage is the ceiling on how much of the world
    Safety mode can colour. Widening `sources/advisories/mappings/*.json` is
    mechanical and independent of everything above.
