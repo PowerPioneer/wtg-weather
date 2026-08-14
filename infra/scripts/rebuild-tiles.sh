@@ -19,8 +19,22 @@
 #   TIERS               — space-separated list (default "free premium")
 set -euo pipefail
 
-log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
+# Logging must never be able to abort the script. Under `set -e` a failed
+# `printf` — which is what a full disk produces — was enough to kill the run
+# mid-rollback, so a truncated archive stayed live and the operator got no
+# error line explaining why. The `|| true` is the whole point of this.
+log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*" || true; }
 fail() { log "ERROR: $*" >&2; exit 1; }
+
+# Restore the previous archive. Called BEFORE any logging on every failure
+# path, for the same reason: recovering the served file matters more than
+# reporting it, and the disk that broke the build is often the disk that
+# breaks the log write.
+rollback() {
+    local final="$1" backup="$2"
+    [[ -f "$backup" ]] && mv -f "$backup" "$final"
+    return 0
+}
 
 UV="${UV:-uv}"
 TIERS="${TIERS:-free premium}"
@@ -83,13 +97,20 @@ for tier in $TIERS; do
     fi
 
     if ! "$UV" run --directory pipeline wtg build pmtiles --tier "$tier"; then
-        log "ERROR: pmtiles build failed for tier=${tier} — restoring previous file"
-        if [[ -f "$backup" ]]; then mv -f "$backup" "$final"; fi
-        exit 1
+        rollback "$final" "$backup"
+        fail "pmtiles build failed for tier=${tier} — previous file restored"
     fi
 
-    [[ -s "$final" ]] || { log "ERROR: pmtiles output empty for tier=${tier}"; \
-        if [[ -f "$backup" ]]; then mv -f "$backup" "$final"; fi; exit 1; }
+    # `[[ -s ]]` only asks whether the file is non-empty, and a partially
+    # written archive is very much non-empty. Twice, `pmtiles convert` ran out
+    # of disk part-way and left a >1GB archive that passed this check and was
+    # served to users. `pmtiles verify` does not close the gap either — it
+    # validates the directory structure, which sits at the front of the file.
+    # Compare the header's declared end-of-data against the real size instead.
+    if ! python3 "$(dirname "$0")/verify-pmtiles.py" "$final"; then
+        rollback "$final" "$backup"
+        fail "pmtiles output for tier=${tier} is incomplete — previous file restored"
+    fi
     rm -f "$backup"
     size_bytes=$(stat -c '%s' "$final")
     log "tier=${tier} published size=${size_bytes}B"
