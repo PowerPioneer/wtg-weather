@@ -7,6 +7,7 @@ country code is not one.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 
 from wtg_pipeline.sources.advisories.us_state import (
@@ -116,3 +117,51 @@ def test_one_row_per_country(advisory_fixture) -> None:
     out = _parse(advisory_fixture)
     codes = [a.country_iso2 for a in out]
     assert len(codes) == len(set(codes))
+
+
+def test_lookup_is_insensitive_to_punctuation_and_diacritics() -> None:
+    """The feed is not stable about how it spells a name.
+
+    "Côte d'Ivoire" has arrived as `Cote d Ivoire` and with a curly
+    apostrophe in successive fetches. Each spelling that misses the table
+    costs this source its opinion on that country, silently.
+    """
+    from wtg_pipeline.sources.advisories.us_state import fold_name
+
+    assert fold_name("Côte d’Ivoire") == fold_name("Cote d Ivoire")
+    assert fold_name("COTE D'IVOIRE") == fold_name("Cote d'Ivoire")
+    assert fold_name("São Tomé and Príncipe") == fold_name("Sao Tome and Principe")
+
+
+def test_folding_keeps_the_united_pair_apart() -> None:
+    # An earlier cut of the fold stripped "kingdom" and "states" along with
+    # the articles, which collapsed these two onto one key — and one of them
+    # would then have carried the other's advisory.
+    from wtg_pipeline.sources.advisories.us_state import fold_name
+
+    assert fold_name("United Kingdom") != fold_name("United States")
+
+
+def test_no_two_mapping_names_fold_together_with_different_codes() -> None:
+    """A fold collision across *different* countries would be a silent swap."""
+    import collections
+
+    from wtg_pipeline.sources.advisories.base import load_mapping
+    from wtg_pipeline.sources.advisories.us_state import fold_name
+
+    by_fold = collections.defaultdict(set)
+    for name, iso2 in load_mapping("us_state_countries").items():
+        by_fold[fold_name(name)].add(iso2)
+
+    conflicts = {k: v for k, v in by_fold.items() if len(v) > 1}
+    assert not conflicts, f"names folding together but mapping to different codes: {conflicts}"
+
+
+def test_the_mapping_covers_the_world() -> None:
+    # 69 entries was the old HTML-era table and the reason the US contributed
+    # 75 countries to a consensus the other sources gave 200+.
+    from wtg_pipeline.sources.advisories.base import load_mapping
+
+    mapping = load_mapping("us_state_countries")
+    assert len(mapping) >= 200
+    assert all(re.fullmatch(r"[A-Z]{2}", code) for code in mapping.values())

@@ -69,6 +69,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import unicodedata
 from datetime import datetime
 
 from wtg_pipeline.sources.advisories.base import (
@@ -103,6 +104,24 @@ def parse_title(title: str) -> tuple[str, int] | None:
     return match.group("name").strip(), int(match.group("level"))
 
 
+def fold_name(name: str) -> str:
+    """Normalise a country name for lookup.
+
+    The feed is not stable about punctuation or diacritics — "Côte d'Ivoire"
+    has appeared as ``Cote d Ivoire`` and with a curly apostrophe (U+2019) in
+    successive fetches, and each spelling that misses the table costs this
+    source its opinion on that country. Folding at lookup time means the table
+    holds one entry per country rather than one per encoding.
+
+    Only articles are removed. "Kingdom" and "States" are load-bearing:
+    stripping them collapses United Kingdom and United States onto one key.
+    """
+    decomposed = unicodedata.normalize("NFKD", name or "")
+    ascii_only = "".join(c for c in decomposed if not unicodedata.combining(c))
+    without_articles = re.sub(r"\b(the|of|and)\b", " ", ascii_only.casefold())
+    return re.sub(r"[^a-z0-9]+", "", without_articles)
+
+
 def clean_summary(summary: str) -> str:
     """The advisory prose with markup and non-breaking spaces removed."""
     text = _ENTITY_RE.sub(" ", summary or "")
@@ -124,7 +143,9 @@ class USStateScraper(AdvisoryScraper):
         if not isinstance(payload, list):
             raise ValueError("us_state: expected a JSON array")
 
-        name_to_iso2 = load_mapping("us_state_countries")
+        name_to_iso2 = {
+            fold_name(key): value for key, value in load_mapping("us_state_countries").items()
+        }
         out: list[Advisory] = []
         seen: set[str] = set()
         unmapped: list[str] = []
@@ -138,7 +159,7 @@ class USStateScraper(AdvisoryScraper):
             name, level = parsed
 
             # Deliberately not `entry["Category"]` — see the module docstring.
-            iso2 = name_to_iso2.get(name)
+            iso2 = name_to_iso2.get(fold_name(name))
             if not iso2:
                 unmapped.append(name)
                 continue
