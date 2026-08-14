@@ -8,6 +8,8 @@ country code is not one.
 from __future__ import annotations
 
 import re
+
+import pytest
 from datetime import datetime, timezone
 
 from wtg_pipeline.sources.advisories.us_state import (
@@ -165,3 +167,51 @@ def test_the_mapping_covers_the_world() -> None:
     mapping = load_mapping("us_state_countries")
     assert len(mapping) >= 200
     assert all(re.fullmatch(r"[A-Z]{2}", code) for code in mapping.values())
+
+
+class _Response:
+    def __init__(self, text: str) -> None:
+        self.text = text
+
+    def raise_for_status(self) -> None:
+        return None
+
+
+class _FlakyClient:
+    """Answers `200 []` a few times, then the real payload."""
+
+    def __init__(self, empties: int, payload: str = '[{"Title": "Japan - Level 1: x"}]') -> None:
+        self.calls = 0
+        self._empties = empties
+        self._payload = payload
+
+    def get(self, url: str, **kwargs: object) -> _Response:
+        self.calls += 1
+        return _Response("[]" if self.calls <= self._empties else self._payload)
+
+
+def test_an_empty_body_is_retried_not_believed(monkeypatch) -> None:
+    """`200 []` is indistinguishable from "no country has an advisory".
+
+    Observed three times in an hour against the live endpoint, with retries
+    seconds later returning 214 and 222 records.
+    """
+    monkeypatch.setattr("wtg_pipeline.sources.advisories.us_state.RETRY_DELAY_S", 0)
+    client = _FlakyClient(empties=2)
+
+    raw = USStateScraper(client=client).fetch_raw()
+
+    assert client.calls == 3
+    assert "Japan" in raw
+
+
+def test_persistent_emptiness_raises_rather_than_returning_nothing(monkeypatch) -> None:
+    # Raising lets the CLI record the source as failed and keep the previous
+    # dump; returning "[]" would write a dump that shadows a good one.
+    monkeypatch.setattr("wtg_pipeline.sources.advisories.us_state.RETRY_DELAY_S", 0)
+    client = _FlakyClient(empties=99)
+
+    with pytest.raises(RuntimeError, match="empty array"):
+        USStateScraper(client=client).fetch_raw()
+
+    assert client.calls == 3

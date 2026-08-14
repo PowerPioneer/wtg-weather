@@ -69,6 +69,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 import unicodedata
 from datetime import datetime
 
@@ -94,6 +95,13 @@ _ENTITY_RE = re.compile(r"&(?:nbsp|#160);")
 
 # The API is slow to first byte and returns ~940 KB in one response.
 READ_TIMEOUT_S = 90.0
+
+# It also answers `200 []` intermittently — observed three times in an hour,
+# with retries seconds later returning 214 and 222 records. A 200 with an
+# empty body is indistinguishable from "no country has an advisory", so it is
+# treated as a failed attempt rather than an answer.
+MAX_ATTEMPTS = 3
+RETRY_DELAY_S = 5.0
 
 
 def parse_title(title: str) -> tuple[str, int] | None:
@@ -133,9 +141,32 @@ class USStateScraper(AdvisoryScraper):
     source_url = API_URL
 
     def fetch_raw(self) -> str:
-        resp = self.client.get(API_URL, timeout=READ_TIMEOUT_S)
-        resp.raise_for_status()
-        return resp.text
+        last_seen = "nothing"
+        for attempt in range(1, MAX_ATTEMPTS + 1):
+            resp = self.client.get(API_URL, timeout=READ_TIMEOUT_S)
+            resp.raise_for_status()
+            text = resp.text
+            try:
+                payload = json.loads(text)
+            except json.JSONDecodeError:
+                last_seen = "a body that is not JSON"
+            else:
+                if isinstance(payload, list) and payload:
+                    return text
+                last_seen = (
+                    "an empty array" if isinstance(payload, list) else f"a bare {type(payload).__name__}"
+                )
+            log.warning(
+                "us_state: attempt %d/%d returned %s; retrying",
+                attempt,
+                MAX_ATTEMPTS,
+                last_seen,
+            )
+            if attempt < MAX_ATTEMPTS:
+                time.sleep(RETRY_DELAY_S)
+        raise RuntimeError(
+            f"{API_URL} returned {last_seen} on {MAX_ATTEMPTS} consecutive attempts"
+        )
 
     def parse(self, raw: str | bytes, *, fetched_at: datetime | None = None) -> list[Advisory]:
         when = fetched_at or utcnow()
