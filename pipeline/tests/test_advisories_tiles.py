@@ -80,8 +80,8 @@ def _build_input(level: str, polygons: list[tuple[str, str, str]]) -> BuildInput
 def _safety_from_fixtures(advisory_fixture) -> SafetyIndex:
     """The three snapshot sources, consolidated exactly as the cron would."""
     by_source = {
-        "us_state": USStateScraper(client=object(), fetch_detail_pages=False).parse(
-            advisory_fixture("us_state.html"), fetched_at=SCRAPED_AT
+        "us_state": USStateScraper(client=object()).parse(
+            advisory_fixture("us_state.json"), fetched_at=SCRAPED_AT
         ),
         "australia": AustraliaScraper(client=object()).parse(
             advisory_fixture("australia.json"), fetched_at=SCRAPED_AT
@@ -207,8 +207,8 @@ def test_runner_writes_both_artifacts_and_reports_change(tmp_path: Path, advisor
 
     raw = tmp_path / "raw"
     scraped = {
-        "us_state": USStateScraper(client=object(), fetch_detail_pages=False).parse(
-            advisory_fixture("us_state.html"), fetched_at=SCRAPED_AT
+        "us_state": USStateScraper(client=object()).parse(
+            advisory_fixture("us_state.json"), fetched_at=SCRAPED_AT
         ),
         "australia": AustraliaScraper(client=object()).parse(
             advisory_fixture("australia.json"), fetched_at=SCRAPED_AT

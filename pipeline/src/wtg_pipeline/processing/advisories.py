@@ -187,6 +187,53 @@ def latest_source_files(base_dir: Path | None = None) -> dict[str, Path]:
     return latest
 
 
+# A source whose newest dump lags the freshest by more than this is reported.
+# Every source is scraped in the same weekly run, so a lag of weeks means that
+# source has been failing — silently, because `latest_source_files` happily
+# keeps serving the last dump that worked. The US State scraper sat four
+# months behind the other five this way, feeding a "six-government consensus"
+# from an April snapshot.
+STALE_AFTER_DAYS = 30
+
+# `write_advisories` names dumps with this UTC format.
+_DUMP_STAMP = "%Y-%m-%dT%H%M%SZ"
+
+
+def dump_timestamp(path: Path) -> datetime | None:
+    """The scrape time encoded in a dump's filename, or ``None``."""
+    try:
+        return datetime.strptime(path.stem, _DUMP_STAMP).replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def stale_sources(
+    files: Mapping[str, Path], *, max_lag_days: int = STALE_AFTER_DAYS
+) -> dict[str, int]:
+    """``{source_id: days behind the freshest source}`` for lagging sources.
+
+    Measured against the newest dump across all sources rather than the wall
+    clock, so this stays true when the whole pipeline has not run for a while
+    — the question is whether one source is falling behind the others, not
+    whether the data is old in absolute terms.
+    """
+    stamps = {
+        source_id: stamp
+        for source_id, path in files.items()
+        if (stamp := dump_timestamp(path)) is not None
+    }
+    if len(stamps) < 2:
+        return {}
+    freshest = max(stamps.values())
+    lags = {
+        source_id: (freshest - stamp).days
+        for source_id, stamp in stamps.items()
+    }
+    return {
+        source_id: lag for source_id, lag in sorted(lags.items()) if lag > max_lag_days
+    }
+
+
 def load_advisories(base_dir: Path | None = None) -> dict[str, list["object"]]:
     """Parse the newest dump per source into validated ``Advisory`` records.
 

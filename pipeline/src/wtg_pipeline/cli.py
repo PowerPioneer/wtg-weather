@@ -162,6 +162,8 @@ def process_advisories(
         f"detail={'changed' if result.detail_changed else 'unchanged'} "
         f"levels={'changed' if result.levels_changed else 'unchanged'}"
     )
+    for source_id, lag in result.stale.items():
+        typer.echo(f"WARNING: {source_id} is {lag} days behind the freshest source")
     typer.echo(f"wrote {result.detail_path}")
     typer.echo(f"wrote {result.index_path}")
 

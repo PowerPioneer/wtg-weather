@@ -1,28 +1,75 @@
 """US State Department travel advisories.
 
-Source: https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html
+Source: the Bureau of Consular Affairs open-data API,
+https://cadataapi.state.gov/api/TravelAdvisories
 
-The index page lists every country as a table row with one of four labels:
+Each record carries a ``Title`` of the form::
+
+    Mexico - Level 2: Exercise Increased Caution
+
+which gives the country and the level together, on the ladder every scraper
+shares:
 
 * ``Level 1: Exercise Normal Precautions``  →  1
 * ``Level 2: Exercise Increased Caution``   →  2
 * ``Level 3: Reconsider Travel``            →  3
 * ``Level 4: Do Not Travel``                →  4
 
-Sub-national detail lives on each country's detail page (e.g. regional
-carve-outs such as "Level 4 for northeast Syria"). Detail-page parsing is
-a follow-up; at bootstrap we emit country-level records only but already
-carry ``region_code`` in the schema for when the detail pass lands.
+Why not the HTML index
+----------------------
+
+This module used to scrape
+``travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html``
+and follow one detail page per country. That page sits behind Cloudflare and
+returns **403 to datacenter IPs**, so on the production build box the scraper
+could not run at all — and because the CLI aborted on the first failing
+source, a ``--source all`` run scraped *nothing*. The advisory consolidation
+silently fell back to whatever dump was last on disk, which by 2026-08 meant a
+four-month-old US snapshot feeding a "six-government consensus".
+
+The open-data API is the published machine-readable interface for the same
+data, needs no browser impersonation, and returns 219 records against the 75
+the HTML index yielded.
+
+``Category`` is NOT an ISO-3166 code
+------------------------------------
+
+The API's ``Category`` field looks like a country code and is not one — it is
+a GEC/FIPS code. Japan is ``JA``, Ukraine ``UP``, Mongolia ``MG``. Three of
+them collide with real ISO-3166-1 alpha-2 codes belonging to **other
+countries**:
+
+======================  ==========  =====================================
+Advisory                Category    That code in ISO-3166 is…
+======================  ==========  =====================================
+Russia, Level 4         ``RS``      Serbia
+Mainland China, Level 2 ``CH``      Switzerland
+Mongolia, Level 1       ``MG``      Madagascar
+======================  ==========  =====================================
+
+Reading it as ISO-2 "works" — it yields a code for 212 of 219 records — and
+paints Serbia with Russia's Do Not Travel. So the country is resolved from the
+**name** in the title through ``mappings/us_state_countries.json``, and a
+title that does not resolve is dropped with a log line rather than guessed at.
+
+Regional carve-outs
+-------------------
+
+Not extracted. The ``Summary`` field contains the phrase "do not travel to"
+in 121 of 219 records, but it is the country-wide sentence ("Do not travel to
+Afghanistan") at least as often as a carve-out, and telling the two apart
+needs the same subject analysis the Dutch scraper required. Getting it wrong
+over-reports risk for a whole country, and the Netherlands and Germany
+scrapers already supply carve-outs for most of the world. The country level —
+the number that paints the map — comes out of the title unambiguously.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
-import time
 from datetime import datetime
-
-from bs4 import BeautifulSoup
 
 from wtg_pipeline.sources.advisories.base import (
     Advisory,
@@ -33,184 +80,98 @@ from wtg_pipeline.sources.advisories.base import (
 
 log = logging.getLogger(__name__)
 
+API_URL = "https://cadataapi.state.gov/api/TravelAdvisories"
 INDEX_URL = (
     "https://travel.state.gov/content/travel/en/"
     "traveladvisories/traveladvisories.html"
 )
 
-_LEVEL_RE = re.compile(r"Level\s+([1-4])\b", re.IGNORECASE)
-_DETAIL_LEVEL_RE = re.compile(
-    r"level\s*[:\-]?\s*([1-4])\s*[:\-]?\s*(do\s+not\s+travel|reconsider|exercise)",
-    re.IGNORECASE,
-)
-REQUEST_DELAY_S = 0.1
-PROGRESS_EVERY_S = 30.0
+# "Mexico - Level 2: Exercise Increased Caution" → ("Mexico", "2")
+_TITLE_RE = re.compile(r"^(?P<name>.*?)\s+-\s+Level\s+(?P<level>[1-4])\b", re.I)
+_TAG_RE = re.compile(r"<[^>]+>")
+_ENTITY_RE = re.compile(r"&(?:nbsp|#160);")
+
+# The API is slow to first byte and returns ~940 KB in one response.
+READ_TIMEOUT_S = 90.0
 
 
-def extract_regional_carveouts(detail_html: str) -> list[tuple[int, str]]:
-    """Parse a US State detail page for sub-national level sections.
-
-    The travel.state.gov country pages call out regional carveouts with
-    headings like *"Level 4: Do Not Travel"* followed by prose listing
-    the affected states or provinces. Prose may be wrapped in ``<p>``,
-    ``<ul>`` or ``<div>`` (the last is how travel.state.gov currently
-    renders the risk-level block).
-    """
-    soup = BeautifulSoup(detail_html, "lxml")
-    out: list[tuple[int, str]] = []
-    seen: set[tuple[int, str]] = set()
-    # Headings carry the level; the level-classified content block that
-    # contains (or immediately follows) the heading carries the prose.
-    for h in soup.select("h2, h3, h4, h5"):
-        text = h.get_text(" ", strip=True)
-        m = _DETAIL_LEVEL_RE.search(text)
-        if not m:
-            continue
-        level = int(m.group(1))
-        # travel.state.gov wraps each risk-level block in a div with class
-        # ``risk-level`` / ``level-N``; use the enclosing container when we
-        # find one, otherwise fall through to next_siblings.
-        parent = h.find_parent(class_="risk-level")
-        prose = ""
-        if parent is not None:
-            # Use all text inside the parent block, minus the heading.
-            container_text = parent.get_text(" ", strip=True)
-            heading_text = h.get_text(" ", strip=True)
-            if container_text.startswith(heading_text):
-                prose = container_text[len(heading_text):].strip(" :-\u2013")
-            else:
-                prose = container_text
-        if not prose:
-            parts: list[str] = []
-            for sibling in h.next_siblings:
-                name = getattr(sibling, "name", None)
-                if name in {"h2", "h3", "h4", "h5", "h1"}:
-                    break
-                if name in {"p", "ul", "ol", "div"}:
-                    t = sibling.get_text(" ", strip=True)
-                    if t:
-                        parts.append(t)
-            prose = " ".join(parts).strip()
-        if not prose:
-            continue
-        key = (level, prose)
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append((level, prose))
-    return out
+def parse_title(title: str) -> tuple[str, int] | None:
+    """``(country name, level)`` from a record title, or ``None``."""
+    match = _TITLE_RE.match((title or "").strip())
+    if match is None:
+        return None
+    return match.group("name").strip(), int(match.group("level"))
 
 
-def _absolute(url: str) -> str:
-    if url.startswith("http://") or url.startswith("https://"):
-        return url
-    return f"https://travel.state.gov{url}"
+def clean_summary(summary: str) -> str:
+    """The advisory prose with markup and non-breaking spaces removed."""
+    text = _ENTITY_RE.sub(" ", summary or "")
+    return " ".join(_TAG_RE.sub(" ", text).split())
 
 
 class USStateScraper(AdvisoryScraper):
     source_id = "us_state"
-    source_url = INDEX_URL
-
-    def __init__(
-        self,
-        client: object | None = None,
-        *,
-        request_delay_s: float = REQUEST_DELAY_S,
-        max_countries: int | None = None,
-        fetch_detail_pages: bool = True,
-    ) -> None:
-        super().__init__(client)  # type: ignore[arg-type]
-        self._request_delay_s = request_delay_s
-        self._max_countries = max_countries
-        self._fetch_detail_pages = fetch_detail_pages
+    source_url = API_URL
 
     def fetch_raw(self) -> str:
-        resp = self.client.get(INDEX_URL)
-        resp.raise_for_status()
-        return resp.text
-
-    def _fetch_detail(self, url: str) -> str:
-        resp = self.client.get(url)
+        resp = self.client.get(API_URL, timeout=READ_TIMEOUT_S)
         resp.raise_for_status()
         return resp.text
 
     def parse(self, raw: str | bytes, *, fetched_at: datetime | None = None) -> list[Advisory]:
         when = fetched_at or utcnow()
-        soup = BeautifulSoup(raw, "lxml")
-        country_to_iso2 = load_mapping("us_state_countries")
+        payload = json.loads(raw.decode("utf-8") if isinstance(raw, bytes) else raw)
+        if not isinstance(payload, list):
+            raise ValueError("us_state: expected a JSON array")
+
+        name_to_iso2 = load_mapping("us_state_countries")
         out: list[Advisory] = []
         seen: set[str] = set()
-        rows = soup.select("[data-country]") or soup.select("tr")
-        entries: list[tuple[str, str, int, str, str | None]] = []
-        for row in rows:
-            text = " ".join(row.stripped_strings)
-            match = _LEVEL_RE.search(text)
-            if not match:
+        unmapped: list[str] = []
+
+        for entry in payload:
+            if not isinstance(entry, dict):
                 continue
-            level = int(match.group(1))
-            country_name = (row.get("data-country") or "").strip()
-            if not country_name:
-                cell = row.find(["td", "th", "a"])
-                country_name = cell.get_text(strip=True) if cell else ""
-            if not country_name:
+            parsed = parse_title(entry.get("Title") or "")
+            if parsed is None:
                 continue
-            iso2 = country_to_iso2.get(country_name)
+            name, level = parsed
+
+            # Deliberately not `entry["Category"]` — see the module docstring.
+            iso2 = name_to_iso2.get(name)
             if not iso2:
-                log.debug("us_state: unmapped country %r", country_name)
+                unmapped.append(name)
                 continue
             if iso2 in seen:
                 continue
             seen.add(iso2)
-            anchor = row.find("a", href=True)
-            detail_url = _absolute(anchor["href"]) if anchor else None
-            entries.append((country_name, iso2, level, text, detail_url))
 
-        if self._max_countries is not None:
-            entries = entries[: self._max_countries]
-
-        total = len(entries)
-        next_progress = time.monotonic() + PROGRESS_EVERY_S
-        for idx, (name, iso2, level, text, detail_url) in enumerate(entries, start=1):
+            summary = clean_summary(entry.get("Summary") or "") or entry.get("Title") or name
+            url = entry.get("Link") or entry.get("id") or INDEX_URL
             out.append(
                 Advisory(
                     country_iso2=iso2,
                     region_code=None,
                     level=level,
-                    summary=text[:500],
-                    source_url=detail_url or INDEX_URL,
+                    summary=summary[:500],
+                    source_url=str(url),
                     fetched_at=when,
                 )
             )
-            if self._fetch_detail_pages and detail_url is not None:
-                try:
-                    detail_html = self._fetch_detail(detail_url)
-                except Exception as exc:  # noqa: BLE001
-                    log.warning(
-                        "us_state: detail fetch failed for %s (%s): %s", name, detail_url, exc
-                    )
-                    detail_html = None
-                if detail_html is not None:
-                    seen_regional: set[int] = set()
-                    for region_level, prose in extract_regional_carveouts(detail_html):
-                        if region_level <= level or region_level in seen_regional:
-                            continue
-                        seen_regional.add(region_level)
-                        out.append(
-                            Advisory(
-                                country_iso2=iso2,
-                                region_code=f"regional-L{region_level}",
-                                level=region_level,
-                                summary=prose[:500],
-                                source_url=detail_url,
-                                fetched_at=when,
-                            )
-                        )
-            now = time.monotonic()
-            if now >= next_progress:
-                log.info("us_state: %d/%d countries processed", idx, total)
-                next_progress = now + PROGRESS_EVERY_S
-            if self._request_delay_s > 0 and idx < total and self._fetch_detail_pages:
-                time.sleep(self._request_delay_s)
+
+        if unmapped:
+            # Dropping is the conservative failure: this source loses its
+            # opinion on that country and the other five still cover it.
+            # Guessing a code from `Category` is what would put Russia's
+            # advisory on Serbia.
+            log.info(
+                "us_state: %d title(s) resolved to no ISO-3166 country and were "
+                "dropped — add them to mappings/us_state_countries.json if they "
+                "are real countries: %s",
+                len(unmapped),
+                ", ".join(sorted(set(unmapped))),
+            )
+        log.info("us_state: %d country advisories", len(out))
         return out
 
 

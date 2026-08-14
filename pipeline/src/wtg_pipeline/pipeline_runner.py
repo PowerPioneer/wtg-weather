@@ -380,6 +380,8 @@ class AdvisoryConsolidation:
     levels_changed: bool
     countries: int
     regions: int
+    # {source_id: days behind the freshest source}, empty when all are current.
+    stale: dict[str, int]
 
 
 def run_process_advisories(
@@ -404,6 +406,18 @@ def run_process_advisories(
         raise FileNotFoundError(
             f"no advisory dumps under {raw_dir or advisories_mod.advisories_raw_dir()}. "
             f"Run `wtg download advisories --source all` first."
+        )
+
+    stale = advisories_mod.stale_sources(advisories_mod.latest_source_files(raw_dir))
+    for source_id, lag in stale.items():
+        # Not fatal: one stale government is better than no advisories at all,
+        # and the consensus is a max across the rest. But it must be visible —
+        # this went unnoticed for four months.
+        log.warning(
+            "advisories: %s is %d days behind the freshest source. Its scrape "
+            "has been failing and consolidation is using an old dump.",
+            source_id,
+            lag,
         )
 
     previous = advisories_mod.read_json(detail_target)
@@ -433,6 +447,7 @@ def run_process_advisories(
         levels_changed=levels_changed,
         countries=len(index.by_country),
         regions=len(index.by_region),
+        stale=stale,
     )
 
 

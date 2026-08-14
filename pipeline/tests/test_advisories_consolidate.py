@@ -43,8 +43,8 @@ def _scrape_fixtures(advisory_fixture, *, fetched_at: datetime = SCRAPED_AT):
     and a country only one of them lists (Egypt).
     """
     return {
-        "us_state": USStateScraper(client=object(), fetch_detail_pages=False).parse(
-            advisory_fixture("us_state.html"), fetched_at=fetched_at
+        "us_state": USStateScraper(client=object()).parse(
+            advisory_fixture("us_state.json"), fetched_at=fetched_at
         ),
         "australia": AustraliaScraper(client=object()).parse(
             advisory_fixture("australia.json"), fetched_at=fetched_at
@@ -406,3 +406,71 @@ def test_generated_at_tracks_the_newest_change(advisory_fixture) -> None:
     after = to_payload(consolidate(scraped, previous=baseline))
 
     assert after["generated_at"] == "2026-04-15T00:00:00Z"
+
+
+def _dump(tmp_path: Path, source_id: str, when: datetime) -> None:
+    write_advisories(
+        [
+            Advisory(
+                country_iso2="JP",
+                region_code=None,
+                level=1,
+                summary="Normal",
+                source_url="https://example.gov/jp",
+                fetched_at=when,
+            )
+        ],
+        source_id=source_id,
+        base_dir=tmp_path,
+        timestamp=when,
+    )
+
+
+def test_a_source_falling_behind_the_others_is_reported(tmp_path: Path) -> None:
+    """The check whose absence hid a four-month-old US snapshot.
+
+    `latest_source_files` serves the newest dump per source, so a scraper that
+    starts failing keeps contributing its last successful result forever — and
+    the consensus goes on calling itself six governments.
+    """
+    from wtg_pipeline.processing.advisories import stale_sources
+
+    fresh = datetime(2026, 8, 14, tzinfo=timezone.utc)
+    for source_id in ("australia", "germany", "netherlands"):
+        _dump(tmp_path, source_id, fresh)
+    _dump(tmp_path, "us_state", datetime(2026, 4, 24, tzinfo=timezone.utc))
+
+    stale = stale_sources(latest_source_files(tmp_path))
+
+    assert list(stale) == ["us_state"]
+    assert stale["us_state"] == 112
+
+
+def test_sources_scraped_together_are_not_stale(tmp_path: Path) -> None:
+    from wtg_pipeline.processing.advisories import stale_sources
+
+    fresh = datetime(2026, 8, 14, tzinfo=timezone.utc)
+    for source_id in ("australia", "germany", "us_state"):
+        _dump(tmp_path, source_id, fresh)
+
+    assert stale_sources(latest_source_files(tmp_path)) == {}
+
+
+def test_staleness_is_relative_not_absolute(tmp_path: Path) -> None:
+    # A pipeline that has not run in a year is not six stale sources; the
+    # question is whether one source is falling behind the others.
+    from wtg_pipeline.processing.advisories import stale_sources
+
+    old = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    for source_id in ("australia", "germany", "us_state"):
+        _dump(tmp_path, source_id, old)
+
+    assert stale_sources(latest_source_files(tmp_path)) == {}
+
+
+def test_a_single_source_cannot_be_behind_anything(tmp_path: Path) -> None:
+    from wtg_pipeline.processing.advisories import stale_sources
+
+    _dump(tmp_path, "us_state", datetime(2024, 1, 1, tzinfo=timezone.utc))
+
+    assert stale_sources(latest_source_files(tmp_path)) == {}
