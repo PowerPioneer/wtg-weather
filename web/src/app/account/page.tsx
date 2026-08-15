@@ -19,7 +19,7 @@ import {
 } from "@/components/account";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { getConsumerAccount } from "@/lib/account-server";
-import { EMPTY_AGENCY_ACCOUNT, findAgencyAccount } from "@/lib/mock-data";
+import { getAgencyAccount } from "@/lib/agency-server";
 import { getEntitlement, getSessionServer, planLabel } from "@/lib/session";
 import type {
   AgencyAccount,
@@ -144,7 +144,7 @@ function renderConsumerSection(
   }
 }
 
-function AgencyAccountPage({
+async function AgencyAccountPage({
   session,
   activeParam,
 }: {
@@ -153,7 +153,7 @@ function AgencyAccountPage({
 }) {
   const org = session.org;
   if (!org) notFound();
-  const account = findAgencyAccount(org.id) ?? EMPTY_AGENCY_ACCOUNT;
+  const account = await getAgencyAccount(org.id);
 
   const activeId: AgencySectionId = AGENCY_SECTIONS.includes(
     activeParam as AgencySectionId,

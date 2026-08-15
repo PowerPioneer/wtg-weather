@@ -6,7 +6,7 @@ import { AccountSidebar, type SidebarItem } from "@/components/account";
 import { ScoreBadge } from "@/components/match/score-badge";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { cn } from "@/lib/cn";
-import { findAgencyAccount, findClientRecord } from "@/lib/mock-data";
+import { getAgencyAccount, getClientRecord } from "@/lib/agency-server";
 import {
   displayName,
   getEntitlement,
@@ -32,7 +32,7 @@ const TAB_LABEL: Record<TabId, string> = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const client = findClientRecord(id);
+  const client = await getClientRecord(id);
   return {
     title: client ? `${client.shortName} · Client · Atlas Weather` : "Client not found",
     robots: { index: false },
@@ -46,16 +46,16 @@ export default async function ClientDetailPage({ params, searchParams }: PagePro
   if (!entitlement.agency || !session.org) notFound();
 
   const [{ id }, { tab }] = await Promise.all([params, searchParams]);
-  const client = findClientRecord(id);
+  const client = await getClientRecord(id);
   if (!client) notFound();
 
-  const agency = findAgencyAccount(session.org.id);
+  const agency = await getAgencyAccount(session.org.id);
   const activeTab: TabId = TABS.includes(tab as TabId) ? (tab as TabId) : "profile";
 
   const sections: readonly SidebarItem[] = [
     { id: "overview", label: "Overview" },
-    { id: "clients", label: "Clients", count: agency?.clients.length ?? 0 },
-    { id: "team", label: "Team", count: agency?.team.length },
+    { id: "clients", label: "Clients", count: agency.clients.length },
+    { id: "team", label: "Team", count: agency.team.length },
     { id: "activity", label: "Activity" },
     { id: "branding", label: "Branding", short: "Soon" },
     { id: "billing", label: "Billing" },
