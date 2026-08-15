@@ -17,6 +17,7 @@
 import Link from "next/link";
 
 import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/components/charts";
+import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { ScoreBadge } from "@/components/match";
 import { SafetyBadge } from "@/components/safety";
 import { cn } from "@/lib/cn";
@@ -159,6 +160,21 @@ export function ClimatePanel({
           </div>
           {score == null ? null : <ScoreBadge score={score} size="lg" label="number" />}
         </div>
+
+        {/*
+          Only country and admin-1 can be favourited: those are the two levels
+          the API's `region_code` addresses and the two the account page can
+          resolve back to a name and a page. A district has neither.
+        */}
+        {country && identity.level !== "admin2" && (
+          <div className="mt-3">
+            <FavouriteButton
+              countryIso2={country.iso2}
+              regionCode={identity.level === "admin1" ? identity.id : null}
+              name={place}
+            />
+          </div>
+        )}
 
         {/* The advisory the Safety mode paints. Month-less, and absent for a
             country no government lists — which the map renders grey, so the

@@ -1,3 +1,4 @@
+import { FavouriteButton } from "@/components/favourite/favourite-button";
 import type { CountryData } from "@/lib/types";
 
 /**
@@ -42,6 +43,17 @@ export function CountryHero({ country }: { country: CountryData }) {
               </div>
             ))}
           </dl>
+          {/*
+            The one client island on this page. The document is statically
+            generated and shared by every visitor, so whether *you* have starred
+            this country cannot be in the markup — it resolves after hydration.
+            With JS off the button is absent and nothing else changes.
+          */}
+          <FavouriteButton
+            countryIso2={country.iso2}
+            name={country.name}
+            className="self-start"
+          />
         </div>
         <div
           className="relative hidden min-h-[380px] overflow-hidden rounded-md border border-border md:block"

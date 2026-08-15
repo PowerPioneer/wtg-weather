@@ -14,6 +14,7 @@ import {
   RegionAdvisoryNotice,
   SafetySection,
 } from "@/components/country";
+import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { getCountry } from "@/lib/api-client";
@@ -347,6 +348,20 @@ function RegionHero({
               <dd className="text-text">{country.tz}</dd>
             </div>
           </dl>
+          {/*
+            Favouriting a region needs the polygon id the tiles and the API
+            both address it by. A bundle published before `code` existed has
+            none, and there is nothing stable to save against — so no button,
+            rather than one that saves the wrong thing.
+          */}
+          {region.code && (
+            <FavouriteButton
+              countryIso2={country.iso2}
+              regionCode={region.code}
+              name={region.name}
+              className="self-start"
+            />
+          )}
         </div>
         <div className="flex items-start justify-end">
           <div className="flex items-center gap-4 rounded-md border border-border bg-background p-5">
