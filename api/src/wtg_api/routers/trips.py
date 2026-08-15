@@ -11,6 +11,7 @@ from wtg_api.models import Alert, Client, Favourite, Membership, Trip, User
 from wtg_api.schemas import (
     AlertCreate,
     AlertRead,
+    AlertUpdate,
     FavouriteCreate,
     FavouriteRead,
     TripCreate,
@@ -175,6 +176,26 @@ async def create_alert(
         preferences=payload.preferences,
     )
     session.add(alert)
+    await session.commit()
+    await session.refresh(alert)
+    return alert
+
+
+@router.patch("/alerts/{alert_id}", response_model=AlertRead)
+async def update_alert(
+    alert_id: uuid.UUID,
+    payload: AlertUpdate,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(db_session),
+) -> Alert:
+    alert = await session.get(Alert, alert_id)
+    if alert is None or alert.user_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "alert not found")
+    data = payload.model_dump(exclude_unset=True)
+    if "country_iso2" in data and data["country_iso2"] is not None:
+        data["country_iso2"] = data["country_iso2"].upper()
+    for k, v in data.items():
+        setattr(alert, k, v)
     await session.commit()
     await session.refresh(alert)
     return alert

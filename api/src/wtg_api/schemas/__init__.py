@@ -120,6 +120,18 @@ class AlertCreate(BaseModel):
     preferences: dict[str, Any] = Field(default_factory=dict)
 
 
+class AlertUpdate(BaseModel):
+    """Partial update. `active` is the field the account page's toggle sets —
+    pausing an alert has to be distinct from deleting it, or a user who wants
+    quiet for a month loses the definition."""
+
+    country_iso2: str | None = Field(default=None, min_length=2, max_length=2)
+    region_code: str | None = Field(default=None, max_length=20)
+    month: int | None = Field(default=None, ge=1, le=12)
+    preferences: dict[str, Any] | None = None
+    active: bool | None = None
+
+
 class AlertRead(ORMModel):
     id: uuid.UUID
     country_iso2: str | None

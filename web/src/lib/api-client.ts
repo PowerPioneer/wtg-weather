@@ -222,6 +222,264 @@ export async function patchOnboarding(
   return (await res.json()) as OnboardingState;
 }
 
+// ─── Account resources: trips, favourites, alerts ────────────────────
+//
+// Browser-side and cookie-authenticated, which `web/CLAUDE.md` allows: "the
+// user's own trips/favourites" is on the short list of things the browser may
+// fetch. Everything climate-shaped still comes from the tiles or from SSR.
+//
+// The API speaks snake_case; these wrappers are the *only* place that knows
+// it. Each response is mapped field by field rather than cast, because RC-6
+// was a path/shape mismatch that fixtures hid for months — a cast would let
+// `country_iso2` arrive and `countryIso2` render as undefined, indefinitely.
+
+/** A non-OK response from the API, carrying the status the caller must branch on. */
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    readonly path: string,
+    readonly detail?: string,
+  ) {
+    super(`${path} failed: ${status}${detail ? ` (${detail})` : ""}`);
+    this.name = "ApiError";
+  }
+}
+
+/** 401 means "sign in", not "something broke" — every account surface branches on it. */
+export function isUnauthorized(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 401;
+}
+
+/** 404 is also how the API says "not yours": another user's trip id is not found. */
+export function isNotFound(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 404;
+}
+
+async function accountFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const hasBody = init.body !== undefined;
+  const res = await fetch(`/api${path}`, {
+    credentials: "same-origin",
+    ...init,
+    headers: {
+      accept: "application/json",
+      ...(hasBody ? { "content-type": "application/json" } : {}),
+      ...(init.headers ?? {}),
+    },
+  });
+  if (!res.ok) throw new ApiError(res.status, path, await readDetail(res));
+  return res;
+}
+
+/** FastAPI puts its error message in `detail`; anything else is not worth guessing at. */
+async function readDetail(res: Response): Promise<string | undefined> {
+  try {
+    const body: unknown = await res.json();
+    if (body && typeof body === "object" && "detail" in body) {
+      const detail = (body as { detail: unknown }).detail;
+      if (typeof detail === "string") return detail;
+    }
+  } catch {
+    /* not JSON — the status is the whole story */
+  }
+  return undefined;
+}
+
+function record(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+}
+
+function str(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function num(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+/**
+ * A saved trip, as `TripRead` returns it.
+ *
+ * `preferences` is `dict[str, Any]` on the API and stays a loose record here:
+ * it holds a {@link WeatherPreferences} today, and a trip saved under an older
+ * shape must still list and delete rather than fail to parse.
+ */
+export type TripRecord = {
+  id: string;
+  title: string;
+  countryIso2: string | null;
+  regionCode: string | null;
+  /** 1–12, or null for a whole-year trip. */
+  month: number | null;
+  preferences: Record<string, unknown>;
+  clientId: string | null;
+};
+
+export type TripInput = {
+  title: string;
+  countryIso2?: string | null;
+  regionCode?: string | null;
+  month?: number | null;
+  preferences?: Record<string, unknown>;
+  clientId?: string | null;
+};
+
+export type TripPatch = Partial<TripInput>;
+
+function toTrip(raw: unknown): TripRecord {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    title: str(r.title) ?? "",
+    countryIso2: str(r.country_iso2),
+    regionCode: str(r.region_code),
+    month: num(r.month),
+    preferences: record(r.preferences),
+    clientId: str(r.client_id),
+  };
+}
+
+/** Drop `undefined` keys so a PATCH sends only what the caller meant to change. */
+function tripBody(input: TripPatch): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  if (input.title !== undefined) body.title = input.title;
+  if (input.countryIso2 !== undefined) body.country_iso2 = input.countryIso2;
+  if (input.regionCode !== undefined) body.region_code = input.regionCode;
+  if (input.month !== undefined) body.month = input.month;
+  if (input.preferences !== undefined) body.preferences = input.preferences;
+  if (input.clientId !== undefined) body.client_id = input.clientId;
+  return body;
+}
+
+export async function listTrips(): Promise<TripRecord[]> {
+  const res = await accountFetch("/trips");
+  const body: unknown = await res.json();
+  return Array.isArray(body) ? body.map(toTrip) : [];
+}
+
+export async function getTrip(id: string): Promise<TripRecord> {
+  const res = await accountFetch(`/trips/${encodeURIComponent(id)}`);
+  return toTrip(await res.json());
+}
+
+export async function createTrip(input: TripInput): Promise<TripRecord> {
+  const res = await accountFetch("/trips", {
+    method: "POST",
+    body: JSON.stringify(tripBody(input)),
+  });
+  return toTrip(await res.json());
+}
+
+export async function updateTrip(id: string, patch: TripPatch): Promise<TripRecord> {
+  const res = await accountFetch(`/trips/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(tripBody(patch)),
+  });
+  return toTrip(await res.json());
+}
+
+export async function deleteTrip(id: string): Promise<void> {
+  await accountFetch(`/trips/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+export type FavouriteRecord = {
+  id: string;
+  countryIso2: string;
+  regionCode: string | null;
+};
+
+function toFavourite(raw: unknown): FavouriteRecord {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    countryIso2: str(r.country_iso2) ?? "",
+    regionCode: str(r.region_code),
+  };
+}
+
+export async function listFavourites(): Promise<FavouriteRecord[]> {
+  const res = await accountFetch("/favourites");
+  const body: unknown = await res.json();
+  return Array.isArray(body) ? body.map(toFavourite) : [];
+}
+
+export async function createFavourite(input: {
+  countryIso2: string;
+  regionCode?: string | null;
+}): Promise<FavouriteRecord> {
+  const res = await accountFetch("/favourites", {
+    method: "POST",
+    body: JSON.stringify({
+      country_iso2: input.countryIso2,
+      region_code: input.regionCode ?? null,
+    }),
+  });
+  return toFavourite(await res.json());
+}
+
+export async function deleteFavourite(id: string): Promise<void> {
+  await accountFetch(`/favourites/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+export type AlertRecord = {
+  id: string;
+  countryIso2: string | null;
+  regionCode: string | null;
+  month: number | null;
+  preferences: Record<string, unknown>;
+  active: boolean;
+};
+
+function toAlert(raw: unknown): AlertRecord {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    countryIso2: str(r.country_iso2),
+    regionCode: str(r.region_code),
+    month: num(r.month),
+    preferences: record(r.preferences),
+    // Absent means active: `AlertRead.active` is non-optional on the API, so a
+    // missing value is a bug rather than an off switch, and silently showing
+    // an alert as off is the more confusing failure.
+    active: r.active !== false,
+  };
+}
+
+export async function listAlerts(): Promise<AlertRecord[]> {
+  const res = await accountFetch("/alerts");
+  const body: unknown = await res.json();
+  return Array.isArray(body) ? body.map(toAlert) : [];
+}
+
+export async function createAlert(input: {
+  countryIso2?: string | null;
+  regionCode?: string | null;
+  month?: number | null;
+  preferences?: Record<string, unknown>;
+}): Promise<AlertRecord> {
+  const res = await accountFetch("/alerts", {
+    method: "POST",
+    body: JSON.stringify({
+      country_iso2: input.countryIso2 ?? null,
+      region_code: input.regionCode ?? null,
+      month: input.month ?? null,
+      preferences: input.preferences ?? {},
+    }),
+  });
+  return toAlert(await res.json());
+}
+
+export async function setAlertActive(id: string, active: boolean): Promise<AlertRecord> {
+  const res = await accountFetch(`/alerts/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ active }),
+  });
+  return toAlert(await res.json());
+}
+
+export async function deleteAlert(id: string): Promise<void> {
+  await accountFetch(`/alerts/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
 export async function postMagicLink(
   email: string,
 ): Promise<"ok" | "invalid" | "rate-limited"> {
