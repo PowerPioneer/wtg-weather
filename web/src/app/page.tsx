@@ -2,9 +2,8 @@ import Link from "next/link";
 
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
-import { COUNTRIES } from "@/lib/countries";
-import { mockCountrySlugs } from "@/lib/mock-data";
-import { findCountryData } from "@/lib/mock-data";
+import { featuredCountries } from "@/lib/featured";
+import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
 
 /**
  * Landing page. Keeps a lightweight hero plus a "featured countries" grid so
@@ -14,17 +13,20 @@ import { findCountryData } from "@/lib/mock-data";
  * This is deliberately zero-JS — the whole page is a server component and
  * the entry points are plain <Link>s.
  */
-export default function HomePage() {
-  const featuredSlugs = mockCountrySlugs();
-  const featured = featuredSlugs
-    .map((slug) => {
-      const data = findCountryData(slug);
-      const meta = COUNTRIES.find((c) => c.slug === slug);
-      if (!data || !meta) return null;
-      const top = data.bestMonths[0];
-      return { slug, name: data.name, region: meta.region, month: top.month, score: top.score };
-    })
-    .filter((x): x is NonNullable<typeof x> => x != null);
+
+/**
+ * Daily, because the grid is ranked for the current month and the page is
+ * otherwise static. The country pages sit at 30 days; this one has to notice a
+ * month boundary, and a day's staleness at one is invisible.
+ */
+export const revalidate = 60 * 60 * 24;
+
+export default async function HomePage() {
+  // Rendered at build or at revalidation, never per request — so this is the
+  // month the cached page was built for, not the visitor's.
+  const monthIdx = new Date().getUTCMonth();
+  const monthName = MONTH_NAMES[MONTH_SLUGS[monthIdx]!];
+  const featured = await featuredCountries(monthIdx);
 
   return (
     <>
@@ -77,36 +79,40 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="border-b border-border bg-background">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
-            <div className="mb-6">
-              <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
-                Featured countries
+        {featured.length > 0 && (
+          <section className="border-b border-border bg-background">
+            <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
+              <div className="mb-6">
+                <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
+                  Featured countries
+                </div>
+                <h2 className="mt-1 font-display text-[28px] font-medium leading-[1.2] text-text">
+                  Good weather in {monthName}
+                </h2>
               </div>
-              <h2 className="mt-1 font-display text-[28px] font-medium leading-[1.2] text-text">
-                Start with a country
-              </h2>
+              <ul className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                {featured.map((f) => (
+                  <li key={f.slug}>
+                    <Link
+                      href={`/${f.slug}/${f.month}`}
+                      className="flex h-full flex-col gap-2 rounded-md border border-border bg-surface p-5 hover:bg-surface-2"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-display text-[22px] font-medium text-text">
+                          {f.name}
+                        </span>
+                        <ScoreBadge score={f.score} size="sm" label="number" />
+                      </div>
+                      <div className="font-mono text-[11.5px] text-text-muted">
+                        {f.region} · {f.monthName}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {featured.map((f) => (
-                <li key={f.slug}>
-                  <Link
-                    href={`/${f.slug}`}
-                    className="flex h-full flex-col gap-2 rounded-md border border-border bg-surface p-5 hover:bg-surface-2"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-display text-[22px] font-medium text-text">{f.name}</span>
-                      <ScoreBadge score={f.score} size="sm" label="number" />
-                    </div>
-                    <div className="font-mono text-[11.5px] text-text-muted">
-                      {f.region} · best in {f.month}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
       <PageFooter />
     </>
