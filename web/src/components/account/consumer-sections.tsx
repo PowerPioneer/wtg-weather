@@ -5,6 +5,7 @@ import { cn } from "@/lib/cn";
 import { firstName, monthYear } from "@/lib/session-user";
 import type { ConsumerAccount, SessionUser } from "@/lib/types";
 
+import { AlertsList } from "./alerts-list";
 import { EmptyState, SectionHead } from "./section-head";
 
 type Props = { session: SessionUser; account: ConsumerAccount };
@@ -237,46 +238,12 @@ export function ConsumerAlerts({ account }: Props) {
       {account.alerts.length === 0 ? (
         <EmptyState
           title="You don't have any alerts."
-          body="Alerts are useful when you have a window in mind but the trip is months away. Set conditions on a country page, then forget about it."
+          body="Alerts are useful when you have a window in mind but the trip is months away. Set one from any country's month page, then forget about it."
           primary="Browse countries"
           primaryHref="/"
         />
       ) : (
-        <div className="overflow-hidden rounded-md border border-border bg-surface">
-          {account.alerts.map((a) => (
-            <div
-              key={a.id}
-              className={cn(
-                "grid grid-cols-[1fr_60px] items-center gap-4 border-b border-border px-5 py-4 last:border-b-0",
-                a.active ? "" : "opacity-55",
-              )}
-            >
-              <div>
-                <div className="text-[13.5px] font-medium leading-[1.4] tracking-[-0.002em] text-text">
-                  {a.label}
-                </div>
-                <div className="mt-1 font-mono text-[11px] text-text-subtle">
-                  {a.conditions}
-                </div>
-              </div>
-              <div
-                className={cn(
-                  "relative h-[18px] w-8 rounded-full",
-                  a.active ? "bg-score-perfect" : "bg-[#D9D6CD]",
-                )}
-                aria-label={a.active ? "Alert on" : "Alert paused"}
-                role="img"
-              >
-                <div
-                  className={cn(
-                    "absolute top-0.5 h-3.5 w-3.5 rounded-full bg-white shadow",
-                    a.active ? "left-4" : "left-0.5",
-                  )}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+        <AlertsList initial={account.alerts} />
       )}
     </>
   );

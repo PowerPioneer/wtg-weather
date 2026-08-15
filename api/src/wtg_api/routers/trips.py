@@ -7,8 +7,9 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from wtg_api.deps import current_user, db_session
+from wtg_api.deps import current_entitlement, current_user, db_session
 from wtg_api.models import Alert, Client, Favourite, Membership, Trip, User
+from wtg_api.services.entitlements import Entitlement
 from wtg_api.schemas import (
     AlertCreate,
     AlertRead,
@@ -248,8 +249,26 @@ async def list_alerts(
 async def create_alert(
     payload: AlertCreate,
     user: User = Depends(current_user),
+    entitlement: Entitlement = Depends(current_entitlement),
     session: AsyncSession = Depends(db_session),
 ) -> Alert:
+    """Create an alert. Premium only.
+
+    The pricing table sells "email alerts when a destination starts matching
+    your preferences" as a Premium feature, and the web gates the button — but
+    a gate that only exists in the UI is not a gate, and this endpoint is
+    reachable directly. Enforced here so the tier boundary is where the money
+    is, not where the button is.
+
+    Reading, pausing and deleting stay open to everyone: a user who lapses
+    keeps control of the alerts they already made rather than being locked out
+    of turning them off.
+    """
+    if not entitlement.is_premium:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, "alerts require a premium plan"
+        )
+
     alert = Alert(
         user_id=user.id,
         country_iso2=payload.country_iso2.upper() if payload.country_iso2 else None,

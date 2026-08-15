@@ -63,10 +63,11 @@ async def test_trip_month_validated(client: AsyncClient, user) -> None:
 
 @pytest.mark.asyncio
 async def test_alert_can_be_paused_without_being_deleted(
-    client: AsyncClient, user
+    client: AsyncClient, premium_user
 ) -> None:
     """Pausing is what the account page's toggle does. Without it the only way
     to stop an alert is to delete its definition."""
+    user, _org = premium_user
     login(client, user)
     r = await client.post("/api/alerts", json={"country_iso2": "pt", "month": 4})
     assert r.status_code == 201
@@ -87,10 +88,11 @@ async def test_alert_can_be_paused_without_being_deleted(
 
 @pytest.mark.asyncio
 async def test_alert_patch_scoped_to_owner(
-    client: AsyncClient, user, sessionmaker
+    client: AsyncClient, premium_user, sessionmaker
 ) -> None:
     from wtg_api.models import User
 
+    user, _org = premium_user
     login(client, user)
     alert_id = (await client.post("/api/alerts", json={"country_iso2": "PT"})).json()["id"]
 
@@ -235,3 +237,52 @@ async def test_share_token_is_not_guessably_short(client: AsyncClient, user) -> 
     trip_id = (await client.post("/api/trips", json={"title": "Peru"})).json()["id"]
     token = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
     assert len(token) >= 40
+
+
+# --- Alerts are premium ---
+
+
+@pytest.mark.asyncio
+async def test_free_user_cannot_create_an_alert(client: AsyncClient, user) -> None:
+    """The pricing table sells alerts as Premium. A gate that lives only in the
+    web UI is not a gate — this endpoint is reachable directly."""
+    login(client, user)
+    r = await client.post("/api/alerts", json={"country_iso2": "PT", "month": 4})
+    assert r.status_code == 403
+    assert (await client.get("/api/alerts")).json() == []
+
+
+@pytest.mark.asyncio
+async def test_premium_user_can_create_an_alert(client: AsyncClient, premium_user) -> None:
+    user, _org = premium_user
+    login(client, user)
+    r = await client.post("/api/alerts", json={"country_iso2": "PT", "month": 4})
+    assert r.status_code == 201
+
+
+@pytest.mark.asyncio
+async def test_a_lapsed_user_keeps_control_of_alerts_they_already_made(
+    client: AsyncClient, premium_user, sessionmaker
+) -> None:
+    """Downgrading must not lock someone out of pausing or deleting their own
+    alerts — only out of making new ones."""
+    from wtg_api.models import Organization, Plan
+
+    user, org = premium_user
+    login(client, user)
+    alert_id = (
+        await client.post("/api/alerts", json={"country_iso2": "PT"})
+    ).json()["id"]
+
+    async with sessionmaker() as session:
+        lapsed = await session.get(Organization, org.id)
+        assert lapsed is not None
+        lapsed.plan = Plan.free
+        await session.commit()
+
+    assert (await client.post("/api/alerts", json={"country_iso2": "ES"})).status_code == 403
+    assert (await client.get("/api/alerts")).status_code == 200
+    assert (
+        await client.patch(f"/api/alerts/{alert_id}", json={"active": False})
+    ).status_code == 200
+    assert (await client.delete(f"/api/alerts/{alert_id}")).status_code == 204

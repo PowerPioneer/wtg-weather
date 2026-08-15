@@ -166,10 +166,14 @@ describe("ConsumerAlerts", () => {
     expect(screen.queryByText(/Realtime/)).not.toBeInTheDocument();
   });
 
-  it("distinguishes a paused alert from an active one", () => {
+  it("distinguishes a paused alert from an active one, and lets you flip it", () => {
+    // The switch used to be a `<div role="img">` — a picture of a toggle.
     render(<ConsumerAlerts session={session()} account={POPULATED} />);
-    expect(screen.getByLabelText("Alert on")).toBeInTheDocument();
-    expect(screen.getByLabelText("Alert paused")).toBeInTheDocument();
+    const switches = screen.getAllByRole("switch");
+    expect(switches.map((s) => s.getAttribute("aria-checked"))).toEqual([
+      "true",
+      "false",
+    ]);
   });
 });
 

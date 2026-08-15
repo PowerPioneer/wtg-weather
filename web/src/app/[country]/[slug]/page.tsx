@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CreateAlertButton } from "@/components/alerts/create-alert-button";
 import { ClimateChart } from "@/components/charts";
 import {
   ClimateGrid,
@@ -171,7 +172,7 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
           with JS off nothing renders here — the page is an SEO surface and
           must stand up without it.
         */}
-        <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 px-6 pb-2 md:px-12">
+        <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-start gap-3 px-6 pb-2 md:px-12">
           <SaveTripButton
             countryIso2={country.iso2}
             placeName={country.name}
@@ -180,9 +181,13 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
             monthName={monthName}
             preferences={DEFAULT_PREFERENCES}
           />
-          <span className="font-mono text-[11px] text-text-subtle">
-            Re-scored whenever the climate data refreshes.
-          </span>
+          <CreateAlertButton
+            countryIso2={country.iso2}
+            placeName={country.name}
+            month={idx + 1}
+            monthName={monthName}
+            preferences={DEFAULT_PREFERENCES}
+          />
         </div>
         <RegionsGrid country={country} currentMonthIdx={idx} />
         <SafetySection advisories={country.advisories} countryName={country.name} />

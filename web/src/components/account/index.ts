@@ -1,3 +1,4 @@
+export { AlertsList } from "./alerts-list";
 export { AccountSidebar, type SidebarItem } from "./account-sidebar";
 export { EmptyState, SectionHead } from "./section-head";
 export {

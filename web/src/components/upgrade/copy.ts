@@ -33,6 +33,24 @@ export const PREMIUM_COPY = {
   ],
 } as const;
 
+/**
+ * The upgrade prompt shown where a free user meets a premium feature.
+ *
+ * Keyed by feature so every surface asks the same way. Lives here rather than
+ * inline at each call site because the pricing page, the tier table and these
+ * prompts have to agree about what Premium actually includes — the alerts line
+ * below is the same promise `TIERS.premium.features` makes.
+ */
+export const UPGRADE_PROMPTS = {
+  alerts: {
+    title: "Alerts are a Premium feature.",
+    body: "Get an email the moment a destination starts matching your preferences — no need to keep checking back.",
+    cta: "See Premium · €2.99/mo",
+  },
+} as const;
+
+export type UpgradePromptId = keyof typeof UPGRADE_PROMPTS;
+
 type TierEntry = Tier & { hidden?: boolean };
 
 const TIERS: readonly TierEntry[] = [
