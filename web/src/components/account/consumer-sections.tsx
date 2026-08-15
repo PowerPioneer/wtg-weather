@@ -11,7 +11,7 @@ type Props = { session: SessionUser; account: ConsumerAccount };
 
 export function ConsumerOverview({ session, account }: Props) {
   const isFree = session.plan === "free";
-  const activeAlerts = account.alerts.filter((a) => a.on).length;
+  const activeAlerts = account.alerts.filter((a) => a.active).length;
   const since = monthYear(session.createdAt);
 
   const stats = [
@@ -58,7 +58,7 @@ export function ConsumerOverview({ session, account }: Props) {
           >
             {isFree
               ? "Map · 12 months · 6 free variables · 3 saved trips max"
-              : `Renews ${account.renewsAt ?? "—"} · ${account.price ?? "—"} · billed by Paddle`}
+              : "Billed by Paddle · manage renewal and invoices there"}
           </div>
         </div>
         {isFree ? (
@@ -78,7 +78,7 @@ export function ConsumerOverview({ session, account }: Props) {
         )}
       </div>
 
-      <div className="mb-7 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {stats.map((s) => (
           <div key={s.l} className="rounded-sm border border-border bg-surface px-4 py-3.5">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-text-subtle">
@@ -91,25 +91,12 @@ export function ConsumerOverview({ session, account }: Props) {
           </div>
         ))}
       </div>
-
-      <div className="rounded-md border border-border bg-surface">
-        <div className="flex items-center justify-between border-b border-border px-5 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-text-subtle">
-          <span>Recent activity</span>
-          <span className="normal-case tracking-normal">last 30 days</span>
-        </div>
-        {account.activity.map((row, i) => (
-          <div
-            key={`${row.date}-${i}`}
-            className="grid grid-cols-[80px_60px_1fr] items-center gap-4 border-b border-border px-5 py-3 text-[13px] last:border-b-0"
-          >
-            <div className="font-mono text-[11.5px] text-text-subtle">{row.date}</div>
-            <div className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-accent">
-              {row.tag}
-            </div>
-            <div className="text-text">{row.text}</div>
-          </div>
-        ))}
-      </div>
+      {/*
+        The "Recent activity" feed that used to sit here was fixtures: the API
+        keeps no event log, so there was nothing to render it from for a real
+        user. Bringing it back means a table to write to, which is its own
+        decision, not a side-effect of this page.
+      */}
     </>
   );
 }
@@ -141,8 +128,6 @@ export function ConsumerTrips({ session, account }: Props) {
           body="A trip is a saved combination of country, months, and what kind of weather you want. Open the map, set your preferences, hit Save."
           primary="Open the map"
           primaryHref="/map"
-          secondary="See an example trip"
-          secondaryHref="/trip/trp_8h2k9p?view=public"
         />
       ) : (
         <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3">
@@ -154,22 +139,23 @@ export function ConsumerTrips({ session, account }: Props) {
             >
               <div className="flex items-start gap-3.5">
                 <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-sm bg-surface-2 font-mono text-[11px] text-text-muted">
-                  {t.country.slice(0, 3).toUpperCase()}
+                  {(t.countryName ?? t.title).slice(0, 3).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="font-display text-[17px] font-medium leading-[1.2] tracking-[-0.005em] text-text">
                     {t.title}
                   </div>
                   <div className="mt-1.5 font-mono text-[11px] text-text-muted">
-                    {t.country} · {t.months}
+                    {[t.countryName, t.monthName ?? "Year-round"].filter(Boolean).join(" · ")}
                   </div>
                 </div>
-                <ScoreBadge score={t.score} size="sm" />
+                {t.score !== null && <ScoreBadge score={t.score} size="sm" />}
               </div>
-              <div className="mt-3 flex justify-between border-t border-border pt-2.5 font-mono text-[11px] text-text-subtle">
-                <span>{t.regions} regions match</span>
-                <span>updated {t.updated}</span>
-              </div>
+              {t.matchingRegions !== null && (
+                <div className="mt-3 border-t border-border pt-2.5 font-mono text-[11px] text-text-subtle">
+                  {t.matchingRegions} {t.matchingRegions === 1 ? "region" : "regions"} match
+                </div>
+              )}
             </Link>
           ))}
         </div>
@@ -195,27 +181,42 @@ export function ConsumerFavourites({ account }: Props) {
         />
       ) : (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {account.favourites.map((f) => (
-            <Link
-              key={f.slug}
-              href={`/${f.slug}`}
-              className="flex items-center gap-3.5 rounded-sm border border-border bg-surface px-4 py-3.5 no-underline"
-            >
-              <div className="h-[22px] w-8 rounded-sm border border-border bg-surface-2" aria-hidden="true" />
-              <div className="flex-1">
-                <div className="font-display text-[17px] font-medium tracking-[-0.005em] text-text">
-                  {f.name}
+          {account.favourites.map((f) => {
+            const body = (
+              <>
+                <div className="h-[22px] w-8 rounded-sm border border-border bg-surface-2" aria-hidden="true" />
+                <div className="flex-1">
+                  <div className="font-display text-[17px] font-medium tracking-[-0.005em] text-text">
+                    {f.name}
+                  </div>
+                  {f.sub && (
+                    <div className="mt-0.5 font-mono text-[11px] text-text-muted">{f.sub}</div>
+                  )}
                 </div>
-                <div className="mt-0.5 font-mono text-[11px] text-text-muted">{f.sub}</div>
+                {f.best && (
+                  <div className="text-right">
+                    <div className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-subtle">
+                      Best
+                    </div>
+                    <div className="mt-0.5 font-mono text-[11.5px] text-text">{f.best}</div>
+                  </div>
+                )}
+              </>
+            );
+            const className =
+              "flex items-center gap-3.5 rounded-sm border border-border bg-surface px-4 py-3.5 no-underline";
+            // A favourite whose country the registry cannot resolve still
+            // lists — it is the user's row — but it has no page to link to.
+            return f.href ? (
+              <Link key={f.id} href={f.href} className={className}>
+                {body}
+              </Link>
+            ) : (
+              <div key={f.id} className={className}>
+                {body}
               </div>
-              <div className="text-right">
-                <div className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-subtle">
-                  Best
-                </div>
-                <div className="mt-0.5 font-mono text-[11.5px] text-text">{f.best}</div>
-              </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </>
@@ -228,22 +229,17 @@ export function ConsumerAlerts({ account }: Props) {
       <SectionHead
         eyebrow="Alerts"
         title="Tell me when conditions change."
-        sub="Alerts run on every data refresh. Email by default; SMS available on Premium."
-        action={
-          <button
-            type="button"
-            className="rounded-sm bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            + Create alert
-          </button>
-        }
+        // Weekly because that is the cadence that exists: `weekly-alerts.sh`
+        // runs the matcher Mondays at 04:00 UTC. The three cadences this page
+        // used to offer were fixture labels with no job behind them.
+        sub="Checked weekly against the latest climate and advisory data. One email per change."
       />
       {account.alerts.length === 0 ? (
         <EmptyState
           title="You don't have any alerts."
-          body="Alerts are useful when you have a window in mind but the trip is months away. Set conditions, then forget about it."
-          primary="Create your first alert"
-          primaryHref="#"
+          body="Alerts are useful when you have a window in mind but the trip is months away. Set conditions on a country page, then forget about it."
+          primary="Browse countries"
+          primaryHref="/"
         />
       ) : (
         <div className="overflow-hidden rounded-md border border-border bg-surface">
@@ -251,31 +247,30 @@ export function ConsumerAlerts({ account }: Props) {
             <div
               key={a.id}
               className={cn(
-                "grid grid-cols-[1fr_110px_60px] items-center gap-4 border-b border-border px-5 py-4 last:border-b-0",
-                a.on ? "" : "opacity-55",
+                "grid grid-cols-[1fr_60px] items-center gap-4 border-b border-border px-5 py-4 last:border-b-0",
+                a.active ? "" : "opacity-55",
               )}
             >
               <div>
                 <div className="text-[13.5px] font-medium leading-[1.4] tracking-[-0.002em] text-text">
                   {a.label}
                 </div>
-                <div className="mt-1 font-mono text-[11px] text-text-subtle">{a.last}</div>
-              </div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
-                {a.cadence}
+                <div className="mt-1 font-mono text-[11px] text-text-subtle">
+                  {a.conditions}
+                </div>
               </div>
               <div
                 className={cn(
                   "relative h-[18px] w-8 rounded-full",
-                  a.on ? "bg-score-perfect" : "bg-[#D9D6CD]",
+                  a.active ? "bg-score-perfect" : "bg-[#D9D6CD]",
                 )}
-                aria-label={a.on ? "Alert on" : "Alert off"}
+                aria-label={a.active ? "Alert on" : "Alert paused"}
                 role="img"
               >
                 <div
                   className={cn(
                     "absolute top-0.5 h-3.5 w-3.5 rounded-full bg-white shadow",
-                    a.on ? "left-4" : "left-0.5",
+                    a.active ? "left-4" : "left-0.5",
                   )}
                 />
               </div>
@@ -389,7 +384,7 @@ export function ConsumerSettings({ session }: Props) {
   );
 }
 
-export function ConsumerBilling({ session, account }: Props) {
+export function ConsumerBilling({ session }: Props) {
   const isFree = session.plan === "free";
   return (
     <>
@@ -398,8 +393,8 @@ export function ConsumerBilling({ session, account }: Props) {
         title={isFree ? "You're on Free." : "Premium · €2.99 / month"}
         sub={
           isFree
-            ? "Upgrade for unlimited trips, four extra climate variables, and SMS alerts."
-            : `Renews ${account.renewsAt ?? "—"}. All payment & invoice management lives in Paddle, our payment processor.`
+            ? "Upgrade for unlimited trips, four extra climate variables, and email alerts."
+            : "All payment and invoice management lives in Paddle, our payment processor."
         }
       />
 
@@ -415,10 +410,16 @@ export function ConsumerBilling({ session, account }: Props) {
                   .join(" · ")
           }
         />
+        {/*
+          Renewal date, payment method and invoice history all live in Paddle
+          and reach us only through the customer portal, which WS-B mints. The
+          card that used to sit here printed a fixture date and "card ending
+          4471" to every subscriber.
+        */}
         <BillingCard
-          eyebrow={isFree ? "Status" : "Next renewal"}
-          title={isFree ? "No active subscription" : account.renewsAt ?? "—"}
-          sub={isFree ? "—" : "Auto-renew · card ending 4471"}
+          eyebrow="Status"
+          title={isFree ? "No active subscription" : "Active"}
+          sub={isFree ? "—" : "Renewal date and invoices are on Paddle"}
         />
       </div>
 
@@ -459,33 +460,6 @@ export function ConsumerBilling({ session, account }: Props) {
         </div>
       </div>
 
-      {!isFree && account.invoices.length > 0 && (
-        <div className="mt-6">
-          <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.12em] text-text-subtle">
-            Recent invoices · cached from Paddle
-          </div>
-          <div className="overflow-hidden rounded-md border border-border bg-surface">
-            {account.invoices.map((inv) => (
-              <div
-                key={inv.id}
-                className="grid grid-cols-[110px_1fr_80px_80px_80px] items-center gap-3 border-b border-border px-5 py-2.5 text-[12px] last:border-b-0"
-              >
-                <div className="font-mono text-text-muted">{inv.date}</div>
-                <div className="font-mono text-text">{inv.id}</div>
-                <div className="text-right font-mono text-text">{inv.amount}</div>
-                <div className="text-right font-mono text-[10.5px] uppercase tracking-[0.1em] text-score-perfect">
-                  ● {inv.status.toUpperCase()}
-                </div>
-                <div className="text-right">
-                  <a href="#" className="text-[11.5px] text-accent hover:underline">
-                    PDF ↗
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </>
   );
 }

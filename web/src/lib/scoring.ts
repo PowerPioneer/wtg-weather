@@ -189,6 +189,34 @@ export function clampPreferences(
 }
 
 /**
+ * Read preferences out of an untyped blob — a trip's `preferences` column, an
+ * alert's, the onboarding `data` record. Returns `null` when none of the four
+ * keys is present, so a caller can tell "saved with defaults" from "saved
+ * before this shape existed" and fall back deliberately.
+ *
+ * Whatever is present is clamped: these values have round-tripped through a
+ * `dict[str, Any]` that validates none of them.
+ */
+export function parseWeatherPreferences(
+  raw: unknown,
+): WeatherPreferences | null {
+  if (!raw || typeof raw !== "object") return null;
+  const record = raw as Record<string, unknown>;
+  const numeric = (key: keyof WeatherPreferences): number | undefined => {
+    const value = record[key];
+    return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+  };
+  const parsed = {
+    tempMin: numeric("tempMin"),
+    tempMax: numeric("tempMax"),
+    rainMax: numeric("rainMax"),
+    sunMin: numeric("sunMin"),
+  };
+  if (Object.values(parsed).every((v) => v === undefined)) return null;
+  return clampPreferences(parsed);
+}
+
+/**
  * Whether these are the preferences the pipeline baked into `pref_<mm>`.
  * The paint expression reads the baked property when this holds, which keeps
  * the default map identical to what shipped before preferences existed.

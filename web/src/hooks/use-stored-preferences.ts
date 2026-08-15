@@ -23,8 +23,8 @@ import { useEffect, useRef } from "react";
 
 import { fetchOnboarding, patchOnboarding } from "@/lib/api-client";
 import {
-  clampPreferences,
   isDefaultPreferences,
+  parseWeatherPreferences,
   type WeatherPreferences,
 } from "@/lib/scoring";
 
@@ -45,26 +45,7 @@ export type UseStoredPreferencesOptions = {
 export function readStoredPreferences(
   data: Record<string, unknown> | null | undefined,
 ): WeatherPreferences | null {
-  const raw = data?.[STORED_PREFERENCES_KEY];
-  if (!raw || typeof raw !== "object") return null;
-  const record = raw as Record<string, unknown>;
-  const numeric = (key: string): number | undefined => {
-    const value = record[key];
-    return typeof value === "number" && Number.isFinite(value) ? value : undefined;
-  };
-  const tempMin = numeric("tempMin");
-  const tempMax = numeric("tempMax");
-  const rainMax = numeric("rainMax");
-  const sunMin = numeric("sunMin");
-  if (
-    tempMin === undefined &&
-    tempMax === undefined &&
-    rainMax === undefined &&
-    sunMin === undefined
-  ) {
-    return null;
-  }
-  return clampPreferences({ tempMin, tempMax, rainMax, sunMin });
+  return parseWeatherPreferences(data?.[STORED_PREFERENCES_KEY]);
 }
 
 function fingerprint(prefs: WeatherPreferences): string {

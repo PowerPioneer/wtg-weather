@@ -18,12 +18,8 @@ import {
   type SidebarItem,
 } from "@/components/account";
 import { PageFooter, PageHeader } from "@/components/layout";
-import {
-  EMPTY_AGENCY_ACCOUNT,
-  EMPTY_CONSUMER_ACCOUNT,
-  findAgencyAccount,
-  findConsumerAccount,
-} from "@/lib/mock-data";
+import { getConsumerAccount } from "@/lib/account-server";
+import { EMPTY_AGENCY_ACCOUNT, findAgencyAccount } from "@/lib/mock-data";
 import { getEntitlement, getSessionServer, planLabel } from "@/lib/session";
 import type {
   AgencyAccount,
@@ -62,9 +58,12 @@ const AGENCY_SECTIONS = [
 type ConsumerSectionId = (typeof CONSUMER_SECTIONS)[number];
 type AgencySectionId = (typeof AGENCY_SECTIONS)[number];
 
+/** The account page is per-user; nothing about it can be cached or prerendered. */
+export const dynamic = "force-dynamic";
+
 export default async function AccountPage({ searchParams }: PageProps) {
   const session = await getSessionServer();
-  if (!session) redirect("/signin");
+  if (!session) redirect("/login");
 
   const entitlement = getEntitlement(session);
   const { s } = await searchParams;
@@ -72,22 +71,27 @@ export default async function AccountPage({ searchParams }: PageProps) {
   if (entitlement.agency) {
     return <AgencyAccountPage session={session} activeParam={s} />;
   }
-  return <ConsumerAccountPage session={session} activeParam={s} />;
+
+  // Null means the API rejected the session between the `/api/me` read above
+  // and this one — expired mid-render, or revoked. Sign in again rather than
+  // rendering an empty account to someone who has three trips.
+  const account = await getConsumerAccount();
+  if (!account) redirect("/login");
+
+  return (
+    <ConsumerAccountPage session={session} account={account} activeParam={s} />
+  );
 }
 
 function ConsumerAccountPage({
   session,
+  account,
   activeParam,
 }: {
   session: SessionUser;
+  account: ConsumerAccount;
   activeParam: string | undefined;
 }) {
-  // The account surface is still fixture-backed (RC-6, Phase 6). A real
-  // session id matches no fixture, so falling back to an empty account is what
-  // keeps /account rendering its empty states instead of 404ing for everyone
-  // who signs in.
-  const account = findConsumerAccount(session.id) ?? EMPTY_CONSUMER_ACCOUNT;
-
   const activeId: ConsumerSectionId = CONSUMER_SECTIONS.includes(
     activeParam as ConsumerSectionId,
   )

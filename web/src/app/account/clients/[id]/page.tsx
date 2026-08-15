@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ClientDetailPage({ params, searchParams }: PageProps) {
   const session = await getSessionServer();
-  if (!session) redirect("/signin");
+  if (!session) redirect("/login");
   const entitlement = getEntitlement(session);
   if (!entitlement.agency || !session.org) notFound();
 

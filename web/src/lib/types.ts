@@ -287,30 +287,47 @@ export type TripData = {
 };
 
 // ─── Account (consumer) ──────────────────────────────────────────────
+//
+// View models, assembled in `lib/account-server.ts` from the API's rows plus
+// the published country payload. Every optional field is `null` where the data
+// genuinely cannot say — an unpublished country, a trip saved with no month.
+// Zero would be a claim about the weather; null is a claim about our data.
+//
+// There is deliberately no invoice or activity list here. The API has no event
+// log and no cached invoices, and the fixtures that used to supply both were
+// showing invented billing history to real users. Invoices arrive with the
+// Paddle customer portal in WS-B.
 
-export type TripSummary = {
+export type AccountTrip = {
   id: string;
   title: string;
-  months: string;
-  country: string;
-  score: number;
-  regions: number;
-  updated: string;
+  countryName: string | null;
+  countrySlug: string | null;
+  monthName: string | null;
+  monthSlug: MonthSlug | null;
+  /** 0–100 for the trip's month under the trip's own saved preferences. */
+  score: number | null;
+  /** Admin-1 regions of that country clearing the "Good" threshold. */
+  matchingRegions: number | null;
 };
 
-export type FavouriteRow = {
-  slug: string;
-  name: string;
-  sub: string;
-  best: string;
-};
-
-export type AlertRow = {
+export type AccountFavourite = {
   id: string;
+  name: string;
+  /** Sub-line: the country, for a region; the world region, for a country. */
+  sub: string;
+  /** Null for a favourite whose country the registry cannot resolve. */
+  href: string | null;
+  /** The pipeline's own best months, not a number recomputed here. */
+  best: string | null;
+};
+
+export type AccountAlert = {
+  id: string;
+  /** Assembled from the alert's fields, so it always says what will be checked. */
   label: string;
-  cadence: "Realtime" | "Daily" | "Weekly";
-  last: string;
-  on: boolean;
+  conditions: string;
+  active: boolean;
 };
 
 export type InvoiceRow = {
@@ -321,20 +338,10 @@ export type InvoiceRow = {
   note?: string;
 };
 
-export type ActivityRow = {
-  date: string;
-  text: string;
-  tag: string;
-};
-
 export type ConsumerAccount = {
-  trips: readonly TripSummary[];
-  favourites: readonly FavouriteRow[];
-  alerts: readonly AlertRow[];
-  invoices: readonly InvoiceRow[];
-  activity: readonly ActivityRow[];
-  renewsAt?: string;
-  price?: string;
+  trips: readonly AccountTrip[];
+  favourites: readonly AccountFavourite[];
+  alerts: readonly AccountAlert[];
 };
 
 // ─── Agency ──────────────────────────────────────────────────────────

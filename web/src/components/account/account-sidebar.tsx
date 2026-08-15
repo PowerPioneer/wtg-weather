@@ -85,15 +85,22 @@ export function AccountSidebar({
         <div className="mb-2 font-mono text-[10.5px] font-semibold uppercase tracking-[0.14em] text-text-subtle">
           Quick
         </div>
-        <Link href="/" className="block py-1 text-[12.5px] text-text hover:underline">
+        <Link href="/map" className="block py-1 text-[12.5px] text-text hover:underline">
           ↗ Open the map
         </Link>
-        <Link href="/help" className="block py-1 text-[12.5px] text-text-muted hover:underline">
-          Help center
-        </Link>
-        <Link href="/signout" className="block py-1 text-[12.5px] text-text-muted hover:underline">
-          Sign out
-        </Link>
+        {/*
+          A form, not a link: signing out changes state, and a GET would let
+          any page log the user out with an `<img src="/signout">`. Posting a
+          plain form keeps it working with JS disabled.
+        */}
+        <form action="/signout" method="post">
+          <button
+            type="submit"
+            className="block py-1 text-[12.5px] text-text-muted hover:underline"
+          >
+            Sign out
+          </button>
+        </form>
       </div>
     </nav>
   );

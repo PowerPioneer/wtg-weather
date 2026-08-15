@@ -14,7 +14,6 @@ import type { CountryRef } from "./countries";
 import type {
   AgencyAccount,
   ClientRecord,
-  ConsumerAccount,
   CountryData,
   Monthly,
   RegionRow,
@@ -400,81 +399,15 @@ export function findTripData(id: string): TripData | null {
   return TRIP_FIXTURES[id] ?? null;
 }
 
-// ─── Consumer account fixtures (keyed by session id) ─────────────────
-
-const FREE_ACCOUNT: ConsumerAccount = {
-  trips: [],
-  favourites: [],
-  alerts: [],
-  invoices: [],
-  activity: [
-    { date: "Today", text: "Welcome to Atlas Weather. Magic link sent to sam.patel@hey.com", tag: "AUTH" },
-    { date: "Today", text: "Account created · Free plan", tag: "PLAN" },
-  ],
-};
-
-const PREMIUM_ACCOUNT: ConsumerAccount = {
-  renewsAt: "Sep 14, 2026",
-  price: "€2.99 / mo",
-  trips: [
-    { id: "trp_8h2k9p", title: "Honeymoon · Andes & Sacred Valley", months: "Apr – May", country: "Peru", score: 87, regions: 10, updated: "2d ago" },
-    { id: "trp_4n7q2m", title: "Backpack Japan", months: "Oct – Nov", country: "Japan", score: 92, regions: 14, updated: "1w ago" },
-    { id: "trp_2c5x1v", title: "Family Christmas — somewhere warm", months: "Dec", country: "Multi · 8", score: 84, regions: 22, updated: "3w ago" },
-  ],
-  favourites: [
-    { slug: "peru", name: "Peru", sub: "Andes + coast + Amazon", best: "Jun – Aug" },
-    { slug: "japan", name: "Japan", sub: "Honshu temperate", best: "Apr · Oct – Nov" },
-    { slug: "portugal", name: "Portugal", sub: "Atlantic Mediterranean", best: "May – Sep" },
-    { slug: "morocco", name: "Morocco", sub: "Coast & High Atlas", best: "Mar – May · Oct" },
-    { slug: "norway", name: "Norway", sub: "Fjords & Lofoten", best: "Jun – Aug" },
-  ],
-  alerts: [
-    { id: "a1", label: "Notify me when Cusco scores 90+ for July with my honeymoon prefs", cadence: "Daily", last: "Apr 22 · score 87 (no change)", on: true },
-    { id: "a2", label: "Email me when Peru rainfall in May drops below 30 mm/mo nationally", cadence: "Weekly", last: "Apr 19 · 41 mm (above threshold)", on: true },
-    { id: "a3", label: "Alert if any Level-3 advisory is issued for my favourite countries", cadence: "Realtime", last: "No change · 7 countries watched", on: true },
-    { id: "a4", label: "Tell me when Japan cherry blossom forecast updates", cadence: "Realtime", last: "Last forecast Mar 02", on: false },
-  ],
-  invoices: [
-    { date: "Apr 14, 2026", id: "INV-29841", amount: "€2.99", status: "Paid" },
-    { date: "Mar 14, 2026", id: "INV-28709", amount: "€2.99", status: "Paid" },
-    { date: "Feb 14, 2026", id: "INV-27502", amount: "€2.99", status: "Paid" },
-    { date: "Jan 14, 2026", id: "INV-26301", amount: "€2.99", status: "Paid" },
-  ],
-  activity: [
-    { date: "Apr 22", text: 'Trip "Honeymoon · Andes & Sacred Valley" updated · Cusco moved 2 pts', tag: "TRIP" },
-    { date: "Apr 19", text: 'Alert "Peru rainfall in May < 30 mm" checked · 41 mm (above threshold)', tag: "ALERT" },
-    { date: "Apr 14", text: "Favourited Norway", tag: "FAV" },
-    { date: "Apr 02", text: 'Trip "Backpack Japan" created from /map?country=japan&month=oct', tag: "TRIP" },
-  ],
-};
-
-export const CONSUMER_ACCOUNTS: Record<string, ConsumerAccount> = {
-  usr_sam: FREE_ACCOUNT,
-  usr_lea: PREMIUM_ACCOUNT,
-};
-
-/**
- * What a real, signed-in user's account looks like today.
- *
- * The account surface is still fixture-backed — the trips / favourites /
- * alerts routers exist on the API but nothing on the page calls them (RC-6,
- * deferred to Phase 6). Before WS-5 that was invisible, because
- * `USE_MOCK_DATA` was on and every session resolved to a fixture persona. With
- * real sessions, a user id that matches no fixture is the normal case, and
- * `notFound()` would 404 the account page for everyone who signs in. Empty is
- * both accurate and what the empty states in `web/design/` were drawn for.
- */
-export const EMPTY_CONSUMER_ACCOUNT: ConsumerAccount = {
-  trips: [],
-  favourites: [],
-  alerts: [],
-  invoices: [],
-  activity: [],
-};
-
-export function findConsumerAccount(userId: string): ConsumerAccount | null {
-  return CONSUMER_ACCOUNTS[userId] ?? null;
-}
+// ─── Consumer account fixtures ───────────────────────────────────────
+//
+// Deliberately gone. `/account` reads trips, favourites and alerts from the
+// API via `lib/account-server.ts`; under `USE_MOCK_DATA` it renders an empty
+// account, which is what a dev with no API running actually has. The fixtures
+// that used to live here described a subscriber with four invoices and a
+// month of activity, and no session id outside this file ever matched them —
+// so every real user saw the empty states anyway, and any future fixture
+// persona would have shown invented billing history.
 
 // ─── Agency account fixtures ─────────────────────────────────────────
 
