@@ -19,13 +19,59 @@ There is **no image registry** — compose builds from source on the box:
 
 ```bash
 git pull --ff-only
-docker compose build api && docker compose up -d api
+docker compose build api
+docker compose run --rm api alembic upgrade head   # only if migrations landed
+docker compose up -d api
 ./infra/scripts/build-web.sh && docker compose up -d web
 ```
 
 `docker compose up -d` does **not** rebuild an image. A deploy that only
 changes compose (a new volume, a new env var) still needs `build` if the code
 moved too, or the container comes up with the new wiring and the old code.
+
+### Migrations run between build and up
+
+**Nothing runs Alembic for you.** The image's `CMD` is bare `uvicorn` — no
+entrypoint script, no migration hook — so a deploy that ships a migration and
+skips this step comes up against the old schema.
+
+That fails wider than it sounds. A new column on a model is named in *every*
+`SELECT` SQLAlchemy emits for that table, not just by the endpoints that use
+it: `0004`'s `trips.share_token` would take out `GET /api/trips` (which
+`/account` calls) and `GET /api/trips/{id}` alike, with `UndefinedColumn`.
+
+Migrate **before** `up -d`, not after. Every migration so far is additive, and
+adds columns either nullable (`0004`) or `NOT NULL` with a server default
+(`0003`) — so the currently-running old code is perfectly happy with a column
+it does not know about. Expand first, then deploy. The reverse order leaves a
+window where the new code is serving against a schema that cannot answer it,
+and that window is however long the migration takes plus however long it takes
+you to notice.
+
+Keep new migrations to that shape. One that drops a column, renames one, or
+adds a `NOT NULL` without a default breaks the old code the moment it lands —
+which means the safe order is no longer "migrate first" and there isn't a safe
+order at all without a two-step deploy.
+
+Use `run --rm`, not `exec`. `exec` needs the new container to already be
+running, which is the state you are trying to avoid; `run` starts a throwaway
+container from the image you just built, on the same network with the same
+env, and leaves the serving one alone. `alembic` is a runtime dependency in
+`api/pyproject.toml`, so it survives the image's `uv sync --no-dev` and is on
+`PATH` at `/app/.venv/bin`.
+
+Check what is pending before deciding whether the step applies:
+
+```bash
+docker compose run --rm api alembic current
+```
+
+There is no rollback step here on purpose. Migrations are **forward-only**
+(root `CLAUDE.md`), so a schema change that has to be undone is undone by a new
+migration, and a deploy that has to be undone is a rebuild at the previous
+commit — the old code tolerates the newer schema, which is the whole point of
+keeping changes additive. If a migration destroyed or rewrote data, the way
+back is `restore-postgres.sh`, not `alembic downgrade`.
 
 `build-web.sh` exists because `next build` pre-renders the ~2,800 country
 pages against `/v1/countries`, and a plain build cannot reach the API:
