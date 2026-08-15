@@ -27,12 +27,14 @@ const LEVEL_BG = {
   4: "bg-advisory-dnt",
 } as const;
 
-const LEVEL_TEXT = {
-  1: "text-text",
-  2: "text-advisory-caution",
-  3: "text-advisory-reconsider",
-  4: "text-advisory-dnt",
-} as const;
+/**
+ * The "Level N" line is deliberately NOT advisory-coloured. Levels 2 and 3
+ * could not hold AA as text on `background` (3.41 and 4.21) without dragging
+ * the whole advisory ramp darker than the fills need. Nothing is lost: the
+ * numeral block beside it already carries the colour, and the wording below
+ * carries the meaning — which is the rule this component documents below.
+ */
+const LEVEL_TEXT_CLASS = "text-text";
 
 const SIZE_BLOCK = {
   sm: "h-7 w-7 text-[13px]",
@@ -89,7 +91,7 @@ export function SafetyBadge({
           <span
             className={cn(
               "font-sans text-[13px] font-semibold leading-tight",
-              LEVEL_TEXT[level],
+              LEVEL_TEXT_CLASS,
             )}
           >
             Level {level}

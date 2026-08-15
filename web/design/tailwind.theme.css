@@ -33,7 +33,7 @@
   /* ─── Text ─────────────────────────────────────────────────────── */
   --color-text:             #0F1B2D;
   --color-text-muted:       #4A5568;
-  --color-text-subtle:      #6B7280;
+  --color-text-subtle:      #6A707E;
   --color-text-inverse:     #FFFFFF;
   --color-text-link:        #8A4A1E;
 
@@ -45,6 +45,7 @@
   --color-primary-subtle:       #E6E9EF;
 
   --color-accent:               #B8763E;
+  --color-accent-text:          #8A5A2B;
   --color-accent-subtle:        #F3E8D9;
 
   --color-destructive:              #7A2E2E;
@@ -63,16 +64,22 @@
   --color-score-perfect-subtle:    #DDEBE7;
   --color-score-good:              #0072B2;
   --color-score-good-subtle:       #D7E4EF;
-  --color-score-acceptable:        #B8610E;
+  --color-score-acceptable:        #B55F0E;
   --color-score-acceptable-subtle: #EFDFC9;
   --color-score-avoid:             #7A2E2E;
   --color-score-avoid-subtle:      #EFD8D8;
 
+  /* Score colours as *ink* — the fills are tuned for white-on-fill and are
+     too light to read as text on their own tint. See tokens.md § 2.2. */
+  --color-score-good-text:         #0069A5;
+  --color-score-acceptable-text:   #99500C;
+
   /* ─── Safety advisory ──────────────────────────────────────────── */
   --color-advisory-normal:      #4A5568;
-  --color-advisory-caution:     #B8763E;
-  --color-advisory-reconsider:  #B8610E;
+  --color-advisory-caution:     #9B6434;
+  --color-advisory-reconsider:  #B55F0E;
   --color-advisory-dnt:         #7A2E2E;
+  --color-advisory-caution-text: #89592E;
 
   /* ─── Typography ───────────────────────────────────────────────── */
   --font-display: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;

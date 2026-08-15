@@ -95,7 +95,7 @@ export default async function ClientDetailPage({ params, searchParams }: PagePro
               <div className="font-display text-[13px] font-medium">{client.shortName}</div>
               <Link
                 href="/account?s=clients"
-                className="mt-1 inline-block text-[11px] text-accent hover:underline"
+                className="mt-1 inline-block text-[11px] text-accent-text hover:underline"
               >
                 ← All clients
               </Link>
@@ -136,7 +136,7 @@ function ClientHeader({ client, activeTab }: { client: ClientRecord; activeTab: 
       </div>
 
       <div className="flex flex-wrap items-start gap-6">
-        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-sm border border-accent bg-[#FBF3DC] font-display text-[22px] font-medium tracking-[-0.02em] text-accent">
+        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-sm border border-accent bg-[#FBF3DC] font-display text-[22px] font-medium tracking-[-0.02em] text-accent-text">
           {initial}
         </div>
         <div className="min-w-0 flex-1">
@@ -197,7 +197,7 @@ function ClientHeader({ client, activeTab }: { client: ClientRecord; activeTab: 
           <div className="mt-3 font-mono text-[11.5px] text-text-muted">
             Active since {client.since}
           </div>
-          <div className="mt-1 font-mono text-[11.5px] text-accent">
+          <div className="mt-1 font-mono text-[11.5px] text-accent-text">
             Next touch · {client.nextTouch}
           </div>
           <div className="mt-3 flex justify-end gap-1.5">
@@ -430,7 +430,7 @@ function TripsTab({ client }: { client: ClientRecord }) {
               <ScoreBadge score={t.score} size="sm" />
             </div>
             <div className="text-right">
-              <Link href={`/trip/${t.id}`} className="text-[11px] text-accent hover:underline">
+              <Link href={`/trip/${t.id}`} className="text-[11px] text-accent-text hover:underline">
                 Open →
               </Link>
             </div>
@@ -454,7 +454,7 @@ function TripsTab({ client }: { client: ClientRecord }) {
 const ACTIVITY_KIND_COLOR: Record<ClientActivityRow["kind"], string> = {
   CREATE: "text-score-perfect",
   EDIT: "text-text-muted",
-  SHARE: "text-accent",
+  SHARE: "text-accent-text",
   EXPORT: "text-score-good",
   VIEW: "text-text-subtle",
   NOTE: "text-[#6B4FAE]",
@@ -554,7 +554,7 @@ function Chip({
 }) {
   const toneClass =
     tone === "accent"
-      ? "border-accent text-accent"
+      ? "border-accent text-accent-text"
       : tone === "perfect"
         ? "border-score-perfect text-score-perfect"
         : tone === "muted"

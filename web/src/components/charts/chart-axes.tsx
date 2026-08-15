@@ -32,7 +32,7 @@ export function ChartAxes({
               y={yOf(v) + 3}
               textAnchor="end"
               fontSize="9"
-              fill="#6B7280"
+              fill="#6A707E"
               fontFamily="var(--font-mono)"
             >
               {formatY(v)}
@@ -55,7 +55,7 @@ export function ChartAxes({
               y={yOf(v) + 3}
               textAnchor="end"
               fontSize="9"
-              fill="#6B7280"
+              fill="#6A707E"
               fontFamily="var(--font-mono)"
             >
               {formatY(v)}
@@ -70,7 +70,7 @@ export function ChartAxes({
           y={height - 8}
           textAnchor="middle"
           fontSize="9"
-          fill="#6B7280"
+          fill="#6A707E"
           fontFamily="var(--font-mono)"
         >
           {m}

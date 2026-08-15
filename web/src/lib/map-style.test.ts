@@ -211,7 +211,7 @@ describe("preferences mode paint", () => {
     // 6°C, dry, sunny — a perfect match for someone who wants it cold.
     expect(evaluateExpression(expr, { t_04: 6, r_04: 1, s_04: 8 })).toBe("#0B6E5F");
     // 22°C is far outside a 0–10° band: one hard miss out of three.
-    expect(evaluateExpression(expr, { t_04: 22, r_04: 1, s_04: 8 })).toBe("#B8610E");
+    expect(evaluateExpression(expr, { t_04: 22, r_04: 1, s_04: 8 })).toBe("#B55F0E");
     expect(evaluateExpression(expr, { name: "Nowhere" })).toBe(MISSING_FILL);
   });
 

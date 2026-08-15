@@ -13,11 +13,13 @@ const chip = tv({
   variants: {
     variant: {
       neutral: "bg-surface-2 text-text-muted",
-      premium: "bg-accent-subtle text-accent border-accent/30",
-      good: "bg-score-good-subtle text-score-good",
-      warm: "bg-score-acceptable-subtle text-score-acceptable",
+      premium: "bg-accent-subtle text-accent-text border-accent/30",
+      // Ink is the `-text` variant wherever the fill colour is too light to
+      // read on its own tint; `avoid` needs no variant (6.86 : 1 as-is).
+      good: "bg-score-good-subtle text-score-good-text",
+      warm: "bg-score-acceptable-subtle text-score-acceptable-text",
       avoid: "bg-score-avoid-subtle text-score-avoid",
-      caution: "bg-advisory-caution/15 text-advisory-caution",
+      caution: "bg-advisory-caution/15 text-advisory-caution-text",
     },
     size: {
       xs: "h-5 px-2 text-[10.5px]",

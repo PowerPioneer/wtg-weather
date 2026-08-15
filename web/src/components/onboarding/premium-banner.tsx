@@ -23,7 +23,7 @@ export function PremiumBanner({ plan }: PremiumBannerProps) {
         </svg>
       </span>
       <div className="flex-1">
-        <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-accent">
+        <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-accent-text">
           Welcome to {plan}
         </p>
         <p className="mt-0.5 font-display text-[18px] font-medium leading-tight tracking-[-0.005em] text-text">
