@@ -59,10 +59,7 @@ export function ScoreBadge({
       {resolvedLabel === "verbose" ? (
         <span
           aria-hidden="true"
-          // No `opacity-90` here: at 90% the white blends toward the fill and
-          // the bin label drops to 4.01 : 1 on `score-acceptable`. The size,
-          // weight and tracking already de-emphasise it enough.
-          className="text-[10px] font-medium uppercase tracking-[0.12em]"
+          className="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
         >
           {shortLabel}
         </span>

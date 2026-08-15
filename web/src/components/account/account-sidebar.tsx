@@ -45,7 +45,7 @@ export function AccountSidebar({
         <div
           className={cn(
             "mt-2 inline-block rounded-sm px-1.5 py-0.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.1em]",
-            isFree ? "bg-surface-2 text-text-muted" : "bg-[#FBF3DC] text-accent-text",
+            isFree ? "bg-surface-2 text-text-muted" : "bg-[#FBF3DC] text-accent",
           )}
         >
           {planLabel}

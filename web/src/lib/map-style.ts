@@ -186,7 +186,7 @@ export function buildFillColorExpression(
         score,
         "#7A2E2E", // avoid   (< 50)
         50,
-        "#B55F0E", // acceptable (50–69)
+        "#B8610E", // acceptable (50–69)
         70,
         "#0072B2", // good (70–84)
         85,
@@ -201,7 +201,7 @@ export function buildFillColorExpression(
       "case",
       ["==", raw, MISSING_SENTINEL],
       MISSING_FILL,
-      ["step", raw, "#4A5568", 2, "#9B6434", 3, "#B55F0E", 4, "#7A2E2E"],
+      ["step", raw, "#4A5568", 2, "#B8763E", 3, "#B8610E", 4, "#7A2E2E"],
     ];
   }
 

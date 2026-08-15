@@ -22,7 +22,7 @@
   /* ─── Text ─────────────────────────────────────────────────────── */
   --color-text:             #0F1B2D;
   --color-text-muted:       #4A5568;
-  --color-text-subtle:      #6A707E;
+  --color-text-subtle:      #6B7280;
   --color-text-inverse:     #FFFFFF;
   --color-text-link:        #8A4A1E;
 
@@ -35,9 +35,6 @@
 
   --color-accent:               #B8763E;
   --color-accent-subtle:        #F3E8D9;
-  /* Brass fails AA as text (3.41 on background). `accent` stays the brand
-     fill/border/tint; anything that renders accent as *text* uses this. */
-  --color-accent-text:          #8A5A2B;
 
   --color-destructive:              #7A2E2E;
   --color-destructive-foreground:   #FFFFFF;
@@ -55,28 +52,16 @@
   --color-score-perfect-subtle:    #DDEBE7;
   --color-score-good:              #0072B2;
   --color-score-good-subtle:       #D7E4EF;
-  --color-score-acceptable:        #B55F0E;
+  --color-score-acceptable:        #B8610E;
   --color-score-acceptable-subtle: #EFDFC9;
   --color-score-avoid:             #7A2E2E;
   --color-score-avoid-subtle:      #EFD8D8;
 
-  /* Score colours as *ink*. The fills above are tuned for white-on-fill and
-     are too light to be read as text on their own `-subtle` tint. Same split
-     as `accent` / `accent-text`. `perfect` and `avoid` need no variant — they
-     already clear AA on their tints (5.02 and 6.86). */
-  --color-score-good-text:         #0069A5;
-  --color-score-acceptable-text:   #99500C;
-
   /* ─── Safety advisory ──────────────────────────────────────────── */
   --color-advisory-normal:      #4A5568;
-  /* Decoupled from `accent` (which it used to match): the advisory ramp
-     carries white text on the fill, and brass cannot hold AA under it. */
-  --color-advisory-caution:     #9B6434;
-  --color-advisory-reconsider:  #B55F0E;
+  --color-advisory-caution:     #B8763E;
+  --color-advisory-reconsider:  #B8610E;
   --color-advisory-dnt:         #7A2E2E;
-  /* Ink counterpart, for the same reason as the score `-text` tokens: the
-     caution fill reads at only 3.77 : 1 on a 15% tint of itself. */
-  --color-advisory-caution-text: #89592E;
 
   /* ─── Typography ───────────────────────────────────────────────── */
   --font-display: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;

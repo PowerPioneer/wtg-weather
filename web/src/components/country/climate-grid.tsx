@@ -41,7 +41,7 @@ export function ClimateGrid({ country }: { country: CountryData }) {
         </div>
         <div className="mt-6">
           <div className="mb-3 flex items-baseline justify-between">
-            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-accent-text">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-accent">
               Premium · four more variables
             </div>
             <Link href="/pricing" className="font-mono text-[12px] text-text-link hover:underline">

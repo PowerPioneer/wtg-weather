@@ -22,13 +22,13 @@ export function TripHero({ trip, mode }: { trip: TripView; mode: "owner" | "publ
         <div className="border-b border-accent bg-[#FBF3DC]">
           <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-6 py-2.5 font-mono text-[12px] text-text md:px-12">
             <div>
-              <span className="font-semibold uppercase tracking-[0.1em] text-accent-text">
+              <span className="font-semibold uppercase tracking-[0.1em] text-accent">
                 Shared trip
               </span>
               <span className="mx-2.5 text-border">·</span>
               Read-only view
             </div>
-            <Link href="/login" className="font-semibold text-accent-text hover:underline">
+            <Link href="/login" className="font-semibold text-accent hover:underline">
               Plan your own →
             </Link>
           </div>

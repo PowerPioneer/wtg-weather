@@ -157,7 +157,7 @@ export function CreateAlertButton({
         </span>
         <Link
           href="/account?s=alerts"
-          className="font-mono text-[11px] text-accent-text hover:underline"
+          className="font-mono text-[11px] text-accent hover:underline"
         >
           Manage alerts →
         </Link>

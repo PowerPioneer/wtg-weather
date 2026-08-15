@@ -41,7 +41,7 @@ export function PreferenceRow({
         <p className="flex items-center gap-2 text-[13px] font-medium text-text">
           {label}
           {premium ? (
-            <span className="rounded-sm border border-accent px-1.5 py-[1px] font-mono text-[9.5px] uppercase tracking-[0.1em] text-accent-text">
+            <span className="rounded-sm border border-accent px-1.5 py-[1px] font-mono text-[9.5px] uppercase tracking-[0.1em] text-accent">
               Premium
             </span>
           ) : null}

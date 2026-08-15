@@ -207,7 +207,7 @@ function ModeTile({
               <Icon name={mode.id} size={16} />
             </span>
             {locked ? (
-              <span className="inline-flex items-center gap-1 rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-accent-text">
+              <span className="inline-flex items-center gap-1 rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-accent">
                 <LockGlyph size={10} />
                 PRO
               </span>

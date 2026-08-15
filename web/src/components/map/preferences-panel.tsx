@@ -135,7 +135,7 @@ export function PreferencesPanel({
 
       {isPremium ? null : (
         <div className="rounded-md border border-border bg-surface-2/60 p-3">
-          <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-accent-text">
+          <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-accent">
             Premium map layers
           </p>
           <p className="mt-1 text-[11px] leading-relaxed text-text-subtle">

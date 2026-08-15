@@ -13,7 +13,7 @@ exports[`ScoreBadge > snapshot for acceptable bin > acceptable 1`] = `
   </span>
   <span
     aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
   >
     Fair
   </span>
@@ -33,7 +33,7 @@ exports[`ScoreBadge > snapshot for avoid bin > avoid 1`] = `
   </span>
   <span
     aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
   >
     Avoid
   </span>
@@ -53,7 +53,7 @@ exports[`ScoreBadge > snapshot for good bin > good 1`] = `
   </span>
   <span
     aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
   >
     Good
   </span>
@@ -73,7 +73,7 @@ exports[`ScoreBadge > snapshot for perfect bin > perfect 1`] = `
   </span>
   <span
     aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
+    class="text-[10px] font-medium uppercase tracking-[0.12em] opacity-90"
   >
     Perfect
   </span>

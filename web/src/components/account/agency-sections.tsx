@@ -9,13 +9,13 @@ import { SectionHead } from "./section-head";
 type Props = { session: SessionUser; account: AgencyAccount };
 
 const KIND_CHIP: Record<AgencyActivityRow["kind"], string> = {
-  SHARE: "text-accent-text",
+  SHARE: "text-accent",
   EDIT: "text-text-muted",
   CREATE: "text-score-perfect",
   EXPORT: "text-score-good",
   TEAM: "text-[#6B4FAE]",
   CLIENT: "text-text-muted",
-  ALERT: "text-accent-text",
+  ALERT: "text-accent",
   BILLING: "text-text",
 };
 
@@ -199,7 +199,7 @@ export function AgencyOverview({ session, account }: Props) {
             </span>
             <Link
               href="/account?s=activity"
-              className="font-mono text-[11px] text-accent-text hover:underline"
+              className="font-mono text-[11px] text-accent hover:underline"
             >
               View feed →
             </Link>
@@ -302,7 +302,7 @@ export function AgencyClients({ account }: Props) {
             <div className="text-right">
               <Link
                 href={`/account/clients/${c.id}`}
-                className="font-mono text-[11px] text-accent-text hover:underline"
+                className="font-mono text-[11px] text-accent hover:underline"
               >
                 Open →
               </Link>
@@ -358,7 +358,7 @@ export function AgencyTeam({ session, account }: Props) {
             <div>
               <span className="text-text">{m.name}</span>
               {m.you && (
-                <span className="ml-2 font-mono text-[9.5px] uppercase tracking-[0.1em] text-accent-text">
+                <span className="ml-2 font-mono text-[9.5px] uppercase tracking-[0.1em] text-accent">
                   ● you
                 </span>
               )}
@@ -372,7 +372,7 @@ export function AgencyTeam({ session, account }: Props) {
             <div
               className={cn(
                 "font-mono text-[10.5px] uppercase tracking-[0.1em]",
-                m.status === "active" ? "text-score-perfect" : "text-accent-text",
+                m.status === "active" ? "text-score-perfect" : "text-accent",
               )}
             >
               ● {m.status}
@@ -569,7 +569,7 @@ export function AgencyBilling({ session, account }: Props) {
                   ● {inv.status.toUpperCase()}
                 </div>
                 <div className="text-right">
-                  <a href="#" className="text-[11.5px] text-accent-text hover:underline">
+                  <a href="#" className="text-[11.5px] text-accent hover:underline">
                     PDF ↗
                   </a>
                 </div>
