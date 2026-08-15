@@ -173,15 +173,14 @@ test("the new anonymous surfaces have no accessibility violations", async ({ pag
 });
 
 /*
- * Still to write, and honestly blocked rather than forgotten:
+ * The other half —
  *
  *   sign in → create trip from map → see it in account → open the share link
  *   signed out
  *
- * needs a running API and Postgres. The web reads `/api/trips`, `/api/me` and
- * `/api/alerts` from the Next server for `/account`, `/trip/[id]` and
- * `/trip/share/[token]`, so `page.route` — which only sees the browser's own
- * requests — cannot stand in for them. Running it means pointing
- * `PLAYWRIGHT_BASE_URL` at a stack with a seeded database, which the config
- * already supports.
+ * — is `trip-journey.spec.ts`. It needs the API and Postgres for the reason
+ * given above (the web reads `/api/trips`, `/api/me` and `/api/alerts` from the
+ * Next server, where `page.route` cannot reach), so it is opt-in behind
+ * `WTG_E2E_STACK=1` and a `PLAYWRIGHT_BASE_URL` pointed at a real stack. That
+ * file's header says what the stack needs.
  */
