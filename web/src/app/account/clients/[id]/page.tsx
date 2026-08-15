@@ -7,13 +7,13 @@ import { ScoreBadge } from "@/components/match/score-badge";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { cn } from "@/lib/cn";
 import { findAgencyAccount, findClientRecord } from "@/lib/mock-data";
-import { getEntitlement, getSessionServer } from "@/lib/session";
-import type {
-  ClientActivityRow,
-  ClientNote,
-  ClientRecord,
-  SessionUser,
-} from "@/lib/types";
+import {
+  displayName,
+  getEntitlement,
+  getSessionServer,
+  planLabel,
+} from "@/lib/session";
+import type { ClientActivityRow, ClientNote, ClientRecord } from "@/lib/types";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -28,14 +28,6 @@ const TAB_LABEL: Record<TabId, string> = {
   trips: "Trips",
   activity: "Activity",
   files: "Files",
-};
-
-const PLAN_LABEL: Record<SessionUser["plan"], string> = {
-  free: "Free",
-  premium: "Premium",
-  agency_starter: "Agency · Starter",
-  agency_pro: "Agency · Pro",
-  agency_enterprise: "Agency · Enterprise",
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -78,10 +70,10 @@ export default async function ClientDetailPage({ params, searchParams }: PagePro
             <div>
               /account/clients/{client.id} · org{" "}
               <span className="font-semibold text-text">{session.org.name}</span> ·{" "}
-              {PLAN_LABEL[session.plan]}
+              {planLabel(session.plan)}
             </div>
             <div>
-              signed in as {session.name} ({session.role.replace("agency_", "")}) ·{" "}
+              signed in as {displayName(session)} ({session.role ?? "member"}) ·{" "}
               {session.org.seatsUsed}/{session.org.seatCap} seats
             </div>
           </div>
@@ -94,7 +86,7 @@ export default async function ClientDetailPage({ params, searchParams }: PagePro
               sections={sections}
               activeId="clients"
               basePath="/account"
-              planLabel={PLAN_LABEL[session.plan]}
+              planLabel={planLabel(session.plan)}
             />
             <div className="mx-3 mt-4 rounded-sm border border-border bg-white p-2.5">
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-text-subtle">

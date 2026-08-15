@@ -1,11 +1,14 @@
 /**
- * Session and entitlement helpers.
+ * Server-side session read.
  *
  * FastAPI owns auth (magic link + OAuth, HttpOnly session cookie). Here we
- * just read the cookie, either resolve it against the mock fixtures (dev)
- * or forward it to `/api/me` (prod, Phase 5.5 wires the real call).
+ * read the cookie and either resolve it against the mock fixtures (dev) or
+ * forward it to `/api/me`.
  *
- * RSC-only. The client-side mirror lives in `hooks/use-session.ts`.
+ * RSC-only — the client-side mirror is `hooks/use-session.ts`. Both parse the
+ * response with `parseSessionUser` and gate on `getEntitlement`, which live in
+ * `lib/session-user.ts` precisely so there is one of each. `getEntitlement` is
+ * re-exported here so RSC callers keep importing the session module.
  */
 
 import "server-only";
@@ -13,7 +16,10 @@ import { cookies } from "next/headers";
 
 import { INTERNAL_API_URL, USE_MOCK_DATA } from "./env";
 import { findSession } from "./mock-data";
-import type { Entitlement, SessionUser } from "./types";
+import { parseSessionUser } from "./session-user";
+import type { SessionUser } from "./types";
+
+export { displayName, firstName, getEntitlement, monthYear, planLabel } from "./session-user";
 
 /** Dev-only cookie the preview UI sets to swap between free/premium/agency. */
 const MOCK_COOKIE = "wtg_mock_session";
@@ -41,7 +47,7 @@ export async function getSessionServer(): Promise<SessionUser | null> {
     cache: "no-store",
   });
   if (!res.ok) return null;
-  return (await res.json()) as SessionUser;
+  return parseSessionUser(await res.json());
 }
 
 export type ServerOnboardingState = {
@@ -72,11 +78,4 @@ export async function getOnboardingServer(): Promise<ServerOnboardingState | nul
   });
   if (!res.ok) return null;
   return (await res.json()) as ServerOnboardingState;
-}
-
-export function getEntitlement(session: SessionUser | null): Entitlement {
-  if (!session) return { premium: false, agency: false };
-  const agency = session.plan.startsWith("agency_");
-  const premium = session.plan !== "free";
-  return { premium, agency, seatCap: session.org?.seatCap };
 }

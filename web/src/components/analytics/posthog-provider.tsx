@@ -7,7 +7,8 @@ import { APP_ENV, POSTHOG_HOST, POSTHOG_KEY } from "@/lib/env";
 export type PostHogUser = {
   id: string;
   plan: string;
-  role: string;
+  /** Membership role, or null for a user with no organization. */
+  role: string | null;
   orgId?: string;
 };
 

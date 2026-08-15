@@ -24,7 +24,7 @@ import {
   findAgencyAccount,
   findConsumerAccount,
 } from "@/lib/mock-data";
-import { getEntitlement, getSessionServer } from "@/lib/session";
+import { getEntitlement, getSessionServer, planLabel } from "@/lib/session";
 import type {
   AgencyAccount,
   ConsumerAccount,
@@ -61,14 +61,6 @@ const AGENCY_SECTIONS = [
 
 type ConsumerSectionId = (typeof CONSUMER_SECTIONS)[number];
 type AgencySectionId = (typeof AGENCY_SECTIONS)[number];
-
-const PLAN_LABEL: Record<SessionUser["plan"], string> = {
-  free: "Free",
-  premium: "Premium",
-  agency_starter: "Agency · Starter",
-  agency_pro: "Agency · Pro",
-  agency_enterprise: "Agency · Enterprise",
-};
 
 export default async function AccountPage({ searchParams }: PageProps) {
   const session = await getSessionServer();
@@ -230,7 +222,7 @@ function AccountShell({
             sections={sections}
             activeId={activeId}
             basePath={basePath}
-            planLabel={PLAN_LABEL[session.plan]}
+            planLabel={planLabel(session.plan)}
           />
           <section className="px-6 py-8 md:px-10 md:py-10">{children}</section>
         </div>

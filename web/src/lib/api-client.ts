@@ -16,6 +16,7 @@ import { INTERNAL_API_URL, USE_MOCK_DATA } from "./env";
 import type { CountryRef } from "./countries";
 import { findCountryData, mockCountryRefs } from "./mock-data";
 import { findRegion } from "./regions";
+import { parseSessionUser } from "./session-user";
 import type { CountryData, RegionRow, SessionUser } from "./types";
 
 type FetchInit = Omit<RequestInit, "body"> & {
@@ -119,6 +120,10 @@ export async function publicApi<T>(path: string, init: RequestInit = {}): Promis
 /**
  * Browser-side `/api/me` fetch. Returns `null` on 401 (unauthenticated) so
  * the `useSession` hook can distinguish "not signed in" from "request failed".
+ *
+ * Parsed, not cast: this is the one payload whose shape decides what the UI
+ * unlocks, and a cast would let a malformed body through as a `SessionUser`
+ * whose `plan` is `undefined`.
  */
 export async function fetchMe(): Promise<SessionUser | null> {
   const res = await fetch("/api/me", {
@@ -127,7 +132,7 @@ export async function fetchMe(): Promise<SessionUser | null> {
   });
   if (res.status === 401) return null;
   if (!res.ok) throw new Error(`fetchMe failed: ${res.status}`);
-  return (await res.json()) as SessionUser;
+  return parseSessionUser(await res.json());
 }
 
 export type TileTier = "free" | "premium";

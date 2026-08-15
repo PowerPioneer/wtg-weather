@@ -40,7 +40,7 @@ export function AnalyticsSwitch() {
         id: session.id,
         plan: session.plan,
         role: session.role,
-        orgId: session.org?.id,
+        orgId: session.org?.id ?? undefined,
       }}
     />
   );

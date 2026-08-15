@@ -187,44 +187,54 @@ export type Tier = {
 
 // ─── Session / entitlement ───────────────────────────────────────────
 //
-// FastAPI owns auth; these types mirror the `/api/me` payload shape that
-// Phase 5.5 will finalise. The mock session plumbing in `lib/session.ts`
-// returns objects of this shape so the UI can be built before the API
-// endpoint exists.
+// FastAPI owns auth; these mirror the `MeResponse` schema in
+// `api/src/wtg_api/schemas/__init__.py` field for field, in camelCase. The
+// **plan vocabulary is the API's** — `consumer_premium`, not `premium`. The
+// web used to keep its own shorthand, which meant `getEntitlement` compared
+// `session.plan` against strings that no `/api/me` response ever contained.
+//
+// Parsing and entitlement derivation live in `lib/session-user.ts`; nothing
+// should construct a `SessionUser` by hand outside the fixtures.
 
 export type AccountPlan =
   | "free"
-  | "premium"
+  | "consumer_premium"
   | "agency_starter"
   | "agency_pro"
   | "agency_enterprise";
 
-export type AgencyRole =
-  | "agency_owner"
-  | "agency_admin"
-  | "agency_agent"
-  | "agency_viewer";
+/** A membership role within an organization — the API's `Role` enum. */
+export type AccountRole = "owner" | "admin" | "agent" | "member";
 
-export type AccountRole = "consumer" | AgencyRole;
+/**
+ * The organization the user's entitlement came from. Absent for a user with
+ * no membership, which is everyone on the free plan.
+ *
+ * Only the fields the API can actually answer for: `Organization` carries no
+ * slug and no owner name, and inventing either is how the account page came
+ * to print an agency URL that resolves to nothing.
+ */
+export type SessionOrg = {
+  id: string;
+  name: string;
+  plan: AccountPlan;
+  seatCap: number;
+  seatsUsed: number;
+  /** ISO-8601 UTC. Null on a payload that predates the field. */
+  createdAt: string | null;
+};
 
 export type SessionUser = {
   id: string;
-  name: string;
   email: string;
+  /** Null until the user gives one — magic-link sign-up collects an address. */
+  name: string | null;
   plan: AccountPlan;
-  role: AccountRole;
-  signedInAt: string;
-  memberSince: string;
-  org?: {
-    id: string;
-    name: string;
-    slug: string;
-    plan: AccountPlan;
-    seatCap: number;
-    seatsUsed: number;
-    ownerName: string;
-    memberSince: string;
-  };
+  /** Role in {@link SessionOrg}. Null when there is no org. */
+  role: AccountRole | null;
+  /** ISO-8601 UTC account-creation time. Render via `monthYear()`. */
+  createdAt: string | null;
+  org: SessionOrg | null;
 };
 
 export type Entitlement = {

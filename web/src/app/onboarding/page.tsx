@@ -2,7 +2,11 @@ import { redirect } from "next/navigation";
 
 import { AgencyWizard } from "@/components/onboarding/agency-wizard";
 import { ConsumerWizard } from "@/components/onboarding/consumer-wizard";
-import { getOnboardingServer, getSessionServer } from "@/lib/session";
+import {
+  getEntitlement,
+  getOnboardingServer,
+  getSessionServer,
+} from "@/lib/session";
 
 export const metadata = {
   title: "Set up your account · Atlas Weather",
@@ -26,9 +30,12 @@ export default async function OnboardingPage() {
 
   if (state.completed) redirect("/map");
 
-  const kind =
-    state.kind ??
-    (session.role === "consumer" ? "consumer" : "agency");
+  // No persisted choice yet: an agency plan means the agency flow, anything
+  // else the consumer one. The session's `role` is a *membership* role
+  // (owner/admin/agent/member) and says nothing about which product the user
+  // is here for — a consumer-premium subscriber is the "owner" of their own
+  // single-seat org.
+  const kind = state.kind ?? (getEntitlement(session).agency ? "agency" : "consumer");
 
   if (kind === "agency") {
     return (

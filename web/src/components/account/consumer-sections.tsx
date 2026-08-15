@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match/score-badge";
 import { cn } from "@/lib/cn";
+import { firstName, monthYear } from "@/lib/session-user";
 import type { ConsumerAccount, SessionUser } from "@/lib/types";
 
 import { EmptyState, SectionHead } from "./section-head";
@@ -10,22 +11,25 @@ type Props = { session: SessionUser; account: ConsumerAccount };
 
 export function ConsumerOverview({ session, account }: Props) {
   const isFree = session.plan === "free";
-  const firstName = session.name.split(" ")[0] ?? session.name;
   const activeAlerts = account.alerts.filter((a) => a.on).length;
+  const since = monthYear(session.createdAt);
 
   const stats = [
     { l: "Saved trips", v: String(account.trips.length), cap: isFree ? "/ 3 on Free" : "/ unlimited" },
     { l: "Favourites", v: String(account.favourites.length), cap: "countries & regions" },
     { l: "Active alerts", v: String(activeAlerts), cap: `${account.alerts.length} total` },
-    { l: "Last sign-in", v: "Today", cap: session.signedInAt.replace(/^Today · /, "") },
+    // There is no sign-in history to show: sessions are stateless signed
+    // cookies, so the API has no last-seen timestamp to report. Account age is
+    // something it does know.
+    { l: "Member since", v: since ?? "—", cap: since ? "" : "date unavailable" },
   ];
 
   return (
     <>
       <SectionHead
         eyebrow="Account"
-        title={`Hello, ${firstName}.`}
-        sub={`Member since ${session.memberSince} · ${session.email}`}
+        title={`Hello, ${firstName(session)}.`}
+        sub={[since && `Member since ${since}`, session.email].filter(Boolean).join(" · ")}
       />
 
       <div
@@ -403,7 +407,13 @@ export function ConsumerBilling({ session, account }: Props) {
         <BillingCard
           eyebrow="Current plan"
           title={isFree ? "Free · Consumer" : "Premium · Consumer"}
-          sub={isFree ? "€0 · forever" : `€2.99 / month · since ${session.memberSince}`}
+          sub={
+            isFree
+              ? "€0 · forever"
+              : ["€2.99 / month", monthYear(session.createdAt) && `since ${monthYear(session.createdAt)}`]
+                  .filter(Boolean)
+                  .join(" · ")
+          }
         />
         <BillingCard
           eyebrow={isFree ? "Status" : "Next renewal"}

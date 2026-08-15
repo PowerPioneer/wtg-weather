@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
@@ -23,7 +24,39 @@ class MagicLinkResponse(BaseModel):
     sent: bool = True
 
 
+class MeOrganization(ORMModel):
+    """The org the user's entitlement came from.
+
+    `seats_used` is the membership count, which is what the seat cap is
+    enforced against — an invite that has not been accepted yet is already a
+    membership, so it counts.
+    """
+
+    id: uuid.UUID
+    name: str
+    plan: Plan
+    seat_cap: int
+    seats_used: int
+    created_at: datetime
+
+
 class MeResponse(ORMModel):
+    """The whole session contract, in one place.
+
+    The web mirrors this field for field (`SessionUser` in
+    `web/src/lib/types.ts`) and derives its two *presentation* gates from
+    `plan` against the same vocabulary — which is why the vocabulary is now
+    shared rather than translated. `is_premium` / `is_agency` are this side's
+    own answer, from the plan ranking in `services.entitlements`, and are what
+    a client that does not want to model that ranking should read. Neither is
+    an access control: `/api/tiles/url` re-resolves the entitlement against
+    the database before it signs anything.
+
+    `created_at` and `role` exist so the account surface has something true to
+    print. It rendered fixture strings ("Member since Mar 2026") for every
+    signed-in user before, because the payload carried nothing else.
+    """
+
     id: uuid.UUID
     email: EmailStr
     name: str | None = None
@@ -31,6 +64,11 @@ class MeResponse(ORMModel):
     organization_id: uuid.UUID | None = None
     is_premium: bool
     is_agency: bool
+    # The user's role *in the entitling org*. Null for a user with no
+    # membership at all — i.e. everyone on the free plan.
+    role: Role | None = None
+    created_at: datetime
+    organization: MeOrganization | None = None
 
 
 # --- Trips / favourites / alerts ---

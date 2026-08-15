@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 
 import { fetchMe } from "@/lib/api-client";
+import { getEntitlement } from "@/lib/session-user";
 import type { Entitlement, SessionUser } from "@/lib/types";
 
 export type SessionState = {
@@ -47,8 +48,7 @@ export function usePremiumEntitlement(initial: SessionUser | null = null): Entit
   loading: boolean;
 } {
   const { session, loading } = useSession(initial);
-  if (!session) return { premium: false, agency: false, loading };
-  const agency = session.plan.startsWith("agency_");
-  const premium = session.plan !== "free";
-  return { premium, agency, seatCap: session.org?.seatCap, loading };
+  // Same derivation the RSC path uses — `lib/session-user.ts` owns it, so the
+  // map's premium gate and the account page's cannot drift apart.
+  return { ...getEntitlement(session), loading };
 }

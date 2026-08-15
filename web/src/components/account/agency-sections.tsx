@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/cn";
+import { monthYear } from "@/lib/session-user";
 import type { AgencyAccount, AgencyActivityRow, SessionUser } from "@/lib/types";
 
 import { SectionHead } from "./section-head";
@@ -63,12 +64,21 @@ export function AgencyOverview({ session, account }: Props) {
   if (!org) return null;
   const max = Math.max(...account.team.map((m) => m.trips));
 
+  // Only what `/api/me` can answer for. This line used to print an owner name,
+  // a join date and an `atlasweather.io/o/<slug>` URL; `Organization` carries
+  // none of the three and the vanity URL resolves to nothing. WS-C decides
+  // whether org slugs exist at all.
+  const since = monthYear(org.createdAt);
+  const orgSub = [`Seats ${org.seatsUsed}/${org.seatCap}`, since && `Member since ${since}`]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <>
       <SectionHead
         eyebrow="Organization"
         title={org.name}
-        sub={`Owner: ${org.ownerName} · Member since ${org.memberSince} · atlasweather.io/o/${org.slug}`}
+        sub={orgSub}
         action={
           <Link
             href="/account?s=settings"
