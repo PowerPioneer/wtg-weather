@@ -113,15 +113,15 @@ export function MagicLinkForm({ defaultEmail = "" }: MagicLinkFormProps) {
 
       <p className="mt-3 border-t border-border pt-3.5 text-[11.5px] leading-[1.55] text-text-subtle">
         By continuing, you agree to our{" "}
-        <Link href="/terms" className="text-text-muted hover:text-text">
+        <Link href="/terms" className="text-text-muted underline underline-offset-2 hover:text-text">
           terms
         </Link>{" "}
         and{" "}
-        <Link href="/privacy" className="text-text-muted hover:text-text">
+        <Link href="/privacy" className="text-text-muted underline underline-offset-2 hover:text-text">
           privacy policy
         </Link>
         . Having trouble?{" "}
-        <Link href="/contact" className="text-text-link hover:underline">
+        <Link href="/contact" className="text-text-link underline underline-offset-2">
           Email support.
         </Link>
       </p>

@@ -29,7 +29,12 @@ export default defineConfig({
         command: "pnpm dev",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
-        env: { USE_MOCK_DATA: "true" },
+        // `WTG_USE_MOCK_DATA=1`, not `USE_MOCK_DATA=true`: `lib/env.ts` reads
+        // the former and compares it to the string "1". The old value set an
+        // environment variable nothing reads, so the suite has been running
+        // against a live-API code path with no API — which is why the specs
+        // that exist all stub their own fetches.
+        env: { WTG_USE_MOCK_DATA: "1" },
         timeout: 120_000,
       },
 });

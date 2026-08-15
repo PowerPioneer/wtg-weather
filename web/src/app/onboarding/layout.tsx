@@ -45,10 +45,10 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
       <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-surface px-6 py-5 font-mono text-[11px] text-text-subtle md:px-8">
         <div>© 2026 Atlas Weather · v2.0</div>
         <nav className="flex gap-5">
-          <Link href="/privacy" className="text-text-muted hover:text-text">
+          <Link href="/privacy" className="text-text-muted underline underline-offset-2 hover:text-text">
             Privacy
           </Link>
-          <Link href="/terms" className="text-text-muted hover:text-text">
+          <Link href="/terms" className="text-text-muted underline underline-offset-2 hover:text-text">
             Terms
           </Link>
           <Link href="/status" className="text-text-muted hover:text-text">

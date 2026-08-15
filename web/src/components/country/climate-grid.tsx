@@ -85,7 +85,13 @@ function PremiumTeaser({
       <p className="text-[12px] leading-snug text-text-muted">
         {title} for {countryName} is part of the Premium map and its
         district-level detail.{" "}
-        <Link href="/pricing" className="text-text-link underline-offset-2 hover:underline">
+        {/*
+          Underlined always, not just on hover. Axe (WCAG 1.4.1) flags this
+          one: the link colour against the muted body text around it is 1.1:1,
+          well under the 3:1 that lets colour alone mark a link. Underlining is
+          the fix that does not touch an Atlas colour token.
+        */}
+        <Link href="/pricing" className="text-text-link underline underline-offset-2">
           See what Premium includes
         </Link>
         .
