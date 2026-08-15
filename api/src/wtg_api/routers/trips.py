@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import secrets
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,9 +16,16 @@ from wtg_api.schemas import (
     FavouriteCreate,
     FavouriteRead,
     TripCreate,
+    TripPublicRead,
     TripRead,
+    TripShareRead,
     TripUpdate,
 )
+
+# 32 bytes of urandom, url-safe. Long enough that guessing is not a threat
+# model, which matters because this token is the whole authorisation for the
+# public view — there is no session behind it.
+SHARE_TOKEN_BYTES = 32
 
 router = APIRouter(prefix="/api", tags=["trips"])
 
@@ -103,6 +111,80 @@ async def delete_trip(
     await session.delete(trip)
     await session.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# --- Trip sharing ---
+#
+# Three routes, one rule: the owner controls whether a link exists, and the
+# link is the only thing an anonymous viewer needs. Declared after
+# `/trips/{trip_id}` but they cannot collide with it — these carry an extra
+# path segment.
+
+
+@router.post("/trips/{trip_id}/share", response_model=TripShareRead)
+async def share_trip(
+    trip_id: uuid.UUID,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(db_session),
+) -> TripShareRead:
+    """Mint a share token, or return the existing one.
+
+    Idempotent on purpose: pressing "share" twice should hand back the same
+    link, not silently invalidate the one already sent. Rotation is a revoke
+    followed by a share, which is the deliberate act it should be.
+    """
+    trip = await _owned_trip(session, trip_id, user)
+    if trip.share_token is None:
+        trip.share_token = secrets.token_urlsafe(SHARE_TOKEN_BYTES)
+        await session.commit()
+        await session.refresh(trip)
+    return TripShareRead(share_token=trip.share_token)
+
+
+@router.delete("/trips/{trip_id}/share", status_code=status.HTTP_204_NO_CONTENT)
+async def unshare_trip(
+    trip_id: uuid.UUID,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(db_session),
+) -> Response:
+    trip = await _owned_trip(session, trip_id, user)
+    trip.share_token = None
+    await session.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/trips/shared/{token}", response_model=TripPublicRead)
+async def read_shared_trip(
+    token: str = Path(min_length=16, max_length=64),
+    session: AsyncSession = Depends(db_session),
+) -> TripPublicRead:
+    """The public read-only view. No session required — the token is the grant.
+
+    A revoked token is a 404, the same answer a never-existent one gets: the
+    recipient of a withdrawn link learns that it does not work, not that it
+    used to.
+    """
+    trip = (
+        await session.execute(select(Trip).where(Trip.share_token == token))
+    ).scalar_one_or_none()
+    if trip is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "trip not found")
+    return TripPublicRead(
+        title=trip.title,
+        country_iso2=trip.country_iso2,
+        region_code=trip.region_code,
+        month=trip.month,
+        preferences=trip.preferences,
+    )
+
+
+async def _owned_trip(session: AsyncSession, trip_id: uuid.UUID, user: User) -> Trip:
+    """The caller's trip, or 404. Not 403 — a trip they do not own should not
+    be distinguishable from one that does not exist."""
+    trip = await session.get(Trip, trip_id)
+    if trip is None or trip.owner_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "trip not found")
+    return trip
 
 
 # --- Favourites ---

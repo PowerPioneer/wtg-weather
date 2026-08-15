@@ -59,6 +59,8 @@ const TRIP_READ = {
   month: 4,
   preferences: { tempMin: 14, tempMax: 22, rainMax: 2, sunMin: 6 },
   client_id: null,
+  // Owner-only, and null until the trip is shared.
+  share_token: null,
 };
 
 /** `FavouriteRead`, verbatim. */

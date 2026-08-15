@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import { findTripData } from "@/lib/mock-data";
+import { getSharedTrip } from "@/lib/trip-server";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
@@ -8,13 +8,23 @@ export const size = { width: 1200, height: 630 };
 export const alt = "Atlas Weather — shared trip";
 
 /**
- * Build-time OG image. Rendered with `next/og` at request time (cached per
- * URL by Vercel / Next's image pipeline). Keeps the design palette synced
- * with the page — if the hero card ever drifts, update both together.
+ * OG card for a shared trip.
+ *
+ * It lives on the *share* route rather than on `/trip/[id]`, where it used to.
+ * The share URL is the one that gets pasted into a chat app and unfurled; the
+ * owner's page is session-gated and `noindex`, so a card for it would either
+ * fail to render for the unfurler or leak a private trip to one. It reads the
+ * same token-scoped payload the page does, so it can show nothing the page
+ * does not.
+ *
+ * Everything here is the trip's own data. The previous version read
+ * `findTripData` — the fixture — and printed "by {agency}" from a field only
+ * the fixture had.
  */
-export default async function OG({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const trip = findTripData(id);
+export default async function OG({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
+  const trip = await getSharedTrip(token);
+
   if (!trip) {
     return new ImageResponse(
       (
@@ -38,7 +48,8 @@ export default async function OG({ params }: { params: Promise<{ id: string }> }
     );
   }
 
-  const agency = trip.owner.kind === "agency" ? trip.owner.agency : null;
+  const where = [trip.regionName, trip.countryName].filter(Boolean).join(", ");
+  const context = [where, trip.monthName].filter(Boolean).join(" · ");
 
   return new ImageResponse(
     (
@@ -77,9 +88,7 @@ export default async function OG({ params }: { params: Promise<{ id: string }> }
           >
             Shared trip
           </div>
-          <span>
-            {trip.country} · {trip.months.join(" – ")} · {trip.year}
-          </span>
+          {context && <span>{context}</span>}
         </div>
 
         <div
@@ -104,13 +113,13 @@ export default async function OG({ params }: { params: Promise<{ id: string }> }
             gap: 20,
           }}
         >
-          <span>{trip.destinations.length} destinations</span>
-          <span>·</span>
-          <span>Overall fit {trip.score}</span>
-          {agency && (
+          {trip.destinations.length > 0 && (
+            <span>{trip.destinations.length} regions ranked</span>
+          )}
+          {trip.score !== null && (
             <>
-              <span>·</span>
-              <span>by {agency}</span>
+              {trip.destinations.length > 0 && <span>·</span>}
+              <span>Match {trip.score}</span>
             </>
           )}
         </div>

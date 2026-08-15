@@ -17,6 +17,7 @@ import {
 import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
+import { SaveTripButton } from "@/components/trip";
 import { getCountry } from "@/lib/api-client";
 import { routableCountries } from "@/lib/country-routes";
 import { estimateMonthScore, monthRank } from "@/lib/country-derive";
@@ -28,6 +29,7 @@ import {
   monthIndex,
   type MonthSlug,
 } from "@/lib/months";
+import { DEFAULT_PREFERENCES } from "@/lib/scoring";
 import {
   estimateRegionMonthScore,
   findRegion,
@@ -163,6 +165,25 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
           narrative={narrative}
         />
         <MonthStats country={country} monthIdx={idx} />
+        {/*
+          Save the page you are on as a trip: this country, this month, the
+          default preferences. A signed-out visitor gets a sign-in link, and
+          with JS off nothing renders here — the page is an SEO surface and
+          must stand up without it.
+        */}
+        <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 px-6 pb-2 md:px-12">
+          <SaveTripButton
+            countryIso2={country.iso2}
+            placeName={country.name}
+            month={idx + 1}
+            monthSlug={month}
+            monthName={monthName}
+            preferences={DEFAULT_PREFERENCES}
+          />
+          <span className="font-mono text-[11px] text-text-subtle">
+            Re-scored whenever the climate data refreshes.
+          </span>
+        </div>
         <RegionsGrid country={country} currentMonthIdx={idx} />
         <SafetySection advisories={country.advisories} countryName={country.name} />
         <ClimateGrid country={country} />

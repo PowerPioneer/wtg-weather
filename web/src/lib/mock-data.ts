@@ -18,7 +18,6 @@ import type {
   Monthly,
   RegionRow,
   SessionUser,
-  TripData,
 } from "./types";
 
 /** mm/day from a monthly total — the unit the scoring rule consumes. */
@@ -341,63 +340,13 @@ export function findSession(key: string | undefined | null): SessionUser | null 
 }
 
 // ─── Trip fixtures ───────────────────────────────────────────────────
-
-const HONEYMOON_TRIP: TripData = {
-  id: "trp_8h2k9p",
-  title: "Honeymoon · Andes & Sacred Valley",
-  country: "Peru",
-  countrySlug: "peru",
-  months: ["April", "May"],
-  year: 2026,
-  score: 87,
-  shareUrl: "atlasweather.io/t/8h2k9p-honeymoon",
-  createdAt: "Apr 12, 2026",
-  updatedAt: "Apr 22, 2026",
-  ownerUserId: "usr_elena",
-  owner: {
-    kind: "agency",
-    agency: "Cordillera Voyages",
-    orgSlug: "cordillera",
-    client: "M. & A. Westfield",
-    clientId: "cli_westfield_8421",
-    plan: "Agency Pro",
-  },
-  prefs: {
-    free: [
-      { key: "temp", label: "Temperature", range: "14 – 22 °C", icon: "temp", matched: true },
-      { key: "rain", label: "Rainfall", range: "< 60 mm / mo", icon: "rain", matched: true },
-      { key: "sun", label: "Sunshine", range: "> 6 hr / day", icon: "sun", matched: true },
-      { key: "wind", label: "Wind speed", range: "< 25 km/h", icon: "wind", matched: true },
-      { key: "safety", label: "Safety", range: "Level 2 or safer", icon: "shield", matched: true },
-    ],
-    premium: [
-      { key: "snow", label: "Snow depth", range: "0 cm at lodging", matched: true },
-      { key: "sst", label: "Sea surface", range: "> 18 °C (Pacific)", matched: true },
-      { key: "heat", label: "Heat index", range: "< 30 °C feels-like", matched: true },
-      { key: "humidity", label: "Humidity", range: "40 – 70 %", matched: true },
-    ],
-  },
-  destinations: [
-    { rank: 1, region: "Cusco", country: "Peru", score: 93, t: "13 / 20 °C", r: "52 mm", s: "7.0 hr", tag: "Sacred Valley · Machu Picchu" },
-    { rank: 2, region: "Arequipa", country: "Peru", score: 91, t: "11 / 22 °C", r: "8 mm", s: "8.4 hr", tag: "Colca Canyon · white city" },
-    { rank: 3, region: "Moquegua", country: "Peru", score: 89, t: "12 / 23 °C", r: "4 mm", s: "8.6 hr", tag: "Quiet south coast" },
-    { rank: 4, region: "Apurímac", country: "Peru", score: 88, t: "10 / 21 °C", r: "32 mm", s: "7.3 hr", tag: "Choquequirao trek" },
-    { rank: 5, region: "Tacna", country: "Peru", score: 87, t: "14 / 23 °C", r: "0 mm", s: "8.7 hr", tag: "Border desert" },
-    { rank: 6, region: "Ayacucho", country: "Peru", score: 86, t: "11 / 22 °C", r: "38 mm", s: "7.0 hr", tag: "Colonial highland" },
-    { rank: 7, region: "Huancavelica", country: "Peru", score: 85, t: "6 / 17 °C", r: "46 mm", s: "6.8 hr", tag: "High páramo" },
-    { rank: 8, region: "Áncash", country: "Peru", score: 84, t: "10 / 21 °C", r: "40 mm", s: "6.9 hr", tag: "Cordillera Blanca · Huaraz" },
-    { rank: 9, region: "Junín", country: "Peru", score: 83, t: "6 / 18 °C", r: "60 mm", s: "6.6 hr", tag: "Mantaro valley" },
-    { rank: 10, region: "Puno", country: "Peru", score: 82, t: "4 / 17 °C", r: "38 mm", s: "7.2 hr", tag: "Lake Titicaca · altiplano" },
-  ],
-};
-
-export const TRIP_FIXTURES: Record<string, TripData> = {
-  "trp_8h2k9p": HONEYMOON_TRIP,
-};
-
-export function findTripData(id: string): TripData | null {
-  return TRIP_FIXTURES[id] ?? null;
-}
+//
+// Deliberately gone. `/trip/[id]` reads the owner's trip from the API and
+// `/trip/share/[token]` reads a shared one; there is nothing a fixture trip
+// can stand in for. The one that lived here — a honeymoon in Peru belonging to
+// a fixture agency user — was the only trip the site could render, was
+// reachable by anyone signed in or not, and was linked from the account page's
+// empty state as "See an example trip".
 
 // ─── Consumer account fixtures ───────────────────────────────────────
 //

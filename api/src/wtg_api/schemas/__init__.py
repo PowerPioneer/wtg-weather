@@ -100,6 +100,29 @@ class TripRead(ORMModel):
     month: int | None
     preferences: dict[str, Any]
     client_id: uuid.UUID | None
+    # Present only for the owner, and null until they share. The owner needs it
+    # to build (and to recognise) the link they are handing out.
+    share_token: str | None = None
+
+
+class TripShareRead(BaseModel):
+    share_token: str
+
+
+class TripPublicRead(BaseModel):
+    """A shared trip, as an anonymous viewer sees it.
+
+    Deliberately not `TripRead`: no `id`, so a share link cannot be turned into
+    an owner-scoped request; no `client_id`, because which of an agency's
+    clients a trip was built for is the agency's business and not the
+    recipient's; no `share_token` echo.
+    """
+
+    title: str
+    country_iso2: str | None
+    region_code: str | None
+    month: int | None
+    preferences: dict[str, Any]
 
 
 class FavouriteCreate(BaseModel):

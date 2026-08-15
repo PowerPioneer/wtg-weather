@@ -33,6 +33,13 @@ class Trip(Base, TimestampMixin):
     region_code: Mapped[str | None] = mapped_column(String(20), nullable=True)
     month: Mapped[int | None] = mapped_column(Integer, nullable=True)  # 1..12
     preferences: Mapped[dict[str, Any]] = mapped_column(JsonB, nullable=False, default=dict)
+    # Null until the owner shares the trip, and null again the moment they
+    # revoke it. Sharing is opt-in and the token *is* the capability, so it is
+    # a separate secret from the trip id: a link that leaked can be rotated
+    # without destroying the trip, and an id that leaked grants nothing.
+    share_token: Mapped[str | None] = mapped_column(
+        String(64), unique=True, index=True, nullable=True
+    )
 
     owner: Mapped[User] = relationship(back_populates="trips")
     client: Mapped[Client | None] = relationship(back_populates="trips")

@@ -20,6 +20,7 @@ import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/componen
 import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { ScoreBadge } from "@/components/match";
 import { SafetyBadge } from "@/components/safety";
+import { SaveTripButton } from "@/components/trip";
 import { cn } from "@/lib/cn";
 import type { CountryRef } from "@/lib/countries";
 import {
@@ -31,7 +32,12 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
-import { isDefaultPreferences, scoreLabel, type WeatherPreferences } from "@/lib/scoring";
+import {
+  DEFAULT_PREFERENCES,
+  isDefaultPreferences,
+  scoreLabel,
+  type WeatherPreferences,
+} from "@/lib/scoring";
 
 export type ClimatePanelProps = {
   identity: FeatureIdentity;
@@ -167,11 +173,27 @@ export function ClimatePanel({
           resolve back to a name and a page. A district has neither.
         */}
         {country && identity.level !== "admin2" && (
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-start gap-2">
             <FavouriteButton
               countryIso2={country.iso2}
               regionCode={identity.level === "admin1" ? identity.id : null}
               name={place}
+            />
+            {/*
+              Saving from here captures exactly what is on screen: this
+              polygon, the month the map is set to, and the preferences that
+              chose its colour. That is the whole trip — the ranking is
+              recomputed on the trip page from whatever the pipeline published
+              last, so nothing is frozen at save time.
+            */}
+            <SaveTripButton
+              countryIso2={country.iso2}
+              regionCode={identity.level === "admin1" ? identity.id : null}
+              placeName={place}
+              month={month}
+              monthSlug={monthSlug}
+              monthName={monthName}
+              preferences={preferences ?? DEFAULT_PREFERENCES}
             />
           </div>
         )}

@@ -244,47 +244,13 @@ export type Entitlement = {
 };
 
 // ─── Trip ────────────────────────────────────────────────────────────
-
-export type TripPref = {
-  key: string;
-  label: string;
-  range: string;
-  icon?: "temp" | "rain" | "sun" | "wind" | "shield";
-  matched?: boolean;
-};
-
-export type TripDestination = {
-  rank: number;
-  region: string;
-  country: string;
-  score: number;
-  t: string;
-  r: string;
-  s: string;
-  tag: string;
-};
-
-export type TripData = {
-  id: string;
-  title: string;
-  country: string;
-  countrySlug: string;
-  months: readonly string[];
-  year: number;
-  score: number;
-  shareUrl: string;
-  createdAt: string;
-  updatedAt: string;
-  ownerUserId: string;
-  owner:
-    | { kind: "consumer"; name: string }
-    | { kind: "agency"; agency: string; orgSlug: string; client: string; clientId?: string; plan: string };
-  prefs: {
-    free: readonly TripPref[];
-    premium: readonly TripPref[];
-  };
-  destinations: readonly TripDestination[];
-};
+//
+// The trip view model lives in `lib/trip-server.ts`, next to the code that
+// assembles it. What used to be here — `TripData`, `TripPref`,
+// `TripDestination` — described the fixture rather than the API: an owner that
+// was either a consumer or a named agency with a named client, nine
+// preference criteria of which six name variables no scoring rule consults,
+// and destinations carrying pre-formatted strings and editorial tags.
 
 // ─── Account (consumer) ──────────────────────────────────────────────
 //

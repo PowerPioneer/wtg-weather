@@ -381,6 +381,26 @@ export async function deleteTrip(id: string): Promise<void> {
   await accountFetch(`/trips/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
+/**
+ * Mint a share token, or return the one this trip already has. Idempotent, so
+ * pressing "share" twice hands back the same link rather than invalidating the
+ * one already sent.
+ */
+export async function shareTrip(id: string): Promise<string> {
+  const res = await accountFetch(`/trips/${encodeURIComponent(id)}/share`, {
+    method: "POST",
+  });
+  const body = (await res.json()) as { share_token?: unknown };
+  const token = str(body.share_token);
+  if (!token) throw new ApiError(500, `/trips/${id}/share`, "no token returned");
+  return token;
+}
+
+/** Revoke the share link. The existing URL 404s from here on. */
+export async function unshareTrip(id: string): Promise<void> {
+  await accountFetch(`/trips/${encodeURIComponent(id)}/share`, { method: "DELETE" });
+}
+
 export type FavouriteRecord = {
   id: string;
   countryIso2: string;

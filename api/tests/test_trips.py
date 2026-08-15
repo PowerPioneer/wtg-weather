@@ -112,3 +112,126 @@ async def test_unauth_alert_patch_401(client: AsyncClient) -> None:
 
     r = await client.patch(f"/api/alerts/{uuid.uuid4()}", json={"active": False})
     assert r.status_code == 401
+
+
+# --- Sharing ---
+#
+# The token is the whole authorisation for the public view: there is no session
+# behind it. So the failure paths matter more than the happy one.
+
+
+@pytest.mark.asyncio
+async def test_share_is_opt_in_and_idempotent(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Peru"})).json()["id"]
+
+    # Not shared until asked.
+    assert (await client.get(f"/api/trips/{trip_id}")).json()["share_token"] is None
+
+    first = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+    assert first
+    # Pressing share twice hands back the same link rather than invalidating
+    # the one already sent.
+    second = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+    assert first == second
+
+
+@pytest.mark.asyncio
+async def test_shared_trip_readable_without_a_session(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (
+        await client.post(
+            "/api/trips",
+            json={"title": "Peru in April", "country_iso2": "PE", "month": 4},
+        )
+    ).json()["id"]
+    token = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+
+    client.cookies.clear()
+    r = await client.get(f"/api/trips/shared/{token}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["title"] == "Peru in April"
+    assert body["month"] == 4
+    # The public view must not hand out anything that turns into an
+    # owner-scoped request, or that names an agency's client.
+    assert "id" not in body
+    assert "client_id" not in body
+    assert "share_token" not in body
+
+
+@pytest.mark.asyncio
+async def test_unshared_trip_is_not_reachable_by_its_id(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Private"})).json()["id"]
+
+    client.cookies.clear()
+    # The id is not a capability; only a token is.
+    assert (await client.get(f"/api/trips/{trip_id}")).status_code == 401
+    assert (await client.get(f"/api/trips/shared/{trip_id}")).status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_revoked_share_link_stops_working(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Peru"})).json()["id"]
+    token = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+
+    assert (await client.delete(f"/api/trips/{trip_id}/share")).status_code == 204
+
+    client.cookies.clear()
+    # 404, the same answer a token that never existed gets: the recipient of a
+    # withdrawn link learns it does not work, not that it used to.
+    assert (await client.get(f"/api/trips/shared/{token}")).status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_share_token_rotates_after_revoke(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Peru"})).json()["id"]
+    first = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+    await client.delete(f"/api/trips/{trip_id}/share")
+    second = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+
+    assert second != first
+    client.cookies.clear()
+    assert (await client.get(f"/api/trips/shared/{first}")).status_code == 404
+    assert (await client.get(f"/api/trips/shared/{second}")).status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_only_the_owner_can_share_or_revoke(
+    client: AsyncClient, user, sessionmaker
+) -> None:
+    from wtg_api.models import User
+
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Mine"})).json()["id"]
+
+    async with sessionmaker() as session:
+        other = User(email="other-share@example.com")
+        session.add(other)
+        await session.commit()
+        await session.refresh(other)
+
+    client.cookies.clear()
+    login(client, other)
+    assert (await client.post(f"/api/trips/{trip_id}/share")).status_code == 404
+    assert (await client.delete(f"/api/trips/{trip_id}/share")).status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_anonymous_cannot_mint_a_share_token(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Mine"})).json()["id"]
+
+    client.cookies.clear()
+    assert (await client.post(f"/api/trips/{trip_id}/share")).status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_share_token_is_not_guessably_short(client: AsyncClient, user) -> None:
+    login(client, user)
+    trip_id = (await client.post("/api/trips", json={"title": "Peru"})).json()["id"]
+    token = (await client.post(f"/api/trips/{trip_id}/share")).json()["share_token"]
+    assert len(token) >= 40

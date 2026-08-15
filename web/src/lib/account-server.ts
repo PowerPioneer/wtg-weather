@@ -25,10 +25,10 @@ import { findCountryByIso2 } from "./countries";
 import { monthScore } from "./country-derive";
 import { INTERNAL_API_URL, USE_MOCK_DATA } from "./env";
 import { MONTH_NAMES, MONTH_SLUGS } from "./months";
+import { regionMonthScore } from "./regions";
 import {
   DEFAULT_PREFERENCES,
   parseWeatherPreferences,
-  preferenceScore,
   type WeatherPreferences,
 } from "./scoring";
 import type {
@@ -113,21 +113,20 @@ function prefsOf(raw: Record<string, unknown>): WeatherPreferences {
   return parseWeatherPreferences(raw) ?? DEFAULT_PREFERENCES;
 }
 
-/** How many of a country's admin-1 rows clear the match threshold that month. */
+/**
+ * How many of a country's admin-1 rows clear the match threshold that month.
+ * Through `regionMonthScore` so this number agrees with the region cards on
+ * the country page — it falls back to the country series for a region the
+ * pipeline has no rainfall or sunshine for, rather than scoring it on
+ * temperature alone.
+ */
 function matchingRegions(
   country: CountryData,
   monthIdx: number,
   prefs: WeatherPreferences,
 ): number {
   return country.regions.filter((region) => {
-    const score = preferenceScore(
-      {
-        t: region.tl[monthIdx],
-        r: region.rl?.[monthIdx] ?? null,
-        s: region.sl?.[monthIdx] ?? null,
-      },
-      prefs,
-    );
+    const score = regionMonthScore(country, region, monthIdx, prefs);
     return score !== null && score >= MATCH_THRESHOLD;
   }).length;
 }

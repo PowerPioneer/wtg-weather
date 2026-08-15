@@ -1,16 +1,20 @@
 import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match/score-badge";
-import type { TripData } from "@/lib/types";
+import type { TripView } from "@/lib/trip-server";
 
 /**
- * Hero strip. Owner sees a black tracking ribbon ("Your trip · saved / updated");
- * the public read-only viewer sees an amber "shared" banner with a "Save a copy"
- * link. Banner + title + meta are server-rendered so the page is indexable.
+ * Hero strip. The owner gets a dark ribbon naming the trip as theirs; a
+ * read-only viewer gets an amber "shared" banner. Both are server-rendered.
+ *
+ * What is *not* here any more: "Saved {date} · Updated {date}", "Auto-sync on"
+ * and "Last alert · Apr 18 (rainfall ↑ Cusco)" were fixture strings — the trip
+ * payload carries no timestamps and there is no sync to report on. So was
+ * "~6 weeks window", on a trip that names one month.
  */
-export function TripHero({ trip, mode }: { trip: TripData; mode: "owner" | "public" }) {
+export function TripHero({ trip, mode }: { trip: TripView; mode: "owner" | "public" }) {
   const isOwner = mode === "owner";
-  const agencyOwner = trip.owner.kind === "agency" ? trip.owner : null;
+  const where = [trip.regionName, trip.countryName].filter(Boolean).join(", ");
 
   return (
     <>
@@ -18,20 +22,14 @@ export function TripHero({ trip, mode }: { trip: TripData; mode: "owner" | "publ
         <div className="border-b border-accent bg-[#FBF3DC]">
           <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-6 py-2.5 font-mono text-[12px] text-text md:px-12">
             <div>
-              <span className="font-semibold uppercase tracking-[0.1em] text-accent">Shared trip</span>
+              <span className="font-semibold uppercase tracking-[0.1em] text-accent">
+                Shared trip
+              </span>
               <span className="mx-2.5 text-border">·</span>
               Read-only view
-              {agencyOwner && (
-                <>
-                  {" from "}
-                  <strong className="font-sans text-text">{agencyOwner.agency}</strong>
-                </>
-              )}
-              <span className="mx-2.5 text-border">·</span>
-              {trip.shareUrl}
             </div>
-            <Link href="/signup" className="font-semibold text-accent hover:underline">
-              Save a copy →
+            <Link href="/login" className="font-semibold text-accent hover:underline">
+              Plan your own →
             </Link>
           </div>
         </div>
@@ -39,16 +37,14 @@ export function TripHero({ trip, mode }: { trip: TripData; mode: "owner" | "publ
 
       {isOwner && (
         <div className="bg-primary text-primary-foreground">
-          <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-6 py-2 font-mono text-[11.5px] md:px-12">
-            <div>
-              <span className="font-semibold uppercase tracking-[0.14em] text-[#E0C98A]">Your trip</span>
-              <span className="mx-2.5 text-white/40">·</span>
-              Saved {trip.createdAt} · Updated {trip.updatedAt} · {trip.id}
-            </div>
-            <div className="hidden gap-5 md:flex">
-              <span>● Auto-sync on</span>
-              <span className="text-white/60">Last alert · Apr 18 (rainfall ↑ Cusco)</span>
-            </div>
+          <div className="mx-auto flex w-full max-w-[1280px] items-center gap-3 px-6 py-2 font-mono text-[11.5px] md:px-12">
+            <span className="font-semibold uppercase tracking-[0.14em] text-[#E0C98A]">
+              Your trip
+            </span>
+            <span className="text-white/40">·</span>
+            <span className="text-white/80">
+              Re-scored against the latest published climate data
+            </span>
           </div>
         </div>
       )}
@@ -59,41 +55,48 @@ export function TripHero({ trip, mode }: { trip: TripData; mode: "owner" | "publ
             {isOwner ? "Saved trip" : "Shared trip · read-only"}
           </span>
           <div className="h-px flex-1 bg-border" aria-hidden="true" />
-          <span className="font-mono text-[11px] uppercase text-text-muted">
-            {trip.country} · {trip.months.join(" – ")} · {trip.year}
-          </span>
+          {(where || trip.monthName) && (
+            <span className="font-mono text-[11px] uppercase text-text-muted">
+              {[where, trip.monthName].filter(Boolean).join(" · ")}
+            </span>
+          )}
         </div>
-
-        {agencyOwner && (
-          <div className="mb-2 flex items-center gap-2.5 text-[13px] text-text-muted">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">For</span>
-            <span className="font-display text-[18px] italic text-text">{agencyOwner.client}</span>
-            <span className="text-border">·</span>
-            <span>prepared by {agencyOwner.agency}</span>
-          </div>
-        )}
 
         <h1 className="mt-1 font-display text-[48px] font-normal leading-[1.05] tracking-[-0.022em] text-text md:text-[64px]">
           {trip.title}
         </h1>
 
         <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-text-muted">
+          {where && (
+            <span>
+              <strong className="font-medium text-text">{where}</strong>
+            </span>
+          )}
           <span>
-            <strong className="font-medium text-text">{trip.country}</strong> · all regions
+            <strong className="font-medium text-text">
+              {trip.monthName ?? "No month set"}
+            </strong>
           </span>
-          <span className="text-border">·</span>
-          <span>
-            <strong className="font-medium text-text">{trip.months.join(" & ")}</strong> {trip.year} · ~6 weeks window
-          </span>
-          <span className="text-border">·</span>
-          <span>
-            <strong className="font-medium text-text">{trip.destinations.length}</strong> matching destinations
-          </span>
-          <span className="text-border">·</span>
-          <span className="inline-flex items-center gap-2">
-            Overall fit
-            <ScoreBadge score={trip.score} size="md" />
-          </span>
+          {trip.destinations.length > 0 && (
+            <>
+              <span className="text-border">·</span>
+              <span>
+                <strong className="font-medium text-text">
+                  {trip.destinations.length}
+                </strong>{" "}
+                ranked destinations
+              </span>
+            </>
+          )}
+          {trip.score !== null && (
+            <>
+              <span className="text-border">·</span>
+              <span className="inline-flex items-center gap-2">
+                Match
+                <ScoreBadge score={trip.score} size="md" />
+              </span>
+            </>
+          )}
         </div>
       </div>
     </>

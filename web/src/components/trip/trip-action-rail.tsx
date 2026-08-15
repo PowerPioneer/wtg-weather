@@ -1,24 +1,114 @@
 "use client";
 
+/**
+ * Owner actions: rename, share, delete.
+ *
+ * Every button here used to be a stub — "Edit preferences", "Add to alerts",
+ * "Export PDF" and "Delete trip" did nothing at all, and the share box showed
+ * a fixture URL (`atlasweather.io/t/8h2k9p-honeymoon`) that resolved nowhere.
+ * What is left is what the API can actually do; PDF export is on the product
+ * backlog, not implemented behind a button that looks implemented.
+ *
+ * Sharing is opt-in: no link exists until the owner asks for one, and revoking
+ * makes the existing link 404 immediately.
+ */
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  deleteTrip,
+  isUnauthorized,
+  shareTrip,
+  unshareTrip,
+  updateTrip,
+} from "@/lib/api-client";
 
-/**
- * Owner-only action rail. Most buttons are stubs until Phase 5.5 wires the
- * real /api/trips endpoints. The "Copy share link" button is wired to
- * `navigator.clipboard` so owners get an immediate confirmation.
- */
-export function TripActionRail({ shareUrl }: { shareUrl: string }) {
+export function TripActionRail({
+  tripId,
+  title,
+  shareToken,
+  siteUrl,
+}: {
+  tripId: string;
+  title: string;
+  shareToken: string | null;
+  /** Origin for the share link, so the copied URL is absolute. */
+  siteUrl: string;
+}) {
+  const router = useRouter();
+  const [token, setToken] = useState(shareToken);
+  const [name, setName] = useState(title);
+  const [busy, setBusy] = useState<null | "rename" | "share" | "delete">(null);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const shareUrl = token ? `${siteUrl}/trip/share/${token}` : null;
+
+  function fail(err: unknown, fallback: string) {
+    setError(isUnauthorized(err) ? "Your session expired. Sign in again." : fallback);
+  }
+
+  async function rename(event: React.FormEvent) {
+    event.preventDefault();
+    const next = name.trim();
+    if (!next || next === title) return;
+    setBusy("rename");
+    setError(null);
+    try {
+      await updateTrip(tripId, { title: next });
+      router.refresh();
+    } catch (err) {
+      fail(err, "Couldn't rename that. Try again.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function toggleShare() {
+    setBusy("share");
+    setError(null);
+    try {
+      if (token) {
+        await unshareTrip(tripId);
+        setToken(null);
+      } else {
+        setToken(await shareTrip(tripId));
+      }
+    } catch (err) {
+      fail(err, "Couldn't change sharing. Try again.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function remove() {
+    // A trip is not recoverable, and the API has no undo. `confirm` is the
+    // browser's own modal: available with no JS bundle of ours, and the one
+    // dialog users already recognise as "this is final".
+    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setBusy("delete");
+    setError(null);
+    try {
+      await deleteTrip(tripId);
+      router.push("/account?s=trips");
+      router.refresh();
+    } catch (err) {
+      fail(err, "Couldn't delete that. Try again.");
+      setBusy(null);
+    }
+  }
 
   async function copy() {
+    if (!shareUrl) return;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      /* clipboard may be unavailable (http, sandboxed iframes); fail quietly. */
+      /* clipboard is unavailable over http and in sandboxed frames; the input
+         is selectable either way, so there is nothing to recover from. */
     }
   }
 
@@ -27,78 +117,101 @@ export function TripActionRail({ shareUrl }: { shareUrl: string }) {
       <div className="mb-3 font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
         Owner actions
       </div>
-      <div className="flex flex-col gap-2">
-        <Button variant="secondary" size="md" className="w-full justify-between">
-          <span className="flex items-center gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M14 4l6 6L10 20H4v-6L14 4z" />
-            </svg>
-            Edit preferences
-          </span>
-          <span className="font-mono text-[10.5px] text-text-subtle">adjust ranges</span>
-        </Button>
-        <Button variant="secondary" size="md" className="w-full justify-between">
-          <span className="flex items-center gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4l2-2zM10 21h4" />
-            </svg>
-            Add to alerts
-          </span>
-          <span className="font-mono text-[10.5px] text-text-subtle">weekly</span>
-        </Button>
 
-        <div className="rounded-sm border border-border bg-[#FCFBF8] px-3.5 py-3">
-          <div className="mb-2 flex items-center gap-2.5 text-[12px] font-medium text-text">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <circle cx="6" cy="12" r="2.5" />
-              <circle cx="18" cy="6" r="2.5" />
-              <circle cx="18" cy="18" r="2.5" />
-              <path d="M8 11l8-4M8 13l8 4" />
-            </svg>
-            Share link
-            <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-score-perfect">
-              ● Public
-            </span>
-          </div>
-          <div className="flex gap-1.5">
+      <form onSubmit={rename} className="mb-3">
+        <label
+          htmlFor="trip-title"
+          className="mb-1 block font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-subtle"
+        >
+          Title
+        </label>
+        <div className="flex gap-1.5">
+          <input
+            id="trip-title"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={200}
+            className="flex-1 rounded-sm border border-border bg-white px-2.5 py-1.5 text-[12.5px] text-text"
+          />
+          <Button
+            type="submit"
+            variant="secondary"
+            size="md"
+            disabled={busy !== null || name.trim() === "" || name.trim() === title}
+          >
+            {busy === "rename" ? "Saving…" : "Save"}
+          </Button>
+        </div>
+      </form>
+
+      <div className="rounded-sm border border-border bg-[#FCFBF8] px-3.5 py-3">
+        <div className="mb-2 flex items-center gap-2.5 text-[12px] font-medium text-text">
+          Share link
+          <span
+            className={
+              "ml-auto font-mono text-[10px] uppercase tracking-[0.1em] " +
+              (token ? "text-score-perfect" : "text-text-subtle")
+            }
+          >
+            {token ? "● Anyone with the link" : "○ Private"}
+          </span>
+        </div>
+
+        {shareUrl && (
+          <div className="mb-2 flex gap-1.5">
             <input
               readOnly
               value={shareUrl}
+              aria-label="Share link"
+              onFocus={(e) => e.currentTarget.select()}
               className="flex-1 rounded-sm border border-border bg-white px-2.5 py-1.5 font-mono text-[11px] text-text-muted"
             />
             <button
               type="button"
               onClick={copy}
-              className="flex items-center gap-1.5 rounded-sm bg-primary px-3 text-[11px] text-primary-foreground hover:bg-primary/90"
+              className="rounded-sm bg-primary px-3 text-[11px] text-primary-foreground hover:bg-primary/90"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <rect x="8" y="8" width="12" height="12" rx="1" />
-                <path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" />
-              </svg>
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
-        </div>
+        )}
 
-        <Button variant="secondary" size="md" className="w-full justify-between">
-          <span className="flex items-center gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M6 3h9l5 5v13H6z" />
-              <path d="M14 3v6h6" />
-            </svg>
-            Export PDF
-          </span>
-          <span className="font-mono text-[10.5px] text-text-subtle">for client</span>
+        <Button
+          variant="secondary"
+          size="md"
+          className="w-full"
+          onClick={toggleShare}
+          disabled={busy !== null}
+        >
+          {busy === "share"
+            ? "Working…"
+            : token
+              ? "Stop sharing"
+              : "Create share link"}
         </Button>
-        <Button variant="secondary" size="md" className="w-full justify-start text-destructive">
-          <span className="flex items-center gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14" />
-            </svg>
-            Delete trip
-          </span>
-        </Button>
+        {token && (
+          <p className="mt-2 font-mono text-[10.5px] leading-[1.5] text-text-subtle">
+            Anyone with this link can view the trip. Stopping makes it stop
+            working immediately.
+          </p>
+        )}
       </div>
+
+      <Button
+        variant="secondary"
+        size="md"
+        className="mt-2 w-full justify-start text-destructive"
+        onClick={remove}
+        disabled={busy !== null}
+      >
+        {busy === "delete" ? "Deleting…" : "Delete trip"}
+      </Button>
+
+      {error && (
+        <p role="alert" className="mt-2 font-mono text-[11px] text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

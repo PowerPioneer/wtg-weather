@@ -1,4 +1,27 @@
 import "@testing-library/jest-dom/vitest";
+import { vi } from "vitest";
+
+// Same rationale as the two browser-API stubs below: jsdom has no App Router,
+// so any component reaching for `useRouter` throws the moment it renders —
+// including components a test is not there to exercise, like the save-trip
+// button inside the map's climate panel. A test that actually asserts on
+// navigation mocks `next/navigation` itself, which takes precedence.
+vi.mock("next/navigation", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("next/navigation")>();
+  return {
+    ...actual,
+    useRouter: () => ({
+      push: () => {},
+      replace: () => {},
+      refresh: () => {},
+      back: () => {},
+      forward: () => {},
+      prefetch: () => {},
+    }),
+    useSearchParams: () => new URLSearchParams(),
+    usePathname: () => "/",
+  };
+});
 
 // jsdom implements no media queries at all, and components that branch on
 // viewport (the map's mobile sheet vs. desktop modal) call `matchMedia` during
