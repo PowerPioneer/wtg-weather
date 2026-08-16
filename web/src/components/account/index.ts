@@ -11,9 +11,13 @@ export {
 } from "./consumer-sections";
 export {
   AgencyActivity,
-  AgencyBilling,
   AgencyBranding,
   AgencyClients,
   AgencyOverview,
   AgencyTeam,
 } from "./agency-sections";
+// Billing lives apart from the rest of the agency surfaces: WS-B owns it,
+// WS-C owns them.
+export { AgencyBilling } from "./agency-billing";
+export type { AgencyBillingProps } from "./agency-billing";
+export { ManageBillingButton } from "./manage-billing-button";

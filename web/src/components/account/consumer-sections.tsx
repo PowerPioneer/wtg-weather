@@ -1,14 +1,26 @@
 import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match/score-badge";
+import { CHECKOUT_COPY, UpgradeButton } from "@/components/upgrade";
+import type { BillingSummary } from "@/lib/billing-server";
 import { cn } from "@/lib/cn";
-import { firstName, monthYear } from "@/lib/session-user";
+import { firstName, monthYear, planLabel } from "@/lib/session-user";
 import type { ConsumerAccount, SessionUser } from "@/lib/types";
 
 import { AlertsList } from "./alerts-list";
+import { ManageBillingButton } from "./manage-billing-button";
 import { EmptyState, SectionHead } from "./section-head";
 
-type Props = { session: SessionUser; account: ConsumerAccount };
+type Props = {
+  session: SessionUser;
+  account: ConsumerAccount;
+  /**
+   * Present only on the billing section. Null when the API could not be
+   * reached — the section then reads as free rather than guessing at a plan,
+   * which is the safe direction to be wrong in.
+   */
+  billing?: BillingSummary | null;
+};
 
 export function ConsumerOverview({ session, account }: Props) {
   const isFree = session.plan === "free";
@@ -351,8 +363,29 @@ export function ConsumerSettings({ session }: Props) {
   );
 }
 
-export function ConsumerBilling({ session }: Props) {
-  const isFree = session.plan === "free";
+/**
+ * Billing. Three facts and two actions, and nothing invented.
+ *
+ * What is *not* here matters as much as what is. Renewal date, payment method
+ * and invoice history all live at Paddle and reach us only through a portal
+ * session, so this section links out for them rather than printing a copy. The
+ * version it replaces printed "Next renewal: May 14, 2026 · card ending 4471"
+ * from a fixture, to every subscriber, and its "Manage subscription" button
+ * was an anchor to `https://paddle.com` — the company's homepage.
+ */
+export function ConsumerBilling({ session, billing }: Props) {
+  // The summary is authoritative when we have it, because it is resolved from
+  // the same organization the tile gate resolves from. When we don't — the API
+  // blipped — fall back to the session rather than to "free": telling a paying
+  // subscriber they are on the free plan because one fetch failed is the worse
+  // of the two ways to be wrong here.
+  const plan = billing?.plan ?? session.plan;
+  const isFree = plan === "free";
+  // A *known* absence of a Paddle subscription, which is different from not
+  // knowing. Only the former justifies saying there is nothing to renew.
+  const knownNoSubscription = billing != null && !billing.hasSubscription;
+  const since = monthYear(session.createdAt);
+
   return (
     <>
       <SectionHead
@@ -368,25 +401,32 @@ export function ConsumerBilling({ session }: Props) {
       <div className="mb-6 grid gap-3.5 md:grid-cols-2">
         <BillingCard
           eyebrow="Current plan"
-          title={isFree ? "Free · Consumer" : "Premium · Consumer"}
+          title={isFree ? "Free · Consumer" : `${planLabel(plan)} · Consumer`}
           sub={
             isFree
               ? "€0 · forever"
-              : ["€2.99 / month", monthYear(session.createdAt) && `since ${monthYear(session.createdAt)}`]
-                  .filter(Boolean)
-                  .join(" · ")
+              : ["€2.99 / month", since && `since ${since}`].filter(Boolean).join(" · ")
           }
         />
-        {/*
-          Renewal date, payment method and invoice history all live in Paddle
-          and reach us only through the customer portal, which WS-B mints. The
-          card that used to sit here printed a fixture date and "card ending
-          4471" to every subscriber.
-        */}
         <BillingCard
           eyebrow="Status"
-          title={isFree ? "No active subscription" : "Active"}
-          sub={isFree ? "—" : "Renewal date and invoices are on Paddle"}
+          title={
+            isFree
+              ? "No active subscription"
+              : knownNoSubscription
+                ? "Active · granted directly"
+                : "Active"
+          }
+          sub={
+            isFree
+              ? "—"
+              : knownNoSubscription
+                ? // Premium with no Paddle subscription id is a comped or
+                  // manually-granted plan. Saying so beats printing a renewal
+                  // date that does not exist.
+                  "Nothing to renew"
+                : "Renewal date and invoices are on Paddle"
+          }
         />
       </div>
 
@@ -403,7 +443,8 @@ export function ConsumerBilling({ session }: Props) {
               {isFree ? "Subscribe through Paddle" : "Manage your subscription on Paddle"}
             </div>
             <p className="mt-2 max-w-[580px] text-[13px] leading-[1.55] text-text-muted">
-              Paddle handles billing for Atlas Weather. The portal opens in a new tab where you can:
+              Paddle is our Merchant of Record and handles billing for Atlas
+              Weather. From the customer portal you can:
             </p>
             <ul className="mt-2.5 list-disc space-y-1 pl-5 text-[12.5px] leading-[1.7] text-text">
               <li>Update payment method (card, PayPal, Apple Pay, SEPA)</li>
@@ -415,18 +456,41 @@ export function ConsumerBilling({ session }: Props) {
                   : "Cancel · refund within 14 days · pause for up to 3 months"}
               </li>
             </ul>
-            <div className="mt-4 flex gap-2.5">
-              <a
-                href="https://paddle.com"
-                className="rounded-sm bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                {isFree ? "Subscribe on Paddle ↗" : "Manage subscription on Paddle ↗"}
-              </a>
+            <div className="mt-4 flex flex-wrap items-start gap-2.5">
+              {isFree ? (
+                <UpgradeButton
+                  plan="consumer_premium"
+                  source="account_billing"
+                  className="inline-flex items-center justify-center rounded-sm bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground hover:bg-primary-hover"
+                />
+              ) : (
+                <ManageBillingButton
+                  label="Manage subscription on Paddle"
+                  available={billing?.portalAvailable ?? false}
+                />
+              )}
             </div>
+            {/*
+              The portal is unreachable when no Paddle customer exists for the
+              account, or when the environment has no API key. Saying which is
+              not useful to the reader; saying that cancellation still works,
+              and how, is.
+            */}
+            {!isFree && billing != null && !billing.portalAvailable && (
+              <p className="mt-3 max-w-[580px] text-[12.5px] leading-[1.5] text-text-muted">
+                The billing portal isn&rsquo;t available for this account right
+                now. To cancel or change your plan, reply to your Paddle receipt
+                email or get in touch and we&rsquo;ll do it for you.
+              </p>
+            )}
+            {billing?.sandbox && (
+              <p className="mt-3 font-mono text-[10.5px] text-text-subtle">
+                {CHECKOUT_COPY.sandboxNote}
+              </p>
+            )}
           </div>
         </div>
       </div>
-
     </>
   );
 }

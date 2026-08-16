@@ -20,6 +20,7 @@ import {
 import { PageFooter, PageHeader } from "@/components/layout";
 import { getConsumerAccount } from "@/lib/account-server";
 import { getAgencyAccount } from "@/lib/agency-server";
+import { getBillingSummary, type BillingSummary } from "@/lib/billing-server";
 import { getEntitlement, getSessionServer, planLabel } from "@/lib/session";
 import type {
   AgencyAccount,
@@ -75,21 +76,33 @@ export default async function AccountPage({ searchParams }: PageProps) {
   // Null means the API rejected the session between the `/api/me` read above
   // and this one — expired mid-render, or revoked. Sign in again rather than
   // rendering an empty account to someone who has three trips.
-  const account = await getConsumerAccount();
+  // Issued together: the billing read is a second round trip to the API and
+  // there is no reason for it to queue behind the trips list.
+  const [account, billing] = await Promise.all([
+    getConsumerAccount(),
+    getBillingSummary(),
+  ]);
   if (!account) redirect("/login");
 
   return (
-    <ConsumerAccountPage session={session} account={account} activeParam={s} />
+    <ConsumerAccountPage
+      session={session}
+      account={account}
+      billing={billing}
+      activeParam={s}
+    />
   );
 }
 
 function ConsumerAccountPage({
   session,
   account,
+  billing,
   activeParam,
 }: {
   session: SessionUser;
   account: ConsumerAccount;
+  billing: BillingSummary | null;
   activeParam: string | undefined;
 }) {
   const activeId: ConsumerSectionId = CONSUMER_SECTIONS.includes(
@@ -118,7 +131,7 @@ function ConsumerAccountPage({
       activeId={activeId}
       basePath="/account"
     >
-      {renderConsumerSection(activeId, session, account)}
+      {renderConsumerSection(activeId, session, account, billing)}
     </AccountShell>
   );
 }
@@ -127,6 +140,7 @@ function renderConsumerSection(
   id: ConsumerSectionId,
   session: SessionUser,
   account: ConsumerAccount,
+  billing: BillingSummary | null,
 ) {
   switch (id) {
     case "overview":
@@ -140,7 +154,9 @@ function renderConsumerSection(
     case "settings":
       return <ConsumerSettings session={session} account={account} />;
     case "billing":
-      return <ConsumerBilling session={session} account={account} />;
+      return (
+        <ConsumerBilling session={session} account={account} billing={billing} />
+      );
   }
 }
 
@@ -153,7 +169,10 @@ async function AgencyAccountPage({
 }) {
   const org = session.org;
   if (!org) notFound();
-  const account = await getAgencyAccount(org.id);
+  const [account, billing] = await Promise.all([
+    getAgencyAccount(org.id),
+    getBillingSummary(),
+  ]);
 
   const activeId: AgencySectionId = AGENCY_SECTIONS.includes(
     activeParam as AgencySectionId,
@@ -177,7 +196,7 @@ async function AgencyAccountPage({
       activeId={activeId}
       basePath="/account"
     >
-      {renderAgencySection(activeId, session, account)}
+      {renderAgencySection(activeId, session, account, billing)}
     </AccountShell>
   );
 }
@@ -186,6 +205,7 @@ function renderAgencySection(
   id: AgencySectionId,
   session: SessionUser,
   account: AgencyAccount,
+  billing: BillingSummary | null,
 ) {
   switch (id) {
     case "overview":
@@ -199,7 +219,9 @@ function renderAgencySection(
     case "branding":
       return <AgencyBranding />;
     case "billing":
-      return <AgencyBilling session={session} account={account} />;
+      return (
+        <AgencyBilling session={session} account={account} billing={billing} />
+      );
   }
 }
 

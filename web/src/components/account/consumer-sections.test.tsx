@@ -192,4 +192,90 @@ describe("ConsumerBilling", () => {
     expect(screen.getByText("You're on Free.")).toBeInTheDocument();
     expect(screen.getByText("No active subscription")).toBeInTheDocument();
   });
+
+  it("points the free upgrade CTA at checkout, not at paddle.com", () => {
+    // The button here used to be `<a href="https://paddle.com">` — the
+    // company's marketing homepage, labelled as if it managed your plan.
+    render(
+      <ConsumerBilling
+        session={session()}
+        account={EMPTY}
+        billing={{
+          plan: "free",
+          hasSubscription: false,
+          portalAvailable: false,
+          sandbox: true,
+          seatCap: null,
+        }}
+      />,
+    );
+    const cta = screen.getByTestId("upgrade-cta");
+    expect(cta).toHaveAttribute("href", "/upgrade?plan=consumer_premium");
+    expect(screen.queryByTestId("manage-billing")).toBeNull();
+  });
+
+  it("offers the portal only when the API says one can be minted", () => {
+    const billing = {
+      plan: "consumer_premium" as const,
+      hasSubscription: true,
+      portalAvailable: true,
+      sandbox: true,
+      seatCap: null,
+    };
+    const { rerender } = render(
+      <ConsumerBilling
+        session={session({ plan: "consumer_premium" })}
+        account={EMPTY}
+        billing={billing}
+      />,
+    );
+    expect(screen.getByTestId("manage-billing")).toBeInTheDocument();
+
+    // No Paddle customer, or an environment with no key: rather than a button
+    // that fails on click, say how to cancel instead.
+    rerender(
+      <ConsumerBilling
+        session={session({ plan: "consumer_premium" })}
+        account={EMPTY}
+        billing={{ ...billing, portalAvailable: false }}
+      />,
+    );
+    expect(screen.queryByTestId("manage-billing")).toBeNull();
+    expect(screen.getByText(/isn’t available for this account/i)).toBeInTheDocument();
+  });
+
+  it("does not downgrade a subscriber to Free when the billing read fails", () => {
+    // `billing` is null when the API could not be reached. Telling a paying
+    // subscriber they are on the free plan because one fetch failed is the
+    // worse of the two ways to be wrong.
+    render(
+      <ConsumerBilling
+        session={session({ plan: "consumer_premium" })}
+        account={EMPTY}
+        billing={null}
+      />,
+    );
+    expect(screen.queryByText("You're on Free.")).toBeNull();
+    expect(screen.getByText(/Premium · €2.99 \/ month/)).toBeInTheDocument();
+    // And it must not claim there is nothing to renew — it does not know.
+    expect(screen.queryByText(/Nothing to renew/)).toBeNull();
+  });
+
+  it("says so plainly when premium was granted without a subscription", () => {
+    render(
+      <ConsumerBilling
+        session={session({ plan: "consumer_premium" })}
+        account={EMPTY}
+        billing={{
+          plan: "consumer_premium",
+          hasSubscription: false,
+          portalAvailable: false,
+          sandbox: true,
+          seatCap: null,
+        }}
+      />,
+    );
+    expect(screen.getByText("Active · granted directly")).toBeInTheDocument();
+    expect(screen.getByText("Nothing to renew")).toBeInTheDocument();
+  });
 });
