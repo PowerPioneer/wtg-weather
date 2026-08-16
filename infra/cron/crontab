@@ -1,5 +1,12 @@
 # Installed on the host (not in a container). See infra/CLAUDE.md for rationale.
-# Phase 7 will flesh these out — placeholder schedule only.
+# Installing this file is WS-E; keeping it correct is each workstream's own job.
+#
+# cron gives a job a near-empty PATH, not a login shell's. Every script here
+# needs `docker` (/usr/bin), and the pipeline ones additionally need `uv`, which
+# the installer puts in root's ~/.local/bin. Both are spelled out rather than
+# left to whatever the shell inherits.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/bin
 
 # Nightly 02:00 UTC: encrypted backup to Backblaze B2
 0 2 * * * /opt/wtg-weather/infra/scripts/backup-postgres.sh >> /var/log/wtg-backup.log 2>&1
@@ -7,8 +14,15 @@
 # Weekly Sun 03:00 UTC: scrape advisories + publish
 0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
 
-# Weekly Mon 04:00 UTC: recompute alert matches + email transitions
+# Weekly Mon 04:00 UTC: recompute alert matches, email on transition.
+# Runs the job inside the `api` container (it needs Postgres, which is on the
+# internal-only network); the script holds its own lock and is safe to retry.
+# Monday rather than Sunday so it lands after the advisory run, which is the
+# only thing that republishes data mid-year.
 0 4 * * 1 /opt/wtg-weather/infra/scripts/weekly-alerts.sh >> /var/log/wtg-alerts.log 2>&1
 
-# Yearly Jan 15 04:00 UTC: full ERA5 pipeline rebuild (phase 7 script)
+# Yearly Jan 15 04:00 UTC: full ERA5 pipeline rebuild.
+# NOTE: yearly-era5.sh still shells into a `pipeline` compose service that
+# docker-compose.yml does not define — it has never been runnable as written.
+# WS-E rewrites it to run `uv` on the host like weekly-advisories.sh.
 0 4 15 1 * /opt/wtg-weather/infra/scripts/yearly-era5.sh >> /var/log/wtg-era5.log 2>&1
