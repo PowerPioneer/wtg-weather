@@ -236,6 +236,11 @@ def test_last_changed_survives_an_unchanged_rescrape(advisory_fixture) -> None:
 
     Without this the country page would print "updated today" every Sunday
     regardless of whether any government moved.
+
+    ``checked`` is the deliberate exception: it records when we last *read*
+    each government, so it moves on every scrape. That makes the detail file
+    differ week to week, which costs nothing — the weekly cron branches on the
+    byte-stable safety index, not on this file.
     """
     first = to_payload(consolidate(_scrape_fixtures(advisory_fixture)))
     second = to_payload(
@@ -244,7 +249,47 @@ def test_last_changed_survives_an_unchanged_rescrape(advisory_fixture) -> None:
         )
     )
 
-    assert second == first
+    assert _without(second, "checked") == _without(first, "checked")
+    assert _checked_dates(first) == {"2026-04-01T00:00:00Z"}
+    assert _checked_dates(second) == {"2026-04-08T00:00:00Z"}
+
+
+def _without(payload: dict, key: str) -> dict:
+    """The payload with one per-source key dropped, for comparing the rest."""
+    stripped = json.loads(json.dumps(payload))
+    for country in stripped["countries"]:
+        for source in country["sources"]:
+            source.pop(key, None)
+    return stripped
+
+
+def _checked_dates(payload: dict) -> set[str]:
+    return {
+        str(source["checked"])
+        for country in payload["countries"]
+        for source in country["sources"]
+    }
+
+
+def test_checked_records_the_scrape_not_the_carried_forward_change(
+    advisory_fixture,
+) -> None:
+    """The two dates a stale scraper is caught by.
+
+    A government that has not moved keeps its `last_changed`; the fact that we
+    read it again this week lives in `checked`. Reading staleness off
+    `last_changed` — the field the payload already had — would paint every
+    quiet country stale, which is why the web rule needs this one.
+    """
+    baseline = to_payload(consolidate(_scrape_fixtures(advisory_fixture)))
+    rescraped = consolidate(
+        _scrape_fixtures(advisory_fixture, fetched_at=LATER), previous=baseline
+    )
+
+    germany = {s.source_id: s for s in rescraped["JP"].sources}["germany"]
+
+    assert germany.last_changed == SCRAPED_AT
+    assert germany.checked == LATER
 
 
 def test_last_changed_moves_when_a_government_moves(advisory_fixture) -> None:

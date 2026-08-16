@@ -86,6 +86,18 @@ uv run wtg --help
   data rather than the clock. `weekly-advisories.sh` depends on this: it
   hashes the safety index to decide whether to rebuild tiles and purge the
   CDN, so a reworded advisory must not change those bytes.
+- Each government's entry in `advisories.json` carries **two** dates and they
+  are not interchangeable. `last_changed` is when that government moved, and
+  survives a rescrape that finds the same text. `checked` is when we last read
+  it, and moves on every successful scrape — so the detail file is *expected*
+  to differ week to week, while the safety index stays byte-stable. The web's
+  stale-badge rule reads `checked`; reading `last_changed` would paint every
+  country with a stable advisory as stale.
+- `wtg process advisories` warns (`ADVISORY_STALE`, log + stdout) when a
+  source's newest dump is older than `WTG_ADVISORY_STALE_DAYS` (default 21).
+  That is the absolute check; `stale_sources` is the relative one, and only
+  the absolute one fires when nothing has scraped at all. Not fatal — an old
+  snapshot beats no advisories. See `infra/CLAUDE.md` § "US advisory scrape".
 - Aggregation uses `exactextract` or `rasterstats` — NEVER write a manual
   point-in-polygon loop; it will be too slow.
 - Tippecanoe flags for PMTiles:

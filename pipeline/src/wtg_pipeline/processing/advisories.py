@@ -11,9 +11,13 @@ Two artifacts come out of a consolidation run, deliberately separate:
 
 ``data/final/advisories.json``
     The full picture — per country, the consensus level plus every
-    government's own level, summary, source URL and the date that
-    government's position last *changed*. This is what the API serves to the
-    SSR country pages (``AdvisorySummary`` in ``web/src/lib/types.ts``).
+    government's own level, summary, source URL, the date that government's
+    position last *changed*, and the date we last *checked* it. This is what
+    the API serves to the SSR country pages (``AdvisorySummary`` in
+    ``web/src/lib/types.ts``). Unlike the index, it is expected to change on
+    every successful scrape: ``checked`` moves even when nothing else does,
+    which is what lets the country page tell a stable advisory from a dead
+    scraper.
 
 ``data/intermediate/advisories/safety_index.json``
     Just the levels: ``{"countries": {...}, "regions": {...}}``. This is what
@@ -101,13 +105,27 @@ def safety_index_path(base_dir: Path | None = None) -> Path:
 
 @dataclass(frozen=True)
 class SourceAdvisory:
-    """One government's current position on one country."""
+    """One government's current position on one country.
+
+    ``last_changed`` and ``checked`` answer two different questions and the
+    difference is load-bearing. ``last_changed`` is when this government last
+    *moved* — it survives a rescrape that finds the same text, because
+    scraping again is not the advisory changing. ``checked`` is when we last
+    *read* the government, and it moves on every successful scrape.
+
+    A reader needs both. "Germany, level 2, last changed 14 months ago" is a
+    stable advisory; "…and last checked 14 months ago" is a broken scraper.
+    Only ``checked`` can tell them apart, which is why the web's staleness
+    rule reads it and not ``last_changed`` (a quiet country would otherwise
+    look stale forever).
+    """
 
     source_id: str
     level: int
     summary: str
     source_url: str
     last_changed: datetime
+    checked: datetime
 
     @property
     def label(self) -> str:
@@ -440,6 +458,10 @@ def consolidate(
                 summary=summary,
                 source_url=str(getattr(record, "source_url", "")),
                 last_changed=last_changed,
+                # Straight from the record, never carried forward from the
+                # previous payload: the whole point of this field is to go
+                # stale when a scrape stops happening.
+                checked=fetched_at,
             )
 
     if unresolved_regions:
@@ -517,6 +539,12 @@ def to_payload(consolidated: Mapping[str, CountryAdvisory]) -> dict[str, object]
                     "summary": source.summary,
                     "url": source.source_url,
                     "last_changed": _iso_z(source.last_changed),
+                    # When we last read this government, as opposed to when it
+                    # last moved. This makes the detail file change on every
+                    # successful scrape — which is correct, and costs nothing:
+                    # the weekly cron branches on the *index* hash, and the
+                    # index carries levels only.
+                    "checked": _iso_z(source.checked),
                 }
             )
         country: dict[str, object] = {

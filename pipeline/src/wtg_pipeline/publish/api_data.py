@@ -588,15 +588,25 @@ def advisory_summaries(payload: Mapping[str, object] | None) -> dict[str, dict[s
                     continue
                 date = _date_only(source.get("last_changed"))
                 latest = max(latest, date)
-                sources.append(
-                    {
-                        "gov": SOURCE_DISPLAY_NAMES.get(source_id, source_id),
-                        "level": source_level,
-                        "label": str(source.get("label", LEVEL_LABELS.get(source_level, ""))),
-                        "date": date,
-                        "url": str(source.get("url", "")),
-                    }
-                )
+                row: dict[str, object] = {
+                    "gov": SOURCE_DISPLAY_NAMES.get(source_id, source_id),
+                    "level": source_level,
+                    "label": str(source.get("label", LEVEL_LABELS.get(source_level, ""))),
+                    "date": date,
+                    "url": str(source.get("url", "")),
+                }
+                # When this government was last *read*, which is the only
+                # field a freshness rule can honestly use: `date` is when the
+                # advisory last moved, and a government that has said the same
+                # thing for two years is not stale data.
+                #
+                # Omitted rather than faked when the detail file predates the
+                # field, so an old bundle keeps publishing and the web simply
+                # cannot judge staleness for it (it does not then guess).
+                checked = _date_only(source.get("checked"))
+                if checked:
+                    row["checked"] = checked
+                sources.append(row)
         sources.sort(key=lambda s: str(s["gov"]))
         summary: dict[str, object] = {
             "combined": {"level": level, "label": LEVEL_LABELS[level]},

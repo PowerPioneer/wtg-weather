@@ -418,6 +418,66 @@ def test_advisory_summary_maps_the_detail_file_onto_the_web_shape() -> None:
     assert peru["regionalMaxLabel"] == "Do not travel"
 
 
+def test_advisory_summary_carries_the_checked_date() -> None:
+    """The field the web's staleness rule reads.
+
+    `date` is when the government last moved; a stable advisory keeps it for
+    years. `checked` is when we last read that government, so it is the only
+    one that can distinguish "nothing has changed" from "nothing has run".
+    """
+    payload = {
+        "countries": [
+            {
+                "iso2": "PE",
+                "level": 2,
+                "sources": [
+                    {
+                        "source": "netherlands",
+                        "level": 2,
+                        "label": "Exercise increased caution",
+                        "url": "https://example.nl/peru",
+                        "last_changed": "2026-04-14T00:00:00Z",
+                        "checked": "2026-08-16T03:11:00Z",
+                    }
+                ],
+            }
+        ]
+    }
+    summaries = api_data.advisory_summaries(payload)
+
+    assert summaries["PE"]["sources"][0]["date"] == "2026-04-14"
+    assert summaries["PE"]["sources"][0]["checked"] == "2026-08-16"
+
+
+def test_advisory_summary_omits_checked_when_the_bundle_predates_it() -> None:
+    """An older `advisories.json` must keep publishing.
+
+    The response model would drop an unknown field anyway; the point here is
+    that the pipeline does not invent one. A source with no `checked` date is
+    a source the web cannot judge the freshness of, and it says so by leaving
+    the badge alone rather than guessing.
+    """
+    payload = {
+        "countries": [
+            {
+                "iso2": "PE",
+                "level": 2,
+                "sources": [
+                    {
+                        "source": "us_state",
+                        "level": 2,
+                        "label": "Exercise increased caution",
+                        "url": "https://example.gov/peru",
+                        "last_changed": "2026-04-14T00:00:00Z",
+                    }
+                ],
+            }
+        ]
+    }
+
+    assert "checked" not in api_data.advisory_summaries(payload)["PE"]["sources"][0]
+
+
 def test_advisory_summary_omits_a_country_with_no_national_level() -> None:
     """A resolved carve-out alone is not a claim about the whole country."""
     payload = {"countries": [{"iso2": "IQ", "level": None, "sources": []}]}
