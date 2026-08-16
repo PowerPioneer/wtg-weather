@@ -67,4 +67,5 @@ async def _load_organization(
         seat_cap=org.seat_cap,
         seats_used=seats_used or 0,
         created_at=org.created_at,
+        is_personal=org.personal_user_id is not None,
     )

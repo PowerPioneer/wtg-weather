@@ -222,6 +222,13 @@ export type SessionOrg = {
   seatsUsed: number;
   /** ISO-8601 UTC. Null on a payload that predates the field. */
   createdAt: string | null;
+  /**
+   * True for the single-seat organization carrying one consumer's own
+   * subscription. It is a wallet, not a workspace: no team, no clients, no
+   * seats to sell. The account shell switches on this rather than on the plan
+   * — see `isAgencyWorkspace` in `lib/session-user.ts`.
+   */
+  isPersonal: boolean;
 };
 
 export type SessionUser = {
@@ -296,13 +303,11 @@ export type AccountAlert = {
   active: boolean;
 };
 
-export type InvoiceRow = {
-  date: string;
-  id: string;
-  amount: string;
-  status: "Paid" | "Failed" | "Refunded";
-  note?: string;
-};
+// `InvoiceRow` used to live here. Nothing renders one any more: WS-A took the
+// invoice table off the consumer account and WS-C took it off the agency one,
+// because Paddle is merchant of record and the invoices are behind a portal
+// session. A type with no source of truth behind it is an invitation to
+// fabricate rows for it again.
 
 export type ConsumerAccount = {
   trips: readonly AccountTrip[];
@@ -311,111 +316,102 @@ export type ConsumerAccount = {
 };
 
 // ─── Agency ──────────────────────────────────────────────────────────
+//
+// View models for the agency surfaces, assembled in `lib/agency-server.ts`
+// from `/api/orgs/*`. Every field here is one the API can actually answer for,
+// which is a much shorter list than the fixtures carried: there is no event
+// log, so no activity feed; no cached invoices, so no invoice table; no
+// per-member "last active" or trips-authored counter, because nothing records
+// either. The design's versions of those rows were invented, and an agency
+// looking at a team list of five people who do not exist is the same class of
+// failure as the fixture client record that was readable by id.
+//
+// What *is* real: who is in the org, who has been invited and not yet
+// accepted, which seats that consumes, and the client records with their
+// assigned trips and notes.
 
 export type TeamMember = {
+  /** Membership id — what a revoke addresses. */
   id: string;
-  name: string;
+  userId: string;
+  /** Null until the person has given one; the email always exists. */
+  name: string | null;
   email: string;
-  role: "Owner" | "Admin" | "Agent" | "Viewer";
-  last: string;
-  trips: number;
-  status: "active" | "invited";
-  you?: boolean;
+  role: AccountRole;
+  /** ISO-8601 UTC — when they joined the org, not when they last logged in. */
+  joinedAt: string | null;
+  /** The signed-in user's own row, so the UI can mark it and refuse to remove it. */
+  you: boolean;
+};
+
+export type PendingInvite = {
+  id: string;
+  email: string;
+  role: AccountRole;
+  /** ISO-8601 UTC. The invitation dies on its own at this point. */
+  expiresAt: string | null;
+  invitedAt: string | null;
 };
 
 export type ClientSummary = {
   id: string;
   name: string;
-  country: string;
+  email: string | null;
+  /** Trips assigned to this client across the whole org. */
   trips: number;
-  last: string;
-  agent: string;
-  tag: string;
+  createdAt: string | null;
 };
 
-export type AgencyActivityRow = {
-  t: string;
-  who: string;
-  act: string;
-  obj: string;
-  ctx: string;
-  kind:
-    | "SHARE"
-    | "EDIT"
-    | "CREATE"
-    | "EXPORT"
-    | "TEAM"
-    | "CLIENT"
-    | "ALERT"
-    | "BILLING";
-};
-
+/**
+ * The agency dashboard.
+ *
+ * `seatsUsed` counts memberships and `seatsPending` counts open invitations;
+ * the cap applies to their sum, which is the same rule the API enforces. Two
+ * numbers rather than one because "2 of 3 seats, 1 invite out" is the sentence
+ * the team page has to be able to write.
+ */
 export type AgencyAccount = {
   team: readonly TeamMember[];
+  invites: readonly PendingInvite[];
   clients: readonly ClientSummary[];
-  activity: readonly AgencyActivityRow[];
-  tripsYTD: number;
-  activeTrips: number;
-  archivedThisMonth: number;
-  invoices: readonly InvoiceRow[];
+  seatsUsed: number;
+  seatsPending: number;
+  seatCap: number;
 };
 
 // ─── Client detail ───────────────────────────────────────────────────
 
-export type ClientPref = {
-  key: string;
-  label: string;
-  value: string;
-  icon?: "temp" | "rain" | "sun" | "wind" | "shield";
-  pro?: boolean;
-};
-
-export type ClientRestriction = { label: string; value: string };
-
 export type ClientNote = {
-  author: string;
+  id: string;
+  /** The author's name, or their email, or null once they have left the org. */
+  author: string | null;
+  /** ISO-8601 UTC. */
   when: string;
-  kind: "call" | "email" | "meeting" | "internal" | "client" | "lead";
   body: string;
-};
-
-export type ClientActivityRow = {
-  t: string;
-  who: string;
-  act: string;
-  obj: string;
-  kind: "CREATE" | "EDIT" | "SHARE" | "EXPORT" | "VIEW" | "NOTE" | "TAG" | "SYSTEM";
 };
 
 export type ClientTrip = {
   id: string;
   title: string;
-  country: string;
-  months: string;
-  created: string;
-  updated: string;
+  /** Null where the trip's country is not one the pipeline has published. */
+  countryName: string | null;
+  countrySlug: string | null;
+  monthName: string | null;
+  /** Whoever in the org authored it — trips belong to agents, not to clients. */
   agent: string;
-  score: number;
-  status: "shared" | "draft" | "archived";
+  /** ISO-8601 UTC. */
+  updatedAt: string;
+  /** Whether a share link exists. Never the link itself. */
+  shared: boolean;
 };
 
 export type ClientRecord = {
   id: string;
   name: string;
-  shortName: string;
-  kind: string;
-  email: string;
-  phone: string;
-  city: string;
-  since: string;
-  tags: readonly string[];
-  nextTouch: string;
-  primaryAgent: { name: string; role: string; email: string };
-  prefs: {
-    ranges: readonly ClientPref[];
-    restrictions: readonly ClientRestriction[];
-  };
+  email: string | null;
+  /** The profile's free-text field, distinct from the dated `notes` timeline. */
+  profileNotes: string | null;
+  createdAt: string | null;
   trips: readonly ClientTrip[];
-  activity: readonly ClientActivityRow[];
   notes: readonly ClientNote[];
 };

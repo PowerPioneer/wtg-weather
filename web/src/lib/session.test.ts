@@ -110,6 +110,7 @@ describe("getSessionServer against the API", () => {
             seat_cap: 1,
             seats_used: 1,
             created_at: "2024-09-14T17:40:00Z",
+            is_personal: true,
           },
         }),
       ),
@@ -131,6 +132,10 @@ describe("getSessionServer against the API", () => {
         seatCap: 1,
         seatsUsed: 1,
         createdAt: "2024-09-14T17:40:00Z",
+        // A consumer's subscription hangs off a single-seat organization of
+        // their own. It is a wallet, not a workspace — `isAgencyWorkspace`
+        // reads this so `/account` does not offer them a team page.
+        isPersonal: true,
       },
     });
     expect(getEntitlement(session)).toEqual({

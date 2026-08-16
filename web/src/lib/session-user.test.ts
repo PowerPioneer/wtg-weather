@@ -14,11 +14,12 @@ import {
   displayName,
   firstName,
   getEntitlement,
+  isAgencyWorkspace,
   monthYear,
   parseSessionUser,
   planLabel,
 } from "./session-user";
-import type { AccountPlan, SessionUser } from "./types";
+import type { AccountPlan, SessionOrg, SessionUser } from "./types";
 
 function me(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
@@ -63,6 +64,7 @@ describe("parseSessionUser", () => {
             seat_cap: 10,
             seats_used: 7,
             created_at: "2024-02-19T11:05:00Z",
+            is_personal: false,
           },
         }),
       ),
@@ -80,6 +82,7 @@ describe("parseSessionUser", () => {
         seatCap: 10,
         seatsUsed: 7,
         createdAt: "2024-02-19T11:05:00Z",
+        isPersonal: false,
       },
     });
   });
@@ -133,6 +136,7 @@ describe("parseSessionUser", () => {
       seatCap: 0,
       seatsUsed: 0,
       createdAt: null,
+      isPersonal: false,
     });
   });
 });
@@ -164,9 +168,71 @@ describe("getEntitlement", () => {
         seatCap: 3,
         seatsUsed: 2,
         createdAt: null,
+        isPersonal: false,
       },
     });
     expect(getEntitlement(session).seatCap).toBe(3);
+  });
+});
+
+describe("isAgencyWorkspace", () => {
+  function org(overrides: Partial<SessionOrg> = {}): SessionOrg {
+    return {
+      id: "org-1",
+      name: "Cordillera",
+      plan: "agency_starter",
+      seatCap: 3,
+      seatsUsed: 1,
+      createdAt: null,
+      isPersonal: false,
+      ...overrides,
+    };
+  }
+
+  it("is false for an anonymous visitor and for a user with no org", () => {
+    expect(isAgencyWorkspace(null)).toBe(false);
+    expect(isAgencyWorkspace(user({ org: null }))).toBe(false);
+  });
+
+  it("is false for a consumer's personal organization", () => {
+    // A wallet, not a workspace. This one is the reason the flag exists: a
+    // premium consumer *does* have an org, and must not get a team page.
+    const session = user({
+      plan: "consumer_premium",
+      org: org({ plan: "consumer_premium", isPersonal: true, seatCap: 1 }),
+    });
+    expect(isAgencyWorkspace(session)).toBe(false);
+  });
+
+  it("is true for an agency workspace that has not paid yet", () => {
+    // The wizard creates the org before checkout, so it sits on the free plan
+    // with one seat. Its dashboard is where the upgrade path lives — gating
+    // the dashboard on the plan would hide the way to buy the plan.
+    const session = user({ plan: "free", org: org({ plan: "free", seatCap: 1 }) });
+    expect(isAgencyWorkspace(session)).toBe(true);
+    // …and it is still not entitled to anything premium.
+    expect(getEntitlement(session)).toMatchObject({ premium: false, agency: false });
+  });
+
+  it("is true for a paid agency", () => {
+    expect(isAgencyWorkspace(user({ plan: "agency_pro", org: org({ plan: "agency_pro" }) }))).toBe(
+      true,
+    );
+  });
+
+  it("treats a payload with no is_personal field as a workspace only if it has an org", () => {
+    // `parseSessionUser` defaults the flag to false, so an older payload reads
+    // as a workspace. That is the safe direction: the shell shows a team page
+    // to somebody with no team, rather than hiding an agency's.
+    const parsed = parseSessionUser({
+      id: "u1",
+      email: "a@example.com",
+      plan: "agency_pro",
+      created_at: null,
+      organization: { id: "o1", name: "Org", plan: "agency_pro", seat_cap: 3, seats_used: 1 },
+    });
+    expect(parsed?.org?.isPersonal).toBe(false);
+    expect(isAgencyWorkspace(parsed)).toBe(true);
   });
 });
 

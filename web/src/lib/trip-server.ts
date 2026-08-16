@@ -70,6 +70,13 @@ export type TripView = {
   destinations: readonly TripDestinationRow[];
   /** Owner view only: null until the trip is shared. */
   shareToken: string | null;
+  /**
+   * The agency client this trip is filed against, if any. Owner view only —
+   * `TripPublicRead` deliberately omits it, because which of an agency's
+   * clients a trip was built for is the agency's business and not the
+   * recipient's.
+   */
+  clientId: string | null;
 };
 
 type RawTrip = {
@@ -80,6 +87,7 @@ type RawTrip = {
   month?: number | null;
   preferences?: Record<string, unknown>;
   share_token?: string | null;
+  client_id?: string | null;
 };
 
 function fmt(value: number | undefined, unit: string): string {
@@ -162,6 +170,7 @@ async function assemble(raw: RawTrip): Promise<TripView> {
         ? rankDestinations(country, monthIdx, prefs, Boolean(ref))
         : [],
     shareToken: raw.share_token ?? null,
+    clientId: raw.client_id ?? null,
   };
 }
 

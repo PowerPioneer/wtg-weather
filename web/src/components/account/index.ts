@@ -10,12 +10,16 @@ export {
   ConsumerTrips,
 } from "./consumer-sections";
 export {
-  AgencyActivity,
   AgencyBranding,
   AgencyClients,
   AgencyOverview,
   AgencyTeam,
+  SeatMeter,
 } from "./agency-sections";
+export { nextAgencyPlan } from "./agency-plan";
+export { AgencyClientsPanel } from "./agency-clients-panel";
+export { AgencyTeamPanel } from "./agency-team-panel";
+export { ClientNotes } from "./client-notes";
 // Billing lives apart from the rest of the agency surfaces: WS-B owns it,
 // WS-C owns them.
 export { AgencyBilling } from "./agency-billing";

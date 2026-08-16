@@ -38,6 +38,12 @@ class MeOrganization(ORMModel):
     seat_cap: int
     seats_used: int
     created_at: datetime
+    # True for the single-seat organization that carries one consumer's own
+    # subscription (`Organization.personal_user_id`). It is not a workspace and
+    # has no team, no clients and no seats to sell — the web switches its
+    # account shell on this rather than on the plan, because an agency that has
+    # created its organization but not yet paid is still an agency.
+    is_personal: bool = False
 
 
 class MeResponse(ORMModel):

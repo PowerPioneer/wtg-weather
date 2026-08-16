@@ -12,8 +12,6 @@
 
 import type { CountryRef } from "./countries";
 import type {
-  AgencyAccount,
-  ClientRecord,
   CountryData,
   Monthly,
   RegionRow,
@@ -311,6 +309,8 @@ export const SESSION_FIXTURES: Record<string, SessionUser> = {
       seatCap: 1,
       seatsUsed: 1,
       createdAt: "2024-09-14T17:40:00Z",
+      // A consumer's subscription hangs off a single-seat org of their own.
+      isPersonal: true,
     },
   },
   agency: {
@@ -327,6 +327,7 @@ export const SESSION_FIXTURES: Record<string, SessionUser> = {
       seatCap: 10,
       seatsUsed: 7,
       createdAt: "2024-02-19T11:05:00Z",
+      isPersonal: false,
     },
   },
 };
@@ -360,157 +361,19 @@ export function findSession(key: string | undefined | null): SessionUser | null 
 
 // ─── Agency account fixtures ─────────────────────────────────────────
 
-const CORDILLERA_ACCOUNT: AgencyAccount = {
-  tripsYTD: 312,
-  activeTrips: 84,
-  archivedThisMonth: 3,
-  team: [
-    { id: "tm_elena", name: "Elena Quiroz", email: "elena@cordillera.tours", role: "Owner", last: "2 min ago", trips: 87, status: "active", you: true },
-    { id: "tm_matias", name: "Matías Soto", email: "matias@cordillera.tours", role: "Admin", last: "14 min ago", trips: 64, status: "active" },
-    { id: "tm_renata", name: "Renata Ibáñez", email: "renata@cordillera.tours", role: "Agent", last: "1 hr ago", trips: 58, status: "active" },
-    { id: "tm_carlos", name: "Carlos Mendez", email: "carlos@cordillera.tours", role: "Agent", last: "Yesterday", trips: 41, status: "active" },
-    { id: "tm_sofia", name: "Sofía Huamán", email: "sofia@cordillera.tours", role: "Agent", last: "3d ago", trips: 34, status: "active" },
-    { id: "tm_javier", name: "Javier Rosales", email: "javier@cordillera.tours", role: "Agent", last: "5d ago", trips: 22, status: "active" },
-    { id: "tm_lucia", name: "Lucía Bermúdez", email: "lucia@cordillera.tours", role: "Viewer", last: "Never", trips: 0, status: "invited" },
-  ],
-  clients: [
-    { id: "cli_westfield_8421", name: "Westfield, M. & A.", country: "Peru", trips: 1, last: "2d ago", agent: "Elena Quiroz", tag: "Honeymoon" },
-    { id: "cli_hartwell", name: "Hartwell family", country: "Japan", trips: 3, last: "4d ago", agent: "Matías Soto", tag: "Family" },
-    { id: "cli_okafor", name: "Okafor, T.", country: "Morocco", trips: 2, last: "1w ago", agent: "Renata Ibáñez", tag: "Solo" },
-    { id: "cli_lindqvist", name: "Lindqvist party", country: "Norway", trips: 1, last: "1w ago", agent: "Carlos Mendez", tag: "Group · 6" },
-    { id: "cli_dubois", name: "Dubois, C.", country: "Portugal", trips: 2, last: "2w ago", agent: "Sofía Huamán", tag: "Retirement" },
-    { id: "cli_patel_singh", name: "Patel-Singh", country: "Peru", trips: 4, last: "3w ago", agent: "Elena Quiroz", tag: "Return client" },
-    { id: "cli_yamamoto", name: "Yamamoto, K.", country: "Peru", trips: 1, last: "3w ago", agent: "Matías Soto", tag: "Corporate" },
-    { id: "cli_nguyen_tran", name: "Nguyen & Tran", country: "Peru", trips: 2, last: "Apr 01", agent: "Renata Ibáñez", tag: "Honeymoon" },
-    { id: "cli_brightman", name: "Brightman, R.", country: "Colombia", trips: 1, last: "Mar 28", agent: "Carlos Mendez", tag: "Solo" },
-    { id: "cli_alfassi", name: "Al-Fassi, N.", country: "Bolivia", trips: 3, last: "Mar 22", agent: "Elena Quiroz", tag: "Group · 4" },
-    { id: "cli_oconnor", name: "O\u2019Connor, D.", country: "Chile", trips: 1, last: "Mar 18", agent: "Sofía Huamán", tag: "Solo" },
-    { id: "cli_weissman", name: "Weissman, H.", country: "Ecuador", trips: 2, last: "Mar 12", agent: "Javier Rosales", tag: "Anniversary" },
-  ],
-  activity: [
-    { t: "2 min ago", who: "Elena Quiroz", act: "shared trip", obj: "Honeymoon · Andes & Sacred Valley", ctx: "for Westfield, M. & A.", kind: "SHARE" },
-    { t: "14 min ago", who: "Matías Soto", act: "updated prefs on", obj: "Osaka & Kyoto — Nov", ctx: "temp range 10–22 °C", kind: "EDIT" },
-    { t: "58 min ago", who: "Renata Ibáñez", act: "created trip", obj: "Marrakech & Atlas — Oct", ctx: "for Okafor, T.", kind: "CREATE" },
-    { t: "1 hr ago", who: "Carlos Mendez", act: "exported PDF", obj: "Arctic Circle · Lofoten", ctx: "Lindqvist party · 12 pp", kind: "EXPORT" },
-    { t: "2 hr ago", who: "Elena Quiroz", act: "invited", obj: "lucia@cordillera.tours", ctx: "role: Viewer", kind: "TEAM" },
-    { t: "3 hr ago", who: "Matías Soto", act: "archived client", obj: "Feldman, E.", ctx: "trip completed Apr 04", kind: "CLIENT" },
-    { t: "Yesterday", who: "Sofía Huamán", act: "created trip", obj: "Douro Valley — Sep", ctx: "for Dubois, C.", kind: "CREATE" },
-    { t: "Yesterday", who: "Renata Ibáñez", act: "added alert to", obj: "Morocco coastal swell — Oct", ctx: "weekly · SST > 22 °C", kind: "ALERT" },
-    { t: "2d ago", who: "Elena Quiroz", act: "upgraded plan", obj: "Agency Starter → Agency Pro", ctx: "€149 / mo · +7 seats", kind: "BILLING" },
-    { t: "2d ago", who: "Carlos Mendez", act: "modified safety threshold", obj: "Colombia · Brightman, R.", ctx: "Level 2 → Level 3 accepted", kind: "EDIT" },
-    { t: "3d ago", who: "Matías Soto", act: "duplicated trip", obj: "Cusco Apr 2025 → Cusco Apr 2026", ctx: "for Patel-Singh", kind: "CREATE" },
-    { t: "3d ago", who: "Elena Quiroz", act: "changed role", obj: "Javier Rosales", ctx: "Agent → Agent (no change logged)", kind: "TEAM" },
-  ],
-  invoices: [
-    { date: "Apr 14, 2026", id: "INV-AG-01421", amount: "€149", status: "Paid", note: "7 seats × €15 + unused buffer" },
-    { date: "Mar 14, 2026", id: "INV-AG-01198", amount: "€149", status: "Paid" },
-    { date: "Feb 14, 2026", id: "INV-AG-00985", amount: "€149", status: "Paid" },
-    { date: "Jan 14, 2026", id: "INV-AG-00772", amount: "€149", status: "Paid" },
-  ],
-};
-
-export const AGENCY_ACCOUNTS: Record<string, AgencyAccount> = {
-  org_cordillera: CORDILLERA_ACCOUNT,
-};
-
-/** Same reasoning as {@link EMPTY_CONSUMER_ACCOUNT}, for an agency org. */
-export const EMPTY_AGENCY_ACCOUNT: AgencyAccount = {
-  team: [],
-  clients: [],
-  activity: [],
-  tripsYTD: 0,
-  activeTrips: 0,
-  archivedThisMonth: 0,
-  invoices: [],
-};
-
-export function findAgencyAccount(orgId: string): AgencyAccount | null {
-  return AGENCY_ACCOUNTS[orgId] ?? null;
-}
-
-// ─── Client record fixtures ──────────────────────────────────────────
-
-const WESTFIELD_CLIENT: ClientRecord = {
-  id: "cli_westfield_8421",
-  name: "Westfield, Maya & Adam",
-  shortName: "Westfield",
-  kind: "Honeymoon party · 2 pax",
-  email: "maya.westfield@gmail.com",
-  phone: "+1 (415) 555-0117",
-  city: "San Francisco, CA",
-  since: "Mar 14, 2026",
-  primaryAgent: { name: "Elena Quiroz", role: "Owner", email: "elena@cordillera.tours" },
-  tags: ["Honeymoon", "High-budget", "Repeat referral"],
-  nextTouch: "May 02 · check in before trip",
-  trips: [
-    { id: "trp_8h2k9p", title: "Honeymoon · Andes & Sacred Valley", country: "Peru", months: "Apr – May", created: "Apr 12", updated: "2d ago", agent: "Elena Quiroz", score: 87, status: "shared" },
-    { id: "trp_3p8w2k", title: "Scouting · Lake District", country: "Chile", months: "Feb", created: "Mar 22", updated: "3w ago", agent: "Elena Quiroz", score: 82, status: "draft" },
-  ],
-  prefs: {
-    ranges: [
-      { key: "temp", label: "Temperature", value: "14 – 22 °C daytime", icon: "temp" },
-      { key: "rain", label: "Rainfall", value: "< 60 mm / month", icon: "rain" },
-      { key: "sun", label: "Sunshine", value: "≥ 6 hours / day", icon: "sun" },
-      { key: "wind", label: "Wind", value: "< 25 km/h average", icon: "wind" },
-      { key: "safety", label: "Safety ceiling", value: "Level 2 or safer", icon: "shield" },
-      { key: "humidity", label: "Humidity", value: "40 – 70 %", pro: true },
-      { key: "heat", label: "Heat index", value: "< 30 °C feels-like", pro: true },
-    ],
-    restrictions: [
-      { label: "Dietary", value: "Vegetarian (Maya) · no pork (Adam)" },
-      { label: "Mobility", value: "No issues · both fit, hikers" },
-      { label: "Altitude", value: "First time > 3,000 m · acclimatisation day required" },
-      { label: "Flights", value: "Economy plus preferred · no red-eyes" },
-      { label: "Budget", value: "€12,000 · flexible +15%" },
-      { label: "Languages", value: "English · some French" },
-    ],
-  },
-  notes: [
-    {
-      author: "Elena Quiroz",
-      when: "Apr 22",
-      kind: "call",
-      body: "Post-proposal call. Both loved the Sacred Valley option. Flagged: Maya gets altitude headaches — we should plan the Cusco arrival as a rest day, not a tour day. Mention Colca as a softer alternative on Day 6 if needed.\n\nAdam asked about internet on trek — OK to tell them \"patchy, assume offline two days\".",
-    },
-    {
-      author: "Matías Soto",
-      when: "Apr 18",
-      kind: "internal",
-      body: "Cross-checked June availability at **Inkaterra Hacienda Urubamba** — held two nights on soft option. Expires **May 10**.",
-    },
-    {
-      author: "Elena Quiroz",
-      when: "Apr 12",
-      kind: "client",
-      body: "Kickoff · 45 min video. Honeymoon in May, can shift a week either side. Must-haves: Machu Picchu, one hike ≥ half day, zero Lima tourist circuit, finish on a beach somewhere.\n\nTentatively split: 6 nights Sacred Valley + 3 nights Pacific coast. Exploring Máncora vs. Paracas.",
-    },
-    {
-      author: "Renata Ibáñez",
-      when: "Mar 14",
-      kind: "lead",
-      body: "Intake from referral (Patel-Singh). Dates \"flexible, Q2 2026\". Budget stated 12k€ for two. No agency history.",
-    },
-  ],
-  activity: [
-    { t: "2d ago", who: "Elena Quiroz", act: "shared trip", obj: "Honeymoon · Andes & Sacred Valley", kind: "SHARE" },
-    { t: "2d ago", who: "Elena Quiroz", act: "updated prefs", obj: "temperature 12–20 → 14–22 °C", kind: "EDIT" },
-    { t: "3d ago", who: "Matías Soto", act: "added note", obj: "Inkaterra Hacienda Urubamba hold", kind: "NOTE" },
-    { t: "5d ago", who: "Elena Quiroz", act: "exported PDF", obj: "Honeymoon · Andes & Sacred Valley", kind: "EXPORT" },
-    { t: "Apr 18", who: "Matías Soto", act: "viewed trip", obj: "Honeymoon · Andes & Sacred Valley", kind: "VIEW" },
-    { t: "Apr 14", who: "Elena Quiroz", act: "added tag", obj: '"High-budget"', kind: "TAG" },
-    { t: "Apr 12", who: "Elena Quiroz", act: "created trip", obj: "Honeymoon · Andes & Sacred Valley", kind: "CREATE" },
-    { t: "Apr 12", who: "Elena Quiroz", act: "added note", obj: "Kickoff call summary", kind: "NOTE" },
-    { t: "Mar 22", who: "Elena Quiroz", act: "created trip", obj: "Scouting · Lake District", kind: "CREATE" },
-    { t: "Mar 14", who: "Renata Ibáñez", act: "created client record", obj: "—", kind: "CREATE" },
-    { t: "Mar 14", who: "Renata Ibáñez", act: "added note", obj: "Lead intake", kind: "NOTE" },
-    { t: "Mar 14", who: "System", act: "assigned primary agent", obj: "Elena Quiroz", kind: "SYSTEM" },
-  ],
-};
-
-export const CLIENT_RECORDS: Record<string, ClientRecord> = {
-  cli_westfield_8421: WESTFIELD_CLIENT,
-};
-
-export function findClientRecord(id: string): ClientRecord | null {
-  return CLIENT_RECORDS[id] ?? null;
-}
+/**
+ * The agency fixtures are gone, not ported.
+ *
+ * They described a shape the API cannot answer for — an activity feed, cached
+ * invoices, per-agent trip counts, a client's phone number and "primary agent"
+ * — so keeping them would have meant maintaining a second view model whose
+ * only job was to look convincing. WS-C rebuilt the agency surfaces on
+ * `/api/orgs/*`, and their empty state is `EMPTY_AGENCY_ACCOUNT` in
+ * `lib/agency-server.ts`.
+ *
+ * The client record fixture in particular was reachable by id: the page looked
+ * it up from the URL with no org scoping and no `WTG_USE_MOCK_DATA` gate, so
+ * any agency-entitled user could read a fabricated client's name, email, phone
+ * and advisor notes. `agency-server.test.ts` still pins that no such record
+ * resolves, with the flag on or off.
+ */

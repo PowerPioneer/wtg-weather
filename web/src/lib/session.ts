@@ -19,7 +19,14 @@ import { findSession } from "./mock-data";
 import { parseSessionUser } from "./session-user";
 import type { SessionUser } from "./types";
 
-export { displayName, firstName, getEntitlement, monthYear, planLabel } from "./session-user";
+export {
+  displayName,
+  firstName,
+  getEntitlement,
+  isAgencyWorkspace,
+  monthYear,
+  planLabel,
+} from "./session-user";
 
 /** Dev-only cookie the preview UI sets to swap between free/premium/agency. */
 const MOCK_COOKIE = "wtg_mock_session";

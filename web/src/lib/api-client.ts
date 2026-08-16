@@ -17,7 +17,13 @@ import type { CountryRef } from "./countries";
 import { findCountryData, mockCountryRefs } from "./mock-data";
 import { findRegion } from "./regions";
 import { parseSessionUser } from "./session-user";
-import type { CountryData, RegionRow, SessionUser } from "./types";
+import type {
+  AccountPlan,
+  AccountRole,
+  CountryData,
+  RegionRow,
+  SessionUser,
+} from "./types";
 
 type FetchInit = Omit<RequestInit, "body"> & {
   /** Next revalidation window in seconds. Defaults to 30 days for SSR pages. */
@@ -516,4 +522,281 @@ export async function postMagicLink(
   if (res.status === 400 || res.status === 422) return "invalid";
   if (res.status === 429) return "rate-limited";
   throw new Error(`postMagicLink failed: ${res.status}`);
+}
+
+
+// ─── Agency: orgs, seats, invitations, clients ───────────────────────
+//
+// Browser-side and cookie-authenticated. These are the *mutations* — the
+// dashboard's lists are read server-side in `lib/agency-server.ts` so the page
+// paints without JS, and these run behind the buttons that change them.
+//
+// Same discipline as the account resources above: the API speaks snake_case
+// and this file is the only place that knows it, and every response is mapped
+// field by field rather than cast.
+
+/** 409 is a *state*, not a breakage: at the cap, already invited, already a member. */
+export function isConflict(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 409;
+}
+
+/**
+ * The API's detail strings for the three conflicts an invite can hit. Matched
+ * rather than guessed at, because they mean different things to the person
+ * pressing the button: one of them is an upgrade prompt and the other two are
+ * corrections.
+ */
+export const SEAT_CAP_DETAIL = "seat cap reached";
+export const ALREADY_MEMBER_DETAIL = "already a member";
+export const ALREADY_INVITED_DETAIL = "invitation already pending";
+
+/** True when a refusal is "you are out of seats", which the UI answers with the upgrade path. */
+export function isSeatCapReached(error: unknown): boolean {
+  return (
+    error instanceof ApiError &&
+    error.status === 409 &&
+    error.detail === SEAT_CAP_DETAIL
+  );
+}
+
+export type OrgRecord = {
+  id: string;
+  name: string;
+  plan: AccountPlan;
+  seatCap: number;
+  seatsUsed: number;
+  seatsPending: number;
+};
+
+function toOrg(raw: unknown): OrgRecord {
+  const r = record(raw);
+  const plans: readonly AccountPlan[] = [
+    "free",
+    "consumer_premium",
+    "agency_starter",
+    "agency_pro",
+    "agency_enterprise",
+  ];
+  return {
+    id: str(r.id) ?? "",
+    name: str(r.name) ?? "",
+    // Same rule as `session-user.ts`: an unrecognised plan is free, never the
+    // other way round.
+    plan: plans.find((p) => p === r.plan) ?? "free",
+    seatCap: num(r.seat_cap) ?? 0,
+    seatsUsed: num(r.seats_used) ?? 0,
+    seatsPending: num(r.seats_pending) ?? 0,
+  };
+}
+
+/**
+ * Create the organization the agency wizard collects a name for.
+ *
+ * It starts on the free plan with one seat — the caller's. The plan moves only
+ * when a signature-verified Paddle webhook says so, which is why checkout is
+ * the wizard's next step and not something this call can shortcut.
+ */
+export async function createOrg(name: string): Promise<OrgRecord> {
+  const res = await accountFetch("/orgs", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+  return toOrg(await res.json());
+}
+
+export async function getOrg(orgId: string): Promise<OrgRecord> {
+  const res = await accountFetch(`/orgs/${encodeURIComponent(orgId)}`);
+  return toOrg(await res.json());
+}
+
+export type InviteRecord = {
+  id: string;
+  email: string;
+  role: AccountRole;
+  expiresAt: string | null;
+  invitedAt: string | null;
+};
+
+const ROLE_VALUES: readonly AccountRole[] = ["owner", "admin", "agent", "member"];
+
+function toInvite(raw: unknown): InviteRecord {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    email: str(r.email) ?? "",
+    role: ROLE_VALUES.find((v) => v === r.role) ?? "member",
+    expiresAt: str(r.expires_at),
+    invitedAt: str(r.created_at),
+  };
+}
+
+/**
+ * Offer a seat. The token goes to the invitee's mailbox and is never returned
+ * here — an owner who could read it could spend it, or hand it to somebody the
+ * invitation was not addressed to, which is the whole check.
+ *
+ * Throws `ApiError` 409 for the three refusals; use {@link isSeatCapReached} to
+ * tell the upgrade path apart from a correction.
+ */
+export async function inviteAgent(
+  orgId: string,
+  input: { email: string; role?: AccountRole },
+): Promise<InviteRecord> {
+  const res = await accountFetch(`/orgs/${encodeURIComponent(orgId)}/invites`, {
+    method: "POST",
+    body: JSON.stringify({ email: input.email, role: input.role ?? "agent" }),
+  });
+  return toInvite(await res.json());
+}
+
+export async function revokeInvite(orgId: string, inviteId: string): Promise<void> {
+  await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/invites/${encodeURIComponent(inviteId)}`,
+    { method: "DELETE" },
+  );
+}
+
+/** Remove a member. The API refuses for the owner's own membership (400). */
+export async function removeMember(
+  orgId: string,
+  membershipId: string,
+): Promise<void> {
+  await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/memberships/${encodeURIComponent(membershipId)}`,
+    { method: "DELETE" },
+  );
+}
+
+export type ClientRecordSummary = {
+  id: string;
+  name: string;
+  email: string | null;
+  notes: string | null;
+  trips: number;
+  createdAt: string | null;
+};
+
+function toClient(raw: unknown): ClientRecordSummary {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    name: str(r.name) ?? "",
+    email: str(r.email),
+    notes: str(r.notes),
+    trips: num(r.trip_count) ?? 0,
+    createdAt: str(r.created_at),
+  };
+}
+
+export async function listClients(orgId: string): Promise<ClientRecordSummary[]> {
+  const res = await accountFetch(`/orgs/${encodeURIComponent(orgId)}/clients`);
+  const body: unknown = await res.json();
+  return Array.isArray(body) ? body.map(toClient) : [];
+}
+
+export async function createClient(
+  orgId: string,
+  input: { name: string; email?: string | null; notes?: string | null },
+): Promise<ClientRecordSummary> {
+  const res = await accountFetch(`/orgs/${encodeURIComponent(orgId)}/clients`, {
+    method: "POST",
+    body: JSON.stringify({
+      name: input.name,
+      email: input.email || null,
+      notes: input.notes || null,
+    }),
+  });
+  return toClient(await res.json());
+}
+
+export async function updateClient(
+  orgId: string,
+  clientId: string,
+  patch: { name?: string; email?: string | null; notes?: string | null },
+): Promise<ClientRecordSummary> {
+  const body: Record<string, unknown> = {};
+  if (patch.name !== undefined) body.name = patch.name;
+  if (patch.email !== undefined) body.email = patch.email || null;
+  if (patch.notes !== undefined) body.notes = patch.notes || null;
+  const res = await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/clients/${encodeURIComponent(clientId)}`,
+    { method: "PATCH", body: JSON.stringify(body) },
+  );
+  return toClient(await res.json());
+}
+
+/** Deleting a client unassigns its trips; it does not delete an agent's work. */
+export async function deleteClient(orgId: string, clientId: string): Promise<void> {
+  await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/clients/${encodeURIComponent(clientId)}`,
+    { method: "DELETE" },
+  );
+}
+
+export type ClientNoteRecord = {
+  id: string;
+  body: string;
+  author: string | null;
+  createdAt: string;
+};
+
+function toClientNote(raw: unknown): ClientNoteRecord {
+  const r = record(raw);
+  return {
+    id: str(r.id) ?? "",
+    body: str(r.body) ?? "",
+    author: str(r.author_name) ?? str(r.author_email),
+    createdAt: str(r.created_at) ?? "",
+  };
+}
+
+export async function addClientNote(
+  orgId: string,
+  clientId: string,
+  body: string,
+): Promise<ClientNoteRecord> {
+  const res = await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/clients/${encodeURIComponent(clientId)}/notes`,
+    { method: "POST", body: JSON.stringify({ body }) },
+  );
+  return toClientNote(await res.json());
+}
+
+export async function deleteClientNote(
+  orgId: string,
+  clientId: string,
+  noteId: string,
+): Promise<void> {
+  await accountFetch(
+    `/orgs/${encodeURIComponent(orgId)}/clients/${encodeURIComponent(clientId)}/notes/${encodeURIComponent(noteId)}`,
+    { method: "DELETE" },
+  );
+}
+
+export type AcceptedInvite = {
+  organizationId: string;
+  organizationName: string;
+  role: AccountRole;
+};
+
+/**
+ * Spend an invitation token.
+ *
+ * This is an authentication call: on success the API sets a session cookie for
+ * the address the invitation was mailed to — not for whoever happens to be
+ * signed in — so the caller is the invitee from here on. Refusals are
+ * meaningful and distinct: 404 (unknown, forged or revoked), 409 (already
+ * used, or the org has run out of seats since), 400 (expired).
+ */
+export async function acceptInvite(token: string): Promise<AcceptedInvite> {
+  const res = await accountFetch("/invites/accept", {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
+  const r = record(await res.json());
+  return {
+    organizationId: str(r.organization_id) ?? "",
+    organizationName: str(r.organization_name) ?? "",
+    role: ROLE_VALUES.find((v) => v === r.role) ?? "member",
+  };
 }

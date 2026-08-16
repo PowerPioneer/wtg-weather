@@ -1,3 +1,4 @@
+export { AssignClient } from "./assign-client";
 export { SaveTripButton } from "./save-trip-button";
 export { TripActionRail } from "./trip-action-rail";
 export { TripDestinations } from "./trip-destinations";

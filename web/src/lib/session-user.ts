@@ -89,6 +89,10 @@ function asOrg(value: unknown): SessionOrg | null {
     seatCap: asNumber(value.seat_cap) ?? 0,
     seatsUsed: asNumber(value.seats_used) ?? 0,
     createdAt: asString(value.created_at),
+    // Absent on an older payload. Defaulting to "not personal" would turn
+    // every consumer subscriber's wallet into an agency workspace, so the
+    // default is the other way: only an explicit `true` is one.
+    isPersonal: value.is_personal === true,
   };
 }
 
@@ -129,6 +133,25 @@ export function getEntitlement(session: SessionUser | null): Entitlement {
   if (!session) return { premium: false, agency: false };
   const { premium, agency } = PLAN_ENTITLEMENTS[session.plan];
   return { premium, agency, seatCap: session.org?.seatCap };
+}
+
+/**
+ * Whether this session belongs to an agency *workspace* — an organization with
+ * a team, clients and seats — as opposed to the single-seat organization a
+ * consumer's own subscription hangs off.
+ *
+ * Deliberately not `getEntitlement().agency`, which asks a different question:
+ * that one is about the plan, and gates premium *features*. This one is about
+ * membership, and gates the account **shell**. An agency that has completed
+ * the wizard but not yet paid is on the free plan and still an agency — its
+ * dashboard is where the upgrade path lives, so hiding the dashboard until
+ * they upgrade would hide the way to upgrade.
+ *
+ * Seats stay capped by plan (free is one seat), so nothing is given away here:
+ * a workspace on the free plan can see its team page and can invite nobody.
+ */
+export function isAgencyWorkspace(session: SessionUser | null): boolean {
+  return Boolean(session?.org && !session.org.isPersonal);
 }
 
 /** Human label for a plan — sidebar badge, billing header, plan chips. */

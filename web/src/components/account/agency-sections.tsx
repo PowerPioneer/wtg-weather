@@ -1,57 +1,68 @@
+/**
+ * The agency dashboard sections, on real data.
+ *
+ * What is gone since the fixtures: an activity feed, per-agent "trips
+ * authored" and "last active" columns, client country / primary-agent / tag
+ * columns, and the invoice list. Nothing records any of them. They rendered as
+ * confident tables of invented people — a worse failure on an agency's own
+ * team page than an empty state, because an empty state is true.
+ *
+ * What replaced them is what the API can answer for: who is in the
+ * organization, who has an invitation outstanding, what that costs in seats,
+ * and the client records with their assigned trips.
+ *
+ * The tables live in client islands (`agency-team-panel`,
+ * `agency-clients-panel`) so invite, revoke and create work; they still render
+ * their rows during SSR, so the page is readable before hydration.
+ */
+
 import Link from "next/link";
 
+import { UpgradeButton } from "@/components/upgrade";
 import { cn } from "@/lib/cn";
-import { monthYear } from "@/lib/session-user";
-import type { AgencyAccount, AgencyActivityRow, SessionUser } from "@/lib/types";
+import { monthYear, planLabel } from "@/lib/session-user";
+import type { AgencyAccount, SessionUser } from "@/lib/types";
 
+import { AgencyClientsPanel } from "./agency-clients-panel";
+import { nextAgencyPlan } from "./agency-plan";
+import { AgencyTeamPanel } from "./agency-team-panel";
 import { SectionHead } from "./section-head";
 
 type Props = { session: SessionUser; account: AgencyAccount };
 
-const KIND_CHIP: Record<AgencyActivityRow["kind"], string> = {
-  SHARE: "text-accent",
-  EDIT: "text-text-muted",
-  CREATE: "text-score-perfect",
-  EXPORT: "text-score-good",
-  TEAM: "text-[#6B4FAE]",
-  CLIENT: "text-text-muted",
-  ALERT: "text-accent",
-  BILLING: "text-text",
-};
-
-const PLAN_META: Record<
-  string,
-  { name: string; seatsCap: number; price: number; mrrLabel: string; prev?: string; next?: string }
-> = {
-  agency_starter: { name: "Agency Starter", seatsCap: 3, price: 49, mrrLabel: "€49 / mo", next: "Agency Pro" },
-  agency_pro: {
-    name: "Agency Pro",
-    seatsCap: 10,
-    price: 149,
-    mrrLabel: "€149 / mo",
-    prev: "Agency Starter",
-    next: "Agency Enterprise",
-  },
-  agency_enterprise: {
-    name: "Agency Enterprise",
-    seatsCap: 50,
-    price: 499,
-    mrrLabel: "€499 / mo",
-    prev: "Agency Pro",
-  },
-};
-
-function planFor(session: SessionUser) {
-  return PLAN_META[session.plan] ?? PLAN_META.agency_pro!;
-}
-
-function SeatMeter({ used, cap }: { used: number; cap: number }) {
+export function SeatMeter({
+  used,
+  pending,
+  cap,
+  tone = "dark",
+}: {
+  used: number;
+  pending: number;
+  cap: number;
+  tone?: "dark" | "light";
+}) {
+  // A cap of 9,999 (Enterprise) is not a meter anyone wants to look at.
+  const cells = Math.min(cap, 12);
+  if (cells <= 0) return null;
   return (
-    <div className="flex gap-[3px]">
-      {Array.from({ length: cap }).map((_, i) => (
+    <div className="flex gap-[3px]" aria-hidden="true">
+      {Array.from({ length: cells }).map((_, i) => (
         <div
           key={i}
-          className={cn("h-4 w-2.5 rounded-[1px]", i < used ? "bg-primary-foreground" : "bg-white/20")}
+          className={cn(
+            "h-4 w-2.5 rounded-[1px]",
+            i < used
+              ? tone === "dark"
+                ? "bg-primary-foreground"
+                : "bg-primary"
+              : i < used + pending
+                ? tone === "dark"
+                  ? "bg-white/50"
+                  : "bg-accent"
+                : tone === "dark"
+                  ? "bg-white/20"
+                  : "bg-border",
+          )}
         />
       ))}
     </div>
@@ -59,34 +70,24 @@ function SeatMeter({ used, cap }: { used: number; cap: number }) {
 }
 
 export function AgencyOverview({ session, account }: Props) {
-  const plan = planFor(session);
   const org = session.org;
   if (!org) return null;
-  const max = Math.max(...account.team.map((m) => m.trips));
 
-  // Only what `/api/me` can answer for. This line used to print an owner name,
-  // a join date and an `atlasweather.io/o/<slug>` URL; `Organization` carries
-  // none of the three and the vanity URL resolves to nothing. WS-C decides
-  // whether org slugs exist at all.
   const since = monthYear(org.createdAt);
-  const orgSub = [`Seats ${org.seatsUsed}/${org.seatCap}`, since && `Member since ${since}`]
-    .filter(Boolean)
-    .join(" · ");
+  const upgrade = nextAgencyPlan(session.plan);
+  const available = Math.max(account.seatCap - account.seatsUsed - account.seatsPending, 0);
 
   return (
     <>
       <SectionHead
         eyebrow="Organization"
         title={org.name}
-        sub={orgSub}
-        action={
-          <Link
-            href="/account?s=settings"
-            className="rounded-sm border border-border bg-white px-3 py-2 text-[12px] font-medium text-text hover:bg-surface-2"
-          >
-            Org settings
-          </Link>
-        }
+        sub={[
+          `Seats ${account.seatsUsed}/${account.seatCap}`,
+          since && `Created ${since}`,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
       />
 
       <div className="mb-5 grid gap-7 rounded-md bg-primary p-6 text-primary-foreground md:grid-cols-[1.3fr_1fr_1fr]">
@@ -95,10 +96,13 @@ export function AgencyOverview({ session, account }: Props) {
             Current plan
           </div>
           <div className="mt-1 font-display text-[26px] font-normal tracking-[-0.012em]">
-            {plan.name}
+            {planLabel(session.plan)}
           </div>
+          {/* No renewal date and no card: both live at Paddle, and the billing
+              section links out to the portal for them rather than printing a
+              stale copy here. */}
           <div className="mt-1 font-mono text-[12px] text-white/70">
-            {plan.mrrLabel} · renews May 14 · VAT invoiced
+            Billed by Paddle · VAT invoiced
           </div>
         </div>
         <div>
@@ -106,318 +110,181 @@ export function AgencyOverview({ session, account }: Props) {
             Seats
           </div>
           <div className="mb-1.5 flex items-baseline gap-1.5">
-            <div className="font-display text-[26px]">{org.seatsUsed}</div>
+            <div className="font-display text-[26px]">{account.seatsUsed}</div>
             <div className="font-mono text-[12px] text-white/60">
-              / {plan.seatsCap} · {plan.seatsCap - org.seatsUsed} available
+              / {account.seatCap} ·{" "}
+              {account.seatsPending > 0
+                ? `${account.seatsPending} invited · ${available} free`
+                : `${available} available`}
             </div>
           </div>
-          <SeatMeter used={org.seatsUsed} cap={plan.seatsCap} />
+          <SeatMeter
+            used={account.seatsUsed}
+            pending={account.seatsPending}
+            cap={account.seatCap}
+          />
         </div>
         <div className="text-right">
           <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-white/55">
             Plan path
           </div>
-          <div className="flex justify-end gap-2">
-            {plan.prev && (
-              <button
-                type="button"
-                className="rounded-sm border border-white/20 px-3 py-1.5 text-[12px] text-white/80 hover:bg-white/10"
-              >
-                ← {plan.prev}
-              </button>
-            )}
-            {plan.next && (
-              <button
-                type="button"
-                className="rounded-sm bg-[#E0C98A] px-3 py-1.5 text-[12px] font-semibold text-primary"
-              >
-                {plan.next} →
-              </button>
-            )}
-          </div>
+          {upgrade ? (
+            <UpgradeButton
+              plan={upgrade}
+              organizationId={org.id}
+              source="account_overview_agency"
+              properties={{ from: session.plan, to: upgrade }}
+              label={`${planLabel(upgrade)} →`}
+              className="inline-block rounded-sm bg-[#E0C98A] px-3 py-1.5 text-[12px] font-semibold text-primary"
+              errorClassName="text-[#F5C9C9]"
+            />
+          ) : (
+            <a
+              href="mailto:hello@wheretogoforgreatweather.com?subject=Agency%20plan"
+              className="inline-block rounded-sm border border-white/20 px-3 py-1.5 text-[12px] text-white/80 hover:bg-white/10"
+            >
+              Talk to us
+            </a>
+          )}
           <div className="mt-2 font-mono text-[10.5px] text-white/50">
             All changes via Paddle · prorated
           </div>
         </div>
       </div>
 
-      <div className="mb-5 grid gap-2 md:grid-cols-5">
-        {[
-          { l: "Active clients", v: account.clients.length, cap: `${account.archivedThisMonth} archived this month` },
-          { l: "Trips YTD", v: account.tripsYTD, cap: "+28 vs. prior 110d" },
-          { l: "Active trips", v: account.activeTrips, cap: "shared in last 30d" },
-          { l: "Avg turnaround", v: "2.3d", cap: "client request → share" },
-          { l: "MRR commit", v: plan.mrrLabel.replace(" / mo", ""), cap: `${plan.seatsCap} seats` },
-        ].map((k) => (
-          <div key={k.l} className="rounded-sm border border-border bg-surface px-3.5 py-3">
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-text-subtle">
-              {k.l}
-            </div>
-            <div className="mt-1 font-display text-[22px] font-normal tracking-[-0.012em] text-text">
-              {k.v}
-            </div>
-            <div className="mt-0.5 font-mono text-[10.5px] text-text-muted">{k.cap}</div>
-          </div>
-        ))}
+      <div className="mb-5 grid gap-2 md:grid-cols-3">
+        <Kpi
+          label="Clients"
+          value={account.clients.length}
+          cap="records your team plans against"
+        />
+        <Kpi
+          label="Team"
+          value={account.team.length}
+          cap={`${account.seatCap - account.seatsUsed} seats unfilled`}
+        />
+        <Kpi
+          label="Invitations out"
+          value={account.seatsPending}
+          cap={
+            account.seatsPending > 0
+              ? "each holds a seat until accepted"
+              : "nobody is waiting on a link"
+          }
+        />
       </div>
 
       <div className="grid gap-3.5 md:grid-cols-2">
-        <div className="rounded-md border border-border bg-surface">
-          <div className="flex justify-between border-b border-border px-4 py-2.5">
-            <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.14em] text-text-subtle">
-              Top agents · last 30d
-            </span>
-            <span className="font-mono text-[10.5px] text-text-subtle">by trips authored</span>
-          </div>
-          {account.team
-            .filter((m) => m.status === "active")
-            .slice(0, 5)
-            .map((m, i) => (
-              <div
-                key={m.id}
-                className="grid grid-cols-[20px_1fr_120px_40px] items-center gap-3 border-b border-border px-4 py-2 text-[12.5px] last:border-b-0"
-              >
-                <div className="font-mono text-[10.5px] text-text-subtle">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div>{m.name}</div>
-                <div className="h-1 overflow-hidden rounded-sm bg-surface-2">
-                  <div
-                    className="h-full bg-accent"
-                    style={{ width: `${(m.trips / max) * 100}%` }}
-                  />
-                </div>
-                <div className="text-right font-mono text-text">{m.trips}</div>
-              </div>
-            ))}
-        </div>
-
-        <div className="rounded-md border border-border bg-surface">
-          <div className="flex justify-between border-b border-border px-4 py-2.5">
-            <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.14em] text-text-subtle">
-              Activity · latest
-            </span>
-            <Link
-              href="/account?s=activity"
-              className="font-mono text-[11px] text-accent hover:underline"
-            >
-              View feed →
-            </Link>
-          </div>
-          {account.activity.slice(0, 5).map((a, i) => (
-            <div
-              key={i}
-              className="grid grid-cols-[70px_56px_1fr] items-baseline gap-2.5 border-b border-border px-4 py-2 text-[12.5px] last:border-b-0"
-            >
-              <div className="font-mono text-[10.5px] text-text-subtle">{a.t}</div>
-              <div
-                className={cn(
-                  "inline-block w-fit rounded-sm border border-border bg-[#FCFBF8] px-1.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.1em]",
-                  KIND_CHIP[a.kind],
-                )}
-              >
-                {a.kind}
-              </div>
-              <div className="leading-[1.4]">
-                <span className="font-medium text-text">{a.who}</span>{" "}
-                <span className="text-text-muted">{a.act}</span>{" "}
-                <span className="text-text">{a.obj}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <QuickCard
+          title="Clients"
+          body="Every trip your team builds can be filed against a client record, with the notes that explain it."
+          href="/account?s=clients"
+          cta="Open clients →"
+        />
+        <QuickCard
+          title="Team"
+          body="Invite agents by email. An invitation holds a seat until it is accepted or revoked."
+          href="/account?s=team"
+          cta="Manage team →"
+        />
       </div>
     </>
   );
 }
 
-export function AgencyClients({ account }: Props) {
+function Kpi({
+  label,
+  value,
+  cap,
+}: {
+  label: string;
+  value: number | string;
+  cap: string;
+}) {
+  return (
+    <div className="rounded-sm border border-border bg-surface px-3.5 py-3">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-text-subtle">
+        {label}
+      </div>
+      <div className="mt-1 font-display text-[22px] font-normal tracking-[-0.012em] text-text">
+        {value}
+      </div>
+      <div className="mt-0.5 font-mono text-[10.5px] text-text-muted">{cap}</div>
+    </div>
+  );
+}
+
+function QuickCard({
+  title,
+  body,
+  href,
+  cta,
+}: {
+  title: string;
+  body: string;
+  href: string;
+  cta: string;
+}) {
+  return (
+    <div className="rounded-md border border-border bg-surface p-5">
+      <div className="font-display text-[18px] font-medium tracking-[-0.005em] text-text">
+        {title}
+      </div>
+      <p className="mt-1.5 text-[12.5px] leading-[1.55] text-text-muted">{body}</p>
+      <Link
+        href={href}
+        className="mt-3 inline-block font-mono text-[11px] text-accent hover:underline"
+      >
+        {cta}
+      </Link>
+    </div>
+  );
+}
+
+export function AgencyClients({ session, account }: Props) {
+  const org = session.org;
+  if (!org) return null;
   return (
     <>
       <SectionHead
         eyebrow="Clients"
-        title={`${account.clients.length} clients`}
-        sub="Clients are the people you build trips for. Each trip links back to a client record."
-        action={
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="rounded-sm border border-border bg-white px-3 py-2 text-[12px] font-medium text-text hover:bg-surface-2"
-            >
-              Import CSV
-            </button>
-            <button
-              type="button"
-              className="rounded-sm bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              + New client
-            </button>
-          </div>
+        title={
+          account.clients.length === 1
+            ? "1 client"
+            : `${account.clients.length} clients`
         }
+        sub="Clients are the people you build trips for. Each trip can link back to a client record."
       />
-
-      <div className="mb-3 flex gap-2">
-        <input
-          placeholder="Search clients, trips, countries…"
-          className="w-80 rounded-sm border border-border bg-white px-3 py-2 text-[12.5px]"
-        />
-      </div>
-
-      <div className="overflow-hidden rounded-md border border-border bg-surface">
-        <div
-          className="grid items-center gap-3 border-b border-border bg-[#FCFBF8] px-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-subtle"
-          style={{ gridTemplateColumns: "1.4fr 1fr 0.6fr 0.8fr 1fr 1fr 60px" }}
-        >
-          <div>Client</div>
-          <div>Country</div>
-          <div>Trips</div>
-          <div>Last active</div>
-          <div>Primary agent</div>
-          <div>Tag</div>
-          <div />
-        </div>
-        {account.clients.map((c) => (
-          <div
-            key={c.id}
-            className="grid items-center gap-3 border-b border-border px-4 py-3 text-[12.5px] last:border-b-0"
-            style={{ gridTemplateColumns: "1.4fr 1fr 0.6fr 0.8fr 1fr 1fr 60px" }}
-          >
-            <div>
-              <Link
-                href={`/account/clients/${c.id}`}
-                className="font-display text-[16px] font-medium text-text hover:underline"
-              >
-                {c.name}
-              </Link>
-            </div>
-            <div className="font-mono text-text-muted">{c.country}</div>
-            <div className="font-mono text-text">{c.trips}</div>
-            <div className="font-mono text-text-muted">{c.last}</div>
-            <div>{c.agent}</div>
-            <div>
-              <span className="inline-block rounded-sm border border-border bg-[#FCFBF8] px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
-                {c.tag}
-              </span>
-            </div>
-            <div className="text-right">
-              <Link
-                href={`/account/clients/${c.id}`}
-                className="font-mono text-[11px] text-accent hover:underline"
-              >
-                Open →
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+      <AgencyClientsPanel orgId={org.id} initial={account.clients} />
     </>
   );
 }
 
 export function AgencyTeam({ session, account }: Props) {
-  const plan = planFor(session);
   const org = session.org;
   if (!org) return null;
+  const canManage = session.role === "owner" || session.role === "admin";
 
   return (
     <>
       <SectionHead
         eyebrow="Team"
-        title={`${org.seatsUsed} of ${plan.seatsCap} seats used`}
-        sub="Invite agents and admins. Viewers see shared trips but can't edit."
-        action={
-          <button
-            type="button"
-            className="rounded-sm bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground hover:bg-primary/90"
-            disabled={org.seatsUsed >= plan.seatsCap}
-          >
-            + Invite member
-          </button>
+        title={`${account.seatsUsed} of ${account.seatCap} seats used`}
+        sub={
+          account.seatsPending > 0
+            ? `${account.seatsPending} invitation${account.seatsPending === 1 ? "" : "s"} outstanding — each one holds a seat until it is accepted or revoked.`
+            : "Invite agents by email. They get a one-time link that signs them in."
         }
       />
-
-      <div className="overflow-hidden rounded-md border border-border bg-surface">
-        <div
-          className="grid items-center gap-3 border-b border-border bg-[#FCFBF8] px-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-subtle"
-          style={{ gridTemplateColumns: "1.4fr 1.4fr 80px 0.8fr 60px 90px 60px" }}
-        >
-          <div>Name</div>
-          <div>Email</div>
-          <div>Role</div>
-          <div>Last active</div>
-          <div>Trips</div>
-          <div>Status</div>
-          <div />
-        </div>
-        {account.team.map((m) => (
-          <div
-            key={m.id}
-            className="grid items-center gap-3 border-b border-border px-4 py-3 text-[12.5px] last:border-b-0"
-            style={{ gridTemplateColumns: "1.4fr 1.4fr 80px 0.8fr 60px 90px 60px" }}
-          >
-            <div>
-              <span className="text-text">{m.name}</span>
-              {m.you && (
-                <span className="ml-2 font-mono text-[9.5px] uppercase tracking-[0.1em] text-accent">
-                  ● you
-                </span>
-              )}
-            </div>
-            <div className="font-mono text-text-muted">{m.email}</div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-text">
-              {m.role}
-            </div>
-            <div className="font-mono text-text-muted">{m.last}</div>
-            <div className="font-mono text-text">{m.trips}</div>
-            <div
-              className={cn(
-                "font-mono text-[10.5px] uppercase tracking-[0.1em]",
-                m.status === "active" ? "text-score-perfect" : "text-accent",
-              )}
-            >
-              ● {m.status}
-            </div>
-            <div className="text-right text-text-subtle">⋯</div>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-export function AgencyActivity({ account }: Props) {
-  return (
-    <>
-      <SectionHead
-        eyebrow="Activity"
-        title="Team feed"
-        sub="Everything that happened across clients, trips, and team — newest first."
+      <AgencyTeamPanel
+        orgId={org.id}
+        plan={session.plan}
+        canManage={canManage}
+        initialTeam={account.team}
+        initialInvites={account.invites}
+        seatCap={account.seatCap}
+        seatsUsed={account.seatsUsed}
       />
-      <div className="overflow-hidden rounded-md border border-border bg-surface">
-        {account.activity.map((a, i) => (
-          <div
-            key={i}
-            className="grid items-baseline gap-3 border-b border-border px-5 py-3 text-[13px] last:border-b-0"
-            style={{ gridTemplateColumns: "90px 70px 1fr" }}
-          >
-            <div className="font-mono text-[11px] text-text-subtle">{a.t}</div>
-            <div
-              className={cn(
-                "inline-block w-fit rounded-sm border border-border bg-[#FCFBF8] px-1.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.1em]",
-                KIND_CHIP[a.kind],
-              )}
-            >
-              {a.kind}
-            </div>
-            <div className="leading-[1.4]">
-              <span className="font-medium text-text">{a.who}</span>{" "}
-              <span className="text-text-muted">{a.act}</span>{" "}
-              <span className="text-text">{a.obj}</span>
-              {a.ctx && <span className="text-text-subtle"> · {a.ctx}</span>}
-            </div>
-          </div>
-        ))}
-      </div>
     </>
   );
 }
@@ -467,13 +334,10 @@ export function AgencyBranding() {
           </div>
         </fieldset>
         <div className="mt-5 flex items-center gap-3 rounded-sm border border-accent bg-[#FBF3DC] px-3.5 py-3 text-[12.5px] text-text">
-          <span>Want early access? We&apos;ll email a short preview in Q2 and open the waitlist first.</span>
-          <button
-            type="button"
-            className="ml-auto rounded-sm bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground"
-          >
-            Join the waitlist
-          </button>
+          <span>
+            Want early access? We&apos;ll email a short preview in Q2 and open the
+            waitlist first.
+          </span>
         </div>
       </div>
     </>

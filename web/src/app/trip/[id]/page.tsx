@@ -3,9 +3,17 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { PageFooter, PageHeader } from "@/components/layout";
-import { TripActionRail, TripDestinations, TripFooter, TripHero, TripParams } from "@/components/trip";
+import {
+  AssignClient,
+  TripActionRail,
+  TripDestinations,
+  TripFooter,
+  TripHero,
+  TripParams,
+} from "@/components/trip";
 import { SITE_URL } from "@/lib/env";
-import { getSessionServer } from "@/lib/session";
+import { getAgencyClients } from "@/lib/agency-server";
+import { getSessionServer, isAgencyWorkspace } from "@/lib/session";
 import { describeTrip, getOwnTrip } from "@/lib/trip-server";
 
 type PageProps = {
@@ -52,6 +60,12 @@ export default async function TripPage({ params }: PageProps) {
   const trip = await getOwnTrip(id);
   if (!trip || !trip.id) notFound();
 
+  // Agency members can file the trip against one of their clients. Fetched
+  // only for them: a consumer has no organisation and no clients, so there is
+  // nothing to ask the API for.
+  const org = isAgencyWorkspace(session) ? session.org : null;
+  const clients = org ? await getAgencyClients(org.id) : [];
+
   return (
     <>
       <PageHeader />
@@ -73,12 +87,21 @@ export default async function TripPage({ params }: PageProps) {
               </Link>
             )}
           </div>
-          <TripActionRail
-            tripId={trip.id}
-            title={trip.title}
-            shareToken={trip.shareToken}
-            siteUrl={SITE_URL}
-          />
+          <div className="flex flex-col gap-4">
+            <TripActionRail
+              tripId={trip.id}
+              title={trip.title}
+              shareToken={trip.shareToken}
+              siteUrl={SITE_URL}
+            />
+            {org && (
+              <AssignClient
+                tripId={trip.id}
+                clientId={trip.clientId}
+                clients={clients}
+              />
+            )}
+          </div>
         </div>
 
         <TripDestinations

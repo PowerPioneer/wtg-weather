@@ -15,10 +15,16 @@
  *     ladder now reads the same tier data the pricing page does, so there is
  *     one place a price can be wrong instead of two.
  *
- * The invoice list stays fixture-backed via `account.invoices` and is only
- * rendered when there is something in it — WS-C owns the agency data path, and
- * with `WTG_USE_MOCK_DATA` off that array is empty, so nothing fabricated
- * renders in production.
+ * The invoice list is gone too, as of WS-C. It was the last fixture-backed
+ * block here, rendered only when non-empty and therefore invisible in
+ * production — but there is no invoice cache on the API and never will be
+ * while Paddle is merchant of record, so the honest version of that section is
+ * the portal link above it.
+ *
+ * Seat numbers come from the org record via `AgencyAccount`, which counts
+ * memberships and open invitations separately: an invitation holds a seat, and
+ * a billing page that showed only members would disagree with the cap the API
+ * enforces.
  */
 
 import { allTiers } from "@/components/upgrade";
@@ -78,11 +84,13 @@ export function AgencyBilling({ session, account, billing }: AgencyBillingProps)
         />
         <Kpi
           label="Seats used"
-          value={`${account.team.length} / ${seatCap || "—"}`}
+          value={`${account.seatsUsed} / ${seatCap || "—"}`}
           cap={
-            seatCap > 0 && account.team.length >= seatCap
-              ? "at cap — upgrade to add more"
-              : "across your organisation"
+            account.seatsPending > 0
+              ? `${account.seatsPending} invitation${account.seatsPending === 1 ? "" : "s"} also holding a seat`
+              : seatCap > 0 && account.seatsUsed >= seatCap
+                ? "at cap — upgrade to add more"
+                : "across your organisation"
           }
         />
         <Kpi
@@ -165,34 +173,6 @@ export function AgencyBilling({ session, account, billing }: AgencyBillingProps)
         )}
       </div>
 
-      {account.invoices.length > 0 && (
-        <>
-          <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.12em] text-text-subtle">
-            Invoice history · cached from Paddle
-          </div>
-          <div className="overflow-hidden rounded-md border border-border bg-surface">
-            {account.invoices.map((inv) => (
-              <div
-                key={inv.id}
-                className="grid items-center gap-3 border-b border-border px-5 py-2.5 text-[12px] last:border-b-0"
-                style={{ gridTemplateColumns: "110px 1fr 80px 100px" }}
-              >
-                <div className="font-mono text-text-muted">{inv.date}</div>
-                <div className="font-mono text-text">{inv.id}</div>
-                <div className="text-right font-mono text-text">{inv.amount}</div>
-                <div className="text-right font-mono text-[10.5px] uppercase tracking-[0.1em] text-score-perfect">
-                  ● {inv.status.toUpperCase()}
-                </div>
-              </div>
-            ))}
-          </div>
-          {/*
-            The per-row "PDF ↗" link used to point at `#`. Invoice PDFs are
-            Paddle-hosted behind a portal session, so there is no URL to put
-            here — the portal button above is the way to them.
-          */}
-        </>
-      )}
     </>
   );
 }

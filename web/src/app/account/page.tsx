@@ -3,7 +3,6 @@ import { notFound, redirect } from "next/navigation";
 
 import {
   AccountSidebar,
-  AgencyActivity,
   AgencyBilling,
   AgencyBranding,
   AgencyClients,
@@ -18,10 +17,15 @@ import {
   type SidebarItem,
 } from "@/components/account";
 import { PageFooter, PageHeader } from "@/components/layout";
+import {
+  agencySections,
+  resolveAgencySection,
+  type AgencySectionId,
+} from "@/lib/account-sections";
 import { getConsumerAccount } from "@/lib/account-server";
 import { getAgencyAccount } from "@/lib/agency-server";
 import { getBillingSummary, type BillingSummary } from "@/lib/billing-server";
-import { getEntitlement, getSessionServer, planLabel } from "@/lib/session";
+import { getSessionServer, isAgencyWorkspace, planLabel } from "@/lib/session";
 import type {
   AgencyAccount,
   ConsumerAccount,
@@ -47,17 +51,7 @@ const CONSUMER_SECTIONS = [
   "billing",
 ] as const;
 
-const AGENCY_SECTIONS = [
-  "overview",
-  "clients",
-  "team",
-  "activity",
-  "branding",
-  "billing",
-] as const;
-
 type ConsumerSectionId = (typeof CONSUMER_SECTIONS)[number];
-type AgencySectionId = (typeof AGENCY_SECTIONS)[number];
 
 /** The account page is per-user; nothing about it can be cached or prerendered. */
 export const dynamic = "force-dynamic";
@@ -66,10 +60,15 @@ export default async function AccountPage({ searchParams }: PageProps) {
   const session = await getSessionServer();
   if (!session) redirect("/login");
 
-  const entitlement = getEntitlement(session);
   const { s } = await searchParams;
 
-  if (entitlement.agency) {
+  // Membership decides the shell, not the plan (WS-C item 5). An agency that
+  // has finished the wizard but not yet paid is on the free plan and still an
+  // agency — and its dashboard is where the upgrade path lives, so gating the
+  // dashboard on the plan would hide the way to buy the plan. A premium
+  // consumer's single-seat organization is a wallet, not a workspace, and
+  // `isAgencyWorkspace` is what tells the two apart.
+  if (isAgencyWorkspace(session)) {
     return <AgencyAccountPage session={session} activeParam={s} />;
   }
 
@@ -170,24 +169,22 @@ async function AgencyAccountPage({
   const org = session.org;
   if (!org) notFound();
   const [account, billing] = await Promise.all([
-    getAgencyAccount(org.id),
+    // The caller's id so the team table can mark their own row — the API does
+    // not stamp it, because "which of these is you" is a question only the
+    // caller's own session answers.
+    getAgencyAccount(org.id, session.id),
     getBillingSummary(),
   ]);
+  // Null means the API refused the read between the `/api/me` above and this
+  // one. Sign in again rather than rendering an empty organisation to somebody
+  // who has a team.
+  if (!account) redirect("/login");
 
-  const activeId: AgencySectionId = AGENCY_SECTIONS.includes(
-    activeParam as AgencySectionId,
-  )
-    ? (activeParam as AgencySectionId)
-    : "overview";
-
-  const sections: readonly SidebarItem[] = [
-    { id: "overview", label: "Overview" },
-    { id: "clients", label: "Clients", count: account.clients.length },
-    { id: "team", label: "Team", count: account.team.length },
-    { id: "activity", label: "Activity" },
-    { id: "branding", label: "Branding", short: "Soon" },
-    { id: "billing", label: "Billing" },
-  ];
+  const activeId = resolveAgencySection(activeParam, session.role);
+  const sections: readonly SidebarItem[] = agencySections(session.role, {
+    clients: account.clients.length,
+    team: account.team.length,
+  });
 
   return (
     <AccountShell
@@ -214,11 +211,11 @@ function renderAgencySection(
       return <AgencyClients session={session} account={account} />;
     case "team":
       return <AgencyTeam session={session} account={account} />;
-    case "activity":
-      return <AgencyActivity session={session} account={account} />;
     case "branding":
       return <AgencyBranding />;
     case "billing":
+      // Reachable only for owner/admin — `resolveAgencySection` sends an agent
+      // to the overview instead. The API refuses them regardless.
       return (
         <AgencyBilling session={session} account={account} billing={billing} />
       );

@@ -69,6 +69,11 @@ async def test_premium_user_carries_plan_org_and_role(
         "seat_cap": org.seat_cap,
         "seats_used": 1,
         "created_at": body["organization"]["created_at"],
+        # This fixture's org has no `personal_user_id`, so it reads as a
+        # workspace — which is what the web switches its account shell on. The
+        # real personal org is created by the consumer-checkout webhook and is
+        # covered in `test_billing.py`.
+        "is_personal": False,
     }
     assert uuid.UUID(body["organization_id"]) == org.id
 
@@ -111,3 +116,40 @@ async def test_agency_seats_used_counts_every_membership(
     # The agent inherits the org's plan but not the owner's role.
     assert body["plan"] == "agency_starter"
     assert body["role"] == "agent"
+
+
+@pytest.mark.asyncio
+async def test_a_personal_organization_is_marked_as_one(
+    client: AsyncClient, sessionmaker, user
+) -> None:
+    """`is_personal` is how the web tells a workspace from a wallet.
+
+    A consumer's own subscription lives on a single-seat organization created
+    by the checkout webhook. It has no team, no clients and no seats to sell,
+    and the account shell must not render agency surfaces for it. The plan
+    cannot answer that question: an agency that has created its organization
+    but not yet paid is still an agency, on the free plan.
+    """
+    from wtg_api.models import User
+    from wtg_api.services.billing import ensure_personal_organization
+
+    async with sessionmaker() as session:
+        me = await session.get(User, user.id)
+        assert me is not None
+        await ensure_personal_organization(session, me)
+        await session.commit()
+
+    login(client, user)
+    body = (await client.get("/api/me")).json()
+    assert body["organization"]["is_personal"] is True
+
+
+@pytest.mark.asyncio
+async def test_an_agency_organization_is_not_personal(
+    client: AsyncClient, agency, outbox
+) -> None:
+    owner, org = agency
+    login(client, owner)
+    body = (await client.get("/api/me")).json()
+    assert body["organization"]["id"] == str(org.id)
+    assert body["organization"]["is_personal"] is False
