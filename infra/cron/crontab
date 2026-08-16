@@ -1,17 +1,47 @@
-# Installed on the host (not in a container). See infra/CLAUDE.md for rationale.
-# Installing this file is WS-E; keeping it correct is each workstream's own job.
+# Root crontab for the v2 box. Installed on the host, not in a container.
+#
+#   Install:   crontab /opt/wtg-weather/infra/cron/crontab
+#   Verify:    crontab -l
+#   Backup first, if anything is already scheduled:
+#              crontab -l > /root/crontab.$(date -u +%FT%TZ).bak
+#
+# `crontab <file>` REPLACES the whole table — it does not merge. This file is
+# therefore the complete set of scheduled jobs, and anything installed by hand
+# and not written down here is lost on the next install. That is the intended
+# property: `crontab -l` and this file must agree (DEVELOPMENT_PLAN.md § WS-E
+# acceptance).
 #
 # cron gives a job a near-empty PATH, not a login shell's. Every script here
 # needs `docker` (/usr/bin), and the pipeline ones additionally need `uv`, which
-# the installer puts in root's ~/.local/bin. Both are spelled out rather than
-# left to whatever the shell inherits.
+# the installer puts in root's ~/.local/bin — the exact trap that makes
+# `ssh host 'uv ...'` fail while `bash -lc 'uv ...'` works. tippecanoe and
+# pmtiles are in /usr/local/bin. All three are spelled out rather than left to
+# whatever the shell inherits.
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/bin
 
-# Nightly 02:00 UTC: encrypted backup to Backblaze B2
+# No MTA is configured on this box, so cron's default "mail the output to root"
+# produces an undeliverable-mail error per run and nothing a human ever reads.
+# The log files below are the record. That does mean a failed job is silent
+# until someone looks — pointing an alert at these logs (or at GlitchTip, per
+# WS-E step 5) is the follow-up, not something this file can do.
+MAILTO=""
+
+# Every job appends to its own log and merges stderr into it, because each
+# script's progress goes to stdout and its failures to stderr, and reading a
+# failed run means reading both interleaved. Rotation is logrotate's business;
+# these files are small except in the January week.
+
+# Nightly 02:00 UTC: encrypted Postgres dump to Backblaze B2.
 0 2 * * * /opt/wtg-weather/infra/scripts/backup-postgres.sh >> /var/log/wtg-backup.log 2>&1
 
-# Weekly Sun 03:00 UTC: scrape advisories + publish
+# Weekly Sun 03:00 UTC: scrape the six governments, consolidate, and rebuild
+# the tiles + purge the CDN only if a country's advisory level actually moved.
+# Runs `uv` on the host — the pipeline is not containerised.
+# NOTE: travel.state.gov 403s from this box, so the US dump is refreshed by
+# hand from a permitted network; `wtg process advisories` logs ADVISORY_STALE
+# when that has not happened recently. See infra/CLAUDE.md § "US advisory
+# scrape (Cloudflare 403)".
 0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
 
 # Weekly Mon 04:00 UTC: recompute alert matches, email on transition.
@@ -21,8 +51,12 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/b
 # only thing that republishes data mid-year.
 0 4 * * 1 /opt/wtg-weather/infra/scripts/weekly-alerts.sh >> /var/log/wtg-alerts.log 2>&1
 
-# Yearly Jan 15 04:00 UTC: full ERA5 pipeline rebuild.
-# NOTE: yearly-era5.sh still shells into a `pipeline` compose service that
-# docker-compose.yml does not define — it has never been runnable as written.
-# WS-E rewrites it to run `uv` on the host like weekly-advisories.sh.
+# Yearly Jan 15 04:00 UTC: full ERA5 rebuild — download the new year,
+# re-aggregate, percentiles, both tile tiers + CDN purge, republish the SSR
+# bundle, and recreate `web` so the ISR cache lets the new numbers through.
+# Mid-January because Copernicus lags the calendar by two to four weeks.
+#
+# This one runs for DAYS at admin-2 scale and needs room on the data volume;
+# it is the one entry here that wants a human watching it start. Print the
+# plan first with:  DRY_RUN=1 /opt/wtg-weather/infra/scripts/yearly-era5.sh
 0 4 15 1 * /opt/wtg-weather/infra/scripts/yearly-era5.sh >> /var/log/wtg-era5.log 2>&1
