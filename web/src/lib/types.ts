@@ -15,8 +15,20 @@ export type AdvisorySource = {
   gov: string;
   level: AdvisoryLevel;
   label: string;
+  /**
+   * When this government last *changed* its advisory. A stable position keeps
+   * this date for years, so it says nothing about whether the data is fresh.
+   */
   date: string;
   url: string;
+  /**
+   * When this government was last *read* — `checked` in the published bundle,
+   * declared on the API's `AdvisorySource` so it survives the response model.
+   *
+   * Optional because a bundle published before the pipeline emitted it has
+   * none, and the absence means "cannot judge freshness", never "stale".
+   */
+  checked?: string;
 };
 
 export type AdvisorySummary = {

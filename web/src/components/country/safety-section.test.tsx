@@ -77,4 +77,91 @@ describe("SafetySection", () => {
     );
     expect(container.textContent).not.toContain("higher advisory");
   });
+
+  /**
+   * WS-E: the panel has to distinguish "this advisory has not moved" from
+   * "nobody has looked". Both dates are printed per government, and the
+   * combined badge goes neutral only when the payload's own `checked` dates
+   * say every source has gone cold.
+   */
+  describe("freshness", () => {
+    const NOW = new Date("2026-08-16T09:00:00Z");
+    const withChecked = (checked: string): AdvisorySummary => ({
+      ...SUMMARY,
+      sources: SUMMARY.sources.map((s) => ({ ...s, checked })),
+    });
+
+    it("prints when each government last changed and when it was last checked", () => {
+      const { container } = render(
+        <SafetySection
+          advisories={withChecked("2026-08-15")}
+          countryName="Peru"
+          now={NOW}
+        />,
+      );
+
+      expect(container.textContent).toContain("Changed 2026-04-17");
+      expect(container.textContent).toContain("Checked 2026-08-15");
+    });
+
+    it("keeps the level colour while the data is being refreshed", () => {
+      const { container } = render(
+        <SafetySection
+          advisories={withChecked("2026-08-15")}
+          countryName="Peru"
+          now={NOW}
+        />,
+      );
+
+      expect(container.querySelector(".bg-border-strong")).toBeNull();
+      expect(container.textContent).not.toContain("has not been refreshed");
+    });
+
+    it("neutralises the badge and says so when every source has gone cold", () => {
+      const { container } = render(
+        <SafetySection
+          advisories={withChecked("2026-06-01")}
+          countryName="Peru"
+          now={NOW}
+        />,
+      );
+
+      // HANDOFF § Risks: stale data downgrades the badge to
+      // --color-border-strong rather than presenting it at its level colour.
+      expect(container.querySelector(".bg-border-strong")).not.toBeNull();
+      expect(container.textContent).toContain("has not been refreshed");
+      expect(container.textContent).toContain("2026-06-01");
+      // The level is still reported — it is the best anyone has.
+      expect(container.textContent).toContain("Exercise increased caution");
+      expect(
+        screen.getByLabelText(/level 2 .* \(data may be out of date\)/),
+      ).toBeInTheDocument();
+    });
+
+    it("leaves the badge alone when the bundle carries no checked dates", () => {
+      // Pre-WS-E bundles. Absence of evidence is not a staleness claim.
+      const { container } = render(
+        <SafetySection advisories={SUMMARY} countryName="Peru" now={NOW} />,
+      );
+
+      expect(container.querySelector(".bg-border-strong")).toBeNull();
+      expect(container.textContent).not.toContain("has not been refreshed");
+    });
+
+    it("stays fresh while one government is still being read", () => {
+      const mixed: AdvisorySummary = {
+        ...SUMMARY,
+        sources: [
+          { ...SUMMARY.sources[0], checked: "2026-03-01" },
+          { ...SUMMARY.sources[1], checked: "2026-08-14" },
+        ],
+      };
+      const { container } = render(
+        <SafetySection advisories={mixed} countryName="Peru" now={NOW} />,
+      );
+
+      expect(container.querySelector(".bg-border-strong")).toBeNull();
+      expect(container.textContent).toContain("Checked 2026-03-01");
+    });
+  });
 });

@@ -11,6 +11,13 @@ export type SafetyBadgeProps = {
   size?: "sm" | "md" | "lg";
   /** Whether to render the word label ("Exercise normal precautions"). */
   showLabel?: boolean;
+  /**
+   * Draw the block in neutral `--color-border-strong` instead of its level
+   * colour. For advisory data the payload says is out of date: the level is
+   * still reported — it is the best anyone has — but it stops being asserted
+   * in the palette that means "we checked". `HANDOFF.md` § Risks.
+   */
+  muted?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "children">;
 
 export const ADVISORY_LABEL: Record<AdvisoryLevel, string> = {
@@ -52,11 +59,17 @@ export function SafetyBadge({
   source,
   size = "md",
   showLabel = true,
+  muted = false,
   className,
   ...rest
 }: SafetyBadgeProps) {
   const label = ADVISORY_LABEL[level];
-  const accessibleName = `${source ? `${source} advisory: ` : "Advisory: "}level ${level} — ${label}`;
+  // Colour is never the sole carrier of anything here, so the muted state says
+  // so in the accessible name too — a screen reader gets the same caveat a
+  // sighted reader gets from the grey block.
+  const accessibleName =
+    `${source ? `${source} advisory: ` : "Advisory: "}level ${level} — ${label}` +
+    (muted ? " (data may be out of date)" : "");
 
   return (
     <div
@@ -68,7 +81,7 @@ export function SafetyBadge({
       <div
         className={cn(
           "flex shrink-0 items-center justify-center rounded-sm font-display font-medium text-text-inverse",
-          LEVEL_BG[level],
+          muted ? "bg-border-strong" : LEVEL_BG[level],
           SIZE_BLOCK[size],
         )}
         style={{
@@ -89,7 +102,7 @@ export function SafetyBadge({
           <span
             className={cn(
               "font-sans text-[13px] font-semibold leading-tight",
-              LEVEL_TEXT[level],
+              muted ? "text-text-muted" : LEVEL_TEXT[level],
             )}
           >
             Level {level}

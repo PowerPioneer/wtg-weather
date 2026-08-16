@@ -14,6 +14,14 @@ export type AdvisorySource = {
   summary: string;
   /** ISO date the advisory was last issued/updated. */
   updated: string;
+  /**
+   * ISO date this government was last read by the scraper. Absent when the
+   * published bundle predates the field. Rendered alongside `updated` because
+   * the two answer different questions and a reader cannot judge the first
+   * without the second: an advisory unchanged since 2019 is ordinary, a
+   * government unchecked since 2019 is a broken pipeline.
+   */
+  checked?: string;
   /** Source URL for the advisory. */
   url: string;
 };
@@ -24,6 +32,15 @@ export type SafetyPanelProps = {
   sources: readonly AdvisorySource[];
   /** ISO date — latest of any source's `updated`. */
   lastUpdated: string;
+  /**
+   * The data says nobody has re-read these governments recently (every
+   * source's `checked` is past the threshold — see `lib/advisory-freshness`).
+   * Draws the combined badge neutral and says why, rather than presenting an
+   * old snapshot in the same colours as a current one.
+   */
+  stale?: boolean;
+  /** Newest `checked` across the sources, shown with the staleness notice. */
+  lastChecked?: string;
   /**
    * If true, the per-government grid is rendered open. Defaults to false — the
    * panel uses a native `<details>` element so it works with JavaScript off.
@@ -42,6 +59,8 @@ export function SafetyPanel({
   combined,
   sources,
   lastUpdated,
+  stale = false,
+  lastChecked,
   defaultOpen = false,
   className,
 }: SafetyPanelProps) {
@@ -55,7 +74,7 @@ export function SafetyPanel({
       )}
     >
       <div className="flex items-start gap-5">
-        <SafetyBadge level={combined} size="lg" showLabel={false} />
+        <SafetyBadge level={combined} size="lg" showLabel={false} muted={stale} />
         <div className="flex-1">
           <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-text-muted">
             Combined advisory · most-cautious-wins
@@ -65,9 +84,26 @@ export function SafetyPanel({
           </div>
           <div className="mt-1 font-mono text-[11.5px] text-text-muted">
             Highest level across {sources.length} government
-            {sources.length === 1 ? "" : "s"} · Updated{" "}
+            {sources.length === 1 ? "" : "s"} · Advisory last changed{" "}
             <time dateTime={lastUpdated}>{lastUpdated}</time>
           </div>
+          {stale ? (
+            <p className="mt-2 max-w-[560px] border-l-2 border-border-strong pl-3 text-[12.5px] leading-snug text-text-muted">
+              <span className="font-medium text-text">
+                This advisory has not been refreshed recently.
+              </span>{" "}
+              {lastChecked ? (
+                <>
+                  Every government we track was last checked on{" "}
+                  <time dateTime={lastChecked}>{lastChecked}</time>, so the
+                  level above may be out of date.
+                </>
+              ) : (
+                <>The level above may be out of date.</>
+              )}{" "}
+              Check the source links before you rely on it.
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -108,7 +144,14 @@ export function SafetyPanel({
                 {s.summary}
               </p>
               <div className="mt-3 border-t border-dashed border-border pt-2 font-mono text-[10.5px] text-text-subtle">
-                <time dateTime={s.updated}>{s.updated}</time>
+                <span className="block">
+                  Changed <time dateTime={s.updated}>{s.updated}</time>
+                </span>
+                {s.checked ? (
+                  <span className="block">
+                    Checked <time dateTime={s.checked}>{s.checked}</time>
+                  </span>
+                ) : null}
                 <a
                   href={s.url}
                   rel="nofollow noreferrer"

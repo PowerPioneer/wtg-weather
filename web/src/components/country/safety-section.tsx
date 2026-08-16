@@ -1,4 +1,5 @@
 import { SafetyPanel, type AdvisorySource as PanelAdvisorySource } from "@/components/safety";
+import { advisoryFreshness } from "@/lib/advisory-freshness";
 import type { AdvisoryLevel, AdvisorySummary } from "@/lib/types";
 
 const GOV_CODE: Record<string, string> = {
@@ -25,9 +26,17 @@ const GOV_CODE: Record<string, string> = {
 export function SafetySection({
   advisories,
   countryName,
+  now,
 }: {
   advisories?: AdvisorySummary;
   countryName: string;
+  /**
+   * Injected in tests. In production this is the build/revalidate time of a
+   * statically generated page, so the freshness verdict is "as of when this
+   * page was rendered" — which is why the copy dates the check rather than
+   * counting days since it.
+   */
+  now?: Date;
 }) {
   if (!advisories) {
     return (
@@ -55,9 +64,11 @@ export function SafetySection({
     level: s.level as AdvisoryLevel,
     summary: s.label,
     updated: s.date,
+    checked: s.checked,
     url: s.url,
   }));
 
+  const freshness = advisoryFreshness(advisories, now);
   const count = sources.length;
 
   return (
@@ -76,6 +87,8 @@ export function SafetySection({
           combined={advisories.combined.level as AdvisoryLevel}
           sources={sources}
           lastUpdated={advisories.lastUpdated}
+          stale={freshness.stale}
+          lastChecked={freshness.lastChecked}
         />
         {advisories.regionalMax != null ? (
           <p className="mt-4 max-w-[680px] rounded-md border border-dashed border-border bg-surface p-4 text-[13px] leading-snug text-text-muted">
