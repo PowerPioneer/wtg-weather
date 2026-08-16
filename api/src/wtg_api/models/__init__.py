@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from wtg_api.models.alert import Alert
 from wtg_api.models.client import Client
+from wtg_api.models.client_note import ClientNote
 from wtg_api.models.favourite import Favourite
+from wtg_api.models.invitation import Invitation
 from wtg_api.models.membership import Membership, Role
 from wtg_api.models.organization import (
     AGENCY_PLANS,
@@ -21,7 +23,9 @@ __all__ = [
     "PREMIUM_PLANS",
     "Alert",
     "Client",
+    "ClientNote",
     "Favourite",
+    "Invitation",
     "Membership",
     "Organization",
     "PaddleWebhookEvent",

@@ -26,6 +26,12 @@ class Settings(BaseSettings):
 
     tile_signature_ttl_seconds: int = 15 * 60
     magic_link_ttl_seconds: int = 15 * 60
+    # Longer than a magic link because an invitation is addressed to somebody
+    # who may not be at their desk, and shorter than a session because it is
+    # still a bearer credential for a mailbox. Enforced twice — on the token's
+    # signature and on the row's `expires_at` — so lowering it here expires
+    # links that were already sent.
+    invite_ttl_seconds: int = 7 * 24 * 3600
     session_cookie_name: str = "wtg_session"
     session_ttl_seconds: int = 30 * 24 * 3600
 

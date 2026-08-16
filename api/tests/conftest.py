@@ -86,6 +86,39 @@ async def premium_user(sessionmaker) -> tuple[User, Organization]:
         return user, org
 
 
+@pytest_asyncio.fixture
+async def agency(sessionmaker) -> tuple[User, Organization]:
+    """An agency on Starter — three seats, one of them the owner's."""
+    async with sessionmaker() as session:
+        owner = User(email=f"owner-{uuid.uuid4().hex[:8]}@example.com", name="Ada Owner")
+        org = Organization(name="Cordillera Travel", plan=Plan.agency_starter, seat_cap=3)
+        session.add_all([owner, org])
+        await session.flush()
+        session.add(Membership(user_id=owner.id, organization_id=org.id, role=Role.owner))
+        await session.commit()
+        await session.refresh(owner)
+        await session.refresh(org)
+        return owner, org
+
+
+@pytest.fixture
+def outbox(monkeypatch) -> list:
+    """Capture invite mail instead of sending it.
+
+    `.claude/rules/testing.md`: never a live provider. Patched at the point the
+    invite service builds one, so a test that forgets this fixture sends
+    through `ConsoleEmail` and still reaches no network.
+    """
+    sent: list = []
+
+    class _Capture:
+        async def send(self, message) -> None:
+            sent.append(message)
+
+    monkeypatch.setattr("wtg_api.services.invites.build_provider", lambda: _Capture())
+    return sent
+
+
 def login(client: AsyncClient, user: User) -> None:
     """Set a valid session cookie on the client for `user`."""
     s = get_settings()

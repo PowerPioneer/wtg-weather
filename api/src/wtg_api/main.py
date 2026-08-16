@@ -9,6 +9,7 @@ from wtg_api.routers import (
     auth,
     billing,
     countries,
+    invites,
     onboarding,
     orgs,
     paddle,
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(users.router)
     app.include_router(trips.router)
     app.include_router(orgs.router)
+    app.include_router(invites.router)
     app.include_router(tiles.router)
     app.include_router(paddle.router)
     app.include_router(paddle_checkout.router)

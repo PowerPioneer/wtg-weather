@@ -178,6 +178,20 @@ class OrganizationRead(ORMModel):
     seat_cap: int
 
 
+class OrganizationDetail(OrganizationRead):
+    """The org plus what the seat meter needs.
+
+    `seats_used` is the membership count — the same number `/api/me` reports,
+    unchanged. `seats_pending` is the invitations still open, and the cap is
+    enforced against the *sum*: an unaccepted invite has already promised a
+    seat, so counting only memberships would let a 3-seat agency invite ten
+    people and end up with ten members.
+    """
+
+    seats_used: int
+    seats_pending: int
+
+
 class MembershipInvite(BaseModel):
     email: EmailStr
     role: Literal["admin", "agent", "member"] = "agent"
@@ -190,8 +204,71 @@ class MembershipRead(ORMModel):
     role: Role
 
 
+class MemberRead(ORMModel):
+    """A membership with the person attached.
+
+    The team table has to print a name and an address, and `MembershipRead`
+    carries neither — the web filled that gap from a fixture, which is how a
+    real agency's team list showed five people who do not exist.
+    """
+
+    id: uuid.UUID
+    user_id: uuid.UUID
+    organization_id: uuid.UUID
+    role: Role
+    email: EmailStr
+    name: str | None = None
+    created_at: datetime
+
+
+class InvitationRead(ORMModel):
+    """A pending invitation, as its own organization sees it.
+
+    Deliberately no token: the token is a bearer credential for a mailbox and
+    the only place it belongs is that mailbox. An owner who needs to reach an
+    invitee again revokes and re-invites, which also re-dates the expiry.
+    """
+
+    id: uuid.UUID
+    organization_id: uuid.UUID
+    email: EmailStr
+    role: Role
+    expires_at: datetime
+    created_at: datetime
+
+
+class InvitationPreview(BaseModel):
+    """What the accept page may show *before* the invitation is spent.
+
+    No organization id and no membership list — this is answered to an
+    unauthenticated caller holding a token, so it says only what the recipient
+    already knows from the email that carried it.
+    """
+
+    organization_name: str
+    email: EmailStr
+    role: Role
+    expires_at: datetime
+
+
+class InvitationAcceptRequest(BaseModel):
+    token: str = Field(min_length=10)
+
+
+class InvitationAccepted(BaseModel):
+    organization_id: uuid.UUID
+    organization_name: str
+    role: Role
+
+
 class ClientCreate(BaseModel):
     name: str = Field(min_length=1, max_length=200)
+    email: EmailStr | None = None
+    notes: str | None = None
+
+
+class ClientUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=200)
     email: EmailStr | None = None
     notes: str | None = None
 
@@ -201,6 +278,43 @@ class ClientRead(ORMModel):
     name: str
     email: str | None
     notes: str | None
+    # How many trips are assigned to this client, across the whole org — the
+    # clients table prints it, and a per-row round trip to get it would be one
+    # request per client.
+    trip_count: int = 0
+    created_at: datetime | None = None
+
+
+class ClientTripRead(BaseModel):
+    """A trip assigned to a client, listed for the client's own page.
+
+    Not `TripRead`: it belongs to whichever agent authored it, so it carries
+    that agent rather than pretending the caller owns it, and it never carries
+    `share_token` — the token is the owner's to hand out.
+    """
+
+    id: uuid.UUID
+    title: str
+    country_iso2: str | None
+    region_code: str | None
+    month: int | None
+    owner_name: str | None
+    owner_email: EmailStr
+    shared: bool
+    updated_at: datetime
+
+
+class ClientNoteCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=4000)
+
+
+class ClientNoteRead(BaseModel):
+    id: uuid.UUID
+    body: str
+    # Null when the author has left the organization; the note survives them.
+    author_name: str | None
+    author_email: EmailStr | None
+    created_at: datetime
 
 
 # --- Tiles ---

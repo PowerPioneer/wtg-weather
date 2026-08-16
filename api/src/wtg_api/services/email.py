@@ -26,10 +26,20 @@ class EmailMessage:
     html: str | None = None
 
 
-def _redacted(addr: str) -> str:
+def redact_email(addr: str) -> str:
+    """A log-safe stand-in: the domain, plus a one-way hash of the local part.
+
+    Public because it is not this module's business alone — anything that logs
+    about a recipient (invitations, alerts) must construct the line already
+    redacted rather than trusting a formatter downstream.
+    """
     local, _, domain = addr.partition("@")
     digest = hashlib.sha256(local.encode("utf-8")).hexdigest()[:8]
     return f"{digest}@{domain or '?'}"
+
+
+# Historical name, kept so existing call sites and tests keep working.
+_redacted = redact_email
 
 
 class EmailProvider(Protocol):

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from wtg_api.db import Base, TimestampMixin
 
 if TYPE_CHECKING:
+    from wtg_api.models.client_note import ClientNote
     from wtg_api.models.organization import Organization
     from wtg_api.models.trip import Trip
 
@@ -26,3 +27,6 @@ class Client(Base, TimestampMixin):
 
     organization: Mapped[Organization] = relationship(back_populates="clients")
     trips: Mapped[list[Trip]] = relationship(back_populates="client")
+    note_entries: Mapped[list[ClientNote]] = relationship(
+        back_populates="client", cascade="all, delete-orphan"
+    )
