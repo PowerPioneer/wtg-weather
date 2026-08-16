@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from dataclasses import dataclass
-from typing import Protocol
+from dataclasses import dataclass, field
+from typing import Mapping, Protocol
 
 import httpx
 
@@ -24,6 +24,12 @@ class EmailMessage:
     subject: str
     text: str
     html: str | None = None
+    #: Extra RFC 5322 headers. Exists for `List-Unsubscribe` and
+    #: `List-Unsubscribe-Post`, which are list-management requirements at
+    #: Gmail and Yahoo for bulk senders rather than a nicety — a footer link
+    #: alone does not satisfy them. Every provider below passes them through;
+    #: a provider that could not would be the wrong provider for alert mail.
+    headers: Mapping[str, str] = field(default_factory=dict)
 
 
 def redact_email(addr: str) -> str:
@@ -49,9 +55,12 @@ class EmailProvider(Protocol):
 class ConsoleEmail:
     async def send(self, message: EmailMessage) -> None:  # pragma: no cover — dev-only
         logger.info(
-            "email.console.send to=%s subject=%s",
+            "email.console.send to=%s subject=%s headers=%s",
             _redacted(message.to),
             message.subject,
+            # Names only. A `List-Unsubscribe` value is a live token for the
+            # recipient's account and has no business in a log line.
+            sorted(message.headers),
         )
         # For local dev convenience, also print the text body.
         print(f"--- EMAIL ---\nTo: {message.to}\nSubject: {message.subject}\n\n{message.text}\n")
@@ -63,13 +72,15 @@ class SendGridEmail:
         self._sender = sender
 
     async def send(self, message: EmailMessage) -> None:
-        payload = {
+        payload: dict[str, object] = {
             "personalizations": [{"to": [{"email": message.to}]}],
             "from": {"email": self._sender},
             "subject": message.subject,
             "content": [{"type": "text/plain", "value": message.text}]
             + ([{"type": "text/html", "value": message.html}] if message.html else []),
         }
+        if message.headers:
+            payload["headers"] = dict(message.headers)
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 "https://api.sendgrid.com/v3/mail/send",
@@ -86,7 +97,7 @@ class PostmarkEmail:
         self._sender = sender
 
     async def send(self, message: EmailMessage) -> None:
-        payload = {
+        payload: dict[str, object] = {
             "From": self._sender,
             "To": message.to,
             "Subject": message.subject,
@@ -94,6 +105,11 @@ class PostmarkEmail:
             "HtmlBody": message.html,
             "MessageStream": "outbound",
         }
+        if message.headers:
+            # Postmark takes a list of name/value pairs, not an object.
+            payload["Headers"] = [
+                {"Name": name, "Value": value} for name, value in message.headers.items()
+            ]
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 "https://api.postmarkapp.com/email",

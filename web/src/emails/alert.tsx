@@ -68,9 +68,15 @@ export default function AlertEmail({
   manageUrl = "{{manage_url}}",
   unsubscribeUrl = "{{unsubscribe_url}}",
 }: AlertEmailProps) {
+  // Deliberately free of interpolation. `<Preview>` pads its text to a fixed
+  // width with invisible characters, so a preview built from `{{place}}` pads
+  // differently than the same template does with "Peru" in it — and the API's
+  // substitution could never reproduce the React render byte for byte. It is
+  // the one string in the template that has to be the same length in both
+  // passes. `test_alert_email.py` is what would catch a regression here.
   const preview = matched
-    ? `${place} in ${month} now matches what you asked for.`
-    : `${place} in ${month} has dropped below your preferences.`;
+    ? "A destination you're watching now matches your saved preferences."
+    : "A destination you're watching has dropped below your saved preferences.";
 
   return (
     <Html lang="en">

@@ -197,8 +197,11 @@ class AlertOutcome:
 
     score: int
     matches: bool
-    #: 1..12, or ``None`` for a month-less alert (see :meth:`_series_for`).
+    #: 1..12 as the alert asked, or ``None`` for a month-less one.
     month: int | None
+    #: The month the score is *about* — the alert's, or for a month-less alert
+    #: the best one, which is the month the email and its link have to name.
+    month_label: str
     #: What the email calls the place: "Peru", or "Cusco, Peru".
     place: str
     #: `/{country-slug}/{month-name}` — the page the email links to.
@@ -324,6 +327,7 @@ class BundleMatchScorer:
                 score=score,
                 matches=score >= self._match_score,
                 month=None,
+                month_label=MONTH_NAMES[index],
                 place=place,
                 path=f"/{slug}/{_MONTH_SLUGS[index]}",
             )
@@ -338,6 +342,7 @@ class BundleMatchScorer:
             score=score,
             matches=score >= self._match_score,
             month=alert.month,
+            month_label=MONTH_NAMES[index],
             place=place,
             path=f"/{slug}/{_MONTH_SLUGS[index]}",
         )
