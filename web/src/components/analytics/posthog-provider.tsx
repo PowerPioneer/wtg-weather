@@ -32,6 +32,18 @@ export function PostHogProvider({ user }: { user: PostHogUser }) {
           capture_pageview: true,
           capture_pageleave: true,
           person_profiles: "identified_only",
+          // Off here, not just off in the PostHog project settings.
+          //
+          // Session replay is remotely configurable: posthog-js asks the
+          // server whether to record, so a toggle flipped in the dashboard
+          // starts recording signed-in users' screens with no code change and
+          // no review. `/privacy` tells users replay is off, and a claim in a
+          // privacy policy should be enforced by the software rather than by
+          // somebody remembering. Replay of an authenticated session — which
+          // here means account pages, email addresses and saved trips —
+          // is a consent question, so turning it on is a deliberate change to
+          // this line plus a change to `/privacy`, not a dashboard toggle.
+          disable_session_recording: true,
           loaded: (p) => {
             if (APP_ENV !== "prod") p.debug(false);
           },
