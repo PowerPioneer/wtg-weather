@@ -77,6 +77,7 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
                     "label": "Exercise increased caution",
                     "date": "2026-04-12",
                     "url": "https://example.gov/peru",
+                    "checked": "2026-08-14",
                 }
             ],
             "regionalMax": 4,
@@ -138,6 +139,50 @@ async def test_country_returns_the_web_shape(api: AsyncClient) -> None:
     assert body["advisories"]["regionalMax"] == 4
     # No country row was marked as derived, so the default holds.
     assert body["climateBasis"] == "country"
+
+
+@pytest.mark.asyncio
+async def test_advisory_checked_date_reaches_the_client(api: AsyncClient) -> None:
+    """The two-repo round trip for the field the stale badge reads.
+
+    `wtg publish api-data` emitting `checked` proves nothing on its own: the
+    response model filters the payload, so a field `AdvisorySource` does not
+    declare is dropped between the bundle on disk and the JSON the country
+    page renders. This is the assertion that the pipeline change actually
+    arrives — the same lesson `RegionRow.code` and `advisory` were learned on.
+    """
+    res = await api.get("/v1/countries/peru")
+    source = res.json()["advisories"]["sources"][0]
+
+    assert source["checked"] == "2026-08-14"
+    # And the field it must not be confused with is still its own thing.
+    assert source["date"] == "2026-04-12"
+
+
+@pytest.mark.asyncio
+async def test_a_bundle_without_checked_still_serves(
+    client: AsyncClient, bundle: Path
+) -> None:
+    """An older `advisories.json` predates the field and must not 500.
+
+    The web reads a missing `checked` as "cannot judge freshness" and leaves
+    the badge alone, which is the honest answer for a bundle that never
+    recorded when it was scraped.
+    """
+    payload = json.loads(
+        (bundle / "countries" / "peru.json").read_text(encoding="utf-8")
+    )
+    for source in payload["advisories"]["sources"]:
+        source.pop("checked")
+    (bundle / "countries" / "peru.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+    country_data.reset_cache()
+
+    res = await client.get("/v1/countries/peru")
+
+    assert res.status_code == 200
+    assert res.json()["advisories"]["sources"][0]["checked"] is None
 
 
 @pytest.mark.asyncio

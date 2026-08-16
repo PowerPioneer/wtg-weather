@@ -426,8 +426,20 @@ class AdvisorySource(BaseModel):
     gov: str
     level: int = Field(ge=1, le=4)
     label: str
+    # When this government last *moved*. A stable advisory keeps this date for
+    # years, which is why it cannot answer "is this data fresh".
     date: str
     url: str
+    # When this government was last *read*. The country page downgrades the
+    # combined badge to neutral when every source's is more than 14 days old.
+    #
+    # Optional because the response model filters the payload: a bundle
+    # published before `wtg publish api-data` emitted this field must keep
+    # serving, and the web treats its absence as "cannot judge" rather than
+    # "stale". Declaring it here is the whole reason it reaches the client at
+    # all — an undeclared field is dropped silently, however correct the
+    # pipeline's output is.
+    checked: str | None = None
 
 
 class AdvisorySummary(BaseModel):
