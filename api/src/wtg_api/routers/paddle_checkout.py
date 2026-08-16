@@ -73,6 +73,11 @@ async def checkout_url(
         "items[0][quantity]": "1",
         "customData": ",".join(f"{k}={v}" for k, v in custom_data.items()),
         "customerEmail": user.email,
+        # Where Paddle returns the browser once payment completes. The plan is
+        # not active at that moment — it activates when the webhook arrives —
+        # so that page polls and says so. Without this the buyer is left on
+        # Paddle's own confirmation with no way back into the product.
+        "successUrl": f"{s.public_web_origin}/checkout/success",
     }
     checkout = f"{s.paddle_checkout_base_url}?{urlencode(query)}"
 
