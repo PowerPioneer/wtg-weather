@@ -12,8 +12,11 @@ os.environ.setdefault("EMAIL_PROVIDER", "console")
 os.environ.setdefault("GOOGLE_CLIENT_ID", "")
 
 import asyncio
+import json
 import uuid
 from collections.abc import AsyncIterator
+from pathlib import Path
+from typing import Any
 
 import pytest
 import pytest_asyncio
@@ -25,6 +28,7 @@ from wtg_api.db import Base
 from wtg_api.deps import db_session
 from wtg_api.main import app
 from wtg_api.models import Membership, Organization, Plan, Role, User
+from wtg_api.services import country_data
 from wtg_api.services.sessions import issue_session
 
 
@@ -117,6 +121,126 @@ def outbox(monkeypatch) -> list:
 
     monkeypatch.setattr("wtg_api.services.invites.build_provider", lambda: _Capture())
     return sent
+
+
+MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+class PublishedBundle:
+    """A stand-in for `wtg publish api-data`'s output directory.
+
+    Hand-built rather than generated, for the same reason `test_countries.py`
+    hand-builds its own: what is under test here is the *reading* half. What
+    this adds over that one is mutability — the alert job's whole job is to
+    notice that a country's numbers moved between two runs, so a test needs to
+    move them, which means republishing and dropping the mtime cache the way a
+    real rebuild does.
+    """
+
+    def __init__(self, root: Path) -> None:
+        self.root = root
+        self._countries: dict[str, dict[str, Any]] = {}
+        (self.root / "countries").mkdir(parents=True, exist_ok=True)
+
+    def publish(
+        self,
+        *,
+        slug: str = "peru",
+        name: str = "Peru",
+        iso2: str = "PE",
+        temp: list[float] | float = 22.0,
+        rain_day: list[float] | float = 1.0,
+        sun: list[float] | float = 7.0,
+        regions: list[dict[str, Any]] | None = None,
+    ) -> None:
+        """Write (or overwrite) one country payload, then rewrite the index."""
+
+        def series(v: list[float] | float) -> list[float]:
+            return list(v) if isinstance(v, list) else [float(v)] * 12
+
+        self._countries[slug] = {
+            "slug": slug,
+            "name": name,
+            "iso2": iso2,
+            "region": "South America",
+            "summary": f"{name} is warm.",
+            "climate": {
+                "months": MONTH_LABELS,
+                "t": series(temp),
+                "tMin": series(temp),
+                "tMax": series(temp),
+                "r": [v * 30 for v in series(rain_day)],
+                "rDay": series(rain_day),
+                "s": series(sun),
+            },
+            "bestMonths": [],
+            "regions": regions or [],
+            "related": [],
+            "monthNotes": {},
+        }
+        self._flush()
+
+    @staticmethod
+    def region(
+        *,
+        name: str = "Cusco",
+        code: str = "PER-1234",
+        slug: str = "cusco",
+        temp: list[float] | float = 13.0,
+        rain_day: list[float] | float = 1.0,
+        sun: list[float] | float = 7.0,
+    ) -> dict[str, Any]:
+        def series(v: list[float] | float) -> list[float]:
+            return list(v) if isinstance(v, list) else [float(v)] * 12
+
+        return {
+            "name": name,
+            # `adm1_code`, the polygon identity — this is what an alert's
+            # `region_code` carries, not the ISO-3166-2 code.
+            "code": code,
+            "slug": slug,
+            "score": 60,
+            "tl": series(temp),
+            "rl": series(rain_day),
+            "sl": series(sun),
+        }
+
+    def _flush(self) -> None:
+        for slug, payload in self._countries.items():
+            (self.root / "countries" / f"{slug}.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+        (self.root / "index.json").write_text(
+            json.dumps(
+                {
+                    "countries": [
+                        {
+                            "slug": p["slug"],
+                            "name": p["name"],
+                            "iso2": p["iso2"],
+                            "region": p["region"],
+                        }
+                        for p in self._countries.values()
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        # A republish replaces the files under a running container; the API
+        # notices via mtime. tmp_path writes inside one test can land on the
+        # same mtime tick, so drop the cache explicitly rather than trusting
+        # filesystem timestamp resolution.
+        country_data.reset_cache()
+
+
+@pytest.fixture
+def published_bundle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    settings = get_settings()
+    monkeypatch.setattr(settings, "country_data_dir", str(tmp_path), raising=False)
+    country_data.reset_cache()
+    yield PublishedBundle(tmp_path)
+    country_data.reset_cache()
 
 
 def login(client: AsyncClient, user: User) -> None:

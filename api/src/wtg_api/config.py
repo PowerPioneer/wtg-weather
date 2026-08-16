@@ -35,12 +35,47 @@ class Settings(BaseSettings):
     session_cookie_name: str = "wtg_session"
     session_ttl_seconds: int = 30 * 24 * 3600
 
+    # An unsubscribe link has to outlive the email it arrived in — people act on
+    # a year-old newsletter, and a dead unsubscribe link is a spam complaint
+    # instead. Long, therefore, but not unbounded: it is still a bearer token,
+    # even though the only thing it can do is silence the holder's own alert
+    # mail. Enforced on the signature; there is no row to expire alongside it,
+    # unlike an invitation.
+    alert_unsubscribe_ttl_seconds: int = 365 * 24 * 3600
+
+    # --- Alert matching ---
+    #
+    # `alert_match_score` is the 0–100 score at or above which a place counts as
+    # matching. 70 is the floor of the "Good option" bin in the web's
+    # `SCORE_BINS`, so the email agrees with the badge the user saw when they
+    # created the alert.
+    alert_match_score: int = 70
+    # ⚠ AWAITING OWNER CONFIRMATION — `web/design/HANDOFF.md` open decision #3
+    # specs "score delta ≥ 5 points vs baseline" and records it as unconfirmed.
+    # It is the hysteresis guard: a run only emails when the score has moved at
+    # least this far from the score at the last email, so a value oscillating
+    # across the match line cannot mail somebody every Monday.
+    #
+    # Note it does not bind today. The published score is quantised to
+    # {25, 60, 75, 90}, so the smallest possible move across the match line is
+    # 15 points. The setting is here named and configurable because the moment
+    # scoring becomes continuous it becomes load-bearing, and because a number
+    # the owner has not signed off on should not be a literal buried in a
+    # conditional.
+    alert_score_delta_points: int = 5
+
     # CDN hostname tile URLs are signed against. Production points the
     # `cdn.wheretogoforgreatweather.com` CNAME at the bunny.net pull zone
     # `wtgweather` (zone names must be ≥4 chars, hence not `wtg`). Override
     # per-environment via `CDN_URL`.
     cdn_url: str = "https://cdn.wheretogoforgreatweather.com"
     public_web_origin: str = "http://localhost:3000"
+    # Where `/api/*` is reachable from the public internet. In production Caddy
+    # fronts both the web app and `/api/*` on the same hostname, so this tracks
+    # `public_web_origin` unless set — but a dev box runs Next on :3000 and the
+    # API on :8000, and an unsubscribe link is one of the few URLs the API mints
+    # for somebody outside the docker network to click.
+    public_api_origin: str = ""
 
     # Where the pipeline's `wtg publish api-data` bundle is mounted. Compose
     # binds `./pipeline/data/final/api` here read-only; a dev run against a
@@ -95,6 +130,8 @@ class Settings(BaseSettings):
             self.paddle_api_base_url = (
                 _PADDLE_SANDBOX_API if self.paddle_sandbox else _PADDLE_LIVE_API
             )
+        if not self.public_api_origin:
+            self.public_api_origin = self.public_web_origin
         return self
 
 

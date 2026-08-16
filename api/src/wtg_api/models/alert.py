@@ -30,5 +30,13 @@ class Alert(Base, TimestampMixin):
     last_checked_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    #: 0–100 as of the last completed run. What the email prints as "previous
+    #: run"; NULL until the alert has been scored once.
+    last_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    #: 0–100 as of the last email we sent about this alert (or the baseline run,
+    #: which sends nothing). The `alert_score_delta_points` guard measures
+    #: against *this*, not against last week — otherwise a slow drift would
+    #: never accumulate past the threshold because each week's step is small.
+    baseline_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     user: Mapped[User] = relationship(back_populates="alerts")
