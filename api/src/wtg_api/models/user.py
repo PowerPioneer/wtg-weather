@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON, Boolean, Integer, String, Uuid
+from sqlalchemy import JSON, Boolean, DateTime, Integer, String, Uuid
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -33,6 +34,19 @@ class User(Base, TimestampMixin):
     )
     onboarding_data: Mapped[dict[str, Any]] = mapped_column(
         JSON().with_variant(JSONB, "postgresql"), nullable=False, default=dict
+    )
+
+    #: When the user opted out of *all* alert email, via the one-click
+    #: unsubscribe in one of those emails. Deliberately on the user and not on
+    #: the alert: an unsubscribe pressed in a mail client means "stop sending me
+    #: this kind of mail", and a per-alert scope would have them pressing it
+    #: again next week on a different alert — which mailbox providers read as
+    #: an unsubscribe that does not work.
+    #:
+    #: The alerts themselves stay defined and visible in `/account`, so this is
+    #: reversible without the user having to reconstruct what they had.
+    alerts_email_opted_out_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
     )
 
     memberships: Mapped[list[Membership]] = relationship(

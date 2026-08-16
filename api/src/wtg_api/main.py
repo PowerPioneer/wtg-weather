@@ -6,6 +6,7 @@ from wtg_api import __version__
 from wtg_api.config import get_settings
 from wtg_api.middleware import SlidingSessionMiddleware, install_cors
 from wtg_api.routers import (
+    alerts_unsubscribe,
     auth,
     billing,
     countries,
@@ -46,6 +47,11 @@ def create_app() -> FastAPI:
 
     app.include_router(auth.router)
     app.include_router(users.router)
+    # Ahead of `trips`, which owns `/api/alerts/{alert_id}`: the literal path
+    # wins outright rather than depending on which methods each side happens to
+    # declare. Its own router because everything in `trips` sits behind
+    # `current_user` and this deliberately does not.
+    app.include_router(alerts_unsubscribe.router)
     app.include_router(trips.router)
     app.include_router(orgs.router)
     app.include_router(invites.router)
