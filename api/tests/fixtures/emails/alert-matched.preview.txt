@@ -1,0 +1,23 @@
+Atlas Weather
+
+Weather alert
+
+Peru in April now matches.
+
+You asked to hear when this one came good against your saved preferences. This week's recomputed climate scores put it over the line.
+
+Match score
+
+90/100
+
+Previous run: 60/100
+
+See April in Peru → https://wheretogoforgreatweather.com/peru/april
+
+Scores come from ten years of ERA5 reanalysis, recomputed against the preferences saved on this alert. Nothing about today's weather.
+
+----------------------------------------
+
+You are receiving this because you set a weather alert on Atlas Weather. Manage your alerts https://wheretogoforgreatweather.com/account?s=alerts or unsubscribe from alert email https://wheretogoforgreatweather.com/api/alerts/unsubscribe?token=Im5vdC1hLXJlYWwtdG9rZW4i.aBcDeF.9x0Q_sample-signature.
+
+Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San Francisco, CA 94114

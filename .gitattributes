@@ -1,0 +1,9 @@
+# The rendered email artifacts are compared byte-for-byte in two places: the
+# vitest drift guard (`web/src/emails/templates.sync.test.tsx`) checks the
+# committed files against a fresh `@react-email/render` pass, and the API suite
+# checks Python's placeholder substitution against the committed preview. Both
+# renderers emit LF. This repo is developed on Windows with `core.autocrlf=true`,
+# which would rewrite them to CRLF on checkout and fail both comparisons on a
+# clean clone while passing for whoever generated them.
+api/src/wtg_api/templates/emails/** text eol=lf
+api/tests/fixtures/emails/** text eol=lf

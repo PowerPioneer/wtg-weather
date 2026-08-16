@@ -1,0 +1,23 @@
+Atlas Weather
+
+Weather alert
+
+{{place}} in {{month}} no longer matches.
+
+This week's recomputed climate scores put it back under the line you set. Nothing is wrong with the alert — it stays active and we'll write again if it recovers.
+
+Match score
+
+{{score}}/100
+
+Previous run: {{previous_score}}/100
+
+See {{month}} in {{place}} → {{place_url}}
+
+Scores come from ten years of ERA5 reanalysis, recomputed against the preferences saved on this alert. Nothing about today's weather.
+
+----------------------------------------
+
+You are receiving this because you set a weather alert on Atlas Weather. Manage your alerts {{manage_url}} or unsubscribe from alert email {{unsubscribe_url}}.
+
+Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San Francisco, CA 94114

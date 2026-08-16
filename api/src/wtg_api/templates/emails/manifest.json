@@ -1,0 +1,8 @@
+{
+  "alert-matched": {
+    "subject": "{{place}} in {{month}} now matches your preferences"
+  },
+  "alert-stopped": {
+    "subject": "{{place}} in {{month}} no longer matches your preferences"
+  }
+}
