@@ -15,11 +15,18 @@ import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
  */
 
 /**
- * Daily, because the grid is ranked for the current month and the page is
- * otherwise static. The country pages sit at 30 days; this one has to notice a
- * month boundary, and a day's staleness at one is invisible.
+ * Daily (86,400s), because the grid is ranked for the current month and the
+ * page is otherwise static. The country pages sit at 30 days; this one has to
+ * notice a month boundary, and a day's staleness at one is invisible.
+ *
+ * Written as a literal, not as `60 * 60 * 24`. Next reads the segment config
+ * exports by static analysis and rejects an expression it has to evaluate:
+ * the arithmetic version failed the whole production build with "Invalid
+ * segment configuration export detected", which is a message that names
+ * neither the file nor the export. Every other `revalidate` in the app is
+ * already a literal.
  */
-export const revalidate = 60 * 60 * 24;
+export const revalidate = 86400;
 
 export default async function HomePage() {
   // Rendered at build or at revalidation, never per request — so this is the
