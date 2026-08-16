@@ -100,6 +100,19 @@ without reading it end to end.
 
 ## Cron (on host, not in container)
 
+The four jobs live in `infra/cron/crontab`, which is the complete table —
+`crontab <file>` replaces rather than merges, so `crontab -l` and that file
+must agree. Install it (and back up whatever is there first):
+
+```bash
+crontab -l > /root/crontab.$(date -u +%FT%TZ).bak    # if anything is scheduled
+crontab /opt/wtg-weather/infra/cron/crontab
+crontab -l
+```
+
+cron's PATH is not a login shell's: `uv` lives in `/root/.local/bin` and is
+absent from the default, which is why the file sets PATH explicitly.
+
 - Weekly Sun 03:00 UTC: `weekly-advisories.sh` — scrape + consolidate advisories,
   and rebuild the tiles via `rebuild-tiles.sh` **only if a country's advisory
   level actually moved** (the level is baked into the tiles as the `safety`
@@ -108,6 +121,104 @@ without reading it end to end.
 - Weekly Mon 04:00 UTC: `weekly-alerts.sh` — recompute alert matches, email on transitions
 - Yearly Jan 15 04:00 UTC: `yearly-era5.sh` — full pipeline rebuild, old year swap
 - Nightly 02:00 UTC: `backup-postgres.sh` — dump, encrypt, upload to B2
+
+## US advisory scrape (Cloudflare 403)
+
+`travel.state.gov` returns 403 to this box. Cloudflare is blocking the
+datacenter IP, not us specifically, and the block is legitimate: **do not work
+around it.** Nothing in this repo may disguise the client, rotate a user
+agent, route through a proxy chosen to look residential, or solve a challenge.
+The five other governments answer fine from v2; only the US needs a hand.
+
+### Recommended arrangement
+
+Run the US scrape from a machine on a permitted network — the owner's home
+machine — and rsync the dump onto v2 before the Sunday 03:00 UTC cron:
+
+```bash
+# On the home machine, in a checkout of this repo:
+uv run --directory pipeline wtg download advisories --source us
+
+# The dump lands in pipeline/data/raw/advisories/us_state/<UTC stamp>.json.
+# Copy just that directory; everything else on v2 is newer than it.
+rsync -av --include='*/' --include='*.json' --exclude='*' \
+  pipeline/data/raw/advisories/us_state/ \
+  root@51.15.37.62:/opt/wtg-weather/pipeline/data/raw/advisories/us_state/
+```
+
+Nothing else is required. `latest_source_files` picks the newest non-empty
+dump per source directory by filename, so the copied file is used by the next
+`wtg process advisories` — which the Sunday cron runs anyway. Doing it any
+time before Sunday is enough; doing it after just means the level lands a week
+later.
+
+Two properties make this safe rather than fragile: a zero-record dump is
+rejected as a failed scrape rather than accepted as "the US lists nobody", and
+a `--source all` run that 403s on the US still writes the other five (the CLI
+exits non-zero afterwards, so the cron log shows the failure without losing
+the successful sources).
+
+### What it looks like when it is missed
+
+`wtg process advisories` warns, on stdout and through the logger, tagged so it
+can be found without reading prose:
+
+```
+$ grep ADVISORY_STALE /var/log/wtg-advisories.log
+2027-01-10T03:00:41Z WARNING ADVISORY_STALE source=us_state age_days=38 threshold_days=21 —
+  its newest dump is older than the threshold; consolidation is publishing an
+  old snapshot as this government's current position.
+```
+
+Threshold is 21 days (two missed weekly runs), overridable with
+`WTG_ADVISORY_STALE_DAYS`. It is a warning, not a failure: an old US snapshot
+is better than dropping the US from a six-government consensus, and the run
+must still publish the other five. There are two staleness checks and they
+answer different questions — this absolute one, and a relative one that
+reports a source falling behind the others. Only the absolute one fires when
+*nothing* has been scraped, because then no source is behind any other.
+
+On the country page the same fact surfaces as a neutral (rather than
+level-coloured) combined badge once **every** government's `checked` date is
+more than 14 days old, with the date printed. One live source keeps the panel
+current, so a lone stale US does not grey out the site — which is correct, and
+also means the page will not tell you the US specifically has gone cold. The
+log line is the check for that.
+
+### The decision still to make
+
+Where the US scrape runs is the owner's call and it is not made yet:
+
+1. **Manual, from the home machine** (above). Zero infrastructure, but it is a
+   recurring human task and the thing most likely to quietly stop happening —
+   which is exactly what the staleness warning exists to catch.
+2. **Scheduled on the home machine** (cron/launchd + the rsync above). Same
+   shape, no recurring attention, but it depends on a machine that sleeps and
+   an SSH key living on it.
+3. **A small allowed egress** — a VPS on a network Cloudflare does not block,
+   scraping only `travel.state.gov` and rsyncing the dump. More moving parts
+   and another host to patch, in exchange for the US being as automatic as the
+   other five.
+
+Until one is chosen, option 1 is what the runbook above describes, and the
+`ADVISORY_STALE` warning is the safety net.
+
+### Known gap: an advisory change does not reach the country pages
+
+`weekly-advisories.sh` consolidates and, when a level moved, rebuilds the
+tiles and purges the CDN — so the **map** is current. It does not run
+`wtg publish api-data`, so `data/final/api/` keeps whatever the last publish
+wrote, and the country pages (and the `checked` dates the stale badge reads)
+are as old as that publish. Closing it is two commands after a level change:
+
+```bash
+uv run --directory pipeline wtg publish api-data
+docker compose up -d --force-recreate web    # ISR holds pages for 30 days
+```
+
+Whether those belong inside the weekly script is a live question: it would
+make a weekly `web` recreate routine, which is cheap but not free. Flagged
+here rather than changed, because the weekly job is WS-4's and this is WS-E.
 
 ## Caddy
 
