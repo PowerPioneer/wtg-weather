@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Iterable
 
 from wtg_pipeline.config import (
+    advisory_stale_after_days,
     boundaries_raw_dir,
     ensure_dir,
     era5_raw_dir,
@@ -382,6 +383,13 @@ class AdvisoryConsolidation:
     regions: int
     # {source_id: days behind the freshest source}, empty when all are current.
     stale: dict[str, int]
+    # {source_id: age of its newest dump in days} for sources past the absolute
+    # threshold. Disjoint concern from `stale`: this one fires when nothing has
+    # been scraped for weeks, which no relative comparison can see.
+    aged: dict[str, int]
+    # The threshold `aged` was measured against, so the log line and the CLI
+    # can say what "too old" meant on this run.
+    stale_after_days: int
 
 
 def run_process_advisories(
@@ -408,7 +416,34 @@ def run_process_advisories(
             f"Run `wtg download advisories --source all` first."
         )
 
-    stale = advisories_mod.stale_sources(advisories_mod.latest_source_files(raw_dir))
+    latest_files = advisories_mod.latest_source_files(raw_dir)
+
+    # Two different questions, two different checks. `stale_sources` compares
+    # the sources against each other and catches one scraper failing while the
+    # rest keep working. `aged_sources` compares them against the clock and
+    # catches the run that stopped happening at all — the case where every
+    # source lags every other by zero days and the relative check says nothing.
+    threshold = advisory_stale_after_days()
+    aged = advisories_mod.aged_sources(latest_files, max_age_days=threshold)
+    for source_id, age in aged.items():
+        # Tagged so it can be found without parsing prose:
+        #   grep ADVISORY_STALE /var/log/wtg-advisories.log
+        # The pipeline has no Sentry/GlitchTip client — it is a host cron job
+        # whose stdout and stderr are its log file — so the tag is the alert
+        # surface. `infra/CLAUDE.md` § "US advisory scrape" says what to do
+        # when this fires for `us_state`, which is the source it will fire for
+        # first: travel.state.gov 403s from the v2 IP.
+        log.warning(
+            "%s source=%s age_days=%d threshold_days=%d — its newest dump is "
+            "older than the threshold; consolidation is publishing an old "
+            "snapshot as this government's current position.",
+            advisories_mod.STALE_LOG_TAG,
+            source_id,
+            age,
+            threshold,
+        )
+
+    stale = advisories_mod.stale_sources(latest_files)
     for source_id, lag in stale.items():
         # Not fatal: one stale government is better than no advisories at all,
         # and the consensus is a max across the rest. But it must be visible —
@@ -448,6 +483,8 @@ def run_process_advisories(
         countries=len(index.by_country),
         regions=len(index.by_region),
         stale=stale,
+        aged=aged,
+        stale_after_days=threshold,
     )
 
 

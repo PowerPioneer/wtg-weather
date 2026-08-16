@@ -190,6 +190,13 @@ def process_advisories(
         f"detail={'changed' if result.detail_changed else 'unchanged'} "
         f"levels={'changed' if result.levels_changed else 'unchanged'}"
     )
+    for source_id, age in result.aged.items():
+        # Same tag as the log line, so a run's stdout in the cron log greps
+        # the same way its logger output does.
+        typer.echo(
+            f"WARNING: ADVISORY_STALE {source_id} was last scraped {age} days ago "
+            f"(threshold {result.stale_after_days})"
+        )
     for source_id, lag in result.stale.items():
         typer.echo(f"WARNING: {source_id} is {lag} days behind the freshest source")
     typer.echo(f"wrote {result.detail_path}")

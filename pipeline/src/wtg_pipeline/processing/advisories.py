@@ -61,7 +61,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Mapping
 
-from wtg_pipeline.config import advisories_raw_dir, ensure_dir, final_dir, intermediate_dir
+from wtg_pipeline.config import (
+    advisories_raw_dir,
+    advisory_stale_after_days,
+    ensure_dir,
+    final_dir,
+    intermediate_dir,
+)
 
 log = logging.getLogger(__name__)
 
@@ -257,6 +263,60 @@ def stale_sources(
     }
     return {
         source_id: lag for source_id, lag in sorted(lags.items()) if lag > max_lag_days
+    }
+
+
+# The prefix every absolute-staleness warning is logged under. There is no
+# Sentry/GlitchTip client in the pipeline (the API has one; the pipeline runs
+# on the host as a cron job and reports through its log file), so this is the
+# handle: `grep ADVISORY_STALE /var/log/wtg-advisories.log` answers "is any
+# government's data going cold" without knowing anything else about the run.
+STALE_LOG_TAG = "ADVISORY_STALE"
+
+
+def source_ages(
+    files: Mapping[str, Path], *, now: datetime | None = None
+) -> dict[str, int]:
+    """``{source_id: age of its newest dump in days}``, sorted by source id.
+
+    Sources whose newest dump has an unparseable filename are omitted rather
+    than reported as infinitely old: the age is only as trustworthy as the
+    name it is read from.
+    """
+    moment = now or datetime.now(timezone.utc)
+    ages: dict[str, int] = {}
+    for source_id, path in sorted(files.items()):
+        stamp = dump_timestamp(path)
+        if stamp is None:
+            continue
+        ages[source_id] = (moment - stamp).days
+    return ages
+
+
+def aged_sources(
+    files: Mapping[str, Path],
+    *,
+    max_age_days: int | None = None,
+    now: datetime | None = None,
+) -> dict[str, int]:
+    """``{source_id: age in days}`` for sources not refreshed recently enough.
+
+    The companion to :func:`stale_sources`, and deliberately a different
+    question. ``stale_sources`` asks whether one government has fallen behind
+    the others, which is what a single failing scraper looks like; it is blind
+    to the case where *nothing* has run, because every source lags every other
+    by zero days. This one measures against the wall clock, so a cron that
+    stopped firing, a box that was down for a month, or the US scraper's
+    Cloudflare 403 (whose dump is only refreshed by hand, from a permitted
+    network — see ``infra/CLAUDE.md`` § "US advisory scrape") all surface here.
+
+    Threshold defaults to :func:`~wtg_pipeline.config.advisory_stale_after_days`.
+    """
+    threshold = max_age_days if max_age_days is not None else advisory_stale_after_days()
+    return {
+        source_id: age
+        for source_id, age in source_ages(files, now=now).items()
+        if age > threshold
     }
 
 

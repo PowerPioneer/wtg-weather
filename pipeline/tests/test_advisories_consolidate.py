@@ -9,20 +9,27 @@ consolidated JSON → safety index. The tile-side half of the join lives in
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
 
+from wtg_pipeline.config import ADVISORY_STALE_AFTER_DAYS, advisory_stale_after_days
+from wtg_pipeline.pipeline_runner import run_process_advisories
 from wtg_pipeline.processing.advisories import (
     LEVEL_LABELS,
+    STALE_LOG_TAG,
     SafetyIndex,
+    aged_sources,
     consolidate,
     index_payload,
     latest_source_files,
     load_advisories,
     load_safety_index,
     safety_index,
+    source_ages,
+    stale_sources,
     to_payload,
     write_json_if_changed,
 )
@@ -501,3 +508,131 @@ def test_a_source_with_only_empty_dumps_is_skipped(tmp_path: Path) -> None:
     )
 
     assert "us_state" not in latest_source_files(tmp_path)
+
+
+# ─── absolute staleness (WS-E) ───────────────────────────────────────────
+#
+# `stale_sources` above asks whether one government has fallen behind the
+# others. These ask whether the data is old in absolute terms, which is the
+# only check that fires when the answer is "nothing has run at all" — a cron
+# that stopped, a box that was down, or the US scraper's Cloudflare 403, whose
+# dump is refreshed by hand from a permitted network.
+
+
+def test_a_fresh_dump_is_not_reported(tmp_path: Path) -> None:
+    now = datetime(2026, 8, 16, tzinfo=timezone.utc)
+    for source_id in ("australia", "germany", "us_state"):
+        _dump(tmp_path, source_id, now - timedelta(days=6))
+
+    assert aged_sources(latest_source_files(tmp_path), now=now) == {}
+
+
+def test_a_dump_past_the_threshold_is_reported_with_its_age(tmp_path: Path) -> None:
+    now = datetime(2026, 8, 16, tzinfo=timezone.utc)
+    _dump(tmp_path, "australia", now - timedelta(days=3))
+    _dump(tmp_path, "us_state", now - timedelta(days=40))
+
+    aged = aged_sources(latest_source_files(tmp_path), now=now)
+
+    assert aged == {"us_state": 40}
+
+
+def test_every_source_going_cold_together_is_reported(tmp_path: Path) -> None:
+    """The gap the relative check cannot see.
+
+    All three lag each other by zero days, so `stale_sources` is silent — and
+    was silent for the whole of the period when nothing was scraping.
+    """
+    now = datetime(2026, 8, 16, tzinfo=timezone.utc)
+    for source_id in ("australia", "germany", "us_state"):
+        _dump(tmp_path, source_id, now - timedelta(days=90))
+
+    files = latest_source_files(tmp_path)
+
+    assert stale_sources(files) == {}
+    assert sorted(aged_sources(files, now=now)) == ["australia", "germany", "us_state"]
+
+
+def test_the_threshold_is_configurable(tmp_path: Path, monkeypatch) -> None:
+    now = datetime(2026, 8, 16, tzinfo=timezone.utc)
+    _dump(tmp_path, "us_state", now - timedelta(days=15))
+    files = latest_source_files(tmp_path)
+
+    # Default is 21 days: two missed weekly runs are tolerated.
+    assert aged_sources(files, now=now) == {}
+    assert aged_sources(files, max_age_days=10, now=now) == {"us_state": 15}
+
+    monkeypatch.setenv("WTG_ADVISORY_STALE_DAYS", "7")
+    assert advisory_stale_after_days() == 7
+    assert aged_sources(files, now=now) == {"us_state": 15}
+
+    # A nonsense threshold falls back to the default rather than failing the
+    # run or, worse, silently treating everything as stale.
+    monkeypatch.setenv("WTG_ADVISORY_STALE_DAYS", "not-a-number")
+    assert advisory_stale_after_days() == ADVISORY_STALE_AFTER_DAYS
+    assert aged_sources(files, now=now) == {}
+
+
+def test_the_boundary_day_is_not_stale(tmp_path: Path) -> None:
+    now = datetime(2026, 8, 16, tzinfo=timezone.utc)
+    _dump(tmp_path, "us_state", now - timedelta(days=21))
+
+    assert aged_sources(latest_source_files(tmp_path), now=now) == {}
+    assert source_ages(latest_source_files(tmp_path), now=now) == {"us_state": 21}
+
+
+def test_process_advisories_warns_about_a_cold_source(
+    tmp_path: Path, advisory_fixture, caplog
+) -> None:
+    """The warning as `weekly-advisories.sh` will see it in its log file.
+
+    Greppable by tag, because the pipeline has no Sentry/GlitchTip client:
+    `grep ADVISORY_STALE /var/log/wtg-advisories.log`.
+    """
+    raw = tmp_path / "raw"
+    for source_id, records in _scrape_fixtures(advisory_fixture).items():
+        write_advisories(
+            records,
+            source_id=source_id,
+            base_dir=raw,
+            timestamp=datetime(2026, 1, 1, tzinfo=timezone.utc),
+        )
+
+    with caplog.at_level(logging.WARNING):
+        result = run_process_advisories(
+            raw_dir=raw,
+            final_path=tmp_path / "advisories.json",
+            index_path=tmp_path / "safety_index.json",
+        )
+
+    assert sorted(result.aged) == ["australia", "germany", "us_state"]
+    assert result.stale_after_days == ADVISORY_STALE_AFTER_DAYS
+    stale_lines = [r for r in caplog.records if STALE_LOG_TAG in r.getMessage()]
+    assert len(stale_lines) == 3
+    assert "threshold_days=21" in stale_lines[0].getMessage()
+    # A stale source is a warning, not a failure: one government's old
+    # snapshot is still better than publishing no advisories at all.
+    assert result.countries > 0
+
+
+def test_a_current_scrape_logs_no_staleness_warning(
+    tmp_path: Path, advisory_fixture, caplog
+) -> None:
+    raw = tmp_path / "raw"
+    for source_id, records in _scrape_fixtures(advisory_fixture).items():
+        write_advisories(
+            records,
+            source_id=source_id,
+            base_dir=raw,
+            timestamp=datetime.now(timezone.utc),
+        )
+
+    with caplog.at_level(logging.WARNING):
+        result = run_process_advisories(
+            raw_dir=raw,
+            final_path=tmp_path / "advisories.json",
+            index_path=tmp_path / "safety_index.json",
+        )
+
+    assert result.aged == {}
+    assert [r for r in caplog.records if STALE_LOG_TAG in r.getMessage()] == []
