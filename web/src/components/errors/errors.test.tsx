@@ -18,7 +18,6 @@ const { ErrorView } = await import("./error-view");
 const { NotFoundView } = await import("./not-found-view");
 const { suggestedCountries } = await import("./suggested-countries");
 const NotFound = (await import("@/app/not-found")).default;
-const CountryNotFound = (await import("@/app/[country]/not-found")).default;
 
 const APP = join(process.cwd(), "src", "app");
 
@@ -114,20 +113,23 @@ describe("not-found routes", () => {
     expect(screen.getByRole("link", { name: "Portugal" })).toBeInTheDocument();
   });
 
-  it("the country segment's 404 explains which of the three lookups missed", async () => {
-    render(await CountryNotFound());
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent("No climate page for that place");
-    expect(screen.getByText(/Countries we do have/)).toBeInTheDocument();
+  it("names the three lookups that can miss, because it also serves the country segment", async () => {
+    // There is no `[country]/not-found.tsx`: on Next 16.2.4 a segment-scoped
+    // one is never reached, with or without a layout to host it, so every
+    // country / region / month `notFound()` lands on this page. Measured, then
+    // the segment version was deleted rather than left looking useful.
+    const { container } = render(await NotFound());
+    const text = container.textContent ?? "";
+    expect(text).toMatch(/country pages exist/);
+    expect(text).toMatch(/regions for the admin-1 areas/);
+    expect(text).toMatch(/twelve English month names/);
   });
 
-  it.each([
-    ["global", "not-found.tsx"],
-    ["country segment", join("[country]", "not-found.tsx")],
-  ])("the %s 404 ships no client JS", (_label, file) => {
-    // Zero-JS: a 404 is a real entry point with `dynamicParams` on everywhere,
-    // and it must render for a crawler and for a visitor with no bundle.
-    const source = readFileSync(join(APP, file), "utf8");
+  it("the 404 is a server component", () => {
+    // It carries no `"use client"` of its own. Whether the *result* reaches a
+    // scripting-disabled reader is a separate question, and a framework one —
+    // see the measurement recorded in `not-found.tsx`.
+    const source = readFileSync(join(APP, "not-found.tsx"), "utf8");
     expect(source).not.toMatch(/["']use client["']/);
   });
 
@@ -192,6 +194,7 @@ describe("error boundaries", () => {
   it.each([
     ["global", "error.tsx"],
     ["country segment", join("[country]", "error.tsx")],
+    ["root-layout", "global-error.tsx"],
   ])("the %s boundary is a client component that renders the site chrome", (_l, file) => {
     // Client is required by Next.js's `error.tsx` convention — the boundary
     // holds `reset` and catches on the client. It must still render the header
