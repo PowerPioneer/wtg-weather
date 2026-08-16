@@ -9,6 +9,8 @@
 
 import { useState } from "react";
 
+import { DISPLAY_MODE_UPSELL, PREMIUM_FEATURE_COPY } from "@/components/upgrade";
+import { useCheckout } from "@/hooks/use-checkout";
 import { cn } from "@/lib/cn";
 import {
   DISPLAY_MODES,
@@ -35,6 +37,11 @@ export function DisplayModePicker({
   onUpgradeClick,
 }: DisplayModePickerProps) {
   const [popoverFor, setPopoverFor] = useState<DisplayModeId | null>(null);
+  // The picker runs its own checkout rather than handing back up to the map.
+  // It used to call `onUpgradeClick`, which closed this popover and opened an
+  // identical one behind the still-open modal — the visitor clicked "Try
+  // Premium" and, as far as they could see, nothing happened.
+  const checkout = useCheckout();
   const cols = layout === "mobile" ? 2 : 3;
   const heroGroup = DISPLAY_MODE_GROUPS[0];
   const climateGroup = DISPLAY_MODE_GROUPS[1];
@@ -66,13 +73,23 @@ export function DisplayModePicker({
         {popoverOpen && (
           <InlineUpgradePopover
             feature={upgradeFeatureForMode(id)}
-            title={mode.label}
-            description={mode.desc}
+            title={PREMIUM_FEATURE_COPY[upgradeFeatureForMode(id)].title}
+            description={PREMIUM_FEATURE_COPY[upgradeFeatureForMode(id)].body}
             ramp={"ramp" in mode.legend ? mode.legend.ramp : undefined}
-            onDismiss={() => setPopoverFor(null)}
-            onUpgrade={() => {
-              onUpgradeClick?.(upgradeFeatureForMode(id));
+            pending={checkout.pending}
+            failed={checkout.error != null}
+            onDismiss={() => {
               setPopoverFor(null);
+              checkout.reset();
+            }}
+            onUpgrade={() => {
+              const feature = upgradeFeatureForMode(id);
+              onUpgradeClick?.(feature);
+              void checkout.start({
+                plan: "consumer_premium",
+                source: "display_mode",
+                properties: { feature, mode: id },
+              });
             }}
           />
         )}
@@ -102,8 +119,7 @@ export function DisplayModePicker({
 
       {!isPremium && (
         <div className="mt-4 rounded border border-border bg-background px-3 py-2.5 text-[11.5px] leading-relaxed text-text-muted">
-          Unlock all 10 variables, saved trips, percentile bands, and no ads for{" "}
-          <strong className="text-text">€2.99/mo</strong>.
+          {DISPLAY_MODE_UPSELL}
         </div>
       )}
     </div>

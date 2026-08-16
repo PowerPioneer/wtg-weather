@@ -14,6 +14,7 @@
  *      reads; the full list is still exported for the /agency page.
  */
 
+import type { PaddlePlan } from "@/lib/paddle";
 import type { Tier } from "@/lib/types";
 
 export const PRICING_HERO = {
@@ -50,6 +51,81 @@ export const UPGRADE_PROMPTS = {
 } as const;
 
 export type UpgradePromptId = keyof typeof UPGRADE_PROMPTS;
+
+/**
+ * The one label every upgrade CTA wears, and the strings the checkout handoff
+ * shows while it is working or when it fails.
+ *
+ * Sourced here rather than inline at each button because the price appears in
+ * it: `€2.99/mo` is in `TIERS.premium.cta.label`, in the map popover, in the
+ * display-mode picker's footnote, and on the onboarding card. A price change
+ * that reaches four of those five is worse than one that reaches none.
+ */
+export const CHECKOUT_COPY = {
+  /** Primary label. Matches `TIERS.premium.cta.label` by construction below. */
+  cta: "Try Premium · €2.99/mo",
+  pending: "Opening checkout…",
+  /** Shown when `requestCheckoutUrl` fails for any reason but a missing session. */
+  error: "Couldn't open checkout. Try again in a moment.",
+  /** Shown while we bounce an anonymous visitor through sign-in. */
+  signIn: "Sign in to continue…",
+  sandboxNote: "Sandbox Paddle · no real charges in dev",
+} as const;
+
+/**
+ * What the map's inline popover says for each locked feature.
+ *
+ * The four variable entries restate `TIERS.premium.features`; `admin2` is the
+ * zoom gate, which has no feature bullet of its own because it is the headline
+ * on the tier card.
+ */
+export const PREMIUM_FEATURE_COPY = {
+  admin2: {
+    title: "District-level detail",
+    body: "Zoom past the country level into admin-2 districts — precise climate and safety inside every country.",
+  },
+  snow: { title: "Snow depth", body: "Mean snow depth for the month, from the same 10-year ERA5 window." },
+  sst: { title: "Sea surface temperature", body: "How warm the water actually is — the number that decides whether the coast is worth it." },
+  heat: { title: "Heat index", body: "Temperature and humidity combined, which is what the day actually feels like." },
+  humidity: { title: "Humidity", body: "Relative humidity for the month — the difference between 30°C pleasant and 30°C unbearable." },
+} as const;
+
+export type PremiumFeatureId = keyof typeof PREMIUM_FEATURE_COPY;
+
+/** Footnote under the display-mode picker when the session is not entitled. */
+export const DISPLAY_MODE_UPSELL =
+  "Unlock all 10 variables, saved trips, percentile bands, and no ads for €2.99/mo.";
+
+/**
+ * Copy for the two Paddle return pages. The success page polls `/api/me`
+ * because the plan does not change when the browser comes back — it changes
+ * when Paddle's webhook reaches the API, and then only after the 60-second
+ * entitlements cache lets go. Saying so is the whole job of this text: the
+ * alternative is a spinner that looks broken for a minute after a payment.
+ */
+export const CHECKOUT_RETURN_COPY = {
+  success: {
+    eyebrow: "Payment received",
+    waitingTitle: "Activating your subscription…",
+    waitingBody:
+      "Paddle has taken the payment and is telling us about it now. This usually takes a few seconds — you don't need to refresh, and nothing is lost if you navigate away.",
+    doneTitle: "Premium is active.",
+    doneBody:
+      "District-level zoom, the four extra variables, percentile bands and alerts are unlocked on this account.",
+    slowTitle: "Still waiting on the payment provider.",
+    slowBody:
+      "The payment went through — Paddle just hasn't reached us yet. It will land on its own; your receipt is already in your inbox. If Premium still isn't showing in a few minutes, get in touch and we'll sort it out.",
+    ctaMap: "Open the map",
+    ctaAccount: "Go to your account",
+  },
+  cancel: {
+    eyebrow: "Checkout cancelled",
+    title: "No payment was taken.",
+    body: "You closed the checkout before paying, so nothing was charged and your account is unchanged. The free map is exactly where you left it.",
+    ctaRetry: "Back to pricing",
+    ctaMap: "Keep using the free map",
+  },
+} as const;
 
 type TierEntry = Tier & { hidden?: boolean };
 
@@ -161,6 +237,29 @@ export function allTiers(): readonly Tier[] {
 
 export function findTier(id: Tier["id"]): Tier | undefined {
   return TIERS.find((t) => t.id === id);
+}
+
+/**
+ * Which Paddle plan a pricing tier buys.
+ *
+ * The two vocabularies are genuinely different and both are load-bearing:
+ * tier ids are the design system's (`premium`, `starter`), plan values are the
+ * API's (`consumer_premium`, `agency_starter`) and reach the webhook through
+ * `custom_data`. This is the only place they meet. `free` and `enterprise` buy
+ * nothing — one is free and the other is a sales conversation — so they return
+ * `null` and their CTA stays an ordinary link.
+ */
+export function planForTier(id: Tier["id"]): PaddlePlan | null {
+  switch (id) {
+    case "premium":
+      return "consumer_premium";
+    case "starter":
+      return "agency_starter";
+    case "pro":
+      return "agency_pro";
+    default:
+      return null;
+  }
 }
 
 export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [

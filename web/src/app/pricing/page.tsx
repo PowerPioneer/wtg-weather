@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PageFooter, PageHeader } from "@/components/layout";
 import {
+  CHECKOUT_COPY,
   PRICING_FAQ,
   PRICING_HERO,
   TRUST_SIGNALS,
@@ -22,16 +23,21 @@ export const metadata: Metadata = {
 // for every tweak. Pricing values themselves come from code, not CMS.
 export const revalidate = 2592000;
 
-type Search = { billing?: "monthly" | "yearly" };
+type Search = { billing?: "monthly" | "yearly"; checkout?: string };
 
 export default async function PricingPage({
   searchParams,
 }: {
   searchParams: Promise<Search>;
 }) {
-  const { billing: billingParam } = await searchParams;
+  const { billing: billingParam, checkout } = await searchParams;
   const billing: "monthly" | "yearly" = billingParam === "yearly" ? "yearly" : "monthly";
   const tiers = consumerTiers();
+  // Where `/upgrade` sends a visitor whose checkout could not be opened —
+  // the no-JS path has no inline error state of its own, so it comes back here
+  // with something to read rather than to a page that looks like the click
+  // never happened.
+  const checkoutFailed = checkout === "error";
 
   return (
     <>
@@ -84,6 +90,15 @@ export default async function PricingPage({
                 Paddle handles VAT, invoices, and refunds.
               </span>
             </div>
+
+            {checkoutFailed && (
+              <div
+                role="alert"
+                className="mt-6 rounded-md border border-border bg-[#FCFBF8] px-4 py-3 text-[13px] leading-[1.5] text-text"
+              >
+                {CHECKOUT_COPY.error} Nothing was charged.
+              </div>
+            )}
 
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {tiers.map((t) => (

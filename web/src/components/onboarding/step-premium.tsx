@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { findTier } from "@/components/upgrade";
 import type { PaddlePlan } from "@/lib/paddle";
+import type { Tier } from "@/lib/types";
 import { PremiumPlanCard } from "./premium-plan-card";
 import { WizardStep } from "./wizard-step";
 
@@ -28,49 +30,40 @@ type PlanCopy = {
   bullets: readonly string[];
 };
 
-const PLAN_COPY: Record<PaddlePlan, PlanCopy> = {
-  consumer_premium: {
-    title: "Unlock Premium",
-    priceDisplay: "€4",
-    priceSuffix: "/mo",
-    subline:
-      "Admin-2 regions, humidity and heat index, sea-surface temps, snow, saved trips, and ad-free browsing.",
-    bullets: [
-      "Zoom into admin-2 regions on every country",
-      "Humidity, heat-index, SST, and snow layers",
-      "Unlimited saved trips with shareable URLs",
-      "Custom alerts for favourite destinations",
-      "Ad-free, tracker-free — always",
-    ],
-  },
-  agency_starter: {
-    title: "Agency Starter",
-    priceDisplay: "€29",
-    priceSuffix: "/mo",
-    subline:
-      "Everything in Premium plus 3 agent seats, shared client book, and branded trip PDFs.",
-    bullets: [
-      "3 included agent seats (add more any time)",
-      "Shared clients and trips across your team",
-      "Branded PDF exports for client proposals",
-      "CSV export of scored destinations",
-      "Priority email support",
-    ],
-  },
-  agency_pro: {
-    title: "Agency Pro",
-    priceDisplay: "€89",
-    priceSuffix: "/mo",
-    subline:
-      "Grow the team to 10 seats, add SSO and audit logs, and pull our data via API.",
-    bullets: [
-      "10 included seats, volume pricing beyond",
-      "SAML SSO and SCIM provisioning",
-      "Audit log and admin oversight tools",
-      "Read-only API access for your own tools",
-      "Dedicated onboarding specialist",
-    ],
-  },
+/**
+ * Derived from the pricing tiers, not written here.
+ *
+ * The hand-written table this replaces quoted €4/mo for Premium, €29 for
+ * Starter and €89 for Pro. The pricing page has always said €2.99, €39 and
+ * €99. Onboarding is the last screen before a card is entered, so it was the
+ * worst of the five places to be wrong — and no test could have caught it,
+ * because both numbers were "correct" against their own constant.
+ */
+function planCopy(plan: PaddlePlan): PlanCopy {
+  const tier = findTier(TIER_FOR_PLAN[plan]);
+  if (!tier) {
+    // Unreachable: the map below covers every PaddlePlan and the tiers are a
+    // literal. Belt and braces so a future tier rename fails loudly in dev
+    // rather than rendering a card with no price on it.
+    throw new Error(`no pricing tier for plan ${plan}`);
+  }
+  const monthly = tier.price.monthly;
+  return {
+    title: plan === "consumer_premium" ? "Unlock Premium" : tier.name,
+    priceDisplay:
+      monthly == null
+        ? (tier.priceDisplay ?? "—")
+        : `€${monthly % 1 === 0 ? monthly.toFixed(0) : monthly.toFixed(2)}`,
+    priceSuffix: tier.price.suffix || "/mo",
+    subline: tier.subline,
+    bullets: tier.featuredBullets ?? tier.features.slice(0, 5),
+  };
+}
+
+const TIER_FOR_PLAN: Record<PaddlePlan, Tier["id"]> = {
+  consumer_premium: "premium",
+  agency_starter: "starter",
+  agency_pro: "pro",
 };
 
 /**
@@ -89,7 +82,7 @@ export function StepPremium({
   onSkip,
   onFinish,
 }: StepPremiumProps) {
-  const copy = PLAN_COPY[plan];
+  const copy = planCopy(plan);
 
   if (alreadyPremium) {
     return (

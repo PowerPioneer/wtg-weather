@@ -10,6 +10,7 @@
  */
 
 import { cn } from "@/lib/cn";
+import { CHECKOUT_COPY } from "@/components/upgrade/copy";
 
 export type PremiumFeature = "admin2" | "snow" | "sst" | "heat" | "humidity";
 
@@ -23,6 +24,15 @@ export type InlineUpgradePopoverProps = {
   onUpgrade: () => void;
   /** Positioning hint. Defaults to `center` (left:50%, translate-x). */
   anchor?: "left" | "center" | "right";
+  /**
+   * Checkout is being arranged — the CTA goes inert and says so. The popover
+   * does not run the checkout itself: it sits inside the map's overlay and the
+   * hook that owns the request lives at the page level, so the state is passed
+   * down rather than duplicated per popover instance.
+   */
+  pending?: boolean;
+  /** Set when the checkout request failed, so the CTA can be retried. */
+  failed?: boolean;
 };
 
 export function InlineUpgradePopover({
@@ -33,6 +43,8 @@ export function InlineUpgradePopover({
   onDismiss,
   onUpgrade,
   anchor = "center",
+  pending = false,
+  failed = false,
 }: InlineUpgradePopoverProps) {
   const gradientId = `wtg-upgrade-grad-${feature}`;
   const effectiveRamp = ramp && ramp.length > 1 ? ramp : ["#D9D5C8", "#9AA2AB"];
@@ -92,13 +104,22 @@ export function InlineUpgradePopover({
       <p className="font-display text-[16px] font-medium leading-[1.25] text-text">{title}</p>
       <p className="mt-1 text-[12.5px] leading-[1.45] text-text-muted">{description}</p>
 
+      {failed ? (
+        <p role="alert" className="mt-2 text-[12px] leading-snug text-destructive">
+          {CHECKOUT_COPY.error}
+        </p>
+      ) : null}
+
       <div className="mt-3 flex gap-1.5">
         <button
           type="button"
           onClick={onUpgrade}
-          className="flex-1 rounded-sm bg-text px-2.5 py-2 text-[12.5px] font-medium text-surface outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[color:var(--color-focus-ring)] focus-visible:ring-offset-2"
+          disabled={pending}
+          aria-busy={pending || undefined}
+          data-testid="popover-upgrade"
+          className="flex-1 rounded-sm bg-text px-2.5 py-2 text-[12.5px] font-medium text-surface outline-none transition hover:opacity-90 disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-[color:var(--color-focus-ring)] focus-visible:ring-offset-2"
         >
-          Try Premium · €2.99/mo
+          {pending ? CHECKOUT_COPY.pending : CHECKOUT_COPY.cta}
         </button>
         <button
           type="button"

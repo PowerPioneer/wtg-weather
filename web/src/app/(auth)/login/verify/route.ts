@@ -15,10 +15,13 @@
  */
 
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
+import { CHECKOUT_INTENT_COOKIE, parseIntent } from "@/lib/checkout-intent";
 import { INTERNAL_API_URL } from "@/lib/env";
+import { checkoutPath } from "@/lib/paddle";
 
-/** Where a successful sign-in lands. */
+/** Where a successful sign-in lands when nothing else was asked for. */
 const LANDING = "/account";
 
 export async function GET(request: Request): Promise<Response> {
@@ -39,8 +42,18 @@ export async function GET(request: Request): Promise<Response> {
   const setCookie = verified.headers.get("set-cookie");
   if (!setCookie) return fail(request, "unavailable");
 
-  const response = NextResponse.redirect(new URL(LANDING, request.url), 303);
+  // Someone who clicked Upgrade before signing in gets taken to checkout
+  // rather than to their account, having been sent away mid-purchase. The
+  // cookie holds a plan identifier, never a URL, so this cannot become an open
+  // redirect — `lib/checkout-intent.ts` explains why that matters.
+  const intent = parseIntent((await cookies()).get(CHECKOUT_INTENT_COOKIE)?.value);
+  const landing = intent
+    ? checkoutPath(intent.plan, intent.organizationId)
+    : LANDING;
+
+  const response = NextResponse.redirect(new URL(landing, request.url), 303);
   response.headers.append("set-cookie", setCookie);
+  if (intent) response.cookies.delete(CHECKOUT_INTENT_COOKIE);
   return response;
 }
 

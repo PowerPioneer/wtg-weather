@@ -168,11 +168,8 @@ export function TierCard({ tier, billing }: TierCardProps) {
       {featured && (
         <TierCta
           tier={tier}
-          href="/api/billing/checkout?tier=premium"
           className="inline-flex w-full items-center justify-center rounded-md border border-[#E0C98A] bg-[#E0C98A] px-3.5 py-2.5 text-[13.5px] font-medium text-primary hover:brightness-105"
-        >
-          {tier.cta.label}
-        </TierCta>
+        />
       )}
 
       {/* Subline + features */}
@@ -202,16 +199,13 @@ export function TierCard({ tier, billing }: TierCardProps) {
       {!featured && (
         <TierCta
           tier={tier}
-          href={tier.id === "free" ? "/map" : `/api/billing/checkout?tier=${tier.id}`}
           className={cn(
             "inline-flex w-full items-center justify-center rounded-md px-3.5 py-2.5 text-[13.5px] font-medium",
             tier.cta.kind === "primary" && "bg-primary text-primary-foreground hover:bg-primary-hover",
             tier.cta.kind === "outline" && "border border-primary bg-transparent text-primary hover:bg-surface-2",
             tier.cta.kind === "ghost" && "border border-border bg-transparent text-primary hover:bg-surface-2",
           )}
-        >
-          {tier.cta.label}
-        </TierCta>
+        />
       )}
     </article>
   );

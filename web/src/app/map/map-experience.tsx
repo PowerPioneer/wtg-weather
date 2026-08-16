@@ -34,9 +34,11 @@ import {
   type PremiumFeature,
 } from "@/components/map/inline-upgrade-popover";
 import type { MapFeatureHover } from "@/components/map/map-canvas";
+import { useCheckout } from "@/hooks/use-checkout";
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
 import { useStoredPreferences } from "@/hooks/use-stored-preferences";
+import { PREMIUM_FEATURE_COPY } from "@/components/upgrade";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { findCountryByIso2 } from "@/lib/countries";
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
@@ -98,6 +100,7 @@ export function MapExperience({
     resetPreferences,
   } = useMapState();
   const tiles = useTileUrls({ premium: isPremium });
+  const checkout = useCheckout();
 
   // Signed-in users carry their preferences between devices; the URL still
   // wins, so a shared link shows the sender's map rather than the reader's.
@@ -223,14 +226,27 @@ export function MapExperience({
     trackEvent(ANALYTICS_EVENTS.upgradeClick, { source: "map_layer", feature });
   }, []);
 
+  // The popover's CTA now starts a checkout instead of navigating to
+  // `/pricing`. Sending someone who has already seen the price and the feature
+  // to a page that shows them the price and the feature again was a step that
+  // only ever lost people; `useCheckout` handles the signed-out case by
+  // bouncing through sign-in and resuming, so the CTA is honest for everyone.
+  //
+  // The popover is deliberately left up while the request is in flight — it is
+  // the only thing on screen saying what is happening, and closing it on click
+  // would leave the visitor staring at a map with no feedback at all.
   const handleUpgradeCta = useCallback(() => {
-    trackEvent(ANALYTICS_EVENTS.upgradeClick, {
+    void checkout.start({
+      plan: "consumer_premium",
       source: "map_popover",
-      feature: upgradeFeature ?? "unknown",
+      properties: { feature: upgradeFeature ?? "unknown" },
     });
+  }, [checkout, upgradeFeature]);
+
+  const dismissUpgrade = useCallback(() => {
     setUpgradeFeature(null);
-    window.location.href = "/pricing";
-  }, [upgradeFeature]);
+    checkout.reset();
+  }, [checkout]);
 
   const activeMode = DISPLAY_MODES[mode];
   const monthLabel = MONTH_SHORT[MONTH_SLUGS[month - 1]];
@@ -370,7 +386,9 @@ export function MapExperience({
               description={upgradeDescription(upgradeFeature)}
               ramp={upgradeRamp(upgradeFeature)}
               anchor="left"
-              onDismiss={() => setUpgradeFeature(null)}
+              pending={checkout.pending}
+              failed={checkout.error != null}
+              onDismiss={dismissUpgrade}
               onUpgrade={handleUpgradeCta}
             />
           </div>
@@ -449,26 +467,17 @@ function MapError({ message }: { message: string }) {
   );
 }
 
+// Both of these read `PREMIUM_FEATURE_COPY` rather than restating the pitch
+// inline, per the convention in `upgrade/copy.ts`: the same five features are
+// described on the pricing page, in the picker and here, and three copies is
+// three chances to describe a paid feature differently to the person deciding
+// whether to pay for it.
 function upgradeTitle(feature: PremiumFeature): string {
-  switch (feature) {
-    case "admin2":
-      return "District-level detail";
-    case "snow":
-      return DISPLAY_MODES.snow.label;
-    case "sst":
-      return DISPLAY_MODES.sst.label;
-    case "heat":
-      return DISPLAY_MODES.heat.label;
-    case "humidity":
-      return DISPLAY_MODES.humidity.label;
-  }
+  return PREMIUM_FEATURE_COPY[feature].title;
 }
 
 function upgradeDescription(feature: PremiumFeature): string {
-  if (feature === "admin2") {
-    return "Zoom past the country level into admin-2 districts — precise climate and safety inside every country.";
-  }
-  return DISPLAY_MODES[feature].desc;
+  return PREMIUM_FEATURE_COPY[feature].body;
 }
 
 function upgradeRamp(feature: PremiumFeature): readonly string[] | undefined {
