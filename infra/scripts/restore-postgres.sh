@@ -25,6 +25,28 @@ fail() { log "ERROR: $*" >&2; exit 1; }
 db="$1"
 stamp="$2"
 
+cd "$(dirname "$0")/../.."
+
+# Deliberately parsed, not sourced, mirroring rebuild-tiles.sh: `. ./.env`
+# would execute whatever else is in the file, and this runs as root on the
+# production host. Values are never logged.
+env_value() {
+    local key="$1" line value
+    [[ -f .env ]] || return 0
+    line=$(grep -aE "^[[:space:]]*(export[[:space:]]+)?${key}=" .env | tail -1) || true
+    [[ -n "${line:-}" ]] || return 0
+    value="${line#*=}"
+    value="${value%$'\r'}"          # tolerate CRLF checkouts
+    if [[ "$value" == \"*\" || "$value" == \'*\' ]]; then
+        value="${value:1:${#value}-2}"
+    fi
+    printf '%s' "$value"
+}
+for key in POSTGRES_USER POSTGRES_PASSWORD BACKUP_AGE_IDENTITY \
+           B2_ACCOUNT_ID B2_ACCOUNT_KEY B2_BUCKET; do
+    [[ -n "${!key:-}" ]] || printf -v "$key" '%s' "$(env_value "$key")"
+done
+
 COMPOSE="${COMPOSE:-docker compose}"
 B2_BUCKET="${B2_BUCKET:-wtg-backups}"
 
@@ -39,8 +61,6 @@ B2_BUCKET="${B2_BUCKET:-wtg-backups}"
 command -v age >/dev/null 2>&1 || fail "age not installed on host"
 command -v zstd >/dev/null 2>&1 || fail "zstd not installed on host"
 command -v b2 >/dev/null 2>&1 || fail "b2 CLI not installed on host"
-
-cd "$(dirname "$0")/../.."
 
 log "b2 authorize-account"
 b2 authorize-account "$B2_ACCOUNT_ID" "$B2_ACCOUNT_KEY" >/dev/null
