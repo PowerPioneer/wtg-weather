@@ -286,3 +286,39 @@ async def test_a_lapsed_user_keeps_control_of_alerts_they_already_made(
         await client.patch(f"/api/alerts/{alert_id}", json={"active": False})
     ).status_code == 200
     assert (await client.delete(f"/api/alerts/{alert_id}")).status_code == 204
+
+
+@pytest.mark.asyncio
+async def test_a_trip_cannot_be_assigned_to_another_orgs_client(
+    client: AsyncClient, agency, user
+) -> None:
+    """The PATCH path used to set `client_id` straight from the body.
+
+    `POST /api/trips` checked the caller's membership in the client's org and
+    the update did not, so an outsider could file their own trip against
+    another agency's client — a write into a page they cannot read.
+    """
+    owner, org = agency
+    login(client, owner)
+    theirs = (
+        await client.post(f"/api/orgs/{org.id}/clients", json={"name": "Theirs"})
+    ).json()["id"]
+
+    client.cookies.clear()
+    login(client, user)
+    mine = (await client.post("/api/trips", json={"title": "Mine"})).json()
+
+    assert (
+        await client.patch(f"/api/trips/{mine['id']}", json={"client_id": theirs})
+    ).status_code == 403
+    assert (
+        await client.post(
+            "/api/trips", json={"title": "Also mine", "client_id": theirs}
+        )
+    ).status_code == 403
+
+    client.cookies.clear()
+    login(client, owner)
+    assert (await client.get(f"/api/orgs/{org.id}/clients/{theirs}")).json()[
+        "trip_count"
+    ] == 0

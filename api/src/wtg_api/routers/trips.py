@@ -93,6 +93,16 @@ async def update_trip(
     if trip is None or trip.owner_id != user.id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "trip not found")
     data = payload.model_dump(exclude_unset=True)
+    # Assigning a trip to a client is a PATCH, and it went unchecked: `create`
+    # verified that the caller belongs to the client's organization and this
+    # path set the column straight from the body. An agent could therefore file
+    # their trip against another agency's client — which is a write into that
+    # agency's client page, from outside it.
+    if "client_id" in data and data["client_id"] is not None:
+        client = await session.get(Client, data["client_id"])
+        if client is None:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "client not found")
+        await _ensure_user_in_org(session, user, client.organization_id)
     for k, v in data.items():
         setattr(trip, k, v)
     await session.commit()
