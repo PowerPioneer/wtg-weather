@@ -59,7 +59,21 @@ export function useTileUrls(entitlement: Pick<Entitlement, "premium">): TileUrls
         const result = await fetchTileUrl(tier);
         if (cancelled) return;
         if (result === "forbidden") {
-          if (tier === "premium") setPremiumDenied(true);
+          if (tier === "premium") {
+            setPremiumDenied(true);
+            // Drop the URL we were holding, not just flag the refusal.
+            //
+            // This path is reached mid-session too: the signed URL is
+            // re-requested about a minute before its 15-minute expiry, so a
+            // subscription that lapses while the page is open comes back 403
+            // on the next refresh. Keeping the old URL in state would leave
+            // `buildMapStyle` pointing every layer at the premium archive
+            // (RC-8 flipped country and admin-1 onto it, not just admin-2) via
+            // a signature that is about to expire — and when it does, the map
+            // goes blank rather than falling back. Clearing it restyles onto
+            // the free archive while the free tiles are still good.
+            setPremiumUrl(null);
+          }
           markDone(tier);
           return;
         }
@@ -75,6 +89,7 @@ export function useTileUrls(entitlement: Pick<Entitlement, "premium">): TileUrls
         // replace a map the visitor can already use.
         if (tier === "premium") {
           setPremiumDenied(true);
+          setPremiumUrl(null);
         } else {
           setError(err instanceof Error ? err.message : String(err));
         }

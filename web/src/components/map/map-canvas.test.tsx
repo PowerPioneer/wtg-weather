@@ -314,6 +314,113 @@ describe("MapCanvas tile-URL handling", () => {
     }
   });
 
+  /**
+   * The downgrade, at the canvas. RC-8 flipped a premium session's *country*
+   * and *admin-1* layers onto the premium archive too, not just admin-2, so
+   * "premium went away" is not a question of losing one layer — every layer
+   * has to move back onto the free source or there is nothing left to draw.
+   *
+   * The hook clears `premiumTilesUrl` on a 403 (see `use-tile-urls`); this is
+   * the other half, that clearing it actually restores a usable map.
+   */
+  it("moves every layer back to the free archive when premium lapses", () => {
+    const { rerender } = render(
+      <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={PREMIUM} mode="preferences" month={4} />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+
+    const before = map.opts.style as {
+      sources: Record<string, unknown>;
+      layers: { id: string; source?: string }[];
+    };
+    expect(Object.keys(before.sources)).toContain("wtg-premium");
+    expect(before.layers.some((l) => l.id === "wtg-admin2-fill")).toBe(true);
+
+    // Entitlement gone: the hook hands us `null` rather than a stale URL.
+    rerender(
+      <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={null} mode="preferences" month={4} />,
+    );
+
+    // Same map instance — the camera survives a downgrade, as it does a
+    // re-signing.
+    expect(FakeMap.instances).toHaveLength(1);
+    expect(map.removed).toBe(false);
+    expect(map.setStyleCalls).toHaveLength(1);
+
+    const after = map.setStyleCalls[0] as {
+      sources: Record<string, unknown>;
+      layers: { id: string; source?: string }[];
+    };
+    // Not one layer may still point at the archive we can no longer fetch.
+    expect(Object.keys(after.sources)).toEqual(["wtg-free"]);
+    for (const layer of after.layers) {
+      if (layer.source) expect(layer.source).toBe("wtg-free");
+    }
+    // And the map must still have something to draw — a "fallback" that leaves
+    // no fill layers is a blank map with extra steps.
+    expect(after.layers.filter((l) => l.source === "wtg-free").length).toBeGreaterThan(0);
+    expect(JSON.stringify(after)).not.toContain("premium.pmtiles");
+  });
+
+  it("drops the zoom ceiling back when premium lapses", () => {
+    const { rerender } = render(
+      <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={PREMIUM} mode="preferences" month={4} />,
+    );
+    const map = FakeMap.instances[0];
+    expect(map.opts.maxZoom).toBe(9);
+
+    rerender(
+      <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={null} mode="preferences" month={4} />,
+    );
+
+    // Otherwise the user keeps zooming into admin-2 tiles that are no longer
+    // being fetched, which reads as the map breaking rather than as a plan
+    // ending.
+    expect(map.maxZoomCalls).toEqual([5.5]);
+  });
+
+  it("re-arms the upgrade prompt at the free ceiling after a downgrade", () => {
+    const onPremiumZoomBlocked = vi.fn();
+    const { rerender } = render(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={PREMIUM}
+        mode="preferences"
+        month={4}
+        onPremiumZoomBlocked={onPremiumZoomBlocked}
+      />,
+    );
+    const map = FakeMap.instances[0];
+    act(() => map.emitStyleLoad());
+
+    rerender(
+      <MapCanvas
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={null}
+        mode="preferences"
+        month={4}
+        onPremiumZoomBlocked={onPremiumZoomBlocked}
+      />,
+    );
+    act(() => map.emitStyleLoad());
+
+    // `getZoom()` on the fake returns 2, under the 5.5 ceiling, so a zoom
+    // event alone must not fire the prompt — only exceeding the ceiling does.
+    act(() => {
+      for (const handler of map.handlers["zoom"] ?? []) (handler as () => void)();
+    });
+    expect(onPremiumZoomBlocked).not.toHaveBeenCalled();
+
+    // Past the ceiling, the gate fires and the page shows the upgrade prompt
+    // rather than silently refusing to zoom.
+    map.getZoom = () => 7;
+    act(() => {
+      for (const handler of map.handlers["zoom"] ?? []) (handler as () => void)();
+    });
+    expect(onPremiumZoomBlocked).toHaveBeenCalled();
+  });
+
   it("builds the map only once tiles are available", () => {
     const { rerender } = render(
       <MapCanvas freeTilesUrl={null} premiumTilesUrl={null} mode="preferences" month={4} />,

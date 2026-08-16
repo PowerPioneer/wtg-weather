@@ -73,3 +73,69 @@ describe("useTileUrls premium failures", () => {
     expect(result.current.freeUrl).toBeNull();
   });
 });
+
+/**
+ * The downgrade half. A subscription can lapse *while the page is open* —
+ * cancelled in another tab, a failed renewal, a refund — and the signed URL is
+ * re-requested about a minute before its 15-minute expiry, so the next refresh
+ * is the first thing to hear about it.
+ *
+ * This matters more than it looks because of the RC-8 source flip: a premium
+ * session reads country, admin-1 *and* admin-2 from the premium archive, so
+ * holding onto a premium URL whose entitlement is gone does not degrade the map
+ * to fewer layers — it points every layer at an archive we are about to stop
+ * being allowed to fetch, and the map goes blank when the signature expires.
+ */
+describe("useTileUrls mid-session downgrade", () => {
+  it("drops the premium URL when a refresh comes back 403", async () => {
+    const soon = Math.floor(Date.now() / 1000) + 61; // refresh in ~1s
+    let premiumCalls = 0;
+    fetchTileUrl.mockImplementation(async (tier: string) => {
+      if (tier === "free") return OK;
+      premiumCalls += 1;
+      // Entitled on first load, refused on the refresh.
+      return premiumCalls === 1
+        ? { url: "https://cdn.test/premium.pmtiles?sig=p", expiresAt: soon }
+        : "forbidden";
+    });
+
+    const { result } = renderHook(() => useTileUrls({ premium: true }));
+
+    await waitFor(() =>
+      expect(result.current.premiumUrl).toBe(
+        "https://cdn.test/premium.pmtiles?sig=p",
+      ),
+    );
+
+    // The scheduled refresh fires and is refused.
+    await waitFor(() => expect(premiumCalls).toBe(2), { timeout: 4000 });
+
+    await waitFor(() => expect(result.current.premiumUrl).toBeNull());
+    expect(result.current.premiumDenied).toBe(true);
+    // The free map is untouched — that is the whole point of degrading.
+    expect(result.current.freeUrl).toBe(OK.url);
+    expect(result.current.error).toBeNull();
+  });
+
+  it("drops the premium URL when the refresh throws rather than 403s", async () => {
+    const soon = Math.floor(Date.now() / 1000) + 61;
+    let premiumCalls = 0;
+    fetchTileUrl.mockImplementation(async (tier: string) => {
+      if (tier === "free") return OK;
+      premiumCalls += 1;
+      if (premiumCalls === 1) {
+        return { url: "https://cdn.test/premium.pmtiles?sig=q", expiresAt: soon };
+      }
+      throw new Error("fetchTileUrl(premium) failed: 500");
+    });
+
+    const { result } = renderHook(() => useTileUrls({ premium: true }));
+    await waitFor(() => expect(result.current.premiumUrl).not.toBeNull());
+    await waitFor(() => expect(premiumCalls).toBe(2), { timeout: 4000 });
+
+    // A URL we can no longer refresh is a URL that expires under the user.
+    await waitFor(() => expect(result.current.premiumUrl).toBeNull());
+    expect(result.current.freeUrl).toBe(OK.url);
+    expect(result.current.error).toBeNull();
+  });
+});
