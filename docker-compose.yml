@@ -58,6 +58,17 @@ services:
       GLITCHTIP_RELEASE: ${GLITCHTIP_RELEASE}
       ENVIRONMENT: ${APP_ENV:-prod}
       COUNTRY_DATA_DIR: /srv/wtg-data
+      # Every absolute URL the API mints for somebody outside the docker
+      # network is built from these: magic links, agency invites, and the
+      # alert email's links and its one-click unsubscribe. Without them
+      # `Settings` falls back to its dev default and production mails
+      # http://localhost:3000 links to real people. Defaulted here rather than
+      # required in .env so a deploy cannot come up wrong by omission — same
+      # arrangement `plausible`'s BASE_URL already has below.
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://v2.wheretogoforgreatweather.com}
+      # Where `/api/*` is publicly reachable. Empty tracks PUBLIC_WEB_ORIGIN,
+      # which is correct while Caddy fronts both on one hostname.
+      PUBLIC_API_ORIGIN: ${PUBLIC_API_ORIGIN:-}
     volumes:
       # The pipeline's `wtg publish api-data` bundle — one JSON payload per
       # country, plus the index the web generates its route tree from. Read-only
