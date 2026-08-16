@@ -377,3 +377,23 @@ class PaddleCheckoutResponse(BaseModel):
     checkout_url: str
     sandbox: bool
     plan: str
+
+
+class BillingSummaryResponse(BaseModel):
+    """What `/account` → Billing prints. No renewal date, no payment method.
+
+    Both live at Paddle and reaching them means a portal session, so this model
+    deliberately has nowhere to put a stale copy of either.
+    """
+
+    plan: str
+    has_subscription: bool
+    portal_available: bool
+    sandbox: bool
+    organization_id: uuid.UUID | None = None
+    seat_cap: int | None = None
+
+
+class BillingPortalResponse(BaseModel):
+    portal_url: str
+    sandbox: bool

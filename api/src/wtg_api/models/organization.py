@@ -4,7 +4,7 @@ import enum
 import uuid
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, Integer, String, Uuid
+from sqlalchemy import Enum, ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from wtg_api.db import Base, TimestampMixin
@@ -48,6 +48,16 @@ class Organization(Base, TimestampMixin):
     paddle_customer_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     paddle_subscription_id: Mapped[str | None] = mapped_column(
         String(255), unique=True, nullable=True
+    )
+
+    # Set only on the single-seat organization that carries one consumer's own
+    # subscription. Entitlements resolve through memberships (see
+    # `services.entitlements.resolve`), so a consumer who buys Premium needs an
+    # organization to hang the plan off — there is nowhere else to put it. This
+    # column is what makes that organization findable again on the next webhook
+    # instead of accumulating a new one per event. NULL for every agency org.
+    personal_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=True
     )
 
     memberships: Mapped[list[Membership]] = relationship(

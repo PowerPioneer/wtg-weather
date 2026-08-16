@@ -7,6 +7,7 @@ from wtg_api.config import get_settings
 from wtg_api.middleware import SlidingSessionMiddleware, install_cors
 from wtg_api.routers import (
     auth,
+    billing,
     countries,
     onboarding,
     orgs,
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     app.include_router(tiles.router)
     app.include_router(paddle.router)
     app.include_router(paddle_checkout.router)
+    app.include_router(billing.router)
     app.include_router(onboarding.router)
     app.include_router(countries.router)
 

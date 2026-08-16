@@ -8,6 +8,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _PADDLE_SANDBOX_CHECKOUT = "https://sandbox-checkout.paddle.com/checkout/custom"
 _PADDLE_LIVE_CHECKOUT = "https://checkout.paddle.com/checkout/custom"
+_PADDLE_SANDBOX_API = "https://sandbox-api.paddle.com"
+_PADDLE_LIVE_API = "https://api.paddle.com"
 
 
 class Settings(BaseSettings):
@@ -50,6 +52,11 @@ class Settings(BaseSettings):
 
     paddle_api_key: str = ""
     paddle_sandbox: bool = True
+    # Where customer-portal sessions are minted. Sandbox and live are separate
+    # hosts with separate keys; pairing a live key with the sandbox host (or the
+    # reverse) fails closed with a 403 from Paddle rather than doing something
+    # surprising. Left empty to track `paddle_sandbox`.
+    paddle_api_base_url: str = ""
     # Leave empty in .env to auto-pick based on paddle_sandbox. Set explicitly
     # only to override (e.g. staging pointing at a self-hosted mock).
     paddle_checkout_base_url: str = ""
@@ -77,6 +84,10 @@ class Settings(BaseSettings):
         if not self.paddle_checkout_base_url:
             self.paddle_checkout_base_url = (
                 _PADDLE_SANDBOX_CHECKOUT if self.paddle_sandbox else _PADDLE_LIVE_CHECKOUT
+            )
+        if not self.paddle_api_base_url:
+            self.paddle_api_base_url = (
+                _PADDLE_SANDBOX_API if self.paddle_sandbox else _PADDLE_LIVE_API
             )
         return self
 
