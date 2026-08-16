@@ -8,7 +8,6 @@ import { WizardStep } from "./wizard-step";
 
 export type OrgSetupValue = {
   orgName: string;
-  orgSlug: string;
   orgRegion: string;
 };
 
@@ -19,22 +18,24 @@ export type StepOrgSetupProps = {
   initial?: Partial<OrgSetupValue>;
   onBack?: () => void;
   onContinue: (value: OrgSetupValue) => Promise<void> | void;
+  /** Surfaced when the org could not be created — the step cannot advance. */
+  error?: string | null;
 };
 
-const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$/;
-
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40);
-}
-
 /**
- * Agency wizard step 1 — capture agency name, URL slug, and base region. The
- * slug auto-derives from the name while the user hasn't touched it; once they
- * edit the slug field directly we stop overwriting it.
+ * Agency wizard step 1 — the organization's name and base region.
+ *
+ * Continuing from here **creates the organization** (`POST /api/orgs`) and
+ * makes the caller its owner; the wizard used to collect these three fields
+ * and file them in `onboarding.data`, so a user could finish the agency flow
+ * with no organization to their name and an account page that had nothing to
+ * render.
+ *
+ * The URL-handle field is gone. It offered `wtg.app/a/<slug>` and no such
+ * route exists or is planned — `Organization` carries no slug column, and
+ * `components/account/agency-sections.tsx` left the decision to WS-C. Asking
+ * somebody to choose a permanent handle for a URL that resolves to nothing is
+ * the same fabrication as printing a renewal date we do not have.
  */
 export function StepOrgSetup({
   kind,
@@ -43,26 +44,18 @@ export function StepOrgSetup({
   initial,
   onBack,
   onContinue,
+  error: externalError,
 }: StepOrgSetupProps) {
   const [orgName, setOrgName] = useState(initial?.orgName ?? "");
-  const [orgSlug, setOrgSlug] = useState(initial?.orgSlug ?? "");
   const [orgRegion, setOrgRegion] = useState(initial?.orgRegion ?? "");
-  const [slugDirty, setSlugDirty] = useState(Boolean(initial?.orgSlug));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const slugValid = orgSlug === "" || SLUG_RE.test(orgSlug);
-  const canContinue =
-    orgName.trim().length >= 2 && SLUG_RE.test(orgSlug) && orgRegion.trim().length > 0;
-
-  function handleNameChange(v: string) {
-    setOrgName(v);
-    if (!slugDirty) setOrgSlug(slugify(v));
-  }
+  const canContinue = orgName.trim().length >= 2 && orgRegion.trim().length > 0;
 
   async function handleContinue() {
     if (!canContinue) {
-      setError("Fill in your agency name, a URL handle, and a base region.");
+      setError("Fill in your agency name and a base region.");
       return;
     }
     setSubmitting(true);
@@ -70,7 +63,6 @@ export function StepOrgSetup({
     try {
       await onContinue({
         orgName: orgName.trim(),
-        orgSlug,
         orgRegion: orgRegion.trim(),
       });
     } finally {
@@ -115,33 +107,8 @@ export function StepOrgSetup({
             autoComplete="organization"
             placeholder="Wanderline Travel Co."
             value={orgName}
-            onChange={(e) => handleNameChange(e.target.value)}
+            onChange={(e) => setOrgName(e.target.value)}
           />
-        </div>
-        <div>
-          <Label htmlFor="org-slug" className="mb-1.5 block">
-            URL handle
-          </Label>
-          <div className="flex items-stretch overflow-hidden rounded-md border border-border-strong bg-surface">
-            <span className="flex items-center px-3 font-mono text-[12px] text-text-subtle">
-              wtg.app/a/
-            </span>
-            <Input
-              id="org-slug"
-              autoComplete="off"
-              placeholder="wanderline"
-              value={orgSlug}
-              invalid={!slugValid}
-              onChange={(e) => {
-                setSlugDirty(true);
-                setOrgSlug(e.target.value.toLowerCase());
-              }}
-              className="rounded-none border-0 bg-transparent"
-            />
-          </div>
-          <p className="mt-1.5 font-mono text-[11px] text-text-subtle">
-            Lowercase letters, numbers, hyphens. 2–40 characters.
-          </p>
         </div>
         <div>
           <Label htmlFor="org-region" className="mb-1.5 block">
@@ -159,9 +126,9 @@ export function StepOrgSetup({
           </p>
         </div>
 
-        {error ? (
+        {(error ?? externalError) ? (
           <p role="alert" className="text-[12px] text-destructive">
-            {error}
+            {error ?? externalError}
           </p>
         ) : null}
       </div>

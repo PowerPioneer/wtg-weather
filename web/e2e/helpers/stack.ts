@@ -118,3 +118,60 @@ export async function waitForMagicLinkToken(
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
 }
+
+/**
+ * The invitation link `ConsoleEmail` prints. Same token shape as the magic
+ * link — an `itsdangerous` payload — but a different route and, crucially, a
+ * different salt, so the two are not interchangeable.
+ */
+const INVITE_LINK = /\/invite\?token=([A-Za-z0-9._~-]+)/;
+
+/**
+ * The most recent invitation token issued to `email`, or null if none is in the
+ * log yet.
+ *
+ * Anchored on the address for the same reason `findMagicLinkToken` is: a stack
+ * with other traffic on it must not hand back somebody else's invitation, and
+ * the agency journey sends two of these within a few seconds of each other.
+ */
+export function findInviteToken(logs: string, email: string): string | null {
+  const addressed = logs.lastIndexOf(`To: ${email}`);
+  if (addressed === -1) return null;
+  return INVITE_LINK.exec(logs.slice(addressed))?.[1] ?? null;
+}
+
+/** Poll the API's stdout until the invitation for `email` shows up. */
+export async function waitForInviteToken(
+  email: string,
+  timeoutMs = 30_000,
+): Promise<string> {
+  const deadline = Date.now() + timeoutMs;
+  let lastError: unknown = null;
+
+  for (;;) {
+    try {
+      const token = findInviteToken(await readApiLogs(), email);
+      if (token) return token;
+      lastError = null;
+    } catch (err) {
+      lastError = err;
+    }
+
+    if (Date.now() >= deadline) {
+      throw new Error(
+        [
+          `No invitation for ${email} in the API's logs after ${timeoutMs}ms.`,
+          `Command: ${apiLogsCommand()} (cwd ${REPO_ROOT})`,
+          lastError ? `Last error: ${String(lastError)}` : null,
+          "Check that the API runs with EMAIL_PROVIDER=console. Note the API",
+          "logs the *fact* of an invitation with the address redacted; the link",
+          "itself is only in the console provider's printed message body.",
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      );
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+}
