@@ -13,6 +13,11 @@
 #   B2_ACCOUNT_ID, B2_ACCOUNT_KEY
 # Optional:
 #   B2_BUCKET (default wtg-backups), COMPOSE (default "docker compose")
+#   RESTORE_TARGET_DB — restore into this database instead of <db>. The B2
+#     path still comes from <db>; the target is what gets dropped, created
+#     and restored into. This is what a restore drill uses to rehearse
+#     against a scratch database without touching the live one:
+#       RESTORE_TARGET_DB=wtg_restore_drill infra/scripts/restore-postgres.sh wtg latest
 #
 # Safety: refuses to run against databases containing rows unless
 # WTG_RESTORE_CONFIRM=yes-overwrite is set.
@@ -24,6 +29,7 @@ fail() { log "ERROR: $*" >&2; exit 1; }
 [[ $# -eq 2 ]] || fail "usage: $0 <db> <stamp|latest>"
 db="$1"
 stamp="$2"
+target="${RESTORE_TARGET_DB:-$db}"
 
 cd "$(dirname "$0")/../.."
 
@@ -90,21 +96,21 @@ age -d -i "$BACKUP_AGE_IDENTITY" "$local_enc" | zstd -d -q > "${work}/${db}.sql"
 
 # Safety: verify target is empty unless caller overrides.
 row_count="$($COMPOSE exec -T -e "PGPASSWORD=${POSTGRES_PASSWORD}" postgres \
-    psql -U "$POSTGRES_USER" -d "$db" -At -c \
+    psql -U "$POSTGRES_USER" -d "$target" -At -c \
     "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname='public';" 2>/dev/null || echo 0)"
 if [[ "${row_count//[^0-9]/}" -gt 0 && "${WTG_RESTORE_CONFIRM:-}" != "yes-overwrite" ]]; then
-    fail "db=${db} is non-empty (${row_count} tables). Set WTG_RESTORE_CONFIRM=yes-overwrite to proceed."
+    fail "db=${target} is non-empty (${row_count} tables). Set WTG_RESTORE_CONFIRM=yes-overwrite to proceed."
 fi
 
-log "drop+recreate db=${db}"
+log "drop+recreate db=${target}"
 $COMPOSE exec -T -e "PGPASSWORD=${POSTGRES_PASSWORD}" postgres \
     psql -U "$POSTGRES_USER" -d postgres -v ON_ERROR_STOP=1 <<SQL
-DROP DATABASE IF EXISTS "${db}";
-CREATE DATABASE "${db}" OWNER "${POSTGRES_USER}";
+DROP DATABASE IF EXISTS "${target}";
+CREATE DATABASE "${target}" OWNER "${POSTGRES_USER}";
 SQL
 
-log "pg_restore into db=${db}"
+log "pg_restore into db=${target}"
 $COMPOSE exec -T -e "PGPASSWORD=${POSTGRES_PASSWORD}" postgres \
-    pg_restore -U "$POSTGRES_USER" -d "$db" --no-owner --no-privileges < "${work}/${db}.sql"
+    pg_restore -U "$POSTGRES_USER" -d "$target" --no-owner --no-privileges < "${work}/${db}.sql"
 
-log "restore OK db=${db} from stamp=${stamp}"
+log "restore OK db=${target} from stamp=${stamp} (source db=${db})"

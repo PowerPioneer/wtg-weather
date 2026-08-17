@@ -124,6 +124,14 @@ absent from the default, which is why the file sets PATH explicitly.
 
 ## US advisory scrape (Cloudflare 403)
 
+**Update 2026-08-16: the box currently scrapes the US successfully.** The
+scraper reads the Consular Affairs API (`cadataapi.state.gov`), which is not
+behind the Cloudflare rule that blocks `travel.state.gov` — verified by a
+clean 277-record scrape from v2 during the weekly run. The arrangement below
+is therefore the **fallback** for if that host ever starts blocking too; the
+`ADVISORY_STALE` warning is what tells you it has. Everything in this section
+about not evading the block stands unchanged.
+
 `travel.state.gov` returns 403 to this box. Cloudflare is blocking the
 datacenter IP, not us specifically, and the block is legitimate: **do not work
 around it.** Nothing in this repo may disguise the client, rotate a user
@@ -241,7 +249,23 @@ two ops subdomains. Site blocks:
   host network. Internal docker network only.
 - Secrets live in `.env` at repo root, loaded by compose. Production
   server has its own `.env` — NEVER copied from dev.
-- B2 bucket name: `wtg-backups`. Retention: 30 daily, 8 weekly, 12 monthly,
-  enforced by lifecycle rule on the bucket side.
+- B2 bucket name: `wtg-backups`, EU Central region. Retention is a single
+  bucket lifecycle rule (prefix `wtg/`, hide after 35 days, delete 7 days
+  later) — an effective ~35–42 day window. B2 lifecycle rules cannot express
+  the originally-specced 30-daily/8-weekly/12-monthly tiers; that needs a
+  small pruning script if it's ever wanted.
+- Backup key custody: `BACKUP_AGE_RECIPIENT` (public key) lives in the box's
+  `.env`; the age **private** key lives off-box with the owner and nowhere
+  else. A restore starts by placing that key on the box and pointing
+  `BACKUP_AGE_IDENTITY` at it. Scripts parse `.env` themselves (grep, not
+  source), so cron can call them bare — verified after the first scheduled
+  backup died for want of env on 2026-08-17.
+- Restore drill (last run 2026-08-17): full chain verified on v2 —
+  dump → age-encrypt → B2 upload → download → decrypt → `pg_restore` into a
+  scratch DB, schema restored at head (`0009`), ~1 minute end to end at
+  current (pre-launch) data volumes. Use
+  `RESTORE_TARGET_DB=wtg_restore_drill restore-postgres.sh wtg latest` to
+  rehearse without touching the live database; drop the scratch DB after.
+  The `b2` CLI is a uv tool at `/root/.local/bin/b2`.
 - Before any destructive op (`docker compose down -v`, `rm -rf data/`),
   Claude must explicitly confirm with the user.

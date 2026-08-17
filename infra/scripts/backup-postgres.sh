@@ -29,9 +29,13 @@ fail() { log "ERROR: $*" >&2; exit 1; }
 
 cd "$(dirname "$0")/../.."
 
-# Deliberately parsed, not sourced, mirroring rebuild-tiles.sh: `. ./.env`
-# would execute whatever else is in the file, and this runs as root on the
-# production host. Values are never logged.
+# Cron calls this script directly — no wrapper, no environment beyond the
+# crontab's PATH line — so the required variables must come from the repo-root
+# .env. Found the hard way: the first scheduled run, 2026-08-17 02:00 UTC,
+# died on the POSTGRES_USER assertion. Deliberately parsed, not sourced,
+# mirroring rebuild-tiles.sh: `. ./.env` would execute whatever else is in
+# the file, and this runs as root on the production host. Values are never
+# logged.
 env_value() {
     local key="$1" line value
     [[ -f .env ]] || return 0
