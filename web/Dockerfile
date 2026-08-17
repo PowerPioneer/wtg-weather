@@ -22,7 +22,38 @@ COPY . .
 # value: honest about what this talks to, and it simply falls back when the
 # name does not resolve.
 ARG INTERNAL_API_URL=http://api:8000
+
+# Next inlines every NEXT_PUBLIC_* reference into the client bundle at BUILD
+# time, so passing these to the container at runtime does nothing for code that
+# runs in the browser — it only reaches server components. They were runtime-only
+# in compose until 2026-08-17, which meant the browser bundle carried empty
+# strings and client-side GlitchTip, PostHog and Plausible were all silently
+# inert in production. Anything a browser must know has to arrive here.
+#
+# Each defaults to empty: an unset integration disables itself (see lib/env.ts),
+# which is the correct behaviour for a build with no .env, not a build failure.
+ARG NEXT_PUBLIC_SITE_URL=
+ARG NEXT_PUBLIC_APP_ENV=
+ARG NEXT_PUBLIC_API_URL=
+ARG NEXT_PUBLIC_CDN_URL=
+ARG NEXT_PUBLIC_PLAUSIBLE_DOMAIN=
+ARG NEXT_PUBLIC_PLAUSIBLE_SRC=
+ARG NEXT_PUBLIC_POSTHOG_KEY=
+ARG NEXT_PUBLIC_POSTHOG_HOST=
+ARG NEXT_PUBLIC_GLITCHTIP_DSN_WEB=
+ARG NEXT_PUBLIC_GLITCHTIP_RELEASE=
+
 ENV INTERNAL_API_URL=${INTERNAL_API_URL} \
+    NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL} \
+    NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV} \
+    NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+    NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL} \
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${NEXT_PUBLIC_PLAUSIBLE_DOMAIN} \
+    NEXT_PUBLIC_PLAUSIBLE_SRC=${NEXT_PUBLIC_PLAUSIBLE_SRC} \
+    NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY} \
+    NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST} \
+    NEXT_PUBLIC_GLITCHTIP_DSN_WEB=${NEXT_PUBLIC_GLITCHTIP_DSN_WEB} \
+    NEXT_PUBLIC_GLITCHTIP_RELEASE=${NEXT_PUBLIC_GLITCHTIP_RELEASE} \
     NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
