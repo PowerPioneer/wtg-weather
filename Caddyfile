@@ -1,63 +1,118 @@
+# Production reverse proxy for v2 (and the apex post-cutover).
+#
+# This file is the real running configuration. It was reconstructed from the v2
+# box on 2026-08-17, where it had diverged from the repo and lived only on that
+# one disk: the committed version had drifted into a draft that could not run at
+# all (pre-2.8 `basicauth` spelling, a literal `<bcrypt-hash>` placeholder, and
+# basic auth over the Plausible script path, which would have blocked analytics
+# for every visitor). Keep them in step from here — a `git diff` against the box
+# should be empty.
+#
+# Required in `.env` (compose passes it through to the caddy service):
+#
+#   CADDY_BASICAUTH_HASH  — bcrypt hash guarding the two ops subdomains.
+#                           Generate with:
+#                             docker compose exec caddy caddy hash-password
+#                           Username is `admin`; only the hash lives in .env, so
+#                           no credential is committed here.
+#
+# If that variable is missing, Caddy **refuses to load this config** with
+# "username and password are required" rather than starting up with the ops UIs
+# unprotected. Verified 2026-08-17. Fail-closed is the intended behaviour: a
+# proxy that will not boot is far better than one quietly serving GlitchTip and
+# Plausible to the internet.
+
 {
-    email you@domain.tld
+    email powerpioneer@pm.me
 }
 
 v2.wheretogoforgreatweather.com {
     encode zstd gzip
 
-    # Signed tile serving
-    @valid_tile {
-        path /_tiles/*
-        # HMAC verification is done via a small caddy handler below
-    }
-
     route /_tiles/* {
-        # `defer` + `>Header-Name` ensures the headers are written even when
-        # `file_server` short-circuits the response (range requests, 304s,
-        # precompressed `.br` matches). Without `defer` the CORS header gets
-        # dropped on 206 Partial Content responses, which PMTiles uses
-        # exclusively — the browser then refuses the bytes with a CORS error.
-        header /* {
-            defer
-            >Cache-Control "public, max-age=31536000, immutable"
-            >Access-Control-Allow-Origin "https://v2.wheretogoforgreatweather.com"
-            >Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-            >Access-Control-Expose-Headers "Content-Length, Content-Range, ETag"
-            >Access-Control-Max-Age "86400"
-            >Vary "Origin"
+        # HMAC verification — API returns 204 if exp+sig is valid for
+        # X-Original-URI, 403 otherwise. file_server only runs on 204.
+        forward_auth api:8000 {
+            uri /api/tiles/verify?{query}
+            header_up X-Original-URI {uri}
         }
-        # TODO(phase-7): replace with `forward_auth api:8000 { uri /api/tiles/verify }`
-        # — current `reverse_proxy /_tiles/verify api:8000` only matches that
-        # one literal path, so file_server below serves any /_tiles/*.pmtiles
-        # without an HMAC check. Tracked for hardening before public launch.
-        reverse_proxy /_tiles/verify api:8000
+
+        # Strip prefix so file_server resolves /var/tiles/<tier>.pmtiles.
+        uri strip_prefix /_tiles
+
+        # Headers MUST come before file_server. file_server is terminal;
+        # handlers after it do not run. With `route` the literal order is
+        # preserved, so listing header directives here puts them on the
+        # response header map before file_server uses it.
+        header Cache-Control "public, max-age=31536000, immutable"
+        header Access-Control-Allow-Origin "https://v2.wheretogoforgreatweather.com"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Expose-Headers "Content-Length, Content-Range, ETag"
+        header Access-Control-Max-Age "86400"
+        header Vary "Origin"
+
         root * /var/tiles
-        file_server {
-            precompressed br
-        }
+        file_server
     }
 
     route /api/* {
         reverse_proxy api:8000
     }
 
-    route /_glitchtip/* {
-        basicauth {
-            admin $2a$14$<bcrypt-hash>
-        }
-        uri strip_prefix /_glitchtip
+    route /* {
+        reverse_proxy web:3000
+    }
+}
+
+# Ops UIs are subdomains rather than subpaths because both GlitchTip and
+# Plausible emit absolute URLs for their static assets and break under path
+# stripping. Each exposes exactly the paths that must stay unauthenticated —
+# the ones whose callers hold their own credential, or none at all — and puts
+# everything else behind basic auth.
+
+glitchtip.v2.wheretogoforgreatweather.com {
+    encode zstd gzip
+
+    # Event ingestion authenticates with the DSN's own public key, so it must
+    # bypass basic auth. With basic auth in front of these paths Caddy answers
+    # 401 and no event ever reaches GlitchTip — which is why every project read
+    # "waiting for events" until 2026-08-17. Note this is the path the *browser*
+    # uses; server-side senders reach glitchtip-web:8000 directly and never
+    # traverse this block at all (the internal compose network has no egress,
+    # so they could not resolve this hostname even if they wanted to).
+    @ingest path_regexp ^/api/[0-9]+/(envelope|store|security|minidump)/
+    handle @ingest {
         reverse_proxy glitchtip-web:8000
     }
 
-    route /_plausible/* {
-        basicauth {
-            admin $2a$14$<bcrypt-hash>
+    # The UI stays behind basic auth.
+    handle {
+        basic_auth {
+            admin {env.CADDY_BASICAUTH_HASH}
         }
-        uri strip_prefix /_plausible
+        reverse_proxy glitchtip-web:8000
+    }
+}
+
+plausible.v2.wheretogoforgreatweather.com {
+    encode zstd gzip
+
+    # The tracking script and its event endpoint are fetched by every visitor's
+    # browser, so they cannot sit behind basic auth. NEXT_PUBLIC_PLAUSIBLE_SRC
+    # points at /js/script.js here; the web app's built-in default
+    # (/_plausible/js/script.js on the apex) is NOT routed by this file, so that
+    # variable must stay set. Serving the script first-party through the main
+    # domain instead would survive more ad blockers — a deliberate change, not a
+    # thing to drift into.
+    @public path /js/* /api/event /api/health
+    handle @public {
         reverse_proxy plausible:8000
     }
 
-    route /* {
-        reverse_proxy web:3000
+    handle {
+        basic_auth {
+            admin {env.CADDY_BASICAUTH_HASH}
+        }
+        reverse_proxy plausible:8000
     }
 }

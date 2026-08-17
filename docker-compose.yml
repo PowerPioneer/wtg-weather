@@ -131,6 +131,13 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     ports: ["80:80", "443:443"]
+    environment:
+      # Guards the two ops subdomains; the Caddyfile reads it as
+      # {env.CADDY_BASICAUTH_HASH} so no credential is committed. Deliberately
+      # NOT defaulted — Caddy refuses to load the config without it, which is
+      # the safe direction: a proxy that will not start beats one serving
+      # GlitchTip and Plausible unauthenticated.
+      CADDY_BASICAUTH_HASH: ${CADDY_BASICAUTH_HASH:?set CADDY_BASICAUTH_HASH in .env — see Caddyfile header}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data

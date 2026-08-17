@@ -230,6 +230,36 @@ here rather than changed, because the weekly job is WS-4's and this is WS-E.
 
 ## Caddy
 
+**The committed `Caddyfile` is the real production config as of 2026-08-17.**
+It had diverged badly: the box ran a working subdomain arrangement that was
+never committed, while the repo held a draft that could not run at all
+(pre-2.8 `basicauth` spelling, a literal `<bcrypt-hash>`, and basic auth over
+the Plausible script path, which would have blocked analytics for every
+visitor). The box's version is now the committed one, so a disk failure no
+longer loses the SSL, CORS and tile-signing configuration. Keep them in step —
+`ssh <box> 'cd /opt/wtg-weather && git diff --stat Caddyfile'` should be empty.
+
+`CADDY_BASICAUTH_HASH` must be in `.env` (username is `admin`; only the hash
+leaves the box). Rotate the ops password with:
+
+```bash
+docker compose exec caddy caddy hash-password      # prompts twice, prints hash
+# put the new hash in .env, then:
+docker compose up -d caddy
+```
+
+If that variable is missing, compose refuses to start caddy and Caddy refuses
+to load the config ("username and password are required") — verified
+2026-08-17. Fail-closed on purpose.
+
+Two paths are deliberately exempt from basic auth, each because its caller
+carries its own credential or none at all: GlitchTip's Sentry ingest endpoints
+(`/api/<id>/{envelope,store,security,minidump}/`, authenticated by the DSN
+public key) and Plausible's `/js/*` + `/api/event` (fetched by every visitor's
+browser). Removing either exemption silently disables that tool — see
+`web/CLAUDE.md` and the observability notes: the GlitchTip one is exactly why
+no event reached the instance for months.
+
 Caddyfile provisions SSL via Let's Encrypt for the apex stack and for the
 two ops subdomains. Site blocks:
 
