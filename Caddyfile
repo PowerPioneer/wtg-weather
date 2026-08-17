@@ -16,6 +16,20 @@
 #                           Username is `admin`; only the hash lives in .env, so
 #                           no credential is committed here.
 #
+#                           **Double every `$` when writing it into .env.**
+#                           Compose interpolates `$` in .env values, and a
+#                           bcrypt hash contains three of them, so
+#                             CADDY_BASICAUTH_HASH=$2a$14$abc...
+#                           reaches Caddy as a 24-character stub with the middle
+#                           eaten, while
+#                             CADDY_BASICAUTH_HASH=$$2a$$14$$abc...
+#                           arrives intact. This bites silently: a mangled hash
+#                           still answers 401, so the ops UIs look protected and
+#                           are simply impossible to log into. Cost an hour on
+#                           2026-08-17. Check with:
+#                             docker compose exec caddy sh -c \
+#                               'echo ${#CADDY_BASICAUTH_HASH}'   # must be 60
+#
 # If that variable is missing, Caddy **refuses to load this config** with
 # "username and password are required" rather than starting up with the ops UIs
 # unprotected. Verified 2026-08-17. Fail-closed is the intended behaviour: a

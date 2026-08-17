@@ -244,9 +244,18 @@ leaves the box). Rotate the ops password with:
 
 ```bash
 docker compose exec caddy caddy hash-password      # prompts twice, prints hash
-# put the new hash in .env, then:
+# write it into .env with EVERY `$` DOUBLED — see below — then:
 docker compose up -d caddy
+docker compose exec caddy sh -c 'echo ${#CADDY_BASICAUTH_HASH}'   # must be 60
 ```
+
+**Double the dollars.** Compose interpolates `$` in `.env` values and a bcrypt
+hash contains three, so a pasted hash arrives at Caddy with its middle eaten —
+24 characters instead of 60. Write `$$2a$$14$$…`, not `$2a$14$…`. The failure is
+silent in the worst way: a mangled hash still answers **401**, so the ops UIs
+look protected and are merely impossible to log into. If `docker compose config`
+warns that some random-looking string "variable is not set", that string is a
+fragment of your hash. Verified end to end on 2026-08-17 after hitting it.
 
 If that variable is missing, compose refuses to start caddy and Caddy refuses
 to load the config ("username and password are required") — verified
