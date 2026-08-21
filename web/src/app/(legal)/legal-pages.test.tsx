@@ -99,13 +99,17 @@ describe("privacy page — cookie and consent posture", () => {
     }
   });
 
-  it("states the cookieless / post-login analytics split", () => {
+  // PostHog is not configured, so the page must not disclose post-login
+  // product analytics or a processor that never sees any data. If it is ever
+  // enabled, this test is where the disclosure requirement comes back.
+  it("discloses cookieless analytics and denies any post-login tracking", () => {
     const { container } = render(<PrivacyPage />);
     const text = container.textContent ?? "";
     expect(text).toMatch(/Plausible/);
     expect(text).toMatch(/sets no cookies/);
-    expect(text).toMatch(/loads only\s+once a session exists/);
-    expect(text).toMatch(/Session\s+replay — recording your screen — is switched off/);
+    expect(text).toMatch(/no separate product analytics for signed-in users/);
+    expect(text).toMatch(/no session\s+recording of any kind/);
+    expect(text).not.toMatch(/PostHog/);
   });
 
   it("says local storage is not used", () => {
@@ -118,7 +122,6 @@ describe("privacy page — cookie and consent posture", () => {
     for (const processor of [
       "Paddle",
       "SendGrid",
-      "PostHog",
       "Backblaze B2",
       "bunny.net",
     ]) {

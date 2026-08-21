@@ -207,17 +207,25 @@ export default function PrivacyPage() {
           shareable and so that nothing has to be written to your device.
         </P>
         <P>
-          Two third parties may set storage of their own:{" "}
-          <strong className="text-text">PostHog</strong>, after you sign in
-          (see below), and <strong className="text-text">Paddle</strong>, on
-          Paddle&rsquo;s own checkout pages, governed by Paddle&rsquo;s
-          policies rather than this one. Plausible, our pre-login analytics,
-          sets none.
+          One third party may set storage of its own:{" "}
+          <strong className="text-text">Paddle</strong>, on Paddle&rsquo;s own
+          checkout pages, governed by Paddle&rsquo;s policies rather than this
+          one. Plausible, our analytics, sets none.
         </P>
       </LegalSection>
 
+      {/*
+        PostHog is deliberately absent from this section and from the
+        sub-processor table below. It is not configured — no project key exists —
+        so no post-login product analytics runs, and a privacy policy must
+        describe the processing that happens rather than the processing that was
+        once planned. The integration code is still present but inert.
+        If PostHog is ever switched on, three things have to come back together:
+        the "after you sign in" disclosure here, the sub-processor row, and the
+        cookie sentence in the section above.
+      */}
       <LegalSection id="analytics" heading="Analytics & error reporting">
-        <H3>Before you sign in: Plausible, cookieless</H3>
+        <H3>Analytics: Plausible, cookieless</H3>
         <P>
           Anonymous traffic is measured with{" "}
           <a
@@ -233,18 +241,15 @@ export default function PrivacyPage() {
           anything on your device and processes no personal data, it needs no
           consent — this is the reason the site has no cookie banner.
         </P>
-        <H3>After you sign in: PostHog, identified</H3>
         <P>
-          Product analytics for signed-in users runs on PostHog and loads only
-          once a session exists — an anonymous visitor never downloads it.
-          It is told your user id, your plan, your role and your organisation
-          id so that we can tell a feature that agencies use from one that
-          nobody does. It sets its own cookies for this purpose. Session
-          replay — recording your screen — is switched off.
+          There is no separate product analytics for signed-in users. Your
+          behaviour inside the app — which trips you save, which countries you
+          look at — is not sent to any analytics provider, and no session
+          recording of any kind takes place.
         </P>
         <P>
-          If you would rather not be counted, most content blockers stop both
-          tools, and the site is built to work identically when they are
+          If you would rather not be counted at all, most content blockers stop
+          Plausible, and the site is built to work identically when it is
           blocked.
         </P>
         <H3>Errors</H3>
@@ -285,14 +290,9 @@ export default function PrivacyPage() {
               <OwnerPlaceholder key="sg">confirm sending region / EU data residency</OwnerPlaceholder>,
             ],
             [
-              "PostHog",
-              "Product analytics for signed-in users only.",
-              <OwnerPlaceholder key="ph">confirm US or EU cloud instance</OwnerPlaceholder>,
-            ],
-            [
               "Backblaze B2",
               "Storage for nightly database backups, encrypted before they leave our server.",
-              <OwnerPlaceholder key="b2">confirm bucket region</OwnerPlaceholder>,
+              "EU Central (Amsterdam)",
             ],
             [
               "bunny.net",
