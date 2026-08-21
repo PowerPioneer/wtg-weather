@@ -233,7 +233,7 @@ function QuickCard({
       <p className="mt-1.5 text-[12.5px] leading-[1.55] text-text-muted">{body}</p>
       <Link
         href={href}
-        className="mt-3 inline-block font-mono text-[11px] text-accent hover:underline"
+        className="mt-3 inline-block font-mono text-[11px] text-accent-text hover:underline"
       >
         {cta}
       </Link>

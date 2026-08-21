@@ -79,7 +79,7 @@ export default async function PricingPage({
                   <span
                     className={
                       "ml-1.5 text-[10px] font-semibold " +
-                      (billing === "yearly" ? "text-[#E0C98A]" : "text-accent")
+                      (billing === "yearly" ? "text-[#E0C98A]" : "text-accent-text")
                     }
                   >
                     −33%

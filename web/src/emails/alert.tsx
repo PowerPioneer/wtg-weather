@@ -174,7 +174,7 @@ const serif = "Georgia, 'Times New Roman', serif";
 const sans = "Helvetica, Arial, sans-serif";
 
 const INK = "#0F1B2D";
-const MUTED = "#6B7280";
+const MUTED = "#6A707E";
 const BODY_TEXT = "#4A5568";
 const RULE = "#E6E0D4";
 const PAPER = "#FCFBF8";

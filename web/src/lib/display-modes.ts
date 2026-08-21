@@ -62,7 +62,7 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
       bins: [
         { label: "Perfect", hex: "#0B6E5F" },
         { label: "Good", hex: "#0072B2" },
-        { label: "Acceptable", hex: "#B8610E" },
+        { label: "Acceptable", hex: "#B55F0E" },
         { label: "Avoid", hex: "#7A2E2E" },
       ],
     },
@@ -150,8 +150,8 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
       sub: "Highest of 5 sources",
       bins: [
         { label: "Normal", hex: "#4A5568" },
-        { label: "Caution", hex: "#B8763E" },
-        { label: "Reconsider", hex: "#B8610E" },
+        { label: "Caution", hex: "#9B6434" },
+        { label: "Reconsider", hex: "#B55F0E" },
         { label: "Do Not Travel", hex: "#7A2E2E" },
       ],
     },

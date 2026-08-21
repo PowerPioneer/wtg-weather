@@ -108,7 +108,7 @@ export function SafetyPanel({
       </div>
 
       <details open={defaultOpen} className="group mt-4">
-        <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-[13px] font-medium text-accent focus-visible:outline-focus-ring [&::-webkit-details-marker]:hidden">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-[13px] font-medium text-accent-text focus-visible:outline-focus-ring [&::-webkit-details-marker]:hidden">
           <span className="group-open:hidden">See breakdown by country</span>
           <span className="hidden group-open:inline">Hide breakdown</span>
           <svg

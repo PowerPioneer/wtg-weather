@@ -208,14 +208,14 @@ const brandWordmark: React.CSSProperties = {
   fontFamily: mono,
   fontSize: 10,
   letterSpacing: "0.12em",
-  color: "#6B7280",
+  color: "#6A707E",
 };
 const eyebrow: React.CSSProperties = {
   fontFamily: mono,
   fontSize: 10,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: "#6B7280",
+  color: "#6A707E",
 };
 
 const headingSection: React.CSSProperties = { padding: "36px 36px 0" };
@@ -252,7 +252,7 @@ const fallback: React.CSSProperties = {
   marginTop: 14,
   fontFamily: mono,
   fontSize: 11,
-  color: "#6B7280",
+  color: "#6A707E",
   lineHeight: 1.5,
 };
 const fallbackLink: React.CSSProperties = {
@@ -274,7 +274,7 @@ const requestEyebrow: React.CSSProperties = {
   fontWeight: 600,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "#6B7280",
+  color: "#6A707E",
 };
 const requestKey: React.CSSProperties = {
   width: 110,
@@ -282,7 +282,7 @@ const requestKey: React.CSSProperties = {
   fontSize: 11,
   letterSpacing: "0.08em",
   textTransform: "uppercase",
-  color: "#6B7280",
+  color: "#6A707E",
   paddingTop: 6,
 };
 const requestValue: React.CSSProperties = {
@@ -320,6 +320,6 @@ const footerText: React.CSSProperties = {
   fontFamily: sans,
   fontSize: 11,
   lineHeight: 1.6,
-  color: "#6B7280",
+  color: "#6A707E",
 };
-const footerLink: React.CSSProperties = { color: "#6B7280", textDecoration: "none" };
+const footerLink: React.CSSProperties = { color: "#6A707E", textDecoration: "none" };

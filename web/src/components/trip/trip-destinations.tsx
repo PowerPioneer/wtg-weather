@@ -76,7 +76,7 @@ export function TripDestinations({
               </div>
               <div className="text-right">
                 {d.href ? (
-                  <Link href={d.href} className="text-[12px] text-accent hover:underline">
+                  <Link href={d.href} className="text-[12px] text-accent-text hover:underline">
                     Region →
                   </Link>
                 ) : (

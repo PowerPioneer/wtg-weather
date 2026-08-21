@@ -290,7 +290,7 @@ export function ClimateChart({
       </svg>
 
       {bands && !locked ? (
-        <div className="mt-1 flex gap-3 font-mono text-[10.5px] text-accent">
+        <div className="mt-1 flex gap-3 font-mono text-[10.5px] text-accent-text">
           <span>— median</span>
           <span>▬ 10 / 90 percentile band</span>
         </div>

@@ -5,6 +5,8 @@
 
 All colour tokens below are verified for WCAG 2.1 AA contrast against their stated foreground. The four score colours and the four advisory colours are additionally verified for deuteranopia and protanopia safety (monotonic luminance + hue separation outside the red–green confusion line).
 
+> **Ratios are computed, not estimated.** Every number in the contrast columns below is the WCAG 2.x relative-luminance ratio for the hex in the same row. The 2026-04-22 lock shipped several ratios that did not match their hex — six tokens were documented as passing AA while actually failing it. If you change a hex, recompute; do not carry a number forward by hand. See the 2026-08-16 changelog entry.
+
 ---
 
 ## 1 · Colour palette
@@ -25,11 +27,11 @@ All colour tokens below are verified for WCAG 2.1 AA contrast against their stat
 
 | Token | Hex | Contrast vs `background` | Usage |
 |---|---|---|---|
-| `text` | `#0F1B2D` | **16.9 : 1** | Body copy, headings. |
-| `text-muted` | `#4A5568` | **7.5 : 1** | Secondary labels, captions, helper text. |
-| `text-subtle` | `#6B7280` | **4.8 : 1** | Tertiary metadata, hint text. Never for anything actionable. |
+| `text` | `#0F1B2D` | **15.98 : 1** | Body copy, headings. |
+| `text-muted` | `#4A5568` | **6.96 : 1** | Secondary labels, captions, helper text. |
+| `text-subtle` | `#6A707E` | **4.59 : 1** | Tertiary metadata, hint text. Never for anything actionable. |
 | `text-inverse` | `#FFFFFF` | — | On `primary`, `score-*` fills, `advisory-*` fills. |
-| `text-link` | `#8A4A1E` | **5.8 : 1** | Inline links in prose only. On controls use `primary`. |
+| `text-link` | `#8A4A1E` | **6.31 : 1** | Inline links in prose only. On controls use `primary`. |
 
 ### 1.3 Brand / action
 
@@ -40,7 +42,8 @@ All colour tokens below are verified for WCAG 2.1 AA contrast against their stat
 | `primary-pressed` | `#060B15` | 19.6 : 1 | Active (mousedown) state. |
 | `primary-foreground` | `#FFFFFF` | — | Text/icon on `primary` fills. |
 | `primary-subtle` | `#E6E9EF` | — | Light primary tint — selected rows, badges that shouldn't shout. |
-| `accent` | `#B8763E` | 4.6 : 1 | Brass. Used sparingly — editorial callouts, "premium" marks, methodology badges. Never for primary actions. |
+| `accent` | `#B8763E` | 3.68 : 1 | Brass. **Fills, borders, tints and icons only** — it does not reach AA as text. Used sparingly: editorial callouts, "premium" marks, methodology badges. Never for primary actions. |
+| `accent-text` | `#8A5A2B` | 5.87 : 1 | The brass used **as text**. Worst case in the app is 4.85 : 1 on `accent-subtle`. Anything rendering accent as a glyph-with-meaning uses this; `accent` stays the brand fill. |
 | `accent-subtle` | `#F3E8D9` | — | Accent background for tags/notices. |
 | `destructive` | `#7A2E2E` | 8.9 : 1 | Destructive buttons, error banners, "delete" confirms. Same hex as `score-avoid` by design — avoid is the same semantic. |
 | `destructive-foreground` | `#FFFFFF` | — | Text on `destructive`. |
@@ -51,9 +54,9 @@ All colour tokens below are verified for WCAG 2.1 AA contrast against their stat
 
 | Token | Hex | Contrast vs white | Usage |
 |---|---|---|---|
-| `success` | `#0B6E5F` | 5.8 : 1 | Form success, "saved" toasts. Matches `score-perfect` for consistency. |
-| `warning` | `#B8763E` | 4.6 : 1 | Non-critical warnings. Matches `accent`. |
-| `info` | `#0072B2` | 5.5 : 1 | Neutral informational banners. Matches `score-good`. |
+| `success` | `#0B6E5F` | 6.16 : 1 | Form success, "saved" toasts. Matches `score-perfect` for consistency. |
+| `warning` | `#B8763E` | 3.68 : 1 | Non-critical warnings. Matches `accent` — and carries the same restriction: fill only, never text. Use `accent-text` for the wording. |
+| `info` | `#0072B2` | 5.19 : 1 | Neutral informational banners. Matches `score-good`. |
 
 ---
 
@@ -63,10 +66,12 @@ These are used on the map polygons, the legend, and every "match quality" badge.
 
 | Token | Hex | Foreground | Contrast | Deuteranopia-safe | Protanopia-safe | Usage |
 |---|---|---|---|---|---|---|
-| `score-perfect` | `#0B6E5F` | `#FFFFFF` | 5.82 : 1 | ✅ | ✅ | "Perfect Match" — all preferences met, inside the preferred bands. |
-| `score-good` | `#0072B2` | `#FFFFFF` | 5.46 : 1 | ✅ | ✅ | "Good Option" — minor deviation on 1–2 variables. |
-| `score-acceptable` | `#B8610E` | `#FFFFFF` | 4.67 : 1 | ✅ | ✅ | "Acceptable" — meaningful deviation on multiple variables, still within tolerance. |
-| `score-avoid` | `#7A2E2E` | `#FFFFFF` | 8.90 : 1 | ✅ | ✅ | "Avoid" — outside tolerance on ≥1 variable, or safety advisory above the user's acceptable level. |
+| `score-perfect` | `#0B6E5F` | `#FFFFFF` | 6.16 : 1 | ✅ | ✅ | "Perfect Match" — all preferences met, inside the preferred bands. |
+| `score-good` | `#0072B2` | `#FFFFFF` | 5.19 : 1 | ✅ | ✅ | "Good Option" — minor deviation on 1–2 variables. |
+| `score-acceptable` | `#B55F0E` | `#FFFFFF` | 4.56 : 1 | ✅ | ✅ | "Acceptable" — meaningful deviation on multiple variables, still within tolerance. |
+| `score-avoid` | `#7A2E2E` | `#FFFFFF` | 9.30 : 1 | ✅ | ✅ | "Avoid" — outside tolerance on ≥1 variable, or safety advisory above the user's acceptable level. |
+
+**These are fill colours.** White-on-fill is the only combination verified above. `score-acceptable` reaches just 4.21 : 1 as *text* on `background`, so a score fill must not be used for wording — use the `-text` variants in § 2.2.
 
 **CVD rationale.** The palette uses teal → blue → burnt orange → oxblood. Luminance is monotonic (5.82 → 5.46 → 4.67 → the avoid is dark enough to read as "heavy" regardless of hue). Critically we avoid a pure red/green axis: the green is shifted to teal (bluish green — one of Okabe-Ito's canonical hues), and the "avoid" is oxblood rather than fire-engine red, so it remains distinguishable from the teal even under red-green colour blindness.
 
@@ -81,6 +86,20 @@ These are used on the map polygons, the legend, and every "match quality" badge.
 | `score-acceptable-subtle` | `#EFDFC9` | Row hover, chart bg |
 | `score-avoid-subtle` | `#EFD8D8` | Row hover, chart bg |
 
+### 2.2 Ink variants (score / advisory colour used as *text*)
+
+The fills in § 2 and § 3 are tuned for white-on-fill. Two of them are too light to be read as text on their own `-subtle` tint — the exact case `Chip` needs. These are their ink counterparts, same split as `accent` / `accent-text`.
+
+| Token | Hex | On its own tint | On `background` | On `surface` |
+|---|---|---|---|---|
+| `score-good-text` | `#0069A5` | **4.55 : 1** | 5.45 : 1 | 5.89 : 1 |
+| `score-acceptable-text` | `#99500C` | **4.58 : 1** | 5.54 : 1 | 5.99 : 1 |
+| `advisory-caution-text` | `#89592E` | **4.56 : 1** | 5.50 : 1 | 5.95 : 1 |
+
+Each was solved against its own tint, which is the darkest light-palette surface it can sit on — so all three are safe anywhere in the light palette, not just on the tint.
+
+`score-perfect` and `score-avoid` need no ink variant: they already clear AA on their tints at 5.02 : 1 and 6.86 : 1. Use the fill token directly for those, and don't add variants for symmetry's sake — an unused token is one more value to keep true.
+
 ---
 
 ## 3 · Safety advisory colours
@@ -89,12 +108,16 @@ Used for the badge grid on country / region pages and anywhere government adviso
 
 | Token | Hex | Foreground | Contrast | Usage |
 |---|---|---|---|---|
-| `advisory-normal` | `#4A5568` | `#FFFFFF` | 7.5 : 1 | Level 1 — "Exercise normal precautions". |
-| `advisory-caution` | `#B8763E` | `#FFFFFF` | 4.6 : 1 | Level 2 — "Exercise increased caution". Matches `accent`. |
-| `advisory-reconsider` | `#B8610E` | `#FFFFFF` | 4.7 : 1 | Level 3 — "Reconsider travel". Matches `score-acceptable`. |
-| `advisory-dnt` | `#7A2E2E` | `#FFFFFF` | 8.9 : 1 | Level 4 — "Do not travel". Matches `score-avoid` / `destructive`. |
+| `advisory-normal` | `#4A5568` | `#FFFFFF` | 7.53 : 1 | Level 1 — "Exercise normal precautions". |
+| `advisory-caution` | `#9B6434` | `#FFFFFF` | 4.92 : 1 | Level 2 — "Exercise increased caution". **No longer matches `accent`** — see below. |
+| `advisory-reconsider` | `#B55F0E` | `#FFFFFF` | 4.93 : 1 | Level 3 — "Reconsider travel". Matches `score-acceptable`. |
+| `advisory-dnt` | `#7A2E2E` | `#FFFFFF` | 9.30 : 1 | Level 4 — "Do not travel". Matches `score-avoid` / `destructive`. |
+
+As with the score colours, these are **fills**. `advisory-caution` manages only 3.77 : 1 as text on a 15% tint of itself — use `advisory-caution-text` (§ 2.2) for wording.
 
 Intentional overlap with score colours: a region that's map-coloured "avoid" because the user's home country has issued a Level-4 advisory should read consistently across the two surfaces.
+
+`advisory-caution` used to be the same hex as `accent` (`#B8763E`). It was decoupled on 2026-08-16: the advisory ramp carries white text on the fill, and brass only reaches 3.68 : 1 under white. `accent` is a brand colour that can afford to stay light because it is never a fill-with-text; `advisory-caution` cannot. The two remain visually adjacent brasses, which preserves the intent of the pairing.
 
 ---
 
@@ -242,3 +265,16 @@ Wrap every non-essential transition in `@media (prefers-reduced-motion: reduce)`
 ## 10 · Token changelog
 
 - **2026-04-22** — Initial lock, Atlas direction. Derived from `Brand Directions.html` exploration.
+- **2026-08-16** — AA contrast correction. Axe flagged serious `color-contrast` failures on the country pages; recomputing every pair showed the initial lock's contrast columns did not match its own hexes, and six tokens documented as passing AA were failing. Design intent was always AA, so these are fidelity fixes rather than deviations. Owner-approved.
+
+  | Token | Was | Now | Why |
+  |---|---|---|---|
+  | `text-subtle` | `#6B7280` | `#6A707E` | 4.47 → 4.59 on `background`. ΔE 0.8 — imperceptible. |
+  | `score-acceptable` | `#B8610E` | `#B55F0E` | 4.42 → 4.56 under white. ΔE 1.2 — imperceptible. |
+  | `advisory-reconsider` | `#B8610E` | `#B55F0E` | Follows `score-acceptable`, preserving the documented overlap. |
+  | `advisory-caution` | `#B8763E` | `#9B6434` | 3.68 → 4.92 under white. Decoupled from `accent`. |
+  | `accent-text` | — | `#8A5A2B` | New. Brass as text was 3.41 on `background`; `accent` itself is unchanged. |
+
+  Ramp ordering and CVD safety are preserved: perfect 6.16 > good 5.19 > acceptable 4.56, and every hue moved under half a degree. `SafetyBadge`'s "Level N" line also stopped being advisory-coloured — the numeral block beside it already carries the colour.
+
+- **2026-08-16 (follow-up)** — Added the § 2.2 ink variants: `score-good-text` `#0069A5`, `score-acceptable-text` `#99500C`, `advisory-caution-text` `#89592E`. `components/ui/chip.tsx` was rendering fill colours as text on their own tints and failing AA on three of its six variants (`good` 4.01, `warm` 3.49, `caution` 3.77). Ink variants were chosen over plain `text` ink because `Chip`'s tints are pale enough that the coloured wording is what actually carries the colour-coding, and because three of the six variants already passed — switching only the failures would have left the set half-coloured. Pinned by `chip.test.tsx`.

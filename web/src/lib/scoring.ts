@@ -322,7 +322,7 @@ export const SCORE_BORDER_CLASS: Record<ScoreBin, string> = {
 export const SCORE_HEX: Record<ScoreBin, string> = {
   perfect: "#0B6E5F",
   good: "#0072B2",
-  acceptable: "#B8610E",
+  acceptable: "#B55F0E",
   avoid: "#7A2E2E",
 };
 

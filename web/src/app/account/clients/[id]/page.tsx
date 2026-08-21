@@ -102,7 +102,7 @@ export default async function ClientDetailPage({ params, searchParams }: PagePro
               <div className="font-display text-[13px] font-medium">{client.name}</div>
               <Link
                 href="/account?s=clients"
-                className="mt-1 inline-block text-[11px] text-accent hover:underline"
+                className="mt-1 inline-block text-[11px] text-accent-text hover:underline"
               >
                 ← All clients
               </Link>
@@ -161,7 +161,7 @@ function ClientHeader({
       <div className="flex flex-wrap items-start gap-6">
         <div
           aria-hidden="true"
-          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-sm border border-accent bg-[#FBF3DC] font-display text-[22px] font-medium tracking-[-0.02em] text-accent"
+          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-sm border border-accent bg-[#FBF3DC] font-display text-[22px] font-medium tracking-[-0.02em] text-accent-text"
         >
           {initial}
         </div>

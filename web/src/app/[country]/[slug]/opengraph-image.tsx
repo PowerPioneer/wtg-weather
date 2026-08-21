@@ -197,7 +197,7 @@ const chip = {
   padding: "6px 12px",
   background: "#FBF3DC",
   border: "1px solid #B8763E",
-  color: "#B8763E",
+  color: "#8A5A2B",
   fontWeight: 700,
   borderRadius: 4,
 };

@@ -241,7 +241,7 @@ const signRole: React.CSSProperties = {
   margin: "2px 0 18px",
   fontFamily: sans,
   fontSize: 11.5,
-  color: "#6B7280",
+  color: "#6A707E",
 };
 
 const footer: React.CSSProperties = {
@@ -254,6 +254,6 @@ const footerText: React.CSSProperties = {
   fontFamily: sans,
   fontSize: 11,
   lineHeight: 1.6,
-  color: "#6B7280",
+  color: "#6A707E",
 };
-const footerLink: React.CSSProperties = { color: "#6B7280" };
+const footerLink: React.CSSProperties = { color: "#6A707E" };

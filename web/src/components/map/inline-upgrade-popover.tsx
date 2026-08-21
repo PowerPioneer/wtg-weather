@@ -97,7 +97,7 @@ export function InlineUpgradePopover({
         </span>
       </div>
 
-      <div className="mb-1 flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
+      <div className="mb-1 flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-accent-text">
         <SparkleGlyph />
         Premium
       </div>
