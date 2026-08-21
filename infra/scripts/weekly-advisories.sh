@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Weekly advisory refresh: scrape all five governments, consolidate, and — only
-# if some government actually moved a country's level — rebuild the PMTiles so
-# the map's Safety mode reflects it, purging the bunny.net cache on the way.
+# Weekly advisory refresh: scrape all six governments, consolidate, republish
+# the country-page bundle, and — only if some government actually moved a
+# country's level — rebuild the PMTiles so the map's Safety mode reflects it,
+# purging the bunny.net cache on the way.
+#
+# Two outputs, two cadences, and they are not the same question. The country
+# pages republish every week a scrape succeeds, because they print each
+# government's `checked` date. The tiles rebuild only when a level moves,
+# because that is the only thing baked into them.
 #
 # Why a tile rebuild rather than a JSON overlay: the advisory level is baked
 # into the tiles as a month-less `safety` feature property (see
@@ -65,9 +71,50 @@ log "stage=consolidate"
 after="$(index_hash)"
 [[ "$after" != "absent" ]] || fail "consolidation produced no safety index at $INDEX"
 
+# ── country pages ────────────────────────────────────────────────────────
+# Republish on EVERY successful consolidation, not only when a level moved.
+#
+# The rebuild branch below watches the safety *index* — levels only, byte-stable
+# by construction. The country pages read `advisories.json`, which also carries
+# each government's `checked` date, and that moves every week a scrape succeeds.
+# Those dates are exactly what the stale badge reads
+# (`web/src/lib/advisory-freshness.ts`: neutral once every source's `checked` is
+# more than 14 days old). Publish only when a level changes and a site scraping
+# perfectly every Sunday still tells visitors its advisories may be out of date,
+# a fortnight after the last time some government moved one.
+#
+# Cheap by construction: `publish api-data` is byte-stable and pruning, so it
+# rewrites only the payloads that actually differ.
+log "stage=publish"
+publish_out="$("$UV" run --directory pipeline wtg publish api-data)"
+printf '%s\n' "$publish_out"
+changed_payloads="$(printf '%s' "$publish_out" \
+    | grep -oE 'changed=[0-9]+' | head -1 | cut -d= -f2 || echo 0)"
+
+# The API serves this bundle off a read-only mount keyed on file mtime, so it
+# picks the new payloads up with no restart. Already-rendered pages do not:
+# `/[country]` is ISR with a 30-day window, so the running container keeps
+# serving last month's HTML until its render cache is dropped. Recreating is
+# the documented way (infra/CLAUDE.md) and costs a few seconds of 502s through
+# Caddy — worth it when something changed, wasteful every week when nothing did.
+if [[ "${changed_payloads:-0}" -gt 0 ]]; then
+    if command -v docker >/dev/null 2>&1; then
+        log "stage=recreate-web payloads_changed=${changed_payloads}"
+        # Deliberately non-fatal: the bundle is already published and the API is
+        # already serving it. A failure here must not abort the tile rebuild
+        # below, which is the half that keeps the *map* honest.
+        docker compose up -d --force-recreate web \
+            || log "WARN: web recreate failed — country pages keep serving cached renders until this is retried"
+    else
+        log "WARN: docker not on PATH — country pages keep serving cached renders"
+    fi
+else
+    log "stage=recreate-web skipped — no country payload changed"
+fi
+
 if [[ "$before" == "$after" && "${FORCE_REBUILD:-0}" != "1" ]]; then
     log "stage=rebuild skipped — no advisory level changed this week"
-    log "weekly-advisories OK (no-op)"
+    log "weekly-advisories OK (pages published, tiles unchanged)"
     exit 0
 fi
 

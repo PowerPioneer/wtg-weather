@@ -211,22 +211,28 @@ Where the US scrape runs is the owner's call and it is not made yet:
 Until one is chosen, option 1 is what the runbook above describes, and the
 `ADVISORY_STALE` warning is the safety net.
 
-### Known gap: an advisory change does not reach the country pages
+### Closed 2026-08-21: advisory changes now reach the country pages
 
-`weekly-advisories.sh` consolidates and, when a level moved, rebuilds the
-tiles and purges the CDN — so the **map** is current. It does not run
-`wtg publish api-data`, so `data/final/api/` keeps whatever the last publish
-wrote, and the country pages (and the `checked` dates the stale badge reads)
-are as old as that publish. Closing it is two commands after a level change:
+`weekly-advisories.sh` used to consolidate and rebuild tiles but never run
+`wtg publish api-data`, so the **map** was current while the country pages
+served whatever the last manual publish wrote. It now publishes on **every**
+successful consolidation, and recreates `web` only when a payload actually
+changed.
 
-```bash
-uv run --directory pipeline wtg publish api-data
-docker compose up -d --force-recreate web    # ISR holds pages for 30 days
-```
+Publishing had to sit *outside* the level-change branch, and that is the
+subtle part. The branch watches the safety index — levels only, byte-stable.
+The pages read `advisories.json`, which also carries each government's
+`checked` date, and that moves every week a scrape succeeds. Those dates are
+what the stale badge reads (neutral once every source is >14 days old), so
+gating the publish on a level change would have made a site scraping perfectly
+every Sunday announce that its advisories may be out of date, a fortnight after
+the last time any government moved one. The map and the pages answer different
+questions and update on different cadences.
 
-Whether those belong inside the weekly script is a live question: it would
-make a weekly `web` recreate routine, which is cheap but not free. Flagged
-here rather than changed, because the weekly job is WS-4's and this is WS-E.
+The recreate is deliberately non-fatal: the bundle is published and the API
+already serves it (mtime-keyed cache, no restart needed), so a failed recreate
+must not abort the tile rebuild that keeps the map honest. It costs a few
+seconds of 502s through Caddy on the weeks it runs.
 
 ## Caddy
 
