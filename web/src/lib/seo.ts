@@ -42,7 +42,7 @@ function jsonLd(payload: unknown): string {
 
 export function countryMetadata(country: CountryData): Metadata {
   const title = `${country.name} — weather, regions, safety · Atlas Weather`;
-  const description = `A month-by-month climate guide for ${country.name}: temperature, rainfall, sunshine, wind, and travel-advisory levels from five governments, based on 10 years of ERA5 data.`;
+  const description = `A month-by-month climate guide for ${country.name}: temperature, rainfall, sunshine, wind, and travel-advisory levels from six governments, based on 10 years of ERA5 data.`;
   const url = canonical(`/${country.slug}`);
   return {
     title,
@@ -66,7 +66,7 @@ export function countryMetadata(country: CountryData): Metadata {
 export function monthMetadata(detail: MonthDetail): Metadata {
   const { country, monthName } = detail;
   const title = `${country.name} in ${monthName} — weather & safety · Atlas Weather`;
-  const description = `${country.name} in ${monthName}: temperature, rainfall, sunshine, and regional climate scores, with the latest travel-advisory levels from five governments.`;
+  const description = `${country.name} in ${monthName}: temperature, rainfall, sunshine, and regional climate scores, with the latest travel-advisory levels from six governments.`;
   const path = `/${country.slug}/${detail.month}`;
   const url = canonical(path);
   return {
@@ -138,7 +138,7 @@ export function regionMonthMetadata(
 ): Metadata {
   const slug = regionHref(region);
   const title = `${region.name} in ${monthName} — weather & safety · Atlas Weather`;
-  const description = `${region.name}, ${country.name} in ${monthName}: regional temperature, match score vs. the country average, and the latest travel-advisory levels from five governments.`;
+  const description = `${region.name}, ${country.name} in ${monthName}: regional temperature, match score vs. the country average, and the latest travel-advisory levels from six governments.`;
   const path = `/${country.slug}/${slug}/${monthSlug}`;
   const url = canonical(path);
   return {

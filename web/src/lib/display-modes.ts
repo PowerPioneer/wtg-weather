@@ -144,10 +144,10 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
     // the bare `safety` prop, not `safety_<mm>`.
     prop: "safety",
     unit: "advisory",
-    desc: "Travel advisory consensus across five governments (US, UK, CA, AU, DE).",
+    desc: "Travel advisory consensus across six governments (US, UK, CA, AU, DE, NL).",
     legend: {
       title: "Advisory level",
-      sub: "Highest of 5 sources",
+      sub: "Highest of 6 sources",
       bins: [
         { label: "Normal", hex: "#4A5568" },
         { label: "Caution", hex: "#9B6434" },

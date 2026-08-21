@@ -152,7 +152,7 @@ export function readPreferenceScore(
  * The travel-advisory level (1–4) baked into the feature by WS-4, or `null`.
  *
  * Month-less on purpose: it is one consensus scalar per polygon ("highest of
- * 5 sources"), and a country no government lists carries no property at all,
+ * 6 sources"), and a country no government lists carries no property at all,
  * which the map paints grey. Anything outside 1–4 is treated as absent rather
  * than clamped — a level the legend has no colour for is a pipeline bug, not
  * something to render confidently.

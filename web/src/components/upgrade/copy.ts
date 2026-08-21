@@ -27,7 +27,7 @@ export const PREMIUM_COPY = {
   headline: "See past the average.",
   bullets: [
     "Zoom past admin-1 into district-level climate — compare Cusco vs. Lima, not just Peru.",
-    "See how each of the five governments actually rates your destination, not the most-cautious consensus.",
+    "See how each of the six governments actually rates your destination, not the most-cautious consensus.",
     "10 / 50 / 90 percentile bands on every chart — April is 18°C, but how often is it 11 or 26?",
     "Four extra variables: snow depth, sea-surface temperature, heat index, humidity.",
     "Save unlimited trips, get an email the moment a destination starts matching your preferences.",
@@ -268,7 +268,7 @@ export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [
   { title: "EU VAT handled by Paddle", sub: "Paddle is our Merchant of Record. Invoices in your country, local currency, legally compliant." },
   { title: "No card details stored", sub: "We never see your card. PCI-DSS handled end-to-end by Paddle." },
   { title: "Cancel anytime", sub: "One-click cancellation from your Paddle customer portal. Refunds within 14 days, no questions." },
-  { title: "Data from five governments", sub: "Every advisory record links to its source and carries the publication timestamp." },
+  { title: "Data from six governments", sub: "Every advisory record links to its source and carries the publication timestamp." },
 ];
 
 export const PRICING_FAQ: readonly { q: string; a: string }[] = [

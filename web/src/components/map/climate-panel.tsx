@@ -207,7 +207,7 @@ export function ClimatePanel({
             data-testid="panel-advisory"
           >
             <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.12em] text-text-muted">
-              Travel advisory · highest of 5 sources
+              Travel advisory · highest of 6 sources
             </div>
             <SafetyBadge level={advisory} size="sm" className="mt-2" />
           </div>
