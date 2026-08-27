@@ -151,6 +151,13 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     logging: *default-logging
+    # Caddy runs as PID 1 and never reaps orphans, so every process the
+    # healthcheck spawns was left behind as a zombie. By 2026-08-27 that was
+    # 17,025 of them, and the container's pid cgroup was full (17037/17038) —
+    # at which point the healthcheck stopped failing on its own bug and started
+    # failing with `wget: fork: Resource temporarily unavailable`. `init: true`
+    # puts a real init (tini) at PID 1 to reap them.
+    init: true
     ports: ["80:80", "443:443"]
     environment:
       # Guards the two ops subdomains; the Caddyfile reads it as
@@ -170,7 +177,16 @@ services:
       web:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/api/health"]
+      # Caddy's local admin API, NOT the public site. The previous check hit
+      # `http://localhost/api/health`, which auto-HTTPS redirects to :443,
+      # where Caddy holds no certificate for `localhost` and kills the
+      # handshake with `tlsv1 alert internal error`. It had therefore never
+      # passed once in ~146 days (failing streak 35,120) while the proxy was
+      # serving perfectly — so the signal was pure noise and got ignored.
+      #
+      # 127.0.0.1 rather than `localhost`: admin binds IPv4-only, and busybox
+      # wget resolves `localhost` to ::1 first and gets connection refused.
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:2019/config/"]
       interval: 15s
       timeout: 5s
       retries: 10
