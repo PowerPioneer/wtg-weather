@@ -1,7 +1,23 @@
+# Every container caps its own logs. Without this the json-file driver is
+# unbounded: on 2026-08-23 an unrotated glitchtip-worker log reached 4.0 GB,
+# filled the 92 GB volume that also holds Docker's data-root, and took the
+# stack down (postgres could not write postmaster.pid, so `web` would not
+# start). 10m x 3 per service caps the whole stack at ~270 MB.
+#
+# NOTE: docker applies this at container CREATE time. Existing containers keep
+# their current unbounded setting until they are recreated
+# (`docker compose up -d --force-recreate <svc>`).
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: *default-logging
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -19,6 +35,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    logging: *default-logging
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -29,6 +46,7 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24-alpine
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - ch-data:/var/lib/clickhouse
     ulimits:
@@ -43,6 +61,7 @@ services:
   api:
     build: ./api
     restart: unless-stopped
+    logging: *default-logging
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/wtg
       REDIS_URL: redis://redis:6379/0
@@ -109,6 +128,7 @@ services:
         NEXT_PUBLIC_GLITCHTIP_DSN_WEB: ${NEXT_PUBLIC_GLITCHTIP_DSN_WEB}
         NEXT_PUBLIC_GLITCHTIP_RELEASE: ${NEXT_PUBLIC_GLITCHTIP_RELEASE}
     restart: unless-stopped
+    logging: *default-logging
     environment:
       INTERNAL_API_URL: http://api:8000
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
@@ -130,6 +150,7 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports: ["80:80", "443:443"]
     environment:
       # Guards the two ops subdomains; the Caddyfile reads it as
@@ -158,6 +179,7 @@ services:
   glitchtip-web:
     image: glitchtip/glitchtip:latest
     restart: unless-stopped
+    logging: *default-logging
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/glitchtip
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
@@ -174,6 +196,7 @@ services:
   glitchtip-worker:
     image: glitchtip/glitchtip:latest
     restart: unless-stopped
+    logging: *default-logging
     command: ./bin/run-celery-with-beat.sh
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/glitchtip
@@ -190,6 +213,7 @@ services:
   plausible:
     image: ghcr.io/plausible/community-edition:latest
     restart: unless-stopped
+    logging: *default-logging
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     environment:
       BASE_URL: https://v2.wheretogoforgreatweather.com/_plausible
