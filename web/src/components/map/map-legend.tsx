@@ -28,7 +28,7 @@ export function MapLegend({ mode, month }: MapLegendProps) {
       key={m.id}
       role="group"
       aria-label={`Map legend — ${m.label}`}
-      className="animate-[wtg-fade-in_200ms_ease-out] rounded-[10px] border border-border bg-surface px-3.5 py-2.5 shadow-sm"
+      className="animate-[wtg-fade-in_200ms_ease-out] rounded-[10px] border border-border bg-surface px-2.5 py-2 shadow-sm sm:px-3.5 sm:py-2.5"
     >
       {m.kind === "qualitative" && <QualitativeLegend m={m} />}
       {m.kind === "ordinal-safety" && <SafetyLegend m={m} />}
@@ -42,14 +42,20 @@ export function MapLegend({ mode, month }: MapLegendProps) {
 function QualitativeLegend({ m }: { m: DisplayMode }) {
   if (!("bins" in m.legend)) return null;
   return (
-    <div className="flex flex-wrap items-center gap-2 font-sans">
-      <span className="border-r border-border pr-2 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
+    <div className="flex flex-wrap items-center gap-1.5 font-sans sm:gap-2">
+      {/*
+        The title is the first thing to go on a phone: four labelled colour
+        pills explain themselves, and keeping the caption pushed "Avoid" onto
+        a second line off the bottom of the map. The group's `aria-label`
+        already names the legend, so nothing is lost to assistive tech.
+      */}
+      <span className="hidden border-r border-border pr-2 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted sm:inline">
         {m.legend.title}
       </span>
       {m.legend.bins.map((b) => (
         <span
           key={b.label}
-          className="inline-flex items-center rounded px-2.5 py-1 text-xs font-medium text-white"
+          className="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium text-white sm:px-2.5 sm:py-1 sm:text-xs"
           style={{ backgroundColor: b.hex }}
         >
           {b.label}
@@ -62,8 +68,8 @@ function QualitativeLegend({ m }: { m: DisplayMode }) {
 function SafetyLegend({ m }: { m: DisplayMode }) {
   if (!("bins" in m.legend)) return null;
   return (
-    <div className="flex flex-wrap items-center gap-2 font-sans">
-      <span className="max-w-[110px] border-r border-border pr-2">
+    <div className="flex flex-wrap items-center gap-1.5 font-sans sm:gap-2">
+      <span className="hidden max-w-[110px] border-r border-border pr-2 sm:block">
         <span className="block font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
           {m.legend.title}
         </span>
@@ -72,7 +78,7 @@ function SafetyLegend({ m }: { m: DisplayMode }) {
       {m.legend.bins.map((b) => (
         <span
           key={b.label}
-          className="inline-flex items-center rounded px-2.5 py-1 text-xs font-medium text-white"
+          className="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium text-white sm:px-2.5 sm:py-1 sm:text-xs"
           style={{
             backgroundColor: b.hex,
             backgroundImage:
@@ -90,7 +96,7 @@ function ContinuousLegend({ m, monthLabel }: { m: DisplayMode; monthLabel: strin
   if (!("ramp" in m.legend)) return null;
   const gradient = `linear-gradient(90deg, ${m.legend.ramp.join(", ")})`;
   return (
-    <div className="min-w-[320px] font-sans">
+    <div className="w-full min-w-0 font-sans sm:min-w-[320px]">
       <div className="mb-1.5 flex items-baseline justify-between">
         <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
           {m.legend.title}

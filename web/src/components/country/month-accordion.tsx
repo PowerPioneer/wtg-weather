@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
+import { RainfallMonthly, Temperature } from "@/components/units";
 import { MONTH_NAMES, MONTH_SLUGS, type MonthSlug } from "@/lib/months";
 import type { CountryData } from "@/lib/types";
 import { estimateMonthScore } from "@/lib/country-derive";
@@ -60,7 +61,8 @@ function MonthRow({
             <div className="flex items-baseline gap-3">
               <span className="font-display text-[20px] font-medium text-text">{name}</span>
               <span className="font-mono text-[11.5px] text-text-muted">
-                {t.toFixed(1)}°C · {Math.round(r)} mm · {s.toFixed(1)} hr/day
+                <Temperature value={t} digits={1} /> ·{" "}
+                <RainfallMonthly value={r} /> · {s.toFixed(1)} hr/day
               </span>
             </div>
             <p className="mt-0.5 line-clamp-1 text-[13px] text-text-muted">{note}</p>

@@ -1,6 +1,14 @@
-import type { WeatherPreferences } from "@/lib/scoring";
+import type { ReactNode } from "react";
 
-type IconKind = "temp" | "rain" | "sun";
+import { TemperatureRange } from "@/components/units";
+import {
+  SAFETY_LIMIT_LABEL,
+  clampSafetyMax,
+  rainLevelForCeiling,
+  type WeatherPreferences,
+} from "@/lib/scoring";
+
+type IconKind = "temp" | "rain" | "sun" | "safety";
 
 function PrefIcon({ kind }: { kind: IconKind }) {
   const common = {
@@ -35,14 +43,22 @@ function PrefIcon({ kind }: { kind: IconKind }) {
           <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" />
         </svg>
       );
+    case "safety":
+      return (
+        <svg {...common}>
+          <path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z" />
+        </svg>
+      );
   }
 }
 
 /**
  * What the trip was scored against.
  *
- * Three criteria, because three is what `SCORED_VARIABLES` scores and
- * therefore all a saved trip can carry. The panel used to list five "free"
+ * Three climate criteria, because three is what `SCORED_VARIABLES` scores and
+ * therefore all a saved trip can carry, plus the traveller's advisory limit —
+ * which scores nothing but vetoes anything above it, and so has to be visible
+ * for the ranking below to make sense. The panel used to list five "free"
  * criteria (adding wind and a safety ceiling) and four "Premium" ones (snow,
  * sea-surface temperature, heat index, humidity), each marked "✓ matched" —
  * nine claims of which six named variables no scoring rule consults and none
@@ -56,14 +72,32 @@ export function TripParams({
   preferences: WeatherPreferences;
   usesDefaults: boolean;
 }) {
-  const rows: { key: IconKind; label: string; range: string }[] = [
+  const rainLevel = rainLevelForCeiling(preferences.rainMax);
+  const rows: { key: IconKind; label: string; range: ReactNode }[] = [
     {
       key: "temp",
       label: "Temperature",
-      range: `${preferences.tempMin} – ${preferences.tempMax} °C`,
+      range: (
+        <TemperatureRange
+          low={preferences.tempMin}
+          high={preferences.tempMax}
+        />
+      ),
     },
-    { key: "rain", label: "Rainfall", range: `under ${preferences.rainMax} mm / day` },
+    {
+      key: "rain",
+      label: "Rainfall",
+      // The level is what the traveller chose; the ceiling is what was scored.
+      range: `${rainLevel.label.toLowerCase()} or drier (${rainLevel.band})`,
+    },
     { key: "sun", label: "Sunshine", range: `over ${preferences.sunMin} hr / day` },
+    {
+      key: "safety",
+      label: "Safety",
+      range: `advisories up to ${SAFETY_LIMIT_LABEL[
+        clampSafetyMax(preferences.safetyMax)
+      ].toLowerCase()}`,
+    },
   ];
 
   return (

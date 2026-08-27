@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { findCountryByIso2 } from "@/lib/countries";
 import { monthKey, readFeatureIdentity } from "@/lib/feature-climate";
+import { DEFAULT_PREFERENCES } from "@/lib/scoring";
 
 import { ClimatePanel } from "./climate-panel";
 
@@ -163,13 +164,54 @@ describe("ClimatePanel", () => {
   it("stays useful when the feature carries no climate at all", () => {
     const bare = { id: "GEO", iso_a2: "GE", name: "Georgia", level: "country" };
     renderPanel({ identity: readFeatureIdentity(bare)!, properties: bare });
-    expect(screen.getByText("No score for this area")).toBeInTheDocument();
+    expect(screen.getByText("No match for this area")).toBeInTheDocument();
     expect(screen.getByText(/carries no climate values/i)).toBeInTheDocument();
   });
 
   it("closes", async () => {
     const { onClose } = renderPanel();
     await userEvent.click(screen.getByRole("button", { name: "Close climate detail" }));
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("states the verdict once, as a word", () => {
+    renderPanel();
+    // The badge is the only place the verdict appears — it used to be printed
+    // beside a numeral, and removing the numeral left the same words twice.
+    const verdicts = screen.getAllByText("Good option");
+    expect(verdicts).toHaveLength(1);
+    expect(screen.getByTestId("climate-panel").textContent).not.toMatch(
+      /\d{1,3}\s*(?:\/\s*100)?\s*(?:out of 100)?(?=[^°]*match)/i,
+    );
+  });
+
+  it("says when the advisory, not the weather, is what made it Avoid", () => {
+    const props = {
+      id: "SOM",
+      iso_a2: "SO",
+      name: "Somalia",
+      level: "country",
+      // Ideal weather and the pipeline's own baked score agreeing it is a
+      // perfect match — then a level-4 advisory. The veto has to reach the
+      // baked path too, or the panel contradicts the colour on the map.
+      ...monthly("t", 24),
+      ...monthly("r", 0.4),
+      ...monthly("s", 9),
+      ...monthly("pref", 90),
+      safety: 4,
+    };
+    renderPanel({
+      identity: readFeatureIdentity(props)!,
+      properties: props,
+      preferences: { ...DEFAULT_PREFERENCES, safetyMax: 3 },
+    });
+    expect(screen.getByText(/above your limit/i)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Match: Avoid" })).toBeInTheDocument();
+  });
+
+  it("offers a drag handle that also closes on a plain tap", async () => {
+    const { onClose } = renderPanel();
+    await userEvent.click(screen.getByTestId("climate-panel-handle"));
     expect(onClose).toHaveBeenCalledOnce();
   });
 });

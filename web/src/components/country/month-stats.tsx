@@ -1,3 +1,6 @@
+import type { ReactNode } from "react";
+
+import { RainfallMonthly, TemperatureRange } from "@/components/units";
 import type { CountryData } from "@/lib/types";
 
 type StatKey = "temp" | "rain" | "sun";
@@ -18,18 +21,36 @@ export function MonthStats({
   const tempLow = c.tMin[monthIdx];
   const tempHigh = c.tMax[monthIdx];
 
-  const stats: { key: StatKey; title: string; value: string; detail: string }[] = [
+  // `value` and `detail` are nodes rather than strings because temperature and
+  // rainfall follow the visitor's unit, which is only known in the browser.
+  // Sunshine has no imperial form, so it stays a plain string.
+  const stats: {
+    key: StatKey;
+    title: string;
+    value: ReactNode;
+    detail: ReactNode;
+  }[] = [
     {
       key: "temp",
       title: "Temperature",
-      value: `${tempLow.toFixed(0)} – ${tempHigh.toFixed(0)} °C`,
-      detail: `Year range ${Math.min(...c.tMin).toFixed(0)} – ${Math.max(...c.tMax).toFixed(0)} °C`,
+      value: <TemperatureRange low={tempLow} high={tempHigh} />,
+      detail: (
+        <>
+          Year range{" "}
+          <TemperatureRange low={Math.min(...c.tMin)} high={Math.max(...c.tMax)} />
+        </>
+      ),
     },
     {
       key: "rain",
       title: "Rainfall",
-      value: `${Math.round(c.r[monthIdx])} mm`,
-      detail: `Year range ${Math.round(Math.min(...c.r))} – ${Math.round(Math.max(...c.r))} mm`,
+      value: <RainfallMonthly value={c.r[monthIdx]} />,
+      detail: (
+        <>
+          Year range <RainfallMonthly value={Math.min(...c.r)} unitSuffix={false} /> –{" "}
+          <RainfallMonthly value={Math.max(...c.r)} />
+        </>
+      ),
     },
     {
       key: "sun",

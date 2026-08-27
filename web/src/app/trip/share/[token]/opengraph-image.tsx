@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
 import { getSharedTrip } from "@/lib/trip-server";
+import { scoreLabel } from "@/lib/scoring";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
@@ -119,7 +120,7 @@ export default async function OG({ params }: { params: Promise<{ token: string }
           {trip.score !== null && (
             <>
               {trip.destinations.length > 0 && <span>·</span>}
-              <span>Match {trip.score}</span>
+              <span>{scoreLabel(trip.score)}</span>
             </>
           )}
         </div>

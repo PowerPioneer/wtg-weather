@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import Link from "next/link";
 import { ScoreGauge } from "@/components/match";
 import { MONTH_NAMES, MONTH_SHORT, nextMonth, previousMonth, type MonthSlug } from "@/lib/months";
@@ -20,7 +22,9 @@ export function MonthHero({
   month: MonthSlug;
   score: number;
   verdict: string;
-  narrative: string;
+  // A node, not a string: the narrative names a temperature difference, and a
+  // temperature is only rendered once the visitor's unit is known.
+  narrative: ReactNode;
 }) {
   const monthName = MONTH_NAMES[month];
   const prev = previousMonth(month);

@@ -24,7 +24,20 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
-import { isDefaultPreferences, type WeatherPreferences } from "@/lib/scoring";
+import {
+  DEFAULT_PREFERENCES,
+  failsSafetyLimit,
+  isDefaultPreferenceSet,
+  rainLevelForValue,
+  type WeatherPreferences,
+} from "@/lib/scoring";
+import {
+  formatRainfallPerDay,
+  formatSunHours,
+  formatTemperature,
+  type UnitSystem,
+} from "@/lib/units";
+import { useUnit } from "@/components/units";
 
 export type MapHoverCardProps = {
   identity: FeatureIdentity;
@@ -77,10 +90,11 @@ export function MapHoverCard({
   const flipY =
     bounds != null && point.y + OFFSET + ESTIMATED_HEIGHT > bounds.height;
 
+  const { unit } = useUnit();
   const monthSlug = MONTH_SLUGS[month - 1];
   const score = readPreferenceScore(properties, month, preferences);
   const prefLabel =
-    preferences != null && !isDefaultPreferences(preferences)
+    preferences != null && !isDefaultPreferenceSet(preferences)
       ? "your preferences"
       : "default preferences";
   const place =
@@ -103,8 +117,8 @@ export function MapHoverCard({
         place={place}
         context={`${MONTH_SHORT[monthSlug]} · ${prefLabel}`}
         score={score ?? 0}
-        stats={buildStats(properties, mode, month)}
-        footer={buildFooter(properties, score)}
+        stats={buildStats(properties, mode, month, unit)}
+        footer={buildFooter(properties, score, preferences)}
       />
     </div>
   );
@@ -119,12 +133,19 @@ export function MapHoverCard({
 function buildFooter(
   properties: FeatureProperties,
   score: number | null,
+  preferences: WeatherPreferences | undefined,
 ): string | undefined {
   const advisory = readAdvisoryLevel(properties);
   if (advisory != null) {
-    return `Advisory level ${advisory} · ${ADVISORY_LABEL[advisory]}`;
+    const line = `Advisory level ${advisory} · ${ADVISORY_LABEL[advisory]}`;
+    // When the advisory is what made this "Avoid", the card has to say so —
+    // otherwise a place with ideal weather shows the bottom verdict with three
+    // perfectly good readouts above it and no visible reason.
+    return failsSafetyLimit(advisory, preferences ?? DEFAULT_PREFERENCES)
+      ? `${line} · above your limit`
+      : line;
   }
-  return score == null ? "No match score for this area" : undefined;
+  return score == null ? "No match for this area" : undefined;
 }
 
 /**
@@ -135,24 +156,42 @@ function buildStats(
   properties: FeatureProperties,
   mode: DisplayModeId,
   month: number,
+  unit: UnitSystem,
 ): MatchTooltipStat[] {
   const stats: MatchTooltipStat[] = [];
   const seen = new Set<string>();
 
-  const push = (label: string, value: number | null, unit: string, digits = 1) => {
+  const push = (label: string, value: string | null) => {
     if (value == null || seen.has(label)) return;
     seen.add(label);
-    stats.push({ label, value: `${value.toFixed(digits)}${unit}` });
+    stats.push({ label, value });
   };
 
   const active = DISPLAY_MODES[mode];
   if (active.kind !== "qualitative" && active.id !== "safety") {
-    push(active.label, readModeValue(properties, mode, month), ` ${active.unit}`);
+    const value = readModeValue(properties, mode, month);
+    // The active layer's own readout keeps the layer's declared unit: it is
+    // explaining the colour under the cursor, and the legend beside it is
+    // labelled in that unit. The three free variables below convert.
+    push(
+      active.label,
+      value == null ? null : `${value.toFixed(1)} ${active.unit}`,
+    );
   }
 
-  push("Temp", readNumber(properties, monthKey("t", month)), " °C");
-  push("Rain", readNumber(properties, monthKey("r", month)), " mm/day", 0);
-  push("Sun", readNumber(properties, monthKey("s", month)), " h/day");
+  const temp = readNumber(properties, monthKey("t", month));
+  push("Temp", temp == null ? null : formatTemperature(temp, unit, { digits: 1, space: true }));
+
+  const rain = readNumber(properties, monthKey("r", month));
+  push(
+    "Rain",
+    rain == null
+      ? null
+      : `${formatRainfallPerDay(rain, unit)} · ${rainLevelForValue(rain).label}`,
+  );
+
+  const sun = readNumber(properties, monthKey("s", month));
+  push("Sun", sun == null ? null : formatSunHours(sun));
 
   return stats.slice(0, 4);
 }

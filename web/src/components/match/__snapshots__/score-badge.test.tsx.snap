@@ -2,38 +2,26 @@
 
 exports[`ScoreBadge > snapshot for acceptable bin > acceptable 1`] = `
 <span
-  aria-label="61 out of 100 — Fair"
-  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-acceptable h-[26px] min-w-11 px-2.5 text-[13px]"
+  aria-label="Match: Acceptable"
+  class="inline-flex shrink-0 items-center justify-center rounded-sm font-mono font-semibold uppercase text-text-inverse bg-score-acceptable h-[26px] px-2.5 text-[11px] tracking-[0.1em]"
   role="img"
 >
   <span
     aria-hidden="true"
   >
-    61
-  </span>
-  <span
-    aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
-  >
-    Fair
+    Acceptable
   </span>
 </span>
 `;
 
 exports[`ScoreBadge > snapshot for avoid bin > avoid 1`] = `
 <span
-  aria-label="30 out of 100 — Avoid"
-  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-avoid h-[26px] min-w-11 px-2.5 text-[13px]"
+  aria-label="Match: Avoid"
+  class="inline-flex shrink-0 items-center justify-center rounded-sm font-mono font-semibold uppercase text-text-inverse bg-score-avoid h-[26px] px-2.5 text-[11px] tracking-[0.1em]"
   role="img"
 >
   <span
     aria-hidden="true"
-  >
-    30
-  </span>
-  <span
-    aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
   >
     Avoid
   </span>
@@ -42,40 +30,28 @@ exports[`ScoreBadge > snapshot for avoid bin > avoid 1`] = `
 
 exports[`ScoreBadge > snapshot for good bin > good 1`] = `
 <span
-  aria-label="78 out of 100 — Good"
-  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-good h-[26px] min-w-11 px-2.5 text-[13px]"
+  aria-label="Match: Good option"
+  class="inline-flex shrink-0 items-center justify-center rounded-sm font-mono font-semibold uppercase text-text-inverse bg-score-good h-[26px] px-2.5 text-[11px] tracking-[0.1em]"
   role="img"
 >
   <span
     aria-hidden="true"
   >
-    78
-  </span>
-  <span
-    aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
-  >
-    Good
+    Good option
   </span>
 </span>
 `;
 
 exports[`ScoreBadge > snapshot for perfect bin > perfect 1`] = `
 <span
-  aria-label="92 out of 100 — Perfect"
-  class="inline-flex items-center justify-center gap-1.5 rounded-sm font-mono font-semibold text-text-inverse bg-score-perfect h-[26px] min-w-11 px-2.5 text-[13px]"
+  aria-label="Match: Perfect match"
+  class="inline-flex shrink-0 items-center justify-center rounded-sm font-mono font-semibold uppercase text-text-inverse bg-score-perfect h-[26px] px-2.5 text-[11px] tracking-[0.1em]"
   role="img"
 >
   <span
     aria-hidden="true"
   >
-    92
-  </span>
-  <span
-    aria-hidden="true"
-    class="text-[10px] font-medium uppercase tracking-[0.12em]"
-  >
-    Perfect
+    Perfect match
   </span>
 </span>
 `;

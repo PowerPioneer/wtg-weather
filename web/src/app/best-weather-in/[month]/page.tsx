@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
+import { RainfallMonthly, Temperature, TemperatureRange } from "@/components/units";
 import { routableCountries } from "@/lib/country-routes";
 import {
   MONTH_NAMES,
@@ -17,7 +18,7 @@ import {
   monthLandingHref,
   topCountriesForMonth,
 } from "@/lib/month-ranking";
-import { DEFAULT_PREFERENCES } from "@/lib/scoring";
+import { DEFAULT_PREFERENCES, rainLevelForCeiling } from "@/lib/scoring";
 import { monthLandingJsonLd, monthLandingMetadata } from "@/lib/seo";
 
 /**
@@ -127,9 +128,14 @@ export default async function BestWeatherInMonthPage({
               </p>
               <p className="mt-4 max-w-[680px] text-[13px] leading-[1.6] text-text-subtle">
                 Scored against the default profile:{" "}
-                {DEFAULT_PREFERENCES.tempMin}–{DEFAULT_PREFERENCES.tempMax}°C,
-                under {DEFAULT_PREFERENCES.rainMax} mm of rain a day, at least{" "}
-                {DEFAULT_PREFERENCES.sunMin} hours of sun. Set your own on the{" "}
+                <TemperatureRange
+                  low={DEFAULT_PREFERENCES.tempMin}
+                  high={DEFAULT_PREFERENCES.tempMax}
+                  separator="–"
+                />
+                , no more than{" "}
+                {rainLevelForCeiling(DEFAULT_PREFERENCES.rainMax).label.toLowerCase()},
+                at least {DEFAULT_PREFERENCES.sunMin} hours of sun. Set your own on the{" "}
                 <Link href="/map" className="text-text-link underline underline-offset-2">
                   map
                 </Link>{" "}
@@ -165,9 +171,11 @@ export default async function BestWeatherInMonthPage({
                     </span>
                   </span>
                   <span className="flex shrink-0 items-center gap-5 font-mono text-[12px] text-text-muted">
-                    <span>{Math.round(country.temp)}°C</span>
+                    <span>
+                      <Temperature value={country.temp} />
+                    </span>
                     <span className="hidden sm:inline">
-                      {Math.round(country.rain)} mm
+                      <RainfallMonthly value={country.rain} />
                     </span>
                     <span className="hidden md:inline">
                       {country.sun.toFixed(1)} h sun

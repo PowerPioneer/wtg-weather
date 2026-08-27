@@ -5,6 +5,7 @@ import { MONTH_NAMES, isMonthSlug, monthIndex } from "@/lib/months";
 import { findRegion, regionBestMonthIndices } from "@/lib/regions";
 import { MONTH_SLUGS } from "@/lib/months";
 import { estimateMonthScore } from "@/lib/country-derive";
+import { scoreLabel } from "@/lib/scoring";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
@@ -32,7 +33,7 @@ export default async function OG({
       headline: `${data.name}`,
       tagline: `how ${monthName} reads`,
       stats: [
-        { label: "Match", value: `${score}/100` },
+        { label: "Match", value: scoreLabel(score) },
         { label: "Temperature", value: `${temp.toFixed(0)}°C` },
         { label: "Rainfall", value: `${rain.toFixed(0)} mm` },
       ],
@@ -52,7 +53,7 @@ export default async function OG({
       headline: region.name,
       tagline: "when to go",
       stats: [
-        { label: "Match", value: `${region.score}/100` },
+        { label: "Match", value: scoreLabel(region.score) },
         { label: "Range", value: `${low.toFixed(0)}–${high.toFixed(0)}°C` },
         { label: "Best months", value: best || "—" },
       ],

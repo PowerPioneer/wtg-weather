@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_PREFERENCES,
+  SCORE_HEX,
   preferenceScore,
+  scoreBin,
   type ScoredValues,
   type WeatherPreferences,
 } from "./scoring";
@@ -89,6 +91,8 @@ function evaluateExpression(expr: unknown, props: Record<string, unknown>): unkn
       return args.reduce<number>((sum, arg) => sum + num(arg), 0);
     case "==":
       return ev(args[0]) === ev(args[1]);
+    case ">":
+      return num(args[0]) > num(args[1]);
     case ">=":
       return num(args[0]) >= num(args[1]);
     case "<=":
@@ -143,9 +147,9 @@ describe("buildPreferenceScoreExpression", () => {
 
   const PREFERENCE_SETS: WeatherPreferences[] = [
     DEFAULT_PREFERENCES,
-    { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 },
-    { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10 },
-    { tempMin: -10, tempMax: 45, rainMax: 12, sunMin: 0 },
+    { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6, safetyMax: 3 },
+    { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10, safetyMax: 3 },
+    { tempMin: -10, tempMax: 45, rainMax: 12, sunMin: 0, safetyMax: 4 },
   ];
 
   it("computes the same score as scoring.ts for every case", () => {
@@ -206,7 +210,13 @@ describe("preferences mode paint", () => {
   });
 
   it("colours a feature by the bin its custom score falls in", () => {
-    const chilly = { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 };
+    const chilly = {
+      tempMin: 0,
+      tempMax: 10,
+      rainMax: 2.7,
+      sunMin: 6,
+      safetyMax: 4 as const,
+    };
     const expr = buildFillColorExpression("preferences", 4, chilly);
     // 6°C, dry, sunny — a perfect match for someone who wants it cold.
     expect(evaluateExpression(expr, { t_04: 6, r_04: 1, s_04: 8 })).toBe("#0B6E5F");
@@ -409,5 +419,100 @@ describe("tier source selection", () => {
     const style = buildMapStyle({ ...base, freeTilesUrl: FREE_URL, premiumTilesUrl: null });
     expect(style).not.toHaveProperty("center");
     expect(style).not.toHaveProperty("zoom");
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * The safety veto is applied in the paint expression, not in the tiles: the
+ * `safety` property is baked per polygon but the limit is per traveller. These
+ * pin it against `scoring.ts`, which applies the same veto for the hover card
+ * and the climate panel — the two have to agree or the panel explains a colour
+ * the map did not paint.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+describe("safety veto in the paint expression", () => {
+  const AVOID = SCORE_HEX.avoid;
+  const PERFECT = SCORE_HEX.perfect;
+  const MISSING_FILL = "#D9D5C8";
+
+  it("paints a place above the limit as Avoid on the baked-score path", () => {
+    // Default preferences, so the expression reads the pipeline's `pref_05`
+    // rather than recomputing — the veto has to reach that path too.
+    const expr = buildFillColorExpression("preferences", 5, DEFAULT_PREFERENCES);
+    expect(evaluateExpression(expr, { pref_05: 90 })).toBe(PERFECT);
+    expect(evaluateExpression(expr, { pref_05: 90, safety: 3 })).toBe(PERFECT);
+    expect(evaluateExpression(expr, { pref_05: 90, safety: 4 })).toBe(AVOID);
+  });
+
+  it("paints a place above the limit as Avoid on the computed path", () => {
+    // A custom *climate* band is what puts the expression on the computed
+    // path. Changing only the safety limit deliberately does not: no advisory
+    // was ever baked into `pref_<mm>`, so the baked climate score stays valid
+    // and only the veto in front of it changes.
+    const strict: WeatherPreferences = {
+      ...DEFAULT_PREFERENCES,
+      tempMax: 26,
+      safetyMax: 1,
+    };
+    const expr = buildFillColorExpression("preferences", 5, strict);
+    const perfectWeather = { t_05: 22, r_05: 1, s_05: 8 };
+    expect(evaluateExpression(expr, perfectWeather)).toBe(PERFECT);
+    expect(evaluateExpression(expr, { ...perfectWeather, safety: 1 })).toBe(PERFECT);
+    expect(evaluateExpression(expr, { ...perfectWeather, safety: 2 })).toBe(AVOID);
+  });
+
+  it("leaves an unlisted polygon alone", () => {
+    // No `safety` property at all is "no government lists this place". The
+    // guard matters because `to-number` of an absent property is 0, which
+    // would otherwise compare as safer than level 1.
+    const strict: WeatherPreferences = {
+      ...DEFAULT_PREFERENCES,
+      tempMax: 26,
+      safetyMax: 1,
+    };
+    const expr = buildFillColorExpression("preferences", 5, strict);
+    expect(evaluateExpression(expr, { t_05: 22, r_05: 1, s_05: 8 })).toBe(PERFECT);
+  });
+
+  it("keeps the baked score when only the safety limit moved", () => {
+    // The cheap `get` survives a safety change, which is the whole reason
+    // `isDefaultPreferences` is blind to `safetyMax`.
+    const expr = buildFillColorExpression("preferences", 5, {
+      ...DEFAULT_PREFERENCES,
+      safetyMax: 1,
+    });
+    expect(JSON.stringify(expr)).toContain("pref_05");
+    expect(evaluateExpression(expr, { pref_05: 90, safety: 2 })).toBe(AVOID);
+    expect(evaluateExpression(expr, { pref_05: 90, safety: 1 })).toBe(PERFECT);
+  });
+
+  it("keeps a polygon with no climate data grey, whatever its advisory", () => {
+    const expr = buildFillColorExpression("preferences", 5, DEFAULT_PREFERENCES);
+    expect(evaluateExpression(expr, { safety: 4 })).toBe(MISSING_FILL);
+  });
+
+  it("agrees with the scorer the panel and hover card use", () => {
+    const cases: { safety?: number; prefs: WeatherPreferences }[] = [
+      { safety: undefined, prefs: DEFAULT_PREFERENCES },
+      { safety: 1, prefs: DEFAULT_PREFERENCES },
+      { safety: 4, prefs: DEFAULT_PREFERENCES },
+      { safety: 2, prefs: { ...DEFAULT_PREFERENCES, safetyMax: 1 } },
+      { safety: 4, prefs: { ...DEFAULT_PREFERENCES, safetyMax: 4 } },
+    ];
+    for (const { safety, prefs } of cases) {
+      // A custom temperature band keeps the expression on the computed path,
+      // which is the one that can drift from `scoreBucket`.
+      const custom: WeatherPreferences = { ...prefs, tempMax: 26 };
+      const expr = buildFillColorExpression("preferences", 5, custom);
+      const props: Record<string, number> = { t_05: 22, r_05: 1, s_05: 8 };
+      if (safety != null) props.safety = safety;
+      const expected = SCORE_HEX[
+        scoreBin(preferenceScore({ t: 22, r: 1, s: 8, safety }, custom)!)
+      ];
+      expect(
+        evaluateExpression(expr, props),
+        `safety=${safety} limit=${custom.safetyMax}`,
+      ).toBe(expected);
+    }
   });
 });

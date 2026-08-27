@@ -6,7 +6,16 @@ import { describe, expect, it } from "vitest";
 import {
   BUCKET_SCORES,
   DEFAULT_PREFERENCES,
+  DEFAULT_SAFETY_MAX,
   PREFERENCE_LIMITS,
+  RAIN_LEVELS,
+  clampSafetyMax,
+  failsSafetyLimit,
+  isDefaultPreferenceSet,
+  parseWeatherPreferences,
+  rainCeilingForLevel,
+  rainLevelForCeiling,
+  rainLevelForValue,
   clampPreferences,
   clampScore,
   isDefaultPreferences,
@@ -171,14 +180,14 @@ describe("preference scoring — parity with the pipeline", () => {
 
 describe("preference scoring — custom preferences", () => {
   it("moves the score when the user's band moves", () => {
-    const cold = { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6 };
+    const cold = { ...DEFAULT_PREFERENCES, tempMin: 0, tempMax: 10 };
     expect(scoreBucket({ t: 22, r: 1, s: 8 })).toBe(3);
     expect(scoreBucket({ t: 22, r: 1, s: 8 }, cold)).toBe(1);
     expect(scoreBucket({ t: 6, r: 1, s: 8 }, cold)).toBe(3);
   });
 
   it("treats rainfall as a ceiling and sunshine as a floor", () => {
-    const strict = { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10 };
+    const strict = { ...DEFAULT_PREFERENCES, rainMax: 0.5, sunMin: 10 };
     expect(scoreBucket({ t: 22, r: 4, s: 11 }, strict)).toBe(1);
     expect(scoreBucket({ t: 22, r: 0.4, s: 4 }, strict)).toBe(1);
     expect(scoreBucket({ t: 22, r: 0.4, s: 11 }, strict)).toBe(3);
@@ -227,5 +236,106 @@ describe("isDefaultPreferences", () => {
 
   it("treats an out-of-range value as the clamped one it will be scored as", () => {
     expect(isDefaultPreferences({ ...DEFAULT_PREFERENCES, tempMax: 28.04 })).toBe(true);
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * The safety limit — a veto over the climate score rather than a fourth
+ * ingredient of it. The pipeline bakes no advisory into `pref_<mm>`, so this
+ * rule lives entirely on the client and has to agree with the paint expression
+ * in `map-style.ts` (pinned there) and with `readPreferenceScore`.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+describe("safety limit", () => {
+  const perfect = { t: 22, r: 1, s: 8 };
+
+  it("defaults to level 3 — only 'do not travel' is vetoed out of the box", () => {
+    expect(DEFAULT_PREFERENCES.safetyMax).toBe(3);
+    expect(scoreBucket({ ...perfect, safety: 3 })).toBe(3);
+    expect(scoreBucket({ ...perfect, safety: 4 })).toBe(0);
+  });
+
+  it("drops a place to the bottom bin however good its weather is", () => {
+    const cautious = { ...DEFAULT_PREFERENCES, safetyMax: 1 as const };
+    expect(scoreBin(preferenceScore(perfect, cautious)!)).toBe("perfect");
+    expect(scoreBin(preferenceScore({ ...perfect, safety: 2 }, cautious)!)).toBe(
+      "avoid",
+    );
+  });
+
+  it("passes a place no government lists", () => {
+    // The tiles omit `safety` entirely for those polygons. Unknown is not
+    // level 4, and treating it as a failure would veto most of the map.
+    expect(scoreBucket({ ...perfect, safety: null })).toBe(3);
+    expect(scoreBucket(perfect)).toBe(3);
+    expect(failsSafetyLimit(null)).toBe(false);
+    expect(failsSafetyLimit(undefined)).toBe(false);
+  });
+
+  it("leaves a feature with no climate data grey rather than vetoing it", () => {
+    // "We have nothing to say about this place" outranks "avoid it" — a null
+    // here is a grey polygon, and 0 would paint it red.
+    expect(scoreBucket({ safety: 4 })).toBeNull();
+    expect(scoreBucket({ t: null, safety: 4 })).toBeNull();
+  });
+
+  it("clamps a hand-edited limit into the four levels", () => {
+    expect(clampSafetyMax(0)).toBe(1);
+    expect(clampSafetyMax(9)).toBe(4);
+    expect(clampSafetyMax(2.4)).toBe(2);
+    expect(clampSafetyMax("3")).toBe(DEFAULT_SAFETY_MAX);
+    expect(clampPreferences({ safetyMax: 99 }).safetyMax).toBe(4);
+  });
+
+  it("keeps the baked-score predicate blind to it, and the UI one not", () => {
+    // `isDefaultPreferences` decides whether the map may read the pipeline's
+    // baked `pref_<mm>`, which no advisory ever entered.
+    const strict = { ...DEFAULT_PREFERENCES, safetyMax: 1 as const };
+    expect(isDefaultPreferences(strict)).toBe(true);
+    expect(isDefaultPreferenceSet(strict)).toBe(false);
+    expect(isDefaultPreferenceSet(DEFAULT_PREFERENCES)).toBe(true);
+  });
+
+  it("survives a round-trip through an untyped blob", () => {
+    const parsed = parseWeatherPreferences({ tempMin: 10, safetyMax: 1 });
+    expect(parsed?.safetyMax).toBe(1);
+    // A record written before the limit existed gets the default, not zero.
+    expect(parseWeatherPreferences({ tempMin: 10 })?.safetyMax).toBe(
+      DEFAULT_SAFETY_MAX,
+    );
+  });
+});
+
+describe("rainfall levels", () => {
+  it("classifies a measured value into the band it falls in", () => {
+    expect(rainLevelForValue(0.4).label).toBe("Dry");
+    expect(rainLevelForValue(1).label).toBe("Dry");
+    expect(rainLevelForValue(2.9).label).toBe("Light rain");
+    expect(rainLevelForValue(4).label).toBe("Moderate rain");
+    expect(rainLevelForValue(9.9).label).toBe("Rainy");
+    expect(rainLevelForValue(40).label).toBe("Very wet");
+  });
+
+  it("round-trips a ceiling back to the level that selects it", () => {
+    for (const level of RAIN_LEVELS) {
+      expect(rainLevelForCeiling(level.max).level).toBe(level.level);
+      expect(rainCeilingForLevel(level.level)).toBe(level.max);
+    }
+  });
+
+  it("keeps the default band on the pipeline's own ceiling", () => {
+    // Not 3.0. The map paints the baked `pref_<mm>` while the preferences are
+    // the baked defaults, so picking the default band has to land back on the
+    // exact value the pipeline baked — otherwise dragging the slider away and
+    // back recolours the map for a traveller who changed nothing.
+    expect(rainCeilingForLevel(2)).toBe(DEFAULT_PREFERENCES.rainMax);
+    expect(rainLevelForCeiling(DEFAULT_PREFERENCES.rainMax).label).toBe(
+      "Light rain",
+    );
+  });
+
+  it("clamps a level outside the scale", () => {
+    expect(rainCeilingForLevel(0)).toBe(RAIN_LEVELS[0].max);
+    expect(rainCeilingForLevel(99)).toBe(RAIN_LEVELS[RAIN_LEVELS.length - 1].max);
   });
 });

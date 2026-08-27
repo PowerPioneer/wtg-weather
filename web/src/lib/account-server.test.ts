@@ -241,7 +241,8 @@ describe("getConsumerAccount", () => {
     expect((await getConsumerAccount())!.alerts[0]).toEqual({
       id: "a1",
       label: "Cusco in July",
-      conditions: "14–22 °C · under 2 mm/day · over 6 h sun",
+      conditions:
+        "14–22 °C · light rain or drier · over 6 h sun · advisories to reconsider travel",
       active: false,
     });
   });

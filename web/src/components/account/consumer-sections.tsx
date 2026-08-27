@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match/score-badge";
+import { UnitToggle } from "@/components/units";
 import { CHECKOUT_COPY, UpgradeButton } from "@/components/upgrade";
 import type { BillingSummary } from "@/lib/billing-server";
 import { cn } from "@/lib/cn";
@@ -317,33 +318,21 @@ export function ConsumerSettings({ session }: Props) {
           </select>
         </SetRow>
 
-        <SetRow label="Units" hint="Used everywhere temperatures, distances, and rainfall appear.">
-          <div className="grid grid-cols-3 gap-2.5">
-            {[
-              { l: "Temperature", opts: ["°C", "°F"], val: "°C" },
-              { l: "Distance", opts: ["km", "mi"], val: "km" },
-              { l: "Rainfall", opts: ["mm", "in"], val: "mm" },
-            ].map((u) => (
-              <div key={u.l}>
-                <div className="mb-1 font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-subtle">
-                  {u.l}
-                </div>
-                <div className="flex overflow-hidden rounded-sm border border-border">
-                  {u.opts.map((o) => (
-                    <div
-                      key={o}
-                      className={cn(
-                        "flex-1 py-1.5 text-center font-mono text-[12px]",
-                        o === u.val ? "bg-primary text-primary-foreground" : "bg-white text-text-muted",
-                      )}
-                    >
-                      {o}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+        <SetRow
+          label="Units"
+          hint="Applies everywhere temperatures, rainfall, wind and snow appear — the map, the country pages and this one."
+        >
+          {/*
+            This row was three decorative pickers that stored nothing; the
+            temperature one is now the real site-wide switch, and it carries
+            rainfall and wind with it because a page that mixed °F with mm was
+            never a state anyone asked for. Distance is not offered at all —
+            nothing on the site prints a distance.
+          */}
+          <UnitToggle label="" className="max-w-[220px]" />
+          <p className="mt-2 font-mono text-[11px] text-text-subtle">
+            °F switches rainfall to inches, wind to mph and snow to inches.
+          </p>
         </SetRow>
 
         <SetRow

@@ -50,7 +50,7 @@ export function BestMonths({ country }: { country: CountryData }) {
                     <span className={primary ? "font-mono text-[11px] uppercase tracking-[0.18em] text-[rgba(247,246,242,0.72)]" : "font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted"}>
                       #{idx + 1} · {country.name}
                     </span>
-                    <ScoreBadge score={best.score} size="sm" label="number" />
+                    <ScoreBadge score={best.score} size="sm" />
                   </div>
                   <div className="font-display text-[30px] font-medium leading-tight">
                     {best.month}

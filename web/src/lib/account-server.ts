@@ -28,7 +28,10 @@ import { MONTH_NAMES, MONTH_SLUGS } from "./months";
 import { regionMonthScore } from "./regions";
 import {
   DEFAULT_PREFERENCES,
+  SAFETY_LIMIT_LABEL,
+  clampSafetyMax,
   parseWeatherPreferences,
+  rainLevelForCeiling,
   type WeatherPreferences,
 } from "./scoring";
 import type {
@@ -199,7 +202,15 @@ function toAlert(raw: RawAlert, countries: Map<string, CountryData>): AccountAle
     // job will actually check. A stored label would drift the moment the
     // definition changed.
     label: monthName ? `${where} in ${monthName}` : where,
-    conditions: `${prefs.tempMin}–${prefs.tempMax} °C · under ${prefs.rainMax} mm/day · over ${prefs.sunMin} h sun`,
+    // Metric on purpose: this string is assembled on the server, and the
+    // visitor's unit is only known in the browser. Rainfall reads as its level
+    // rather than its ceiling, which is the vocabulary the control now uses.
+    conditions: [
+      `${prefs.tempMin}–${prefs.tempMax} °C`,
+      `${rainLevelForCeiling(prefs.rainMax).label.toLowerCase()} or drier`,
+      `over ${prefs.sunMin} h sun`,
+      `advisories to ${SAFETY_LIMIT_LABEL[clampSafetyMax(prefs.safetyMax)].toLowerCase()}`,
+    ].join(" · "),
     active: raw.active,
   };
 }

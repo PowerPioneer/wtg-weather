@@ -1,4 +1,28 @@
+"use client";
+
+/**
+ * A Client Component only so that it can honour the °C/°F preference, which is
+ * resolved in the browser (see `components/units/unit-provider.tsx`). It is
+ * still server-rendered into the HTML in metric, so a crawler and a reader with
+ * JS disabled get the full chart — the SSR rule in `web/CLAUDE.md` is about the
+ * page being *renderable* without client JS, not about avoiding hydration.
+ *
+ * Conversion happens here rather than upstream because everything below the
+ * render is metric by construction: the pipeline publishes °C and mm, the
+ * percentile bands are in the same units as the series, and the y-axis is
+ * derived from both. Converting the three arrays at the top keeps the geometry
+ * code unit-agnostic.
+ */
+
+import { useUnit } from "@/components/units";
 import { cn } from "@/lib/cn";
+import {
+  celsiusToFahrenheit,
+  centimetresToInches,
+  kmhToMph,
+  millimetresToInches,
+  type UnitSystem,
+} from "@/lib/units";
 
 import { ChartAxes } from "./chart-axes";
 import { ChartBands } from "./chart-bands";
@@ -34,7 +58,11 @@ export type ClimateChartProps = {
   months: readonly MonthDatum[];
   /** If true, the chart is rendered blurred (caller overlays an upgrade prompt). */
   locked?: boolean;
-  unit?: "metric" | "imperial";
+  /**
+   * Force a unit instead of following the visitor's preference. For fixtures
+   * and tests; product surfaces should let the provider decide.
+   */
+  unit?: UnitSystem;
   /** Card variant: compact squeezes the chart for dashboard grids. */
   compact?: boolean;
   /** Optional place/month context shown in the accessible summary. */
@@ -55,6 +83,14 @@ type KindSpec = {
   /** Hard maximum. */
   maxOverride?: number;
   decimals: number;
+  /** Decimals for the imperial rendering. Defaults to `decimals`. */
+  imperialDecimals?: number;
+  /**
+   * Metric value → imperial value. Absent where the variable has no imperial
+   * form at all: hours of sunshine and relative humidity are the same number
+   * in both systems.
+   */
+  toImperial?: (value: number) => number;
   /** SR description verb ("Average temperature", etc.). */
   srNoun: string;
 };
@@ -67,6 +103,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     color: "#D14A2E",
     render: "line",
     decimals: 1,
+    imperialDecimals: 0,
+    toImperial: celsiusToFahrenheit,
     srNoun: "Average temperature",
   },
   rain: {
@@ -78,6 +116,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     includeZero: true,
     minOverride: 0,
     decimals: 0,
+    imperialDecimals: 1,
+    toImperial: millimetresToInches,
     srNoun: "Rainfall",
   },
   sun: {
@@ -101,6 +141,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     includeZero: true,
     minOverride: 0,
     decimals: 1,
+    imperialDecimals: 0,
+    toImperial: kmhToMph,
     srNoun: "Average wind speed",
   },
   snow: {
@@ -112,6 +154,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     includeZero: true,
     minOverride: 0,
     decimals: 0,
+    imperialDecimals: 1,
+    toImperial: centimetresToInches,
     srNoun: "Snow depth",
   },
   sst: {
@@ -121,6 +165,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     color: "#0072B2",
     render: "line",
     decimals: 1,
+    imperialDecimals: 0,
+    toImperial: celsiusToFahrenheit,
     srNoun: "Sea surface temperature",
   },
   humidity: {
@@ -141,6 +187,8 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     color: "#D14A2E",
     render: "line",
     decimals: 1,
+    imperialDecimals: 0,
+    toImperial: celsiusToFahrenheit,
     srNoun: "Heat index",
   },
 };
@@ -157,11 +205,13 @@ export function ClimateChart({
   kind,
   months,
   locked = false,
-  unit = "metric",
+  unit: unitOverride,
   compact = false,
   context,
   className,
 }: ClimateChartProps) {
+  const { unit: preferredUnit } = useUnit();
+  const unit = unitOverride ?? preferredUnit;
   const spec = SPECS[kind];
   if (months.length !== 12) {
     throw new Error(
@@ -169,14 +219,25 @@ export function ClimateChart({
     );
   }
 
+  // The unit label used to switch on its own while the numbers underneath
+  // stayed metric — an imperial chart of a Peruvian August read "14 °F". The
+  // series, the percentile bands and the y-axis all convert together or none
+  // of them do.
+  const imperial = unit === "imperial" && spec.toImperial != null;
+  const convert = imperial ? spec.toImperial! : (v: number) => v;
+  const decimals =
+    imperial && spec.imperialDecimals != null
+      ? spec.imperialDecimals
+      : spec.decimals;
+
   const unitLabel = unit === "imperial" ? spec.unitImperial : spec.unitMetric;
-  const values = months.map((m) => m.value);
+  const values = months.map((m) => convert(m.value));
   const hasBands =
     months.every((m) => m.p10 != null && m.p90 != null) === true;
   const bands = hasBands
     ? {
-        p10: months.map((m) => m.p10 as number),
-        p90: months.map((m) => m.p90 as number),
+        p10: months.map((m) => convert(m.p10 as number)),
+        p90: months.map((m) => convert(m.p90 as number)),
       }
     : undefined;
 
@@ -188,8 +249,11 @@ export function ClimateChart({
     values,
     bands,
     includeZero: spec.includeZero,
-    minOverride: spec.minOverride,
-    maxOverride: spec.maxOverride,
+    // The hard bounds are declared in metric (humidity 0–100, sunshine ≤ 14),
+    // so they convert with everything else — a °F chart clamped at a °C
+    // ceiling would flatten every warm month against the top of the frame.
+    minOverride: spec.minOverride == null ? undefined : convert(spec.minOverride),
+    maxOverride: spec.maxOverride == null ? undefined : convert(spec.maxOverride),
   });
 
   const linePath =
@@ -200,7 +264,7 @@ export function ClimateChart({
     noun: spec.srNoun,
     unit: unitLabel,
     values,
-    decimals: spec.decimals,
+    decimals,
     context,
   });
 
@@ -238,7 +302,7 @@ export function ClimateChart({
 
         <ChartAxes
           geometry={geometry}
-          formatY={(v) => formatYTick(v, spec.decimals)}
+          formatY={(v) => formatYTick(v, decimals)}
         />
 
         {bands ? (
@@ -328,16 +392,18 @@ export function ClimateChart({
                 <th scope="row" className="py-1 pr-2 text-left font-normal">
                   {MONTH_NAMES[m.month]}
                 </th>
+                {/* The table is the same data as the plot, so it converts
+                    with it — the header already says which unit. */}
                 <td className="py-1 pr-2 text-right">
-                  {m.value.toFixed(spec.decimals)}
+                  {convert(m.value).toFixed(decimals)}
                 </td>
                 {bands ? (
                   <>
                     <td className="py-1 pr-2 text-right">
-                      {(m.p10 as number).toFixed(spec.decimals)}
+                      {convert(m.p10 as number).toFixed(decimals)}
                     </td>
                     <td className="py-1 pr-2 text-right">
-                      {(m.p90 as number).toFixed(spec.decimals)}
+                      {convert(m.p90 as number).toFixed(decimals)}
                     </td>
                   </>
                 ) : null}

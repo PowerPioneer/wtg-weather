@@ -29,7 +29,7 @@ export function RelatedCountries({ country }: { country: CountryData }) {
               >
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-display text-[18px] font-medium text-text">{r.name}</span>
-                  <ScoreBadge score={r.score} size="sm" label="number" />
+                  <ScoreBadge score={r.score} size="sm" />
                 </div>
                 <p className="text-[12.5px] leading-[1.45] text-text-muted">{r.sub}</p>
               </Link>

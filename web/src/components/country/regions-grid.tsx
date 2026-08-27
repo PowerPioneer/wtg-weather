@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match";
 import { Sparkline } from "@/components/charts";
+import { Temperature, TemperatureRange } from "@/components/units";
 import { MONTH_SLUGS } from "@/lib/months";
 import { regionHref } from "@/lib/regions";
 import type { CountryData, RegionRow } from "@/lib/types";
@@ -89,7 +90,7 @@ function RegionCard({
       >
         <div className="flex items-start justify-between gap-2">
           <span className="text-[13px] font-medium text-text">{region.name}</span>
-          <ScoreBadge score={region.score} size="sm" label="number" />
+          <ScoreBadge score={region.score} size="sm" />
         </div>
         <Sparkline
           values={region.tl}
@@ -99,8 +100,12 @@ function RegionCard({
           className="h-7 w-full"
         />
         <div className="font-mono text-[11px] text-text-muted">
-          {current != null ? <span>{current.toFixed(0)}°C now · </span> : null}
-          {low.toFixed(0)}–{high.toFixed(0)}°C yr
+          {current != null ? (
+            <span>
+              <Temperature value={current} /> now ·{" "}
+            </span>
+          ) : null}
+          <TemperatureRange low={low} high={high} separator="–" /> yr
         </div>
       </Link>
     </li>

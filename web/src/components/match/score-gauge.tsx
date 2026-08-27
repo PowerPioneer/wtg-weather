@@ -1,11 +1,19 @@
 import { cn } from "@/lib/cn";
-import { clampScore, scoreBin, scoreHex, scoreLabel } from "@/lib/scoring";
+import {
+  SCORE_BINS,
+  clampScore,
+  scoreBin,
+  scoreHex,
+  scoreLabel,
+  scoreShortLabel,
+  type ScoreBin,
+} from "@/lib/scoring";
 
 export type ScoreGaugeProps = {
   score: number;
   /** Diameter in px. `md` = 96, `lg` = 128. */
   size?: "md" | "lg";
-  /** Label shown under the number (e.g. "Perfect match"). Defaults to `scoreLabel(score)`. */
+  /** Label shown under the dial (e.g. "Perfect match"). Defaults to `scoreLabel(score)`. */
   label?: string;
   /** Sub-label in mono caps (e.g. "Peru · April"). */
   sub?: string;
@@ -15,10 +23,21 @@ export type ScoreGaugeProps = {
 const SIZE_PX = { md: 96, lg: 128 } as const;
 const STROKE_PX = { md: 10, lg: 12 } as const;
 
+/** Four bins, best first — the order the dial reads clockwise. */
+const BINS: readonly ScoreBin[] = SCORE_BINS.map((b) => b.bin);
+
 /**
- * 270° arc gauge. Server-rendered SVG — no client JS. The arc sweeps from the
- * 7 o'clock position clockwise around to the 5 o'clock position. Number and
- * label live inside the SVG so the composition is deterministic and SSR-safe.
+ * The match verdict as a four-segment dial.
+ *
+ * It used to be a progress arc with a number in the middle, sweeping
+ * proportionally to a 0–100 score. Both halves of that were a claim the
+ * scoring rule cannot make: the rule has four outcomes, not a hundred, so an
+ * arc at 75% and a numeral "75" both described a resolution that does not
+ * exist. What survives is the part that was true — which of the four bins this
+ * place falls in — drawn as four fixed segments with the reached one filled.
+ *
+ * Server-rendered SVG, no client JS. Colour is never the only carrier: the
+ * word sits inside the dial and the full label under it.
  */
 export function ScoreGauge({
   score,
@@ -37,28 +56,39 @@ export function ScoreGauge({
   const bin = scoreBin(clamped);
   const hex = scoreHex(clamped);
   const resolvedLabel = label ?? scoreLabel(clamped);
+  const activeIndex = BINS.indexOf(bin);
 
+  // 270° of dial, four segments, a small gap between each so the divisions
+  // read as steps rather than as a continuous sweep.
   const startDeg = 135;
   const totalSweep = 270;
-  const progressSweep = (clamped / 100) * totalSweep;
+  const gapDeg = 6;
+  const segmentSweep = (totalSweep - gapDeg * (BINS.length - 1)) / BINS.length;
 
   const polar = (deg: number): [number, number] => {
     const rad = (deg * Math.PI) / 180;
     return [cx + radius * Math.cos(rad), cy + radius * Math.sin(rad)];
   };
 
-  const [x0, y0] = polar(startDeg);
-  const [xTrackEnd, yTrackEnd] = polar(startDeg + totalSweep);
-  const [xProgressEnd, yProgressEnd] = polar(startDeg + progressSweep);
+  const arc = (fromDeg: number, sweep: number): string => {
+    const [x0, y0] = polar(fromDeg);
+    const [x1, y1] = polar(fromDeg + sweep);
+    return `M ${x0} ${y0} A ${radius} ${radius} 0 ${sweep > 180 ? 1 : 0} 1 ${x1} ${y1}`;
+  };
 
-  const trackPath = `M ${x0} ${y0} A ${radius} ${radius} 0 1 1 ${xTrackEnd} ${yTrackEnd}`;
-  const progressPath =
-    progressSweep > 0
-      ? `M ${x0} ${y0} A ${radius} ${radius} 0 ${progressSweep > 180 ? 1 : 0} 1 ${xProgressEnd} ${yProgressEnd}`
-      : "";
+  // Segments are drawn worst-first so the dial fills clockwise from the left,
+  // which puts the reached segment where the eye expects a "level" to end.
+  const segments = BINS.map((_, index) => BINS.length - 1 - index).map(
+    (binIndex, position) => ({
+      binIndex,
+      d: arc(startDeg + position * (segmentSweep + gapDeg), segmentSweep),
+      // Everything from the worst bin up to this place's own bin is filled.
+      filled: binIndex >= activeIndex,
+    }),
+  );
 
-  const numberFontSize = size === "lg" ? 40 : 30;
-  const a11yDesc = `${Math.round(clamped)} out of 100. ${resolvedLabel}.${sub ? ` ${sub}.` : ""}`;
+  const wordFontSize = size === "lg" ? 17 : 13;
+  const a11yDesc = `Match: ${resolvedLabel}.${sub ? ` ${sub}.` : ""}`;
 
   return (
     <div
@@ -72,37 +102,31 @@ export function ScoreGauge({
         role="img"
         aria-label={a11yDesc}
       >
-        <title>Match score gauge</title>
+        <title>Match verdict</title>
         <desc>{a11yDesc}</desc>
-        <path
-          d={trackPath}
-          fill="none"
-          stroke="#D9D5C8"
-          strokeWidth={stroke}
-          strokeLinecap="round"
-        />
-        {progressPath ? (
+        {segments.map((segment) => (
           <path
-            d={progressPath}
+            key={segment.binIndex}
+            d={segment.d}
             fill="none"
-            stroke={hex}
+            stroke={segment.filled ? hex : "#D9D5C8"}
             strokeWidth={stroke}
-            strokeLinecap="round"
+            strokeLinecap="butt"
           />
-        ) : null}
+        ))}
         <text
           x={cx}
           y={cy}
           textAnchor="middle"
           dominantBaseline="central"
-          fontFamily="var(--font-display)"
-          fontSize={numberFontSize}
-          fontWeight={500}
-          letterSpacing="-0.02em"
+          fontFamily="var(--font-mono)"
+          fontSize={wordFontSize}
+          fontWeight={600}
+          letterSpacing="0.04em"
           fill="#0F1B2D"
           aria-hidden="true"
         >
-          {Math.round(clamped)}
+          {scoreShortLabel(clamped).toUpperCase()}
         </text>
       </svg>
       <div className="mt-3 text-center">

@@ -19,6 +19,7 @@ import {
 import {
   BUCKET_SCORES,
   DEFAULT_PREFERENCES,
+  SCORE_HEX,
   isDefaultPreferences,
   preferenceRanges,
   type WeatherPreferences,
@@ -89,6 +90,13 @@ const MISSING_FILL = "#D9D5C8";
 const MISSING_SENTINEL = -9999;
 
 /**
+ * The "Avoid" fill, reused by the safety veto. Read from the shared palette
+ * rather than repeating the literal below it: the veto and the bottom bin have
+ * to be the same colour, because to a traveller they are the same verdict.
+ */
+const SCORE_AVOID_HEX = SCORE_HEX.avoid;
+
+/**
  * The 0–100 preference score, computed inside the expression from the feature's
  * own `t_<mm>` / `r_<mm>` / `s_<mm>` properties.
  *
@@ -152,6 +160,24 @@ export function buildPreferenceScoreExpression(
   ];
 }
 
+/**
+ * The traveller's safety veto, as a boolean expression.
+ *
+ * True for a polygon whose baked `safety` level is worse than they accept.
+ * `has` guards the comparison because `to-number` of an absent property is 0,
+ * and a country no government lists carries no `safety` property at all — that
+ * is "unlisted", not "level 0", and it must pass the gate rather than fail it.
+ */
+export function buildSafetyVetoExpression(
+  prefs: WeatherPreferences,
+): ExpressionSpecification {
+  return [
+    "all",
+    ["has", "safety"],
+    [">", ["to-number", ["get", "safety"]], prefs.safetyMax],
+  ];
+}
+
 /** Build the fill-color expression for a given mode + month. */
 export function buildFillColorExpression(
   modeId: DisplayModeId,
@@ -176,11 +202,18 @@ export function buildFillColorExpression(
       ? raw
       : buildPreferenceScoreExpression(preferences, month);
 
-    // Preferences score 0-100 → 4 Atlas bins. Mirrors scoring.ts SCORE_BINS.
+    // Preferences score 0-100 → 4 Atlas bins. Mirrors scoring.ts SCORE_BINS,
+    // with the safety veto ahead of the ramp and the missing test ahead of
+    // both: a polygon carrying no climate series stays grey even when it is
+    // over the traveller's advisory limit, because "we have nothing to say
+    // about this place" outranks "avoid it" — the same order `scoreBucket`
+    // applies, which returns `null` before it considers the veto.
     return [
       "case",
       ["==", score, MISSING_SENTINEL],
       MISSING_FILL,
+      buildSafetyVetoExpression(preferences),
+      SCORE_AVOID_HEX,
       [
         "step",
         score,

@@ -18,6 +18,11 @@ import {
 import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
+import {
+  Temperature,
+  TemperatureDelta,
+  TemperatureRange,
+} from "@/components/units";
 import { SaveTripButton } from "@/components/trip";
 import { getCountry } from "@/lib/api-client";
 import { routableCountries } from "@/lib/country-routes";
@@ -30,7 +35,7 @@ import {
   monthIndex,
   type MonthSlug,
 } from "@/lib/months";
-import { DEFAULT_PREFERENCES } from "@/lib/scoring";
+import { DEFAULT_PREFERENCES, scoreLabel } from "@/lib/scoring";
 import {
   estimateRegionMonthScore,
   findRegion,
@@ -333,10 +338,15 @@ function RegionHero({
   bestLabel: string;
   delta: number;
 }) {
-  const deltaStr =
-    delta === 0
-      ? "same as the national mean"
-      : `${delta > 0 ? "+" : ""}${delta.toFixed(1)}°C vs. ${country.name} mean`;
+  const deltaNode =
+    delta === 0 ? (
+      "same as the national mean"
+    ) : (
+      <>
+        {delta > 0 ? "+" : "−"}
+        <TemperatureDelta value={Math.abs(delta)} /> vs. {country.name} mean
+      </>
+    );
   return (
     <section className="relative overflow-hidden border-b border-border bg-surface">
       <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-6 py-12 md:grid-cols-[1.15fr_1fr] md:px-12 md:py-16">
@@ -358,12 +368,12 @@ function RegionHero({
             <div className="flex gap-2">
               <dt className="text-text-subtle">Range</dt>
               <dd className="text-text">
-                {range.low.toFixed(0)}–{range.high.toFixed(0)}°C
+                <TemperatureRange low={range.low} high={range.high} separator="–" />
               </dd>
             </div>
             <div className="flex gap-2">
               <dt className="text-text-subtle">Compare</dt>
-              <dd className="text-text">{deltaStr}</dd>
+              <dd className="text-text">{deltaNode}</dd>
             </div>
             <div className="flex gap-2">
               <dt className="text-text-subtle">Country</dt>
@@ -397,7 +407,7 @@ function RegionHero({
                 Region match
               </div>
               <div className="mt-1 font-display text-[18px] font-medium text-text">
-                {region.score}/100
+                {scoreLabel(region.score)}
               </div>
               <p className="mt-1 max-w-[220px] text-[12px] text-text-muted">
                 Free-tier default preferences. Tune preferences on the map to
@@ -447,7 +457,7 @@ function MonthScoreTable({
                     {r.name}
                   </div>
                   <div className="mt-1 font-mono text-[11px] text-text-muted">
-                    {r.t.toFixed(0)}°C mean
+                    <Temperature value={r.t} /> mean
                   </div>
                 </div>
                 <ScoreBadge score={r.score} size="sm" />
@@ -489,7 +499,7 @@ function NeighbourRegions({
                 className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface p-3 hover:bg-surface-2"
               >
                 <span className="text-[13px] font-medium text-text">{r.name}</span>
-                <ScoreBadge score={r.score} size="sm" label="number" />
+                <ScoreBadge score={r.score} size="sm" />
               </Link>
             </li>
           ))}

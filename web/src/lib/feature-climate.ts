@@ -20,6 +20,8 @@
 
 import { DISPLAY_MODES, modeProperty, type DisplayModeId } from "./display-modes";
 import {
+  BUCKET_SCORES,
+  failsSafetyLimit,
   isDefaultPreferences,
   preferenceScore,
   type WeatherPreferences,
@@ -129,20 +131,36 @@ export function readMonthlyBands(
  * expression uses on the same path. With anything else it scores the feature's
  * `t_/r_/s_` p50s through the shared `preferenceScore`, so the number in the
  * panel is the same number that picked the colour under the cursor.
+ *
+ * Either way the traveller's safety limit vetoes the result: a polygon whose
+ * advisory is worse than they accept scores "Avoid" regardless of its weather.
  */
 export function readPreferenceScore(
   props: FeatureProperties,
   month: number,
   preferences?: WeatherPreferences,
 ): number | null {
+  const safety = readAdvisoryLevel(props);
+
   if (!preferences || isDefaultPreferences(preferences)) {
-    return readNumber(props, monthKey("pref", month));
+    const baked = readNumber(props, monthKey("pref", month));
+    // The baked score is the climate answer only — the pipeline knows nothing
+    // about this traveller's safety limit — so the veto is applied here, on
+    // the same terms `scoreBucket` applies it on the computed path. Without
+    // this, a polygon vetoed by the paint expression would still report its
+    // climate score in the hover card and the panel.
+    if (baked == null) return null;
+    return preferences && failsSafetyLimit(safety, preferences)
+      ? BUCKET_SCORES[0]
+      : baked;
   }
+
   return preferenceScore(
     {
       t: readNumber(props, monthKey("t", month)),
       r: readNumber(props, monthKey("r", month)),
       s: readNumber(props, monthKey("s", month)),
+      safety,
     },
     preferences,
   );

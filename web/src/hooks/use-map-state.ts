@@ -9,6 +9,7 @@
  *   month — 1-indexed month number, 1..12 (default: current month)
  *   unit  — "metric" | "imperial" (default: "metric")
  *   tmin / tmax / rmax / smin — the weather preferences the map scores on
+ *   smax  — worst travel advisory level the traveller accepts (1-4)
  *
  * The preference params are what makes a tuned map shareable, and they are
  * also the reason preferences are not in React state alone: `web/CLAUDE.md`
@@ -31,18 +32,26 @@ import {
 import { useCallback, useMemo } from "react";
 
 import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
+import type { UnitSystem } from "@/lib/units";
 import {
   DEFAULT_PREFERENCES,
   clampPreferences,
   type WeatherPreferences,
 } from "@/lib/scoring";
 
-export type Unit = "metric" | "imperial";
+/**
+ * Alias, not a second vocabulary: `lib/units.ts` owns the type, because the
+ * unit is a site-wide preference the map merely happens to expose a control
+ * for. Two independent string unions here is how a map that says °F ends up
+ * next to a country page that says °C.
+ */
+export type Unit = UnitSystem;
 
 const MODE_IDS = Object.keys(DISPLAY_MODES) as DisplayModeId[];
 
 const modeParser = parseAsStringEnum<DisplayModeId>(MODE_IDS).withDefault("preferences");
 const unitParser = parseAsStringEnum<Unit>(["metric", "imperial"]).withDefault("metric");
+
 const monthParser = parseAsInteger.withDefault(currentMonth());
 
 const preferenceParsers = {
@@ -50,6 +59,9 @@ const preferenceParsers = {
   tmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.tempMax),
   rmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.rainMax),
   smin: parseAsFloat.withDefault(DEFAULT_PREFERENCES.sunMin),
+  // Integer, not float: it is one of four advisory levels, and `parseAsFloat`
+  // would happily carry `smax=2.5` into a comparison against a level.
+  smax: parseAsInteger.withDefault(DEFAULT_PREFERENCES.safetyMax),
 };
 
 function currentMonth(): number {
@@ -95,8 +107,9 @@ export function useMapState(): MapState {
         tempMax: prefsRaw.tmax,
         rainMax: prefsRaw.rmax,
         sunMin: prefsRaw.smin,
+        safetyMax: prefsRaw.smax,
       }),
-    [prefsRaw.tmin, prefsRaw.tmax, prefsRaw.rmax, prefsRaw.smin],
+    [prefsRaw.tmin, prefsRaw.tmax, prefsRaw.rmax, prefsRaw.smin, prefsRaw.smax],
   );
 
   const setPreferences = useCallback(
@@ -107,13 +120,20 @@ export function useMapState(): MapState {
         tmax: clamped.tempMax,
         rmax: clamped.rainMax,
         smin: clamped.sunMin,
+        smax: clamped.safetyMax,
       });
     },
     [setPrefsRaw],
   );
 
   const resetPreferences = useCallback(() => {
-    void setPrefsRaw({ tmin: null, tmax: null, rmax: null, smin: null });
+    void setPrefsRaw({
+      tmin: null,
+      tmax: null,
+      rmax: null,
+      smin: null,
+      smax: null,
+    });
   }, [setPrefsRaw]);
 
   return {

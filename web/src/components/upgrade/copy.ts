@@ -20,7 +20,7 @@ import type { Tier } from "@/lib/types";
 export const PRICING_HERO = {
   eyebrow: "Pricing",
   headline: "Plan trips around the weather you actually like.",
-  sub: "Ten years of ERA5 climate data and five-government travel advisories in one map. Free to explore. €2.99/mo to go deeper.",
+  sub: "Ten years of ERA5 climate data and six-government travel advisories in one map. Free to explore. €2.99/mo to go deeper.",
 } as const;
 
 export const PREMIUM_COPY = {

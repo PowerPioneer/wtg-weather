@@ -215,6 +215,7 @@ describe("getOwnTrip", () => {
     const trip = await getOwnTrip("trip-1");
     expect(trip!.usesDefaultPreferences).toBe(true);
     expect(trip!.preferences).toEqual({
+      safetyMax: 3,
       tempMin: 18,
       tempMax: 28,
       rainMax: 2.7,

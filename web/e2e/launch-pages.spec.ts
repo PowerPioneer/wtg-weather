@@ -124,7 +124,15 @@ test.describe("legal pages", () => {
 
   test("the privacy page enumerates the cookies the app sets", async ({ page }) => {
     await page.goto("/privacy");
-    for (const cookie of ["wtg_session", "wtg_oauth_state", "wtg_checkout_intent"]) {
+    for (const cookie of [
+      "wtg_session",
+      "wtg_oauth_state",
+      "wtg_checkout_intent",
+      // The unit preference. Listed here for the same reason as the rest: the
+      // page claims to enumerate every cookie the app sets, and a policy that
+      // misses one is wrong in the direction that matters.
+      "wtg_unit",
+    ]) {
       await expect(page.getByText(cookie, { exact: true })).toBeVisible();
     }
   });

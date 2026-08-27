@@ -50,7 +50,7 @@ export default async function HomePage() {
                 <span className="italic text-[#8A4A1E]">you actually like.</span>
               </h1>
               <p className="max-w-[640px] text-[17px] leading-[1.6] text-text-muted">
-                Ten years of ERA5 climate data and five-government travel advisories in one map.
+                Ten years of ERA5 climate data and six-government travel advisories in one map.
                 Free to explore; Premium for district-level depth and percentile bands.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -108,7 +108,7 @@ export default async function HomePage() {
                         <span className="font-display text-[22px] font-medium text-text">
                           {f.name}
                         </span>
-                        <ScoreBadge score={f.score} size="sm" label="number" />
+                        <ScoreBadge score={f.score} size="sm" />
                       </div>
                       <div className="font-mono text-[11.5px] text-text-muted">
                         {f.region} · {f.monthName}

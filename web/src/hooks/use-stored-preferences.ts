@@ -11,9 +11,12 @@
  *
  * Precedence is URL-first: a shared link must show what its sender saw, not
  * what the recipient happens to have saved. Stored preferences are therefore
- * applied only when the URL carried none, which is what `isDefaultPreferences`
- * detects — nuqs strips a param equal to its default, so "default" and "absent
- * from the URL" are the same state.
+ * applied only when the URL carried none, which is what
+ * `isDefaultPreferenceSet` detects — nuqs strips a param equal to its default,
+ * so "default" and "absent from the URL" are the same state. It has to be the
+ * whole-set predicate rather than the climate-only one: a link carrying just
+ * `?smax=1` is still a link that said something, and hydrating over it would
+ * show the reader their own safety limit on someone else's map.
  *
  * Anonymous visitors get a 401 from the store on the first read; that disables
  * writes for the session rather than retrying on every slider drag.
@@ -23,13 +26,22 @@ import { useEffect, useRef } from "react";
 
 import { fetchOnboarding, patchOnboarding } from "@/lib/api-client";
 import {
-  isDefaultPreferences,
+  isDefaultPreferenceSet,
   parseWeatherPreferences,
   type WeatherPreferences,
 } from "@/lib/scoring";
+import { parseUnitSystem, type UnitSystem } from "@/lib/units";
 
 /** Key inside the onboarding `data` blob. */
 export const STORED_PREFERENCES_KEY = "mapPreferences";
+
+/**
+ * The unit rides in the same record, for the same reason: the cookie the
+ * `UnitProvider` reads belongs to one browser, and a signed-in user opening
+ * the map on their phone should not have to say °F again. The cookie still
+ * wins on a device that has one — it is this browser's most recent statement.
+ */
+export const STORED_UNIT_KEY = "mapUnit";
 
 /** Slider drags fire continuously; only the value they settle on is worth a request. */
 const PERSIST_DEBOUNCE_MS = 800;
@@ -39,6 +51,12 @@ export type UseStoredPreferencesOptions = {
   preferences: WeatherPreferences;
   /** Called at most once, with preferences read back from the user's record. */
   onHydrate: (preferences: WeatherPreferences) => void;
+  /** The unit currently rendering, mirrored into the same record. */
+  unit?: UnitSystem;
+  /** Whether this browser already had a unit cookie — if so, it wins. */
+  unitFromThisBrowser?: boolean;
+  /** Called at most once, with a unit read back from the user's record. */
+  onHydrateUnit?: (unit: UnitSystem) => void;
 };
 
 /** Narrow the untyped onboarding `data` blob to preferences we can trust. */
@@ -49,12 +67,27 @@ export function readStoredPreferences(
 }
 
 function fingerprint(prefs: WeatherPreferences): string {
-  return `${prefs.tempMin}|${prefs.tempMax}|${prefs.rainMax}|${prefs.sunMin}`;
+  return [
+    prefs.tempMin,
+    prefs.tempMax,
+    prefs.rainMax,
+    prefs.sunMin,
+    prefs.safetyMax,
+  ].join("|");
+}
+
+export function readStoredUnit(
+  data: Record<string, unknown> | null | undefined,
+): UnitSystem | null {
+  return parseUnitSystem(data?.[STORED_UNIT_KEY]);
 }
 
 export function useStoredPreferences({
   preferences,
   onHydrate,
+  unit,
+  unitFromThisBrowser = false,
+  onHydrateUnit,
 }: UseStoredPreferencesOptions): void {
   // Whether the store answered at all — anonymous sessions never write.
   const writableRef = useRef(false);
@@ -65,11 +98,16 @@ export function useStoredPreferences({
   // it resolves rather than what was there when it started.
   const onHydrateRef = useRef(onHydrate);
   const preferencesRef = useRef(preferences);
+  const onHydrateUnitRef = useRef(onHydrateUnit);
+  const unitFromThisBrowserRef = useRef(unitFromThisBrowser);
+  const lastSavedUnitRef = useRef<UnitSystem | null>(null);
 
   // Declared first so it has run before the read effect below on mount.
   useEffect(() => {
     onHydrateRef.current = onHydrate;
     preferencesRef.current = preferences;
+    onHydrateUnitRef.current = onHydrateUnit;
+    unitFromThisBrowserRef.current = unitFromThisBrowser;
   });
 
   useEffect(() => {
@@ -81,11 +119,21 @@ export function useStoredPreferences({
         writableRef.current = true;
         const stored = readStoredPreferences(state.data);
         // The URL wins when it carried anything at all.
-        if (stored && isDefaultPreferences(preferencesRef.current)) {
+        if (stored && isDefaultPreferenceSet(preferencesRef.current)) {
           lastSavedRef.current = fingerprint(stored);
           onHydrateRef.current(stored);
         } else {
           lastSavedRef.current = stored ? fingerprint(stored) : null;
+        }
+
+        const storedUnit = readStoredUnit(state.data);
+        if (storedUnit) {
+          lastSavedUnitRef.current = storedUnit;
+          // Only for a browser that has never been told: a cookie here is a
+          // more recent statement than whatever another device wrote.
+          if (!unitFromThisBrowserRef.current) {
+            onHydrateUnitRef.current?.(storedUnit);
+          }
         }
       })
       .catch(() => {
@@ -116,4 +164,15 @@ export function useStoredPreferences({
 
     return () => clearTimeout(timer);
   }, [preferences]);
+
+  useEffect(() => {
+    if (!unit) return;
+    if (!hydratedRef.current || !writableRef.current) return;
+    if (unit === lastSavedUnitRef.current) return;
+    // No debounce: a unit changes on a click, not on a drag.
+    lastSavedUnitRef.current = unit;
+    void patchOnboarding({ data: { [STORED_UNIT_KEY]: unit } }).catch(() => {
+      lastSavedUnitRef.current = null;
+    });
+  }, [unit]);
 }

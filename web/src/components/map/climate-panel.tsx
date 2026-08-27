@@ -16,6 +16,8 @@
 
 import Link from "next/link";
 
+import { useDragDismiss } from "@/hooks/use-drag-dismiss";
+
 import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/components/charts";
 import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { ScoreBadge } from "@/components/match";
@@ -34,8 +36,9 @@ import {
 import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
 import {
   DEFAULT_PREFERENCES,
-  isDefaultPreferences,
-  scoreLabel,
+  SAFETY_LIMIT_LABEL,
+  failsSafetyLimit,
+  isDefaultPreferenceSet,
   type WeatherPreferences,
 } from "@/lib/scoring";
 
@@ -104,13 +107,18 @@ export function ClimatePanel({
   const monthName = MONTH_NAMES[monthSlug];
   const score = readPreferenceScore(properties, month, preferences);
   const advisory = readAdvisoryLevel(properties);
-  const custom = preferences != null && !isDefaultPreferences(preferences);
+  const custom = preferences != null && !isDefaultPreferenceSet(preferences);
+  const safetyLimit = (preferences ?? DEFAULT_PREFERENCES).safetyMax;
+  const vetoed =
+    advisory != null && failsSafetyLimit(advisory, preferences ?? DEFAULT_PREFERENCES);
   const charts = CHART_SERIES.map((series) => ({
     kind: series.kind,
     months: buildMonths(properties, series.alias, series.variable),
   })).filter((c): c is { kind: ClimateChartKind; months: MonthDatum[] } =>
     c.months !== null,
   );
+
+  const drag = useDragDismiss({ onDismiss: onClose });
 
   const place = identity.name || country?.name || "Selected area";
   const context =
@@ -126,13 +134,45 @@ export function ClimatePanel({
       aria-label={`Climate detail — ${place}`}
       data-testid="climate-panel"
       data-feature-id={identity.id}
+      style={{
+        // Only ever moves on touch: `handleProps` live on the grab handle,
+        // which is `md:hidden`. On desktop the panel is a side rail and this
+        // stays at 0.
+        transform: drag.offset ? `translateY(${drag.offset}px)` : undefined,
+        transition: drag.dragging ? "none" : "transform 180ms ease-out",
+      }}
       className={cn(
-        "pointer-events-auto absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col border-t border-border bg-surface shadow-lg",
-        "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[420px] md:border-l md:border-t-0",
+        "pointer-events-auto absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col rounded-t-xl border-t border-border bg-surface shadow-lg",
+        "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[420px] md:rounded-none md:border-l md:border-t-0",
         className,
       )}
     >
-      <header className="flex items-start justify-between gap-3 border-b border-border px-6 py-5">
+      {/*
+        Grab handle. Phones only — a mouse has the close button and the Escape
+        key, and a side rail has nowhere to be dragged to. It is a real button
+        rather than a decorative bar so that the affordance is not touch-only:
+        tab to it and press Enter and the panel closes, which is the same
+        outcome the drag has.
+      */}
+      <button
+        type="button"
+        onClick={() => {
+          // A drag that sprang back still ends in a click; only a genuine tap
+          // should close.
+          if (!drag.didDrag()) onClose();
+        }}
+        aria-label="Drag down to close"
+        data-testid="climate-panel-handle"
+        className="flex w-full shrink-0 touch-none items-center justify-center py-3 outline-none md:hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color:var(--color-focus-ring)]"
+        {...drag.handleProps}
+      >
+        <span
+          aria-hidden="true"
+          className="h-1 w-10 rounded-full bg-border-strong"
+        />
+      </button>
+
+      <header className="flex items-start justify-between gap-3 border-b border-border px-6 pb-5 pt-1 md:pt-5">
         <div className="min-w-0">
           <div className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-text-muted">
             Climate · 10-year ERA5 reanalysis
@@ -156,15 +196,35 @@ export function ClimatePanel({
 
       <div className="flex-1 overflow-y-auto px-6 py-5">
         <div className="flex items-center gap-3 rounded-md bg-surface-sunken px-4 py-3">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.12em] text-text-muted">
               {monthName} match · {custom ? "your preferences" : "default preferences"}
             </div>
-            <div className="mt-0.5 font-display text-[17px] font-medium text-text">
-              {score == null ? "No score for this area" : scoreLabel(score)}
-            </div>
+            {/*
+              The verdict is the badge to the right and nowhere else. Printing
+              the same four words twice, once in display type and once inside
+              the colour chip, was what removing the number left behind — the
+              chip used to carry a number and the line carried the word.
+            */}
+            {score == null ? (
+              <div className="mt-0.5 font-display text-[17px] font-medium text-text">
+                No match for this area
+              </div>
+            ) : null}
+            {/*
+              When the advisory is what decided the verdict, say so. Otherwise
+              a place with excellent weather reads "Avoid" for no visible
+              reason — the colour is right and the explanation is missing.
+            */}
+            {vetoed ? (
+              <div className="mt-1 text-[12px] leading-snug text-text-muted">
+                Advisory level {advisory} is above your limit (
+                {SAFETY_LIMIT_LABEL[safetyLimit].toLowerCase()}), so this reads
+                Avoid whatever the weather does.
+              </div>
+            ) : null}
           </div>
-          {score == null ? null : <ScoreBadge score={score} size="lg" label="number" />}
+          {score == null ? null : <ScoreBadge score={score} size="lg" />}
         </div>
 
         {/*

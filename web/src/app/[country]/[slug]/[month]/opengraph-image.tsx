@@ -6,6 +6,7 @@ import {
   estimateRegionMonthScore,
   regionMonthRank,
 } from "@/lib/regions";
+import { scoreLabel } from "@/lib/scoring";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
@@ -44,7 +45,7 @@ export default async function OG({
         <div style={tagline}>how the month reads</div>
         <div style={{ flex: 1 }} />
         <div style={statsRow}>
-          <Stat label="Match" value={`${score}/100`} />
+          <Stat label="Match" value={scoreLabel(score)} />
           <Stat label="Temperature" value={`${temp.toFixed(0)}°C`} />
           <Stat label="Month rank" value={`${rank} of 12`} />
         </div>

@@ -32,6 +32,38 @@ pnpm dev
   happens client-side by updating style paint expressions — no re-fetch.
 - **Scoring** lives in `lib/scoring.ts`. Pure functions, unit-tested,
   shared between the map paint expressions and the SSR pages.
+- **The 0–100 score is never rendered.** It is how the rule, the paint
+  expression and every sort order work, and it stops there: the rule has four
+  outcomes, not a hundred (the four values are bucket centroids), so a numeral
+  claimed a precision it does not have. Every surface shows one of four words —
+  Perfect match / Good option / Acceptable / Avoid — via `ScoreBadge`,
+  `ScoreGauge`, `MatchTooltip` or `ScoreRamp`. Do not reintroduce a numeral,
+  a percentage, an "x/100", or a proportional gauge arc.
+- **The safety limit is a veto, not a fourth variable.** `WeatherPreferences.
+  safetyMax` (1–4, default 3) drops any place whose baked `safety` level is
+  worse than it to "Avoid", whatever the weather does. It is applied in
+  `scoreBucket`, in `readPreferenceScore` (both the baked and the computed
+  path) and in `buildFillColorExpression`, which must agree — `map-style.test.
+  ts` pins them together. It is deliberately absent from the pipeline's
+  `pref_<mm>`: the answer differs per traveller, and the advisory moves weekly
+  while the climatology moves yearly. Hence two predicates —
+  `isDefaultPreferences` (climate only, decides whether the map may read the
+  baked score) and `isDefaultPreferenceSet` (everything, for UI affordances).
+- **Rainfall is chosen as a level, scored as a ceiling.** `RAIN_LEVELS` maps
+  five words to mm/day ceilings. Four are the band's upper edge; "Light rain"
+  selects **2.7**, the pipeline's own default, so that picking the default band
+  cannot recolour the map for a traveller who changed nothing.
+- **Units**: `lib/units.ts` converts and formats; every stored and scored value
+  stays metric and is converted only at render. The preference is resolved in
+  the browser by `UnitProvider` because country pages are statically generated,
+  and it lives in a **readable** `wtg_unit` cookie — the one deliberate
+  exception to the HttpOnly rule below, because client JS cannot read an
+  HttpOnly cookie and a static page has no other way to know. Precedence:
+  `?unit=` → cookie → metric. Signed-in users also carry it in their account
+  record (`useStoredPreferences`), which loses to this browser's cookie.
+  Render through `components/units` (`<Temperature>`, `<RainfallMonthly>`, …)
+  rather than interpolating a unit into a string; note `<TemperatureDelta>`
+  exists because a *difference* converts by ratio without the +32 offset.
 - **Auth state**: server-side via `cookies()` in RSC, client-side via
   a `useSession()` hook that reads a lightweight `/api/me` endpoint.
 
@@ -44,9 +76,18 @@ pnpm dev
   enhancement only. Test with JS disabled.
 - Use `next/image` for everything non-map. Never `<img>` in RSC.
 - No `localStorage` for preferences — use an HttpOnly cookie set via API,
-  or URL search params for shareable states.
+  or URL search params for shareable states. The one exception is `wtg_unit`
+  (see Units above): it must be readable by client JS on a static page, it
+  carries one of two words, and it is mirrored into the account record.
 - Lighthouse budget: LCP < 2.0s, CLS < 0.05, TBT < 100ms. Regressions
-  block merge.
+  block merge. `ClimateChart` is a Client Component *only* so it can convert
+  to °F/inches; it still server-renders its SVG, so a no-JS reader gets the
+  whole chart.
+- Mobile: the header wraps the full product name onto two tight lines below
+  `sm` and collapses its nav into a `<details>` disclosure (no client JS, works
+  with JS disabled). The climate panel is a bottom sheet on a phone and must
+  stay dismissable by dragging it down — `useDragDismiss`; a corner × alone is
+  not reachable with a thumb, and every native bottom sheet closes that way.
 
 ## Design reference
 

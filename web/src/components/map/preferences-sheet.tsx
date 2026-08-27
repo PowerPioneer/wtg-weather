@@ -8,6 +8,7 @@
 
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import type { WeatherPreferences } from "@/lib/scoring";
+import type { UnitSystem } from "@/lib/units";
 
 import type { PremiumFeature } from "./inline-upgrade-popover";
 import { PreferencesPanel } from "./preferences-panel";
@@ -17,6 +18,7 @@ export type PreferencesSheetProps = {
   onOpenChange: (open: boolean) => void;
   value: WeatherPreferences;
   onChange: (next: WeatherPreferences) => void;
+  onUnitChange?: (next: UnitSystem) => void;
   onReset: () => void;
   isPremium: boolean;
   onUpgradeClick?: (feature: PremiumFeature) => void;
@@ -27,6 +29,7 @@ export function PreferencesSheet({
   onOpenChange,
   value,
   onChange,
+  onUnitChange,
   onReset,
   isPremium,
   onUpgradeClick,
@@ -45,8 +48,10 @@ export function PreferencesSheet({
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-6 pt-3">
           <PreferencesPanel
+            showHeading={false}
             value={value}
             onChange={onChange}
+            onUnitChange={onUnitChange}
             onReset={onReset}
             isPremium={isPremium}
             onUpgradeClick={onUpgradeClick}

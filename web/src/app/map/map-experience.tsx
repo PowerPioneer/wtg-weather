@@ -38,6 +38,7 @@ import { useCheckout } from "@/hooks/use-checkout";
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
 import { useStoredPreferences } from "@/hooks/use-stored-preferences";
+import { useUnit } from "@/components/units";
 import { PREMIUM_FEATURE_COPY } from "@/components/upgrade";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { findCountryByIso2 } from "@/lib/countries";
@@ -49,7 +50,8 @@ import {
   type FeatureProperties,
 } from "@/lib/feature-climate";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
-import { isDefaultPreferences } from "@/lib/scoring";
+import { isDefaultPreferenceSet } from "@/lib/scoring";
+import type { UnitSystem } from "@/lib/units";
 
 const MapCanvas = dynamic(
   () => import("@/components/map/map-canvas").then((m) => m.MapCanvas),
@@ -96,6 +98,7 @@ export function MapExperience({
     preferences,
     setMode,
     setMonth,
+    setUnit,
     setPreferences,
     resetPreferences,
   } = useMapState();
@@ -104,7 +107,16 @@ export function MapExperience({
 
   // Signed-in users carry their preferences between devices; the URL still
   // wins, so a shared link shows the sender's map rather than the reader's.
-  useStoredPreferences({ preferences, onHydrate: setPreferences });
+  // The unit rides in the same record under the same shape of rule: this
+  // browser's cookie beats another device's history.
+  const units = useUnit();
+  useStoredPreferences({
+    preferences,
+    onHydrate: setPreferences,
+    unit: units.unit,
+    unitFromThisBrowser: units.fromThisBrowser,
+    onHydrateUnit: units.adoptUnit,
+  });
 
   const [isMobile, setIsMobile] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -248,9 +260,17 @@ export function MapExperience({
     checkout.reset();
   }, [checkout]);
 
+  // The unit is stored site-wide by `UnitProvider`; mirroring it into the URL
+  // is what makes a shared map link show its sender's units rather than the
+  // reader's. Same URL-wins precedence the weather preferences follow.
+  const handleUnitChange = useCallback(
+    (next: UnitSystem) => setUnit(next),
+    [setUnit],
+  );
+
   const activeMode = DISPLAY_MODES[mode];
   const monthLabel = MONTH_SHORT[MONTH_SLUGS[month - 1]];
-  const prefsAreDefault = isDefaultPreferences(preferences);
+  const prefsAreDefault = isDefaultPreferenceSet(preferences);
 
   return (
     <div className="relative h-[calc(100vh-var(--size-header,56px))] w-full bg-surface-sunken">
@@ -356,11 +376,17 @@ export function MapExperience({
         <div
           role="dialog"
           aria-label="Weather preferences"
-          className="pointer-events-auto absolute left-4 top-[60px] z-20 w-[320px] rounded-lg border border-border bg-surface p-4 shadow-lg"
+          // Capped and scrollable: the panel grew two controls (the advisory
+          // limit and the unit switch) and at 320px wide it is taller than a
+          // 13" laptop viewport, so without this the Reset button and the
+          // premium-layer card sat below the bottom of the screen with no way
+          // to reach them.
+          className="pointer-events-auto absolute left-4 top-[60px] z-20 max-h-[calc(100vh-var(--size-header,56px)-5rem)] w-[320px] overflow-y-auto overscroll-contain rounded-lg border border-border bg-surface p-4 shadow-lg"
         >
           <PreferencesPanel
             value={preferences}
             onChange={handlePreferencesChange}
+            onUnitChange={handleUnitChange}
             onReset={resetPreferences}
             isPremium={isPremium}
             onUpgradeClick={handleUpgradeFromMap}
@@ -401,6 +427,7 @@ export function MapExperience({
           onOpenChange={setPrefsOpen}
           value={preferences}
           onChange={handlePreferencesChange}
+          onUnitChange={handleUnitChange}
           onReset={resetPreferences}
           isPremium={isPremium}
           onUpgradeClick={handleUpgradeFromMap}

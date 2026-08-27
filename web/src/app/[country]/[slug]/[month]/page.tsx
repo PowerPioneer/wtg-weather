@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,6 +7,7 @@ import { ClimateChart } from "@/components/charts";
 import { PlanCta, RegionAdvisoryNotice, SafetySection } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
+import { Temperature, TemperatureDelta } from "@/components/units";
 import { getRegion } from "@/lib/api-client";
 import {
   MONTH_NAMES,
@@ -185,7 +187,7 @@ function RegionMonthHero({
   monthName: string;
   score: number;
   rank: number;
-  narrative: string;
+  narrative: ReactNode;
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-surface">
@@ -249,12 +251,21 @@ function RegionMonthStats({
   bestMonths: string;
 }) {
   const temp = region.tl[monthIdx];
-  const deltaStr =
-    tempDelta === 0
-      ? "same as yearly mean"
-      : `${tempDelta > 0 ? "+" : ""}${tempDelta.toFixed(1)}°C vs. yearly mean`;
-  const cards: { label: string; value: string; note?: string }[] = [
-    { label: "Temperature", value: `${temp.toFixed(0)}°C`, note: deltaStr },
+  const deltaNote =
+    tempDelta === 0 ? (
+      "same as yearly mean"
+    ) : (
+      <>
+        {tempDelta > 0 ? "+" : "−"}
+        <TemperatureDelta value={Math.abs(tempDelta)} /> vs. yearly mean
+      </>
+    );
+  const cards: { label: string; value: ReactNode; note?: ReactNode }[] = [
+    {
+      label: "Temperature",
+      value: <Temperature value={temp} />,
+      note: deltaNote,
+    },
     { label: "Month rank", value: `${rank} of 12`, note: `for ${region.name}` },
     { label: "Best months", value: bestMonths, note: "highest regional score" },
   ];
@@ -347,7 +358,7 @@ function RegionMonthPagerCard({
           {name}
         </div>
         <p className="mt-1 font-mono text-[11px] text-text-muted">
-          {temp.toFixed(0)}°C in {MONTH_SHORT[slug]}
+          <Temperature value={temp} /> in {MONTH_SHORT[slug]}
         </p>
       </div>
       <ScoreBadge score={score} size="md" />
@@ -367,7 +378,7 @@ function buildNarrative({
   monthName: string;
   rank: number;
   tempDelta: number;
-}): string {
+}): ReactNode {
   const rankPhrase =
     rank <= 3
       ? `one of the strongest months for ${regionName}`
@@ -377,10 +388,18 @@ function buildNarrative({
           ? `a mixed month — worth planning against specific weeks`
           : `a challenging month for ${regionName} overall`;
   const tempPhrase =
-    Math.abs(tempDelta) < 0.5
-      ? `average temperatures for the region`
-      : tempDelta > 0
-        ? `warmer than the yearly mean by ${tempDelta.toFixed(1)}°C`
-        : `cooler than the yearly mean by ${Math.abs(tempDelta).toFixed(1)}°C`;
-  return `${monthName} is ${rankPhrase} inside ${countryName}, with ${tempPhrase}. The safety bulletins below apply.`;
+    Math.abs(tempDelta) < 0.5 ? (
+      "average temperatures for the region"
+    ) : (
+      <>
+        {tempDelta > 0 ? "warmer" : "cooler"} than the yearly mean by{" "}
+        <TemperatureDelta value={Math.abs(tempDelta)} />
+      </>
+    );
+  return (
+    <>
+      {monthName} is {rankPhrase} inside {countryName}, with {tempPhrase}. The
+      safety bulletins below apply.
+    </>
+  );
 }

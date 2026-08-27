@@ -51,14 +51,45 @@ export type WeatherPreferences = {
   rainMax: number;
   /** Least sunshine the traveller wants, hours/day. */
   sunMin: number;
+  /**
+   * Worst travel advisory the traveller is willing to consider, 1–4.
+   *
+   * Unlike the three above, this is not a climate variable and is **not** part
+   * of the baked `pref_<mm>` score — the pipeline could not bake it, because
+   * the answer differs per traveller and the advisory moves weekly while the
+   * climatology moves yearly. It is applied as a gate on top of the climate
+   * score (see {@link scoreBucket}): a place whose advisory is worse than this
+   * reads "Avoid" whatever its weather does. The advisory level itself is a
+   * month-less `safety` property on every polygon, so the gate costs nothing
+   * beyond a comparison.
+   */
+  safetyMax: AdvisoryLimit;
 };
 
-/** Mirrors `DEFAULT_PREFERENCES` in `pipeline/processing/scoring.py`. */
+/** Advisory levels, as the pipeline's six-government consensus reports them. */
+export type AdvisoryLimit = 1 | 2 | 3 | 4;
+
+/**
+ * Level 3 rather than v1's level 2.
+ *
+ * At level 2 the map's first impression is every Level-3 *and* Level-4 country
+ * painted "Avoid" before the visitor has expressed any preference at all —
+ * which is a strong editorial claim to make on their behalf. Level 3 forces
+ * only "Do not travel" to the bottom by default and leaves tightening to the
+ * traveller.
+ */
+export const DEFAULT_SAFETY_MAX: AdvisoryLimit = 3;
+
+/**
+ * Mirrors `DEFAULT_PREFERENCES` in `pipeline/processing/scoring.py` for the
+ * three climate variables. `safetyMax` has no counterpart there by design.
+ */
 export const DEFAULT_PREFERENCES: WeatherPreferences = {
   tempMin: 18,
   tempMax: 28,
   rainMax: 2.7,
   sunMin: 6,
+  safetyMax: DEFAULT_SAFETY_MAX,
 };
 
 /**
@@ -77,7 +108,113 @@ export const PREFERENCE_LIMITS = {
   temp: { min: -10, max: 45, step: 1 },
   rain: { min: 0, max: 12, step: 0.1 },
   sun: { min: 0, max: SUN_MAX, step: 0.5 },
+  safety: { min: 1, max: 4, step: 1 },
 } as const;
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Rainfall, as a level rather than a number
+ *
+ * "3 mm/day" is a figure almost nobody can picture, and asking a traveller to
+ * pick a millimetre ceiling asks them to translate a preference they hold
+ * ("I don't mind a bit of drizzle") into a unit they have no feel for. The
+ * five bands below are the vocabulary the v1 site used, and the slider now
+ * moves between them; the millimetre ceiling they map to is what actually
+ * reaches the scoring rule, unchanged.
+ *
+ * `max` is the ceiling a level selects. Four of the five are the band's own
+ * upper edge. "Light rain" is the exception: it selects **2.7**, the
+ * pipeline's `DEFAULT_PREFERENCES.rainMax`, not the band's 3.
+ *
+ * That is deliberate and worth the asymmetry. The map paints the pipeline's
+ * baked `pref_<mm>` whenever the preferences are the baked defaults, and
+ * computes the score itself otherwise (`buildFillColorExpression`). If picking
+ * the default band produced 3.0, then dragging the slider away and back would
+ * land on a *different* ceiling from the one the map started with, and every
+ * polygon whose rainfall sits between 2.7 and 3.0 would change colour — the
+ * exact "map jumps when you drag a slider back to where it began" failure the
+ * scoring module is built to avoid. The displayed band is honest either way:
+ * the buffer around the ceiling is ±1.3 mm/day, an order of magnitude wider
+ * than the 0.3 in question.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+export type RainLevel = {
+  /** 1-based, and the value the slider's `<input type="range">` carries. */
+  level: 1 | 2 | 3 | 4 | 5;
+  /** The word a traveller picks. */
+  label: string;
+  /** The band, in the units the data is published in. */
+  band: string;
+  /** mm/day ceiling this level selects. */
+  max: number;
+  /** Upper edge of the band, for classifying a measured value. `null` = open. */
+  bandMax: number | null;
+};
+
+export const RAIN_LEVELS: readonly RainLevel[] = [
+  { level: 1, label: "Dry", band: "0–1 mm/day", max: 1, bandMax: 1 },
+  { level: 2, label: "Light rain", band: "1–3 mm/day", max: 2.7, bandMax: 3 },
+  { level: 3, label: "Moderate rain", band: "3–5 mm/day", max: 5, bandMax: 5 },
+  { level: 4, label: "Rainy", band: "5–10 mm/day", max: 10, bandMax: 10 },
+  {
+    level: 5,
+    label: "Very wet",
+    band: "10+ mm/day",
+    max: PREFERENCE_LIMITS.rain.max,
+    bandMax: null,
+  },
+];
+
+/** Longer form, for the level the traveller has actually selected. */
+export const RAIN_LEVEL_BLURB: Record<RainLevel["level"], string> = {
+  1: "Desert-like — rain is the exception",
+  2: "The odd shower, mostly dry days",
+  3: "Rain often enough to plan around",
+  4: "Wet — expect rain most days",
+  5: "Monsoon-scale rainfall",
+};
+
+/**
+ * Which band a measured rainfall figure falls in. Used to caption a readout
+ * ("3.4 mm/day · Moderate rain"), never to score anything.
+ */
+export function rainLevelForValue(mmPerDay: number): RainLevel {
+  for (const level of RAIN_LEVELS) {
+    if (level.bandMax == null || mmPerDay <= level.bandMax) return level;
+  }
+  return RAIN_LEVELS[RAIN_LEVELS.length - 1];
+}
+
+/**
+ * Which level a stored `rainMax` ceiling corresponds to — the inverse of
+ * `RAIN_LEVELS[n].max`, tolerant of a ceiling that came from a hand-edited URL
+ * and matches no level exactly (it lands in whichever band contains it).
+ */
+export function rainLevelForCeiling(rainMax: number): RainLevel {
+  const exact = RAIN_LEVELS.find((l) => l.max === rainMax);
+  return exact ?? rainLevelForValue(rainMax);
+}
+
+/** The mm/day ceiling a level selects. Out-of-range input clamps to the ends. */
+export function rainCeilingForLevel(level: number): number {
+  const index = Math.min(RAIN_LEVELS.length, Math.max(1, Math.round(level))) - 1;
+  return RAIN_LEVELS[index].max;
+}
+
+/** Advisory wording, matching `ADVISORY_LABEL` in `components/safety`. */
+export const SAFETY_LIMIT_LABEL: Record<AdvisoryLimit, string> = {
+  1: "Normal precautions",
+  2: "Caution",
+  3: "Reconsider travel",
+  4: "Do not travel",
+};
+
+/** What choosing that limit means, spelled out under the control. */
+export const SAFETY_LIMIT_BLURB: Record<AdvisoryLimit, string> = {
+  1: "Only places every government rates as normal.",
+  2: "Places rated caution or better.",
+  3: "Everything except “do not travel”.",
+  4: "No safety filter — every advisory level is shown.",
+};
 
 /** Short per-month property aliases the tiles carry, per scored variable. */
 export type ScoredAlias = "t" | "r" | "s";
@@ -114,7 +251,29 @@ export function preferenceRanges(
 export const BUCKET_SCORES: readonly [number, number, number, number] = [25, 60, 75, 90];
 
 /** p50 values in display units, per scored alias. `null` where the tile has none. */
-export type ScoredValues = Partial<Record<ScoredAlias, number | null>>;
+export type ScoredValues = Partial<Record<ScoredAlias, number | null>> & {
+  /**
+   * The polygon's month-less advisory level, where it carries one. Absent or
+   * `null` means no government lists this place — which is not the same as
+   * level 1 and must never fail the gate below.
+   */
+  safety?: number | null;
+};
+
+/**
+ * Whether a place's advisory puts it beyond what the traveller accepts.
+ *
+ * `null`/absent is "no government lists it", which passes: the tiles omit the
+ * property entirely for those polygons and the map already paints them grey in
+ * Safety mode. Treating unknown as unsafe would blank most of the map.
+ */
+export function failsSafetyLimit(
+  safety: number | null | undefined,
+  prefs: WeatherPreferences = DEFAULT_PREFERENCES,
+): boolean {
+  if (safety == null || !Number.isFinite(safety)) return false;
+  return safety > prefs.safetyMax;
+}
 
 /**
  * The 0..3 bucket, or `null` when the feature carries none of the three
@@ -126,6 +285,13 @@ export function scoreBucket(
   values: ScoredValues,
   prefs: WeatherPreferences = DEFAULT_PREFERENCES,
 ): 0 | 1 | 2 | 3 | null {
+  // The safety gate runs first, but only decides the answer for polygons that
+  // have climate data at all: a place with no series stays `null` (grey, "we
+  // have nothing to say") rather than becoming a confident "Avoid" on the
+  // strength of an advisory. Weather is what this score is about; safety is a
+  // veto over it, not a substitute for it.
+  const vetoed = failsSafetyLimit(values.safety, prefs);
+
   let evaluated = 0;
   let inBuffer = 0;
   let outOfBuffer = 0;
@@ -143,6 +309,7 @@ export function scoreBucket(
   }
 
   if (evaluated === 0) return null;
+  if (vetoed) return 0;
   if (outOfBuffer >= 2) return 0;
   if (outOfBuffer === 1) return 1;
   if (inBuffer >= 1) return 2;
@@ -174,7 +341,13 @@ function round1(value: number): number {
  * rather than rejected: it is unambiguous what was meant.
  */
 export function clampPreferences(
-  input: Partial<WeatherPreferences> | null | undefined,
+  input:
+    // `safetyMax` widens to `number` here rather than `AdvisoryLimit`: the
+    // callers are a query string, a JSON blob and a saved trip, none of which
+    // can promise the narrow type. Narrowing it is this function's job.
+    | (Partial<Omit<WeatherPreferences, "safetyMax">> & { safetyMax?: number })
+    | null
+    | undefined,
 ): WeatherPreferences {
   const raw = { ...DEFAULT_PREFERENCES, ...(input ?? {}) };
   let tempMin = clampTo(raw.tempMin, PREFERENCE_LIMITS.temp);
@@ -185,7 +358,17 @@ export function clampPreferences(
     tempMax: round1(tempMax),
     rainMax: round1(clampTo(raw.rainMax, PREFERENCE_LIMITS.rain)),
     sunMin: round1(clampTo(raw.sunMin, PREFERENCE_LIMITS.sun)),
+    safetyMax: clampSafetyMax(raw.safetyMax),
   };
+}
+
+/** 1–4, whole. Anything else is the default rather than a rounded guess. */
+export function clampSafetyMax(value: unknown): AdvisoryLimit {
+  if (typeof value !== "number" || !Number.isFinite(value)) return DEFAULT_SAFETY_MAX;
+  const rounded = Math.round(value);
+  if (rounded < PREFERENCE_LIMITS.safety.min) return PREFERENCE_LIMITS.safety.min;
+  if (rounded > PREFERENCE_LIMITS.safety.max) return PREFERENCE_LIMITS.safety.max;
+  return rounded as AdvisoryLimit;
 }
 
 /**
@@ -211,15 +394,27 @@ export function parseWeatherPreferences(
     tempMax: numeric("tempMax"),
     rainMax: numeric("rainMax"),
     sunMin: numeric("sunMin"),
+    // A record written before the safety limit existed simply has none, and
+    // gets the default — the same treatment every other missing key gets.
+    safetyMax: numeric("safetyMax"),
   };
   if (Object.values(parsed).every((v) => v === undefined)) return null;
   return clampPreferences(parsed);
 }
 
 /**
- * Whether these are the preferences the pipeline baked into `pref_<mm>`.
- * The paint expression reads the baked property when this holds, which keeps
- * the default map identical to what shipped before preferences existed.
+ * Whether the *climate* preferences are the ones the pipeline baked into
+ * `pref_<mm>`. The paint expression reads the baked property when this holds,
+ * which keeps the default map identical to what shipped before preferences
+ * existed.
+ *
+ * Deliberately blind to `safetyMax`: no advisory level is baked into
+ * `pref_<mm>`, so changing the safety limit does not invalidate the baked
+ * climate score — it only changes which polygons are vetoed afterwards. Asking
+ * this question about safety would throw the whole map onto the client-side
+ * scorer for a setting the baked value never depended on. For "has the user
+ * changed anything at all", which is what UI affordances want, use
+ * {@link isDefaultPreferenceSet}.
  */
 export function isDefaultPreferences(prefs: WeatherPreferences): boolean {
   const p = clampPreferences(prefs);
@@ -228,6 +423,18 @@ export function isDefaultPreferences(prefs: WeatherPreferences): boolean {
     p.tempMax === DEFAULT_PREFERENCES.tempMax &&
     p.rainMax === DEFAULT_PREFERENCES.rainMax &&
     p.sunMin === DEFAULT_PREFERENCES.sunMin
+  );
+}
+
+/**
+ * Whether *every* preference is untouched, safety included. This is the
+ * question the "Default / Custom" pill, the Reset button and the stored-
+ * preferences hydration gate are actually asking.
+ */
+export function isDefaultPreferenceSet(prefs: WeatherPreferences): boolean {
+  return (
+    isDefaultPreferences(prefs) &&
+    clampSafetyMax(prefs.safetyMax) === DEFAULT_PREFERENCES.safetyMax
   );
 }
 

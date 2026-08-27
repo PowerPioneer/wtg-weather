@@ -10,7 +10,7 @@ import { MapExperience } from "./map-experience";
 export const metadata: Metadata = {
   title: "Map · Where to Go for Great Weather",
   description:
-    "Explore ten years of climate data and five-government safety advisories on an interactive world map.",
+    "Explore ten years of climate data and six-government safety advisories on an interactive world map.",
 };
 
 // Map bundle is heavy (~250KB gzipped). Keep the RSC light and let

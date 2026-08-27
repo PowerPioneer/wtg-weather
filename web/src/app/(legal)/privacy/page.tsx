@@ -170,10 +170,11 @@ export default function PrivacyPage() {
 
       <LegalSection id="cookies" heading="Cookies & local storage">
         <P>
-          The site sets three cookies of its own. All three are strictly
-          necessary — they exist to sign you in, to keep sign-in safe, and to
+          The site sets four cookies of its own. All four are strictly
+          necessary — they exist to sign you in, to keep sign-in safe, to
           remember that you pressed &ldquo;upgrade&rdquo; before you had an
-          account. None of them is used to profile you or to advertise, and
+          account, and to remember whether you read temperatures in Celsius or
+          Fahrenheit. None of them is used to profile you or to advertise, and
           there is nothing here for a consent banner to switch off, which is
           why the site does not show one.
         </P>
@@ -199,12 +200,22 @@ export default function PrivacyPage() {
               "30 minutes",
               "HttpOnly · Secure · SameSite=Lax",
             ],
+            [
+              "wtg_unit",
+              "Whether you chose Celsius or Fahrenheit. Holds one of two words and nothing else. It is the one cookie here the page's own JavaScript can read, because the country pages are pre-built files that are identical for everyone and have no other way to know which unit to show you.",
+              "1 year",
+              "Secure · SameSite=Lax · readable by the page",
+            ],
           ]}
         />
         <P>
           <strong className="text-text">Local storage is not used.</strong>{" "}
-          Map preferences are held in the URL precisely so that they are
-          shareable and so that nothing has to be written to your device.
+          Your weather preferences are held in the URL precisely so that they
+          are shareable and so that nothing has to be written to your device;
+          if you are signed in they are also saved to your account, so they
+          follow you to another device. The unit cookie above is the one
+          exception, and it is there because a preference that has to survive
+          on a pre-built page cannot live in a URL you did not type.
         </P>
         <P>
           One third party may set storage of its own:{" "}

@@ -6,6 +6,7 @@ import {
   clampScore,
   scoreBin,
   scoreLabel,
+  scoreShortLabel,
 } from "@/lib/scoring";
 
 export type MatchTooltipStat = {
@@ -44,11 +45,12 @@ export function MatchTooltip({
   const clamped = clampScore(score);
   const bin = scoreBin(clamped);
   const label = scoreLabel(clamped);
+  const short = scoreShortLabel(clamped);
 
   return (
     <div
       role="tooltip"
-      aria-label={`${place}: ${Math.round(clamped)} — ${label}`}
+      aria-label={`${place}: ${label}`}
       className={cn(
         "min-w-[232px] max-w-[280px] rounded-md border border-border bg-surface p-4 shadow-md",
         className,
@@ -65,17 +67,17 @@ export function MatchTooltip({
             </span>
           ) : null}
         </div>
+        {/* The verdict, as the word it has always been underneath. The
+            numeral that used to sit above it described a 0-100 scale the
+            scoring rule never had — see `score-badge.tsx`. */}
         <div
           className={cn(
-            "flex flex-col items-center justify-center rounded-sm px-2 py-1 text-text-inverse",
+            "flex shrink-0 items-center justify-center rounded-sm px-2.5 py-1.5 text-text-inverse",
             SCORE_BG_CLASS[bin],
           )}
         >
-          <span className="font-mono text-[15px] font-semibold tabular-nums leading-none">
-            {Math.round(clamped)}
-          </span>
-          <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em]">
-            {label.split(" ")[0]}
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] leading-none">
+            {short}
           </span>
         </div>
       </div>
