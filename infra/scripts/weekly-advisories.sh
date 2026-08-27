@@ -97,15 +97,49 @@ changed_payloads="$(printf '%s' "$publish_out" \
 # serving last month's HTML until its render cache is dropped. Recreating is
 # the documented way (infra/CLAUDE.md) and costs a few seconds of 502s through
 # Caddy — worth it when something changed, wasteful every week when nothing did.
+
+# Set to 1 by the block below if the site is left not serving. Does not abort
+# the tile rebuild (see below), but does make the script exit non-zero.
+web_down=0
+
 if [[ "${changed_payloads:-0}" -gt 0 ]]; then
     if command -v docker >/dev/null 2>&1; then
         log "stage=recreate-web payloads_changed=${changed_payloads}"
-        # Deliberately non-fatal: the bundle is already published and the API is
-        # already serving it. A failure here must not abort the tile rebuild
-        # below, which is the half that keeps the *map* honest.
-        docker compose up -d --force-recreate web \
-            || log "WARN: web recreate failed — country pages keep serving cached renders until this is retried"
+        # Non-fatal *to the tile rebuild*: the bundle is already published and
+        # the API is already serving it, so a failure here must not abort the
+        # rebuild below, which is the half that keeps the *map* honest.
+        #
+        # It is emphatically NOT harmless, though. `--force-recreate` removes
+        # the running container before starting its replacement, so if the
+        # replacement does not start there is nothing left serving and every
+        # page route 502s. That happened on 2026-08-23: the `depends_on`
+        # postgres was unhealthy (full disk), compose left web in state
+        # `created`, and this script logged "country pages keep serving cached
+        # renders" — the opposite of the truth. The site was down 4.7 days
+        # because the cron log looked benign.
+        #
+        # So: retry once, then verify the container is actually running rather
+        # than trusting the exit code, and shout in a greppable way if not.
+        if ! docker compose up -d --force-recreate web; then
+            log "WARN: web recreate failed — retrying once in 30s (a dependency may still be coming up)"
+            sleep 30
+            docker compose up -d web || true
+        fi
+        web_state="$(docker compose ps --format '{{.State}}' web 2>/dev/null | head -1)"
+        if [[ "$web_state" == "running" ]]; then
+            log "stage=recreate-web ok state=running"
+        else
+            web_down=1
+            log "ERROR WEB_NOT_RUNNING state=${web_state:-absent} — the web container is NOT serving."
+            log "ERROR WEB_NOT_RUNNING --force-recreate already removed the previous container, so"
+            log "ERROR WEB_NOT_RUNNING every page route is returning 502 right now. This does not"
+            log "ERROR WEB_NOT_RUNNING self-heal on the next run: web is only recreated when a country"
+            log "ERROR WEB_NOT_RUNNING payload changes, and it may not change for weeks."
+            log "ERROR WEB_NOT_RUNNING Triage: docker compose ps web; df -h; docker compose up -d web"
+        fi
     else
+        # Nothing was touched here, so the running container — if any — is still
+        # serving its cached renders. This one really is benign.
         log "WARN: docker not on PATH — country pages keep serving cached renders"
     fi
 else
@@ -114,6 +148,10 @@ fi
 
 if [[ "$before" == "$after" && "${FORCE_REBUILD:-0}" != "1" ]]; then
     log "stage=rebuild skipped — no advisory level changed this week"
+    if [[ "$web_down" == 1 ]]; then
+        log "weekly-advisories FAILED — pages published, tiles unchanged, but web is NOT serving"
+        exit 1
+    fi
     log "weekly-advisories OK (pages published, tiles unchanged)"
     exit 0
 fi
@@ -151,4 +189,8 @@ fi
 log "stage=rebuild tiers=${TIERS} reason=$( [[ "${FORCE_REBUILD:-0}" == "1" ]] && echo forced || echo levels-changed )"
 TIERS="$TIERS" ./infra/scripts/rebuild-tiles.sh
 
+if [[ "$web_down" == 1 ]]; then
+    log "weekly-advisories FAILED — tiles rebuilt (${TIERS}) but web is NOT serving"
+    exit 1
+fi
 log "weekly-advisories OK (tiles rebuilt: ${TIERS})"
