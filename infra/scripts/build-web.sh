@@ -40,9 +40,24 @@
 # Usage:
 #     ./infra/scripts/build-web.sh          # then: docker compose up -d web
 #
+# When you need NO_CACHE=1
+# ------------------------
+#
+# The pre-render bakes the API's *responses* into the image, but Docker's cache
+# key is the *source tree*. So a content-only change — `wtg publish api-data`
+# after an advisory run, a prose regeneration, a corrected region name — leaves
+# every input Docker looks at identical, the build step never re-runs, and the
+# image ships the previous pre-render. Nothing downstream notices: the pages
+# all serve, they just serve the old text.
+#
+# Rule of thumb: if the last thing you did was republish the country bundle
+# rather than edit `web/`, you want NO_CACHE=1.
+#
 # Optional env:
 #   BUILDER_NAME           — default "wtg-internal"
 #   COMPOSE_PROJECT_NAME   — defaults to the repo directory name, as compose does
+#   NO_CACHE               — set to 1 to rebuild without the layer cache, for a
+#                            content-only republish (see above)
 #   ALLOW_UNRENDERED=1     — build anyway if the API cannot be reached
 set -euo pipefail
 
@@ -99,7 +114,12 @@ done
 # ── build ────────────────────────────────────────────────────────────────
 log "stage=build-web builder=${BUILDER_NAME}"
 set +e
-BUILDX_BUILDER="$BUILDER_NAME" docker compose build \
+cache_args=()
+if [[ "${NO_CACHE:-0}" == "1" ]]; then
+    log "NO_CACHE=1 - rebuilding without the layer cache so the pre-render re-runs"
+    cache_args+=(--no-cache)
+fi
+BUILDX_BUILDER="$BUILDER_NAME" docker compose build "${cache_args[@]}" \
     --build-arg "INTERNAL_API_URL=${API_URL}" web 2>&1 | tee "$LOG_FILE"
 status=${PIPESTATUS[0]}
 set -e
@@ -134,7 +154,9 @@ else
     # Hence `|| true`: the count is a nicety. The claim that matters is the
     # API-reachability check above, which is a real gate and still fails hard.
     # A cached build reuses the very layer whose pre-render was verified when
-    # it was built, so "unknown" there is honest rather than alarming.
+    # it was built, so "unknown" is honest for a source-only change. It is a
+    # warning sign after a *content* republish, though - see NO_CACHE at the
+    # top - because then the reused layer is exactly the stale thing.
     rendered=$(grep -oE "Generating static pages [^(]*\(([0-9]+)/[0-9]+\)" "$LOG_FILE" \
         | tail -1 | grep -oE "/[0-9]+" | tr -d '/' || true)
     if [[ -n "$rendered" ]]; then
