@@ -344,3 +344,95 @@ async def test_region_endpoint_carries_the_carve_out_too(api: AsyncClient) -> No
     res = await api.get("/v1/countries/peru/regions/cusco")
     assert res.status_code == 200
     assert res.json()["region"]["advisory"]["code"] == "PE-CUS"
+
+
+# --- curated activities ---
+#
+# These exist because the failure mode is *silent*. `CountryData` filters the
+# payload, so an activities block the pipeline writes correctly is dropped
+# without an error anywhere if the response model does not name it: pipeline
+# tests green, bundle right on disk, live page rendering nothing. That has cost
+# a full deploy cycle before, on the region-advisory field.
+
+
+ACTIVITY_BLOCK = {
+    "reviewed": "2026-08-28",
+    "lede": "February is the only month Peru closes anything; one of the 6 below runs all year.",
+    "items": [
+        {
+            "id": "inca-trail",
+            "name": "Classic Inca Trail",
+            "kind": "trek",
+            "regions": ["PE-CUS"],
+            "yearRound": False,
+            "datedEvent": False,
+            "onMonths": list(range(1, 13)),
+            "sources": [{"url": "https://example.test/inca", "checked": "2026-08-28"}],
+        }
+    ],
+    "months": {
+        m: {
+            "lede": "February is the only month Peru closes anything — 1 thing below.",
+            "rows": [{"id": "inca-trail", "status": "closed", "reason": "annual maintenance"}],
+        }
+        for m in MONTHS
+    },
+}
+
+
+@pytest.fixture
+def curated_bundle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """The same bundle as `bundle`, with an activities block attached."""
+    settings = get_settings()
+    monkeypatch.setattr(settings, "country_data_dir", str(tmp_path), raising=False)
+    country_data.reset_cache()
+
+    payload = _country_payload("peru", "Peru", "PE")
+    payload["activities"] = ACTIVITY_BLOCK
+    payload["regions"][0]["activities"] = ["inca-trail"]
+
+    countries = tmp_path / "countries"
+    countries.mkdir(parents=True)
+    (countries / "peru.json").write_text(json.dumps(payload), encoding="utf-8")
+    (tmp_path / "index.json").write_text(
+        json.dumps(
+            {"countries": [{"slug": "peru", "name": "Peru", "iso2": "PE", "region": "South America"}]}
+        ),
+        encoding="utf-8",
+    )
+    yield tmp_path
+    country_data.reset_cache()
+
+
+@pytest_asyncio.fixture
+async def curated_api(client: AsyncClient, curated_bundle: Path) -> AsyncClient:
+    return client
+
+
+@pytest.mark.asyncio
+async def test_activities_block_survives_the_response_model(curated_api: AsyncClient) -> None:
+    body = (await curated_api.get("/v1/countries/peru")).json()
+
+    activities = body.get("activities")
+    assert activities is not None, "activities dropped by the response model"
+    assert activities["reviewed"] == "2026-08-28"
+    assert activities["items"][0]["id"] == "inca-trail"
+    # The citation is the anti-hallucination mechanism; it has to reach the page.
+    assert activities["items"][0]["sources"][0]["url"] == "https://example.test/inca"
+    assert activities["months"]["Feb"]["rows"][0]["status"] == "closed"
+    assert "closes anything" in activities["months"]["Feb"]["lede"]
+
+
+@pytest.mark.asyncio
+async def test_region_activity_ids_survive_the_response_model(curated_api: AsyncClient) -> None:
+    body = (await curated_api.get("/v1/countries/peru")).json()
+    cusco = next(r for r in body["regions"] if r["slug"] == "cusco")
+    assert cusco["activities"] == ["inca-trail"]
+
+
+@pytest.mark.asyncio
+async def test_an_uncurated_country_serves_without_activities(api: AsyncClient) -> None:
+    """Most of the world has no curated file; that must not be an error."""
+    body = (await api.get("/v1/countries/peru")).json()
+    assert body["activities"] is None
+    assert body["regions"][0].get("activities") is None
