@@ -17,6 +17,7 @@
 
 import { useUnit } from "@/components/units/unit-provider";
 import {
+  convertMeasurementsInText,
   formatRainfallMonthly,
   formatTemperatureDelta,
   formatRainfallPerDay,
@@ -111,4 +112,19 @@ export function Wind({ value, digits }: { value: number; digits?: number }) {
 export function SnowDepth({ value }: { value: number }) {
   const { unit } = useUnit();
   return <>{formatSnowDepth(value, unit)}</>;
+}
+
+/**
+ * A sentence the pipeline generated, with its measurements converted.
+ *
+ * Unlike every component above it, this one is handed prose rather than a
+ * number: the country summary, the month notes and the best-month notes arrive
+ * from the API as finished English. See `convertMeasurementsInText` for why
+ * that is a workaround rather than the shape this should eventually take. A
+ * metric reader gets the published string back unchanged.
+ */
+export function UnitText({ children }: { children: string | null | undefined }) {
+  const { unit } = useUnit();
+  if (!children) return null;
+  return <>{convertMeasurementsInText(children, unit)}</>;
 }

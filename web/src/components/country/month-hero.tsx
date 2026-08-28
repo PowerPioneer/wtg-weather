@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import Link from "next/link";
 import { ScoreGauge } from "@/components/match";
+import { UnitText } from "@/components/units";
 import { MONTH_NAMES, MONTH_SHORT, nextMonth, previousMonth, type MonthSlug } from "@/lib/months";
 import type { CountryData } from "@/lib/types";
 
@@ -50,7 +51,9 @@ export function MonthHero({
             <h1 className="font-display text-[56px] font-medium leading-[1.06] tracking-[-0.01em] text-text md:text-[72px]">
               {country.name} in <span className="italic text-[#8A4A1E]">{monthName}</span>
             </h1>
-            <p className="font-display text-[22px] leading-[1.35] text-text">{verdict}</p>
+            <p className="font-display text-[22px] leading-[1.35] text-text">
+              <UnitText>{verdict}</UnitText>
+            </p>
             <p className="max-w-[640px] text-[15px] leading-[1.6] text-text-muted">{narrative}</p>
             <div className="mt-1 flex flex-wrap gap-2">
               <Link

@@ -1,5 +1,6 @@
 import { FavouriteButton } from "@/components/favourite/favourite-button";
 import type { CountryData } from "@/lib/types";
+import { UnitText } from "@/components/units";
 
 /**
  * Country hero. Editorial, serif-heavy treatment so the page feels like a
@@ -33,7 +34,7 @@ export function CountryHero({ country }: { country: CountryData }) {
             <span className="block text-[40px] italic text-[#8A4A1E] md:text-[52px]">when to go</span>
           </h1>
           <p className="max-w-[560px] font-display text-[17px] leading-[1.55] text-text-muted">
-            {country.summary}
+            <UnitText>{country.summary}</UnitText>
           </p>
           <dl className="grid max-w-[520px] grid-cols-2 gap-x-6 gap-y-2 font-mono text-[12px] text-text-muted">
             {facts.map((fact) => (

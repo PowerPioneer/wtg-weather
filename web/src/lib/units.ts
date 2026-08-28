@@ -192,3 +192,85 @@ export function formatTemperatureRange(
 export function formatSunHours(hours: number, { digits = 1 } = {}): string {
   return `${hours.toFixed(digits)} h/day`;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Measurements inside generated prose
+ *
+ * The pipeline publishes some fields as finished English sentences rather than
+ * as numbers — a country's `summary`, its twelve `monthNotes`, each
+ * `bestMonths[].note`:
+ *
+ *   "Peru's national averages run from 18 °C in July to 20 °C in November,
+ *    with rainfall between 69 mm in July and 294 mm in March…"
+ *   "Around 19 °C with 243 mm of rain and 8.7 hours of sun a day."
+ *   "19 °C · 76 mm · 9.6 h sun"
+ *
+ * Nothing downstream can convert those the way a readout converts, because by
+ * the time the web sees them the numbers are prose. Left alone they are the
+ * loudest text on the page: a country page in Fahrenheit had 52 of them, so
+ * the summary paragraph said 18 °C directly above a stat card saying 64 °F.
+ *
+ * This rewrites the measurements in place. It is a workaround and should be
+ * read as one — the durable fix is for `wtg publish api-data` to emit the
+ * numbers and let the web write the sentence, which is a pipeline change and a
+ * republish. Two things keep the workaround honest in the meantime:
+ *
+ *   - it only ever runs for a reader who asked for imperial, so the metric
+ *     site renders the pipeline's bytes exactly as published; and
+ *   - it matches a number *immediately* followed by a known unit, so text it
+ *     does not recognise is returned untouched rather than half-converted.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** `18`, `7.9`, `-3` — and the en-dash ranges the pipeline writes. */
+const NUMBER = String.raw`-?\d+(?:\.\d+)?`;
+
+/**
+ * Inches at a precision that stays informative on both sides of the range the
+ * pipeline prints: a monthly total (69 mm → 2.7 in) and a daily mean
+ * (2.7 mm → 0.11 in) would otherwise round to the same uselessness.
+ */
+function inchesText(mm: number): string {
+  const inches = millimetresToInches(mm);
+  return inches < 0.5 ? inches.toFixed(2) : inches.toFixed(1);
+}
+
+export function convertMeasurementsInText(
+  text: string,
+  unit: UnitSystem = DEFAULT_UNIT,
+): string {
+  if (unit !== "imperial" || !text) return text;
+
+  return (
+    text
+      // "18–28 °C" — both ends, one suffix. Before the single-value rule, or
+      // that rule would eat the first number and orphan the second.
+      .replace(
+        new RegExp(String.raw`(${NUMBER})\s*[–-]\s*(${NUMBER})\s*°C`, "g"),
+        (_m, lo: string, hi: string) =>
+          `${Math.round(celsiusToFahrenheit(Number(lo)))}–${Math.round(
+            celsiusToFahrenheit(Number(hi)),
+          )} °F`,
+      )
+      .replace(
+        new RegExp(String.raw`(${NUMBER})\s*°C`, "g"),
+        (_m, value: string) =>
+          `${Math.round(celsiusToFahrenheit(Number(value)))} °F`,
+      )
+      // "69 mm in July", "2.7 mm of rain a day" — the denominator, where there
+      // is one, is the sentence's own and survives untouched.
+      .replace(
+        new RegExp(String.raw`(${NUMBER})\s*[–-]\s*(${NUMBER})\s*mm\b`, "g"),
+        (_m, lo: string, hi: string) =>
+          `${inchesText(Number(lo))}–${inchesText(Number(hi))} in`,
+      )
+      .replace(
+        new RegExp(String.raw`(${NUMBER})\s*mm\b`, "g"),
+        (_m, value: string) => `${inchesText(Number(value))} in`,
+      )
+      // "under 30 km/h" — the only speed the generated prose carries.
+      .replace(
+        new RegExp(String.raw`(${NUMBER})\s*km/h`, "g"),
+        (_m, value: string) => `${Math.round(kmhToMph(Number(value)))} mph`,
+      )
+  );
+}

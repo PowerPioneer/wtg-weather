@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
+import { UnitText } from "@/components/units";
 import { MONTH_SLUGS } from "@/lib/months";
 import type { CountryData } from "@/lib/types";
 
@@ -56,7 +57,7 @@ export function BestMonths({ country }: { country: CountryData }) {
                     {best.month}
                   </div>
                   <p className={primary ? "text-[13px] text-[rgba(247,246,242,0.88)]" : "text-[13px] text-text-muted"}>
-                    {best.note}
+                    <UnitText>{best.note}</UnitText>
                   </p>
                 </Link>
               </li>

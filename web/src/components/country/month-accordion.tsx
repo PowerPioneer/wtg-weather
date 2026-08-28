@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
-import { RainfallMonthly, Temperature } from "@/components/units";
+import { RainfallMonthly, Temperature, UnitText } from "@/components/units";
 import { MONTH_NAMES, MONTH_SLUGS, type MonthSlug } from "@/lib/months";
 import type { CountryData } from "@/lib/types";
 import { estimateMonthScore } from "@/lib/country-derive";
@@ -65,7 +65,9 @@ function MonthRow({
                 <RainfallMonthly value={r} /> · {s.toFixed(1)} hr/day
               </span>
             </div>
-            <p className="mt-0.5 line-clamp-1 text-[13px] text-text-muted">{note}</p>
+            <p className="mt-0.5 line-clamp-1 text-[13px] text-text-muted">
+              <UnitText>{note}</UnitText>
+            </p>
           </div>
           <ScoreBadge score={score} size="sm" />
           <span
@@ -78,7 +80,9 @@ function MonthRow({
           </span>
         </summary>
         <div className="border-t border-border bg-background px-5 py-4">
-          <p className="max-w-[680px] text-[14px] leading-[1.55] text-text">{note}</p>
+          <p className="max-w-[680px] text-[14px] leading-[1.55] text-text">
+            <UnitText>{note}</UnitText>
+          </p>
           <div className="mt-3">
             <Link
               href={`/${country.slug}/${slug}`}

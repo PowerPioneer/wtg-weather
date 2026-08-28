@@ -12,6 +12,7 @@ export {
   TemperatureDelta,
   TemperatureRange,
   TemperatureUnit,
+  UnitText,
   Wind,
 } from "./measure";
 export { UnitToggle } from "./unit-toggle";

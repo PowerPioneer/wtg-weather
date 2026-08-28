@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
+import { UnitText } from "@/components/units";
 import {
   MONTH_NAMES,
   MONTH_SLUGS,
@@ -63,7 +64,9 @@ function PagerCard({
           {direction === "prev" ? "← Earlier" : "Later →"}
         </div>
         <div className="mt-1 font-display text-[24px] font-medium text-text">{name}</div>
-        <p className="mt-1 line-clamp-1 text-[13px] text-text-muted">{note}</p>
+        <p className="mt-1 line-clamp-1 text-[13px] text-text-muted">
+          <UnitText>{note}</UnitText>
+        </p>
       </div>
       <ScoreBadge score={score} size="md" />
     </Link>
