@@ -113,6 +113,10 @@ def _load_boundary_frames(
         admin1_gdf["polygon_id"] = admin1_gdf["adm1_code"].astype(str)
         admin1_gdf["iso_a2"] = admin1_gdf["iso_a2"].astype(str).str.strip().str.upper()
         admin1_gdf["name"] = _coalesce_column(admin1_gdf, "name_en", "name")
+        # Applied here rather than in either consumer: the tiles and the API
+        # bundle both read this frame, so a name corrected in one place and not
+        # the other would have the map and the page disagree about a region.
+        admin1_gdf["name"] = _apply_admin1_name_overrides(admin1_gdf)
         admin1_gdf["admin1_code"] = admin1_gdf["iso_3166_2"].astype(str).str.strip()
         frames["admin1"] = PolygonFrame(
             level="admin1",
@@ -127,6 +131,54 @@ def _load_boundary_frames(
         frames["admin2"] = _load_admin2_frame(gpd, base)
 
     return frames
+
+
+#: Admin-1 units where Natural Earth's ``name_en`` is simply wrong, keyed by
+#: ``adm1_code`` — the only identity that is unique per polygon in the 10m
+#: layer (``iso_3166_2`` is not; see the admin-1 loader above).
+#:
+#: We prefer ``name_en`` over ``name`` so a German reader of an English site
+#: gets "Bavaria" rather than "Bayern", and that is right for essentially the
+#: whole layer. It is wrong for a handful of rows where NE's English name is a
+#: typo or a redundant restatement, and this is where those are corrected.
+#:
+#: Keep it tiny and keep the justification with each entry. It is *not* a place
+#: to re-style names that are merely unfamiliar: Poland's "Greater Poland
+#: Voivodeship" and Guinea's "Beyla Prefecture" are what those units are
+#: actually called in English, and Mexico's "State of Mexico" is the standard
+#: English name distinguishing Estado de México from the country.
+#:
+#: Regenerate the published names after editing (``wtg publish api-data``) and
+#: rebuild the tiles — the name reaches both, because both read the frame this
+#: is applied to.
+ADMIN1_NAME_OVERRIDES: dict[str, str] = {
+    # NE 10m has name_en="Cusco Departament" — a misspelling of "Departamento",
+    # and redundant besides: every other Peruvian region is named bare. The
+    # row's own `name`, `woe_name` and ISO-3166-2 label all say "Cusco".
+    "PER-571": "Cusco",
+}
+
+
+def _apply_admin1_name_overrides(gdf: object) -> object:
+    """Correct the handful of admin-1 names Natural Earth gets wrong.
+
+    Returns the name Series with :data:`ADMIN1_NAME_OVERRIDES` applied. A code
+    that matches no row is a no-op rather than an error: the whitelist is tied
+    to a boundary vintage, and a stale entry should not stop a build.
+    """
+    names = gdf["name"]
+    codes = gdf["polygon_id"]
+    for code, corrected in ADMIN1_NAME_OVERRIDES.items():
+        match = codes == code
+        if not bool(match.any()):
+            log.warning(
+                "ADMIN1_NAME_OVERRIDE_STALE adm1_code=%s — no polygon carries this "
+                "code in the current Natural Earth vintage; the override does nothing.",
+                code,
+            )
+            continue
+        names = names.mask(match, corrected)
+    return names
 
 
 def _coalesce_column(gdf: object, primary: str, fallback: str) -> object:
