@@ -13,7 +13,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { MatchTooltip, type MatchTooltipStat } from "@/components/match";
 import { ADVISORY_LABEL } from "@/components/safety";
-import { DISPLAY_MODES, type DisplayModeId } from "@/lib/display-modes";
+import {
+  DISPLAY_MODES,
+  formatModeValue,
+  type DisplayModeId,
+} from "@/lib/display-modes";
 import {
   readAdvisoryLevel,
   readModeValue,
@@ -170,13 +174,10 @@ function buildStats(
   const active = DISPLAY_MODES[mode];
   if (active.kind !== "qualitative" && active.id !== "safety") {
     const value = readModeValue(properties, mode, month);
-    // The active layer's own readout keeps the layer's declared unit: it is
-    // explaining the colour under the cursor, and the legend beside it is
-    // labelled in that unit. The three free variables below convert.
-    push(
-      active.label,
-      value == null ? null : `${value.toFixed(1)} ${active.unit}`,
-    );
+    // The active layer's readout and the legend beside it are labelled by the
+    // same accessor, so the card cannot end up saying mm/day under a ramp
+    // captioned in/day.
+    push(active.label, value == null ? null : formatModeValue(active, value, unit));
   }
 
   const temp = readNumber(properties, monthKey("t", month));

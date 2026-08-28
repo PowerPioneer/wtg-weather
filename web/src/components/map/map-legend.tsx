@@ -11,9 +11,15 @@
  * is CSS-only and degrades to a hard swap.
  */
 
+import { useUnit } from "@/components/units";
 import type { DisplayMode, DisplayModeId } from "@/lib/display-modes";
-import { DISPLAY_MODES } from "@/lib/display-modes";
+import {
+  DISPLAY_MODES,
+  modeLegendSub,
+  modeLegendTicks,
+} from "@/lib/display-modes";
 import { MONTH_SHORT, MONTH_SLUGS } from "@/lib/months";
+import type { UnitSystem } from "@/lib/units";
 
 export type MapLegendProps = {
   mode: DisplayModeId;
@@ -22,6 +28,7 @@ export type MapLegendProps = {
 
 export function MapLegend({ mode, month }: MapLegendProps) {
   const m = DISPLAY_MODES[mode];
+  const { unit } = useUnit();
   const monthLabel = MONTH_SHORT[MONTH_SLUGS[month - 1]];
   return (
     <div
@@ -33,7 +40,7 @@ export function MapLegend({ mode, month }: MapLegendProps) {
       {m.kind === "qualitative" && <QualitativeLegend m={m} />}
       {m.kind === "ordinal-safety" && <SafetyLegend m={m} />}
       {(m.kind === "sequential" || m.kind === "diverging" || m.kind === "diverging-ocean") && (
-        <ContinuousLegend m={m} monthLabel={monthLabel} />
+        <ContinuousLegend m={m} monthLabel={monthLabel} unit={unit} />
       )}
     </div>
   );
@@ -92,9 +99,21 @@ function SafetyLegend({ m }: { m: DisplayMode }) {
   );
 }
 
-function ContinuousLegend({ m, monthLabel }: { m: DisplayMode; monthLabel: string }) {
+function ContinuousLegend({
+  m,
+  monthLabel,
+  unit,
+}: {
+  m: DisplayMode;
+  monthLabel: string;
+  unit: UnitSystem;
+}) {
   if (!("ramp" in m.legend)) return null;
   const gradient = `linear-gradient(90deg, ${m.legend.ramp.join(", ")})`;
+  // Caption and ticks move together or not at all: the colour stops beneath
+  // them are metric thresholds against metric tile values and never move.
+  const sub = modeLegendSub(m, unit);
+  const ticks = modeLegendTicks(m, unit);
   return (
     <div className="w-full min-w-0 font-sans sm:min-w-[320px]">
       <div className="mb-1.5 flex items-baseline justify-between">
@@ -102,19 +121,19 @@ function ContinuousLegend({ m, monthLabel }: { m: DisplayMode; monthLabel: strin
           {m.legend.title}
         </span>
         <span className="font-mono text-[11px] text-text-subtle">
-          {monthLabel} · {m.legend.sub}
+          {monthLabel} · {sub}
         </span>
       </div>
       <div
         role="img"
-        aria-label={`${m.legend.title} ramp from ${m.legend.ticks[0]} to ${
-          m.legend.ticks[m.legend.ticks.length - 1]
+        aria-label={`${m.legend.title} ramp from ${ticks[0]} to ${
+          ticks[ticks.length - 1]
         }`}
         className="h-3.5 rounded border border-black/5"
         style={{ backgroundImage: gradient }}
       />
       <div className="mt-1 flex justify-between font-mono text-[10.5px] text-text">
-        {m.legend.ticks.map((t) => (
+        {ticks.map((t) => (
           <span key={t}>{t}</span>
         ))}
       </div>
