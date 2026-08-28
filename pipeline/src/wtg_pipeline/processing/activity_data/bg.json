@@ -1,0 +1,77 @@
+{
+  "iso2": "BG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "seven-rila-lakes",
+      "name": "The Seven Rila Lakes",
+      "kind": "hike",
+      "regions": [
+        "BG-10",
+        "BG-01"
+      ],
+      "status": "limited",
+      "note": "glacial lakes between 2,100 and 2,500 m; the main loop is three to five hours with some steep ground",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the lakes are clear of snow and the hiking is at its most straightforward"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the season opens in June, with warm and settled weather but possible late snow at altitude"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://traventuria.com/bulgaria/seven-rila-lakes-rila-monastery-tour-from-sofia/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://bags-always-packed.com/7-rila-lakes/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "rila-monastery",
+      "name": "Rila Monastery",
+      "kind": "site",
+      "regions": [
+        "BG-10"
+      ],
+      "status": "open",
+      "note": "the largest monastery of the Bulgarian Orthodox Church, open all year and reachable by road",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "warm, settled weather on the mountain road in"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://toursbulgaria.com/rila-monastery-and-seven-lakes-tour",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://traventuria.com/bulgaria/seven-rila-lakes-rila-monastery-tour-from-sofia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

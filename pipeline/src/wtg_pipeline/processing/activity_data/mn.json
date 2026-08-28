@@ -1,0 +1,31 @@
+{
+  "iso2": "MN",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "golden-eagle-festival",
+      "name": "Golden Eagle Festival",
+      "kind": "festival",
+      "regions": [
+        "MN-071"
+      ],
+      "status": "not-on",
+      "note": "held in the Altai in western Mongolia, a long way from Ulaanbaatar",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "held in the first week of October each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsiblevacation.com/vacations/festivals/travel-guide/when-to-visit-festivals",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

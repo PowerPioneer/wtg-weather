@@ -1,0 +1,110 @@
+{
+  "iso2": "ES",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "caminito-del-rey",
+      "name": "Caminito del Rey",
+      "kind": "hike",
+      "regions": [
+        "ES-MA"
+      ],
+      "status": "open",
+      "note": "timed-entry walkway pinned to the gorge wall; booked in advance",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            9,
+            10
+          ],
+          "reason": "spring and autumn, when the gorge sits between about 15 and 25 °C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "midsummer temperatures on the exposed walkway regularly pass 40 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://caminodelrey.es/best-time-to-visit-caminito-del-rey-month-by-month-weather-and-tips/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://caminito-del-rey-tickets.com/opening-hours/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "alhambra",
+      "name": "The Alhambra, Granada",
+      "kind": "site",
+      "regions": [
+        "ES-GR"
+      ],
+      "status": "open",
+      "note": "open year-round on timed entry; hours shorten from 15 October to 31 March",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "mild temperatures, with the Generalife gardens in flower or in autumn colour"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://thealhambra.org/hours-best-time/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.alhambra-granada-tickets.com/alhambra-opening-hours/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "camino-santiago",
+      "name": "Camino de Santiago",
+      "kind": "trek",
+      "status": "open",
+      "note": "walkable any month of the year; the question is company and weather, not access",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "warm without being hot, with Galicia green — though a shower can arrive on any day there"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wildernesstravel.com/europe/spain/camino-santiago-best-time/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://caminoways.com/which-months-can-you-walk-the-camino",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

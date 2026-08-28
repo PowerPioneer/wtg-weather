@@ -1,0 +1,90 @@
+{
+  "iso2": "PF",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "cyclone-season",
+      "name": "Island and beach travel",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; the cyclone window is about disruption rather than closure",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the most active part of the Southwest Pacific cyclone season"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            4
+          ],
+          "reason": "inside the cyclone season, which runs November to April, but outside its peak"
+        },
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season — less humid, and outside the cyclone window"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsibletravel.com/holidays/south-pacific-islands/travel-guide/best-time-to-visit",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://taketravelinfo.com/best-time-to-travel-to-south-pacific-a-seasonal-guide/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-pf",
+      "name": "Swimming with humpback whales",
+      "kind": "wildlife",
+      "status": "not-on",
+      "note": "the whales come to French Polynesia to calve, which is why the season is so tightly bounded",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak runs mid-August to late October, during the breeding and calving season"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the tail of the season, which spans August to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tahititourisme.com/activities/diving/maritime-species/whales/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.mylittlepolynesia.com/en/best-time-visit-french-polynesia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

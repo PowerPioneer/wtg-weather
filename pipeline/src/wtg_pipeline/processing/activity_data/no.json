@@ -1,0 +1,112 @@
+{
+  "iso2": "NO",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "trolltunga",
+      "name": "Trolltunga",
+      "kind": "hike",
+      "regions": [
+        "NO-12"
+      ],
+      "status": "limited",
+      "note": "outside the summer window a certified guide is compulsory, so the hike is bookable rather than shut",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the main season — experienced hikers may go unguided from 1 June, and the trail is clear of snow with very long daylight"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "still walkable unguided to the end of the month, with shorter days and colder weather"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "a hiking guide is compulsory from 1 October to 31 May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.trolltunga.com/en/plan-your-hike/seasons",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.visitnorway.com/places-to-go/fjord-norway/the-hardangerfjord-region/hiking-to-trolltunga/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "northern-lights",
+      "name": "Northern lights",
+      "kind": "seasonal",
+      "regions": [
+        "NO-19",
+        "NO-20",
+        "NO-18"
+      ],
+      "status": "not-on",
+      "note": "not a thing that closes — in the summer months the sky simply never gets dark enough, whatever the sun is doing",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "the darkest, longest nights of the season, with viewing strongest roughly 21:00 to 02:00"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            2,
+            3
+          ],
+          "reason": "the season runs September to April; October and November are statistically among the strongest for activity, and March pairs dark evenings with enough snow for husky and snowmobile trips"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the tail of the season, as the nights shorten"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitfinland.com/en/articles/the-best-times-to-see-northern-lights/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.visitnordic.com/en/northern-lights",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

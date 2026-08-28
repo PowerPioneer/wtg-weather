@@ -1,0 +1,42 @@
+{
+  "iso2": "ML",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing closes; the harmattan is the dry season, and it is what makes the roads passable — the trade-off is the dust",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            2,
+            3
+          ],
+          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.britannica.com/science/harmattan",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

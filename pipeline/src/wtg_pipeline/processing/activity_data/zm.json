@@ -1,0 +1,129 @@
+{
+  "iso2": "ZM",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "victoria-falls",
+      "name": "Victoria Falls",
+      "kind": "site",
+      "regions": [
+        "ZM-07"
+      ],
+      "status": "open",
+      "note": "high water and low water are different sights, not better and worse ones — one is spray and thunder, the other is bare rock and a clear view of the gorge",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "peak flow, about 500 million litres a minute in April — though the spray can hide the falls from the viewpoints"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "the lowest flow of the year; on parts of the Zambian side no water falls at all"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://wildhorizons.co.za/the-best-time-to-visit-victoria-falls-seasonal-summary/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.travelbutlers.com/victoria-falls/best-time-to-visit/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "devils-pool",
+      "name": "Devil's Pool, Livingstone Island",
+      "kind": "swim",
+      "regions": [
+        "ZM-07"
+      ],
+      "status": "closed",
+      "note": "swimming at the lip of the falls is only possible when the river is low enough to be safe",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "water at its lowest, which is the safest window for the swim"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            12
+          ],
+          "reason": "the pool typically opens from mid-September and stays accessible into December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://mtembezisafaris.com/the-devils-pool/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://wildhorizons.co.za/the-best-time-to-visit-victoria-falls-seasonal-summary/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "south-luangwa-walking",
+      "name": "Walking safaris in South Luangwa",
+      "kind": "wildlife",
+      "regions": [
+        "ZM-03",
+        "ZM-10"
+      ],
+      "status": "open",
+      "note": "South Luangwa is the birthplace of the walking safari; over 450 bird species are recorded here",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the green season — many camps close and some roads become hard to drive, though it is the best stretch of the year for birds as the migrants arrive"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry months, when the camps are open and the walking safaris run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/south-luangwa-national-park/why-go",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://greensafaris.com/blog/myth-busting-green-season-safaris-in-south-luangwa/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

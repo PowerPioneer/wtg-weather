@@ -1,0 +1,50 @@
+{
+  "iso2": "ET",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "danakil",
+      "name": "The Danakil Depression",
+      "kind": "tour",
+      "regions": [
+        "ET-AF"
+      ],
+      "status": "limited",
+      "note": "one of the hottest inhabited places on Earth, averaging around 49 °C for most of the year — the season is about survivability, not access",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the high season, when temperatures fall to something a visitor can tolerate"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the hottest months, when tours are strongly discouraged"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.brilliant-ethiopia.com/regions/danakil-depression",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://rove.me/to/ethiopia/danakil-depression",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "iso2": "MA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "toubkal",
+      "name": "Mount Toubkal",
+      "kind": "trek",
+      "regions": [
+        "MA-11"
+      ],
+      "status": "open",
+      "note": "climbable all year, but they are two different mountains: a walk-up in summer and a crampons-and-axe route in winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "reason": "spring and autumn — comfortable temperatures, green valleys and mountain flowers in spring"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "a winter mountaineering objective under snow and ice, needing equipment and experience rather than just fitness"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "searing heat — around 40 °C in Marrakech and only about 10 °C cooler on the mountain"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.keadventure.com/blog/trekking-in-toubkal-summer-vs-winter-climbs",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.skyhookadventure.com/blog/best-time-to-climb-mount-toubkal",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "sahara-camel-trek",
+      "name": "Sahara camel trekking (Erg Chebbi)",
+      "kind": "tour",
+      "regions": [
+        "MA-06",
+        "MA-13"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer desert heat makes camel trekking uncomfortable enough that it is generally not recommended"
+        },
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            10,
+            11
+          ],
+          "reason": "spring and autumn, when the dunes are walkable through the day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thenaturaladventure.com/tours/morocco/mount-toubkal-and-sahara-desert-trek/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.skyhookadventure.com/blog/best-time-to-climb-mount-toubkal",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

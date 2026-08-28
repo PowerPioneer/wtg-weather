@@ -1,0 +1,63 @@
+{
+  "iso2": "NP",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "everest-base-camp",
+      "name": "Everest Base Camp trek",
+      "kind": "trek",
+      "regions": [
+        "NP-SA"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the post-monsoon window - dry days and the clearest mountain views of the year"
+        },
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the pre-monsoon window - warmer, rhododendron in flower, and the occasional afternoon shower"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the monsoon: rain most days, leeches on the trail, cloud over the mountains, and landslides that disrupt the road and flight links"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "clear skies and empty trails, but around -15 C by day at altitude and far colder at night, with some teahouses shut"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.acethehimalaya.com/best-time-for-everest-base-camp-trek/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/everest-base-camp/travel-guide/best-time-to-visit-everest-base-camp",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

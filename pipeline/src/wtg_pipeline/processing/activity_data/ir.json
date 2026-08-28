@@ -1,0 +1,40 @@
+{
+  "iso2": "IR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "persepolis",
+      "name": "Persepolis",
+      "kind": "site",
+      "regions": [
+        "IR-14"
+      ],
+      "status": "open",
+      "note": "a large open site with almost no shade",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "spring and autumn, when the site sits between about 15 and 25 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.adventureiran.com/persepolis/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://surfiran.com/mag/best-time-to-visit-iran-tour/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

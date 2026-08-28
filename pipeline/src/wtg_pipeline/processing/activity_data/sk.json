@@ -1,0 +1,55 @@
+{
+  "iso2": "SK",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "high-tatras",
+      "name": "Hiking the High Tatras",
+      "kind": "hike",
+      "regions": [
+        "SK-PV",
+        "SK-ZI"
+      ],
+      "status": "open",
+      "note": "the Tatra Electric Railway links the resort towns, so the trailheads are reachable without a car",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the summer season for the day hikes and the hut-to-hut routes"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the high trails are winter mountaineering terrain rather than walking"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skyhookadventure.com/blog/tatra-mountains-hiking",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://polandwander.com/tatra-national-park-guide",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://hiking-trails.com/trail/high-tatra-hut-to-hut/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

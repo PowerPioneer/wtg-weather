@@ -1,0 +1,91 @@
+{
+  "iso2": "CN",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "great-wall",
+      "name": "The Great Wall",
+      "kind": "site",
+      "regions": [
+        "CN-BJ"
+      ],
+      "status": "open",
+      "note": "open all year; the restored sections near Beijing stay accessible through the winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "spring and autumn — mild walking weather on very steep stone"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chinadiscovery.com/great-wall/best-time-to-visit-great-wall.html",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "jiuzhaigou",
+      "name": "Jiuzhaigou valley",
+      "kind": "site",
+      "regions": [
+        "CN-SC"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the autumn colour against the mineral lakes, which is what the valley is famous for"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chinadiscovery.com/sichuan/jiuzhaigou.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.chinahighlights.com/travelguide/top-national-parks.htm",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "zhangjiajie",
+      "name": "Zhangjiajie National Forest Park",
+      "kind": "site",
+      "regions": [
+        "CN-HN"
+      ],
+      "status": "open",
+      "note": "open any month; the ticket price halves from December to February, which tells you when the crowds are",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "cooler air and autumn foliage among the sandstone pillars"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chinadiscovery.com/hunan/zhangjiajie.html",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

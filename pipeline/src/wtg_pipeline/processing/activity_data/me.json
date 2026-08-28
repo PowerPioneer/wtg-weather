@@ -1,0 +1,49 @@
+{
+  "iso2": "ME",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "bay-of-kotor",
+      "name": "The Bay of Kotor",
+      "kind": "site",
+      "status": "open",
+      "note": "a working town rather than a resort, so it does not shut out of season — it just empties",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the shoulder months, and the best balance of weather, crowds and prices on the bay; late April to mid-May is the single best window"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "early June and mid-September to early October are still peak season but far less crowded than midsummer"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the most crowded and most expensive weeks of the year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://adriaticways.com/kotor-weather-best-time-to-visit/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.sunshineseeker.com/destinations/kotor/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "iso2": "ZW",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "victoria-falls",
+      "name": "Victoria Falls",
+      "kind": "site",
+      "regions": [
+        "ZW-MN"
+      ],
+      "status": "open",
+      "note": "high water and low water are different sights, not better and worse ones — one is spray and thunder, the other is bare rock and a clear view of the gorge",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "peak flow, about 500 million litres a minute in April — though the spray can hide the falls from the viewpoints"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "the lowest flow of the year; on parts of the Zambian side no water falls at all"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://wildhorizons.co.za/the-best-time-to-visit-victoria-falls-seasonal-summary/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.travelbutlers.com/victoria-falls/best-time-to-visit/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

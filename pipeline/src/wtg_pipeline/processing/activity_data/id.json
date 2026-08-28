@@ -1,0 +1,124 @@
+{
+  "iso2": "ID",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "komodo",
+      "name": "Komodo National Park",
+      "kind": "wildlife",
+      "regions": [
+        "ID-NT"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            9,
+            10,
+            11
+          ],
+          "reason": "the shoulder months of the dry season: calm seas, little rain, and none of the July–August crush"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the wet months, when the crossing is rougher"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.komodoresort.com/blog/komodo-season/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.adventure-life.com/indonesia/articles/best-time-to-visit-indonesia",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "mount-bromo",
+      "name": "Mount Bromo sunrise",
+      "kind": "hike",
+      "regions": [
+        "ID-JI"
+      ],
+      "status": "open",
+      "note": "the whole point is the view across the caldera at dawn, which cloud simply removes",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "peak visibility in the East Java dry season"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the wet months, when the sunrise is often cloud"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tourmountbromo.com/best-months-to-visit-mount-bromo-ijen-crater-tumpak-sewu-and-madakaripura/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://panoramalenstrip.com/when-is-the-best-time-to-visit-mount-bromo/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "borobudur",
+      "name": "Borobudur at sunrise",
+      "kind": "site",
+      "regions": [
+        "ID-JT",
+        "ID-YO"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when the sunrise over the stupas is reliably clear"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://discoverindonesia.info/blog/best-time-to-visit-indonesia/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.selectiveasia.com/indonesia-holidays/weather/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

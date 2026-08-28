@@ -1,0 +1,69 @@
+{
+  "iso2": "TZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "mara-river-crossing",
+      "name": "Mara River crossings",
+      "kind": "wildlife",
+      "regions": [
+        "TZ-13"
+      ],
+      "status": "not-on",
+      "note": "the herds are elsewhere on the migration circuit the rest of the year - the wildlife is not absent, the crossings are",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the migration reaches the northern Serengeti and crosses the Mara; August and September are when most of the herds are on that stretch"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.serengeti.com/great-migration-africa.php",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.asiliaafrica.com/blog/when-to-see-the-great-migration/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "calving-season",
+      "name": "Wildebeest calving (Ndutu and the southern plains)",
+      "kind": "wildlife",
+      "regions": [
+        "TZ-01",
+        "TZ-26"
+      ],
+      "status": "not-on",
+      "note": "a few weeks of the migration's year, on the southern short-grass plains rather than in the north",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the herds drop their calves on the Ndutu and southeastern plains - thousands a day at the peak, with the predators that follow them"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.asiliaafrica.com/blog/calving-season-the-great-migration-s-best-kept-secret/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.discoverafrica.com/blog/our-most-frequently-asked-questions-about-the-serengeti-calving-season/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "iso2": "BE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "bruges-christmas",
+      "name": "Bruges at Christmas",
+      "kind": "festival",
+      "regions": [
+        "BE-VWV"
+      ],
+      "status": "not-on",
+      "note": "the city is open all year; the market and the lights are the winter reason to go",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Christmas market season along the canals and cobbled squares"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

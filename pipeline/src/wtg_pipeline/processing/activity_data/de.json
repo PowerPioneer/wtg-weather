@@ -1,0 +1,114 @@
+{
+  "iso2": "DE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "oktoberfest",
+      "name": "Oktoberfest",
+      "kind": "festival",
+      "regions": [
+        "DE-BY"
+      ],
+      "status": "not-on",
+      "note": "despite the name it starts in September — in 2026 it runs 19 September to 4 October. Munich accommodation is booked out and priced accordingly for the duration",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the festival straddles the two months on the Theresienwiese, starting in mid-to-late September and finishing in the first days of October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.oktoberfest.de/en",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Oktoberfest",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "neuschwanstein",
+      "name": "Neuschwanstein Castle",
+      "kind": "site",
+      "regions": [
+        "DE-BY"
+      ],
+      "status": "open",
+      "note": "open all year on timed tickets",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "mild weather, autumn colour around the castle and crowds beginning to thin"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "peak season, with days of over 6,000 visitors"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.munich-ticket.com/neuschwanstein-castle/timings-opening-hours/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.mygermanyvacation.com/how-to-visit-neuschwanstein-castle-in-winter/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "zugspitze",
+      "name": "Zugspitze",
+      "kind": "site",
+      "regions": [
+        "DE-BY"
+      ],
+      "status": "open",
+      "note": "reached by cog railway and cable car, so it is accessible in every month — what changes is whether you go up for the view or the snow",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the clearest skies and the alpine paths free of snow"
+        },
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the ski season on the glacier"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://northabroad.com/zugspitze-germany-travel-guide/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://travelerbibles.com/zugspitze-best-time-to-visit/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

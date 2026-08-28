@@ -1,0 +1,42 @@
+{
+  "iso2": "EE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "tallinn-christmas-market",
+      "name": "Tallinn Christmas market",
+      "kind": "festival",
+      "regions": [
+        "EE-37"
+      ],
+      "status": "not-on",
+      "note": "held on Town Hall Square in the old town",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the market runs from late November to the end of December, with choirs, folk music and Estonian winter food"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the market opens in the second half of November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

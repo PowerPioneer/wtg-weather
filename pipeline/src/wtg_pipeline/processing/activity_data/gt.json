@@ -1,0 +1,37 @@
+{
+  "iso2": "GT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "tikal-semuc",
+      "name": "Tikal and Semuc Champey",
+      "kind": "site",
+      "status": "open",
+      "note": "both are open all year; the dry season is what makes the roads and the ruins comfortable",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the dry season — sunny, cooler and largely rain-free"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-guatemala",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://goguatemalatravel.com/best-time-to-visit-central-america/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

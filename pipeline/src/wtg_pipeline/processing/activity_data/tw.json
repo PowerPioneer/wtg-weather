@@ -1,0 +1,56 @@
+{
+  "iso2": "TW",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "taroko-gorge",
+      "name": "Taroko Gorge",
+      "kind": "site",
+      "regions": [
+        "TW-HUA"
+      ],
+      "status": "open",
+      "note": "the gorge sometimes closes for inspection after heavy rain even without a direct typhoon hit — leave a flexible day in a summer itinerary",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the most active typhoon months, when the gorge can shut at short notice"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "the mei-yu plum rain season, from late May into mid-June, which hits the mountains hardest"
+        },
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            3,
+            4
+          ],
+          "reason": "outside both wet patterns, with settled weather in the gorge"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://lazyholidayplanner.com/essential-tools/taiwan-typhoon-season-calendar/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://voyageblogger.com/2026/03/30/taiwan-year-round-travel-guide-2026-every-season-has-its-magic/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

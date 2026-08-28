@@ -1,0 +1,89 @@
+{
+  "iso2": "KR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "autumn-foliage",
+      "name": "Autumn foliage",
+      "kind": "seasonal",
+      "status": "not-on",
+      "note": "the colour front moves south down the peninsula through the season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "the peak of the foliage season, which can start as early as September and run into November"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            11
+          ],
+          "reason": "the edges of the season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.jacadatravel.com/asia/south-korea/travel-guides/when-is-the-best-time-to-visit-south-korea/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.encounterstravel.com/us/blog/discover-the-seasons-of-south-korea",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "cherry-blossom-kr",
+      "name": "Cherry blossom",
+      "kind": "seasonal",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the blossom moves up the country between March and May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://geographyworlds.com/blog/seasons-in-south-korea/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.jacadatravel.com/asia/south-korea/travel-guides/when-is-the-best-time-to-visit-south-korea/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "jangma",
+      "name": "Travelling in the jangma",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing closes; the monsoon simply decides what a day outdoors looks like",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7
+          ],
+          "reason": "the rainiest month of the Korean year, with the jangma monsoon in full swing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://geographyworlds.com/blog/seasons-in-south-korea/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

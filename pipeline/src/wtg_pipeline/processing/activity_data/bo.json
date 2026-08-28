@@ -1,0 +1,62 @@
+{
+  "iso2": "BO",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "salar-de-uyuni",
+      "name": "Salar de Uyuni",
+      "kind": "site",
+      "regions": [
+        "BO-P"
+      ],
+      "status": "open",
+      "note": "open all year, and the season decides which of two sights you get — you cannot have both on one trip",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the rainiest months, and the best chance of the mirror: a shallow film of water across the flat that reflects the sky"
+        },
+        {
+          "status": "best",
+          "months": [
+            12,
+            3,
+            4
+          ],
+          "reason": "the rest of the wet season, when the mirror forms but less reliably"
+        },
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the dry season — no reflection, but the hexagonal salt crust is exposed and vehicles can cross the flat"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.uyuniguide.com/when-to-see-reflection/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.jacadatravel.com/latin-america/bolivia/uyuni-salt-flats/travel-guides/when-is-the-best-time-to-visit-the-uyuni-salt-flats-in-bolivia/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.salardeuyuni.com/best-time-to-visit-the-uyuni-salt-flats/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

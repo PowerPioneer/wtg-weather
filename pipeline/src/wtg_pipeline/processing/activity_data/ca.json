@@ -1,0 +1,83 @@
+{
+  "iso2": "CA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "moraine-lake-road",
+      "name": "Moraine Lake road, Banff",
+      "kind": "drive",
+      "regions": [
+        "CA-AB"
+      ],
+      "status": "open",
+      "note": "the road is the only vehicle access; in winter the lake is reached on snowshoes, fat bike or skis",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "Parks Canada closes the road for the season from around Canadian Thanksgiving in mid-October until early June, with the exact date set by snowfall"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            6
+          ],
+          "reason": "the closing and reopening months — in 2026 the Lake Louise and Moraine Lake shuttles finished on 12 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://banff.tips/guides/seasonal-closures",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://endlesswonder.ca/destinations/north-america/canada/alberta/moraine-lake-winter/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "icefields-parkway",
+      "name": "Icefields Parkway attractions",
+      "kind": "drive",
+      "regions": [
+        "CA-AB"
+      ],
+      "status": "open",
+      "note": "the highway itself stays open through the winter — it is the attractions along it that do not",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the Skywalk, the Glacier Adventure and the Icefields Discovery Centre all close for the winter, and the drive itself needs a road-condition check after snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://thebanffblog.com/banff-in-winter/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://banff.tips/guides/seasonal-closures",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

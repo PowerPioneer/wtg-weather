@@ -75,6 +75,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from wtg_pipeline.config import boundaries_raw_dir, ensure_dir, final_dir
+from wtg_pipeline.processing import activities as activity_data
 from wtg_pipeline.processing.advisories import (
     LEVEL_LABELS,
     advisories_json_path,
@@ -464,6 +465,57 @@ def build_month_notes(climate: PolygonClimate) -> dict[str, str]:
     }
 
 
+def build_activities(
+    country: activity_data.CountryActivities | None, *, name: str
+) -> dict[str, object] | None:
+    """The curated "what's actually open" block, or ``None`` if uncurated.
+
+    Shape is deliberately split in two. ``items`` carries what does not vary by
+    month — name, kind, the regions it belongs to, and the sources a reader can
+    check — once. ``months`` carries only what does: a status and the reason
+    for it. Resolving a month's status is one function
+    (:meth:`Activity.month_status`) and it runs *here*, so the web never
+    reimplements it; the alternative is two copies of the same rule in two
+    languages, which is the trap ``scoring.ts`` has to be pinned against.
+
+    Coverage is tiered, so most countries return ``None`` and render no
+    section at all — see ``activity_data/README.md``.
+    """
+    if country is None or not country.activities:
+        return None
+    items = [
+        {
+            "id": a.id,
+            "name": a.name,
+            "kind": a.kind,
+            "regions": list(a.regions),
+            "yearRound": a.year_round,
+            "datedEvent": a.dated_event,
+            "onMonths": list(a.on_months()),
+            "sources": [s.to_json() for s in a.sources],
+        }
+        for a in country.activities
+    ]
+    months: dict[str, object] = {}
+    for index, label in enumerate(MONTH_LABELS):
+        month = index + 1
+        months[label] = {
+            "lede": activity_data.build_month_lede(
+                country.activities, month, country_name=name
+            ),
+            "rows": [
+                {"id": row["id"], "status": row["status"], "reason": row["reason"]}
+                for row in activity_data.month_rows(country.activities, month)
+            ],
+        }
+    return {
+        "reviewed": country.reviewed,
+        "lede": activity_data.build_year_lede(country.activities, country_name=name),
+        "items": items,
+        "months": months,
+    }
+
+
 def build_best_months(climate: PolygonClimate, scores: Sequence[int], limit: int = 3):
     """Top months by score, earliest-first on a tie — the web's own rule."""
     order = sorted(range(12), key=lambda i: (-scores[i], i))[:limit]
@@ -716,10 +768,14 @@ def build_payloads(
     capitals: Mapping[str, tuple[str, str]],
     advisories: Mapping[str, dict[str, object]],
     region_levels: Mapping[str, Mapping[str, int]] | None = None,
+    activities: Mapping[str, activity_data.CountryActivities] | None = None,
 ) -> tuple[dict[str, dict[str, object]], list[str]]:
     """Assemble every country payload. Returns ``(by_slug, skipped_names)``."""
     registry = build_registry(registry_rows_from_gdf(country_gdf))
     areas = land_areas_km2(country_gdf)
+    # Curated, hand-authored, and tiered by how travelled a country is: most
+    # countries have no file and get no activities block at all.
+    all_activities = activities if activities is not None else activity_data.load_all()
 
     country_groups = _polygon_groups(country_percentiles)
     admin1_groups = _polygon_groups(admin1_percentiles)
@@ -799,13 +855,26 @@ def build_payloads(
             if isinstance(country_advisory, dict)
             else None
         )
+        curated = all_activities.get(entry.iso2)
+
         region_rows: list[dict[str, object]] = []
         for region, slug in sorted(zip(regions, slugs), key=lambda pair: str(pair[0]["name"])):
             region_climate: PolygonClimate = region["climate"]  # type: ignore[assignment]
+            # Which curated activities name *this* subdivision. Resolved here,
+            # against the ISO-3166-2 code Natural Earth carries, so the web
+            # never has to know that code exists — it just gets a list of ids
+            # it already has the items for. An unscoped activity is deliberately
+            # absent: "Peru has an Amazon" is not a fact about Arequipa.
+            region_activities = (
+                [a.id for a in curated.for_region([str(region.get("iso3166_2", ""))])]
+                if curated is not None
+                else []
+            )
             region_rows.append(
                 {
                     "name": region["name"],
                     "slug": slug,
+                    **({"activities": region_activities} if region_activities else {}),
                     # The admin-1 polygon id — the same `adm1_code` the tiles
                     # carry as a feature's `id`. It is what lets a click on the
                     # map name the exact region rather than one that happens to
@@ -859,6 +928,9 @@ def build_payloads(
             "regions": region_rows,
             "monthNotes": build_month_notes(climate),
         }
+        activities_block = build_activities(curated, name=entry.name)
+        if activities_block is not None:
+            payload["activities"] = activities_block
         if climate.wind is not None:
             payload["climate"]["w"] = climate.wind  # type: ignore[index]
         if capital is not None:

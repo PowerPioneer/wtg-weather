@@ -1,0 +1,100 @@
+{
+  "iso2": "NZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "great-walks",
+      "name": "The Great Walks (Milford, Routeburn, Kepler)",
+      "kind": "trek",
+      "regions": [
+        "NZ-STL",
+        "NZ-OTA"
+      ],
+      "status": "limited",
+      "note": "huts book out within minutes when the season opens; the Department of Conservation takes bookings in June for the season that follows",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the official Great Walks season: huts staffed by rangers, bridges in place and avalanche risk monitored"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "out of season the alpine sections carry snow, the side-stream bridges are removed for the winter, and the crossings are for experienced trampers only"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/fiordland/places/fiordland-national-park/things-to-do/tracks/milford-track/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.newzealand.com/us/feature/milford-track/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "tongariro-crossing",
+      "name": "Tongariro Alpine Crossing",
+      "kind": "hike",
+      "regions": [
+        "NZ-MWT",
+        "NZ-WKO"
+      ],
+      "status": "limited",
+      "note": "walkable in winter only with alpine equipment and experience, or with a guide",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the summer season, when the crossing is a long day walk rather than an alpine route"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "snow and ice on the exposed alpine section from about May to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nationalgeographic.com/travel/article/guide-to-hiking-new-zealand-great-walks",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://activeadventures.com/blog/the-great-walks-of-new-zealand",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

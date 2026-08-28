@@ -1,0 +1,46 @@
+{
+  "iso2": "RO",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "transfagarasan",
+      "name": "Transfăgărășan road",
+      "kind": "drive",
+      "regions": [
+        "RO-SB",
+        "RO-AG"
+      ],
+      "status": "closed",
+      "note": "90 km over the Făgăraș mountains, topping out at 2,042 m at Bâlea Lake. The lower sections stay open; it is the alpine crossing that is gated",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "open end to end from 1 July to 31 October, weather permitting"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "the opening date moves each year with the snow clearance and the avalanche risk — check before setting out"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://romaniatourism.com/scenic-drives-romania-transfagarasan.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.romania-insider.com/romania-transfagarasan-mountain-road-open-earlier-2024",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

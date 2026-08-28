@@ -1,0 +1,52 @@
+{
+  "iso2": "UG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "gorilla-trekking",
+      "name": "Mountain gorilla trekking",
+      "kind": "wildlife",
+      "regions": [],
+      "status": "open",
+      "note": "trackable in every month of the year; the season decides how muddy the walk is and how hard the permit is to get, not whether the gorillas are there",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            12,
+            1,
+            2
+          ],
+          "reason": "the drier months — firmer paths and clearer views, but peak demand, so permits need booking well ahead"
+        },
+        {
+          "status": "limited",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the main rains, mid-March to mid-May: muddy, steep going, though permits are easier to get and prices lower"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/rwanda/when-to-go",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://horizonguides.com/guides/gorilla-trekking/when-to-go",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

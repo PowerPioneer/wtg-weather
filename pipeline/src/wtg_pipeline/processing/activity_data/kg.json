@@ -1,0 +1,44 @@
+{
+  "iso2": "KG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "song-kul-yurts",
+      "name": "Yurt camps at Song Kul",
+      "kind": "tour",
+      "regions": [
+        "KG-N"
+      ],
+      "status": "closed",
+      "note": "the lake sits above 3,000 m, so the nights are bitterly cold even in midsummer; the camps come down for the rest of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the most reliable months, with the high passes open, horse riding and trekking running, and the camps fully operating"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "nomadic families set up on the pastures from around 15 June to 15 September; the edges are quieter but less certain at altitude"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitkyrgyzstan.org/when-to-visit/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://kyrgyzstanplanner.com/best-time-to-visit-kyrgyzstan/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

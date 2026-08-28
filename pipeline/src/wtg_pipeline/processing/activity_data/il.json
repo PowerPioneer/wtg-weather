@@ -1,0 +1,48 @@
+{
+  "iso2": "IL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "masada",
+      "name": "Masada and the Dead Sea",
+      "kind": "site",
+      "regions": [
+        "IL-D"
+      ],
+      "status": "open",
+      "note": "the Snake Path up Masada is usually climbed before dawn for a reason",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            10,
+            11
+          ],
+          "reason": "spring and autumn give comfortable hiking temperatures at the lowest point on Earth"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "38–45 °C makes midday activity inadvisable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://deadsea.com/explore/historical-sites/archaeological-and-historical-sites/masada/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://deadsea.com/dead-sea-weather/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

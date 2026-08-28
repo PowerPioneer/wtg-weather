@@ -1,0 +1,44 @@
+{
+  "iso2": "NL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "keukenhof",
+      "name": "Keukenhof and the tulip fields",
+      "kind": "seasonal",
+      "regions": [
+        "NL-ZH",
+        "NL-NH"
+      ],
+      "status": "not-on",
+      "note": "Keukenhof is only open for the season — roughly 19 March to 10 May in 2026 — and shut for the rest of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "mid-April is when the tulips are usually at their fullest"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            5
+          ],
+          "reason": "the season runs from late March to mid-May, either side of the peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tulipsinholland.com/faq-tulips-and-keukenhof/best-time-to-visit-keukenhof/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.holland.com/global/tourism/get-inspired/dutch-icons/tulip-season-in-the-netherlands",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

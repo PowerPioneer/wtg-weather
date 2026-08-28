@@ -1,0 +1,67 @@
+{
+  "iso2": "HR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "plitvice",
+      "name": "Plitvice Lakes National Park",
+      "kind": "site",
+      "regions": [
+        "HR-09"
+      ],
+      "status": "open",
+      "note": "open year-round, including over Christmas",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "some boardwalk routes close under snow and ice, though this is when the falls freeze and the park is at its emptiest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.plitvice-lakes.info/national-park/opening-times-plitvice-lakes/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.localguidetocroatia.com/single-post/visit-plitvice-lakes-in-winter",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "island-hopping",
+      "name": "Adriatic island hopping",
+      "kind": "transport",
+      "regions": [
+        "HR-17",
+        "HR-19",
+        "HR-13"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter season runs 1 November to 31 March: fewer sailings, shorter days and island travel that depends on the weather. The coast itself rarely freezes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.absolute-croatia.com/croatia/travel-information/visit-croatia-in-winter",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

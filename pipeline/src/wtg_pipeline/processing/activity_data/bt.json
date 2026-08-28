@@ -1,0 +1,66 @@
+{
+  "iso2": "BT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "paro-tsechu",
+      "name": "Paro Tsechu",
+      "kind": "festival",
+      "regions": [
+        "BT-11"
+      ],
+      "status": "not-on",
+      "note": "the dates follow the Bhutanese lunar calendar, so they move year to year — check the published calendar before booking",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "a five-day festival in spring, including the dawn unfurling of the giant silk thongdrel"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.pettitts.co.uk/guides/bhutan-festivals",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.drukasia.com/bhutan/festival-calendar/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "thimphu-tsechu",
+      "name": "Thimphu Tsechu",
+      "kind": "festival",
+      "regions": [
+        "BT-15"
+      ],
+      "status": "not-on",
+      "note": "the largest of Bhutan's festivals, held at Tashichho Dzong; the lunar date moves each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "held in September or October, and the biggest gathering in the Bhutanese festival calendar"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://undiscovered-destinations.com/blog/bhutan-festivals-guide/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.drukasia.com/bhutan/bhutan-festivals-calendar-2026/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

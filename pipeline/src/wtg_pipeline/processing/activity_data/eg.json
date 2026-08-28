@@ -1,0 +1,36 @@
+{
+  "iso2": "EG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "abu-simbel-sun-festival",
+      "name": "Abu Simbel Sun Festival",
+      "kind": "festival",
+      "regions": [
+        "EG-ASN"
+      ],
+      "status": "not-on",
+      "note": "the temple is open all year — it is the alignment that happens twice",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            10
+          ],
+          "reason": "on 22 February and 22 October the sun reaches the inner sanctuary, which sits in darkness on every other day of the year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.onthegotours.com/Egypt/Guides/Abu-Simbel-Sun-Festival-FAQs",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.memphistours.com/egypt/abu-simbel-sun-festival",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

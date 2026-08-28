@@ -1,0 +1,91 @@
+{
+  "iso2": "JO",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "petra",
+      "name": "Petra",
+      "kind": "site",
+      "regions": [
+        "JO-MN"
+      ],
+      "status": "open",
+      "note": "open all year — the Siq and the Treasury are a walk of several kilometres with almost no shade",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "spring and autumn, when Jordan sits between about 18 and 28 °C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the hottest weeks, regularly above 35 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.jacadatravel.com/middle-east/jordan/travel-guides/when-is-the-best-time-to-visit-jordan/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.skyhookadventure.com/blog/best-time-to-visit-petra",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "wadi-rum",
+      "name": "Wadi Rum",
+      "kind": "tour",
+      "regions": [
+        "JO-AQ",
+        "JO-MN"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "jeep and camel trips in comfortable desert temperatures"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "scorching daytime heat in the open desert"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skyhookadventure.com/blog/best-time-to-visit-wadi-rum",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/petra-and-wadi-rum/travel-guide/best-time-to-visit-petra-and-wadi-rum",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

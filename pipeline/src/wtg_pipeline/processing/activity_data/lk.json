@@ -1,0 +1,86 @@
+{
+  "iso2": "LK",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "whales-south",
+      "name": "Blue whales off Mirissa",
+      "kind": "wildlife",
+      "regions": [
+        "LK-32",
+        "LK-31"
+      ],
+      "status": "closed",
+      "note": "Sri Lanka runs two monsoons on opposite coasts, so its whale watching moves round the island rather than stopping",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "calm water off the south coast and blue whales reliably present"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            4
+          ],
+          "reason": "the edges of the southern season, which runs roughly November to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://nomadicboys.com/whale-watching-mirissa/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://journalofsrilanka.com/post-details/best-time-for-whale-watching-in-sri-lanka-2025-mirissa-trincomalee-guide/63",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "whales-east",
+      "name": "Whale watching off Trincomalee",
+      "kind": "wildlife",
+      "regions": [
+        "LK-53"
+      ],
+      "status": "closed",
+      "note": "the east coast's season is the mirror image of the south's — when one shuts, the other opens",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7
+          ],
+          "reason": "the east-coast season runs May to September, with blue whales off Trincomalee from about March to July"
+        },
+        {
+          "status": "open",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the later part of the eastern season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://journalofsrilanka.com/post-details/best-time-for-whale-watching-in-sri-lanka-2025-mirissa-trincomalee-guide/63",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://wwhandbook.iwc.int/en/country-profiles/sri-lanka",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

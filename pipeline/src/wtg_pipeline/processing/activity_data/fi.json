@@ -1,0 +1,58 @@
+{
+  "iso2": "FI",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "northern-lights",
+      "name": "Northern lights",
+      "kind": "seasonal",
+      "regions": [
+        "FI-10"
+      ],
+      "status": "not-on",
+      "note": "not a thing that closes — in the summer months the sky simply never gets dark enough, whatever the sun is doing",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "the darkest, longest nights of the season, with viewing strongest roughly 21:00 to 02:00"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            2,
+            3
+          ],
+          "reason": "the season runs September to April; October and November are statistically among the strongest for activity, and March pairs dark evenings with enough snow for husky and snowmobile trips"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the tail of the season, as the nights shorten"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitfinland.com/en/articles/the-best-times-to-see-northern-lights/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.visitnordic.com/en/northern-lights",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

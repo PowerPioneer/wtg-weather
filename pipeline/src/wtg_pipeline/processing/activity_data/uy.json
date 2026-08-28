@@ -1,0 +1,72 @@
+{
+  "iso2": "UY",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "punta-del-este",
+      "name": "Punta del Este",
+      "kind": "site",
+      "regions": [
+        "UY-MA"
+      ],
+      "status": "open",
+      "note": "a summer resort town on a southern-hemisphere calendar, so its peak is the northern winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the days begin to cool and the town quiets down after the summer peak"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "very hot through the middle of the day, and the busiest weeks of the year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.celebritycruises.com/blog/punta-del-este",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Punta_del_Este",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "whale-watching-uy",
+      "name": "Whale watching",
+      "kind": "wildlife",
+      "regions": [
+        "UY-MA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "boat tours run from June through November, while the whales are inshore to breed"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.celebritycruises.com/blog/punta-del-este",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

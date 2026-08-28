@@ -1,0 +1,58 @@
+{
+  "iso2": "PK",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "karakoram-highway",
+      "name": "The Karakoram Highway and Hunza",
+      "kind": "drive",
+      "regions": [
+        "PK-GB"
+      ],
+      "status": "limited",
+      "note": "the highway is the only road link north, and it is the one that landslides close",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "autumn, widely held to be the most scenic season in the valley"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the highway is fully open from about May to October and the weather is comfortable enough for sightseeing and trekking"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "outside that window, severe weather, landslides and flooding disrupt the road far more often"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://northerndiscover.com/guides/time-to-visit-hunza/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.gadventures.com/blog/karakoram-highway/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

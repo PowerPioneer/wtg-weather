@@ -1,0 +1,40 @@
+{
+  "iso2": "AM",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "monasteries-hiking",
+      "name": "Monasteries and mountain walking",
+      "kind": "site",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "green hillsides and wildflowers at 18–26 °C, before the summer peak"
+        },
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "autumn light in the Debed Canyon and the Tatev gorge, warm without the heat"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.caucasusexpert.com/best-time-to-visit-armenia/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-armenia",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

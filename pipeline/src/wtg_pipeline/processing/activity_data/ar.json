@@ -1,0 +1,66 @@
+{
+  "iso2": "AR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "perito-moreno",
+      "name": "Perito Moreno glacier",
+      "kind": "site",
+      "regions": [
+        "AR-Z"
+      ],
+      "status": "open",
+      "note": "one of the few advancing glaciers in the world, and reachable all year from El Calafate",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the southern summer, with the longest days and the boat and walkway services all running"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "still visitable in winter and all but empty of crowds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.latinamericaforless.com/blog/best-time-to-visit-patagonia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "iguazu",
+      "name": "Iguazú Falls",
+      "kind": "site",
+      "regions": [
+        "AR-N"
+      ],
+      "status": "open",
+      "note": "good to visit in any month of the year",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.jacadatravel.com/latin-america/brazil/travel-guides/when-is-the-best-time-to-visit-brazil/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

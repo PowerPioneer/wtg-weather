@@ -1,0 +1,80 @@
+{
+  "iso2": "CR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "tortuguero-turtles",
+      "name": "Green turtle nesting, Tortuguero",
+      "kind": "wildlife",
+      "regions": [
+        "CR-L"
+      ],
+      "status": "not-on",
+      "note": "the largest green-turtle nesting beach in the western hemisphere, but only while the turtles are ashore",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "green turtles nest from July to mid-October, with the peak through August and September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tortugueroinfo.com/costa-rica-sea-turtles/seasons-when-to-see-them.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "ostional-arribada",
+      "name": "Olive ridley arribada, Ostional",
+      "kind": "wildlife",
+      "regions": [
+        "CR-G"
+      ],
+      "status": "limited",
+      "note": "an arribada arrives roughly a week before each new moon, so it is a few nights a month rather than a continuous season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the largest arrivals of the year, peaking in October in the depths of the rainy season"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "arribadas still occur but in much smaller numbers"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://gypsycabnosara.com/the-ultimate-guide-to-turtle-watching-in-ostional-costa-rica/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

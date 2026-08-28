@@ -1,0 +1,128 @@
+{
+  "iso2": "VN",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "rice-terraces",
+      "name": "Golden rice terraces (Sa Pa, Mu Cang Chai, Ha Giang)",
+      "kind": "seasonal",
+      "regions": [
+        "VN-02",
+        "VN-03"
+      ],
+      "status": "open",
+      "note": "the terraces are there all year; the gold is a few weeks before each harvest",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the ripe-rice season, when the fields turn from green to gold. Sa Pa peaks roughly 25 August to 15 September; Hoang Su Phi in Ha Giang runs later, about 20 September to 20 October"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the ploughing season, when the flooded terraces mirror the sky — the other photograph people come for"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.vietnamcoracle.com/rice-terraces-of-northern-vietnam/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://vietnam.travel/things-to-do/vietnam-rice-terraces",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "halong-bay",
+      "name": "Ha Long Bay cruises",
+      "kind": "tour",
+      "regions": [
+        "VN-13"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "typhoon season in the Gulf of Tonkin; sailings are cancelled at short notice when a storm tracks in"
+        },
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the typhoon risk has passed and the weather has settled"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://localvietnam.com/regions/north-vietnam/north-vietnam-september-weather/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.tnktravel.com/blogs/northern-vietnam-weather-in-september-what-to-expect-and-where-to-go",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "hoi-an",
+      "name": "Hoi An Ancient Town",
+      "kind": "site",
+      "regions": [
+        "VN-27",
+        "VN-DN"
+      ],
+      "status": "open",
+      "note": "the flooding is well documented and recurring — in some years the old town's streets go under half a metre or more",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "central Vietnam takes its most frequent direct typhoon landfalls in these two months, and this is when Hoi An floods"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the dry, beach-ready stretch of the central Vietnamese year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.vietnamtourism.com/en/the-best-and-worst-months-to-visit-vietnam-a-region-by-region-guide",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.asiatouradvisor.com/get-inspired/typhoon-season-vietnam/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

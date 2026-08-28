@@ -1,0 +1,86 @@
+{
+  "iso2": "IN",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "manali-leh-highway",
+      "name": "Manali–Leh highway and the Ladakh passes",
+      "kind": "drive",
+      "regions": [
+        "IN-LA",
+        "IN-HP"
+      ],
+      "status": "open",
+      "note": "the only road approaches to Ladakh, and both cross passes above 5,000 m",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "shut under snow. The highway normally opens to civilian traffic in late May or early June — 27 May in 2025, 19 May in 2024 — and stays open until October"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            11
+          ],
+          "reason": "the opening and closing months; the exact date is announced each year rather than fixed"
+        },
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "roads still open, crowds gone, and the clearest autumn light on the mountains"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.stayvista.com/blog/when-do-ladakh-roads-open-in-2026-manali-and-srinagar-route-status-and-travel-advice/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://jtreks.co/ladakh/articles/ladakh-when-to-go",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "ladakh-monsoon",
+      "name": "Ladakh in the monsoon",
+      "kind": "region",
+      "regions": [
+        "IN-LA"
+      ],
+      "status": "open",
+      "note": "Ladakh sits in the Himalayan rain shadow, so the monsoon that soaks the rest of northern India mostly misses it",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "dry and open on the plateau while the plains are under monsoon — though landslides on the approach passes, south of the range, can still close the road"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.easemytrip.com/blog/ladakh-in-monsoon-july-to-september-best-time-to-visit",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://jtreks.co/ladakh/articles/ladakh-when-to-go",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

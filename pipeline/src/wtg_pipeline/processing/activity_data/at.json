@@ -1,0 +1,46 @@
+{
+  "iso2": "AT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "salzkammergut-hiking",
+      "name": "Hiking the Salzkammergut and Dachstein",
+      "kind": "hike",
+      "regions": [
+        "AT-4",
+        "AT-5"
+      ],
+      "status": "open",
+      "note": "the valley paths around Hallstatt stay walkable in winter; it is the high alpine routes that have a season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the hiking season runs June to the end of September, with June good for the higher trails before the heat and the crowds"
+        },
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "autumn, when the temperatures are pleasant and clear days give the longest views"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.hallstatt.net/about-hallstatt/active-summer-holiday/wanderzeit-en-US/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.hallstatt.net/about-hallstatt/active-summer-holiday/wanderzeit-en-US/hiking-in-autumn-austria/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

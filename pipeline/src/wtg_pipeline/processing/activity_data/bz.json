@@ -1,0 +1,55 @@
+{
+  "iso2": "BZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "regions": [],
+      "status": "open",
+      "note": "Belize is relatively sheltered compared with the islands, and what risk it has arrives late in the season",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the part of the Atlantic hurricane season when storms historically cause disruption — in Belize the risk is concentrated late, in October and November"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "inside the official season, which runs 1 June to 30 November, but outside its historical peak"
+        },
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "outside the hurricane season entirely, in the dry Caribbean winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

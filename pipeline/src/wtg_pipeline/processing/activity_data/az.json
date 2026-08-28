@@ -1,0 +1,38 @@
+{
+  "iso2": "AZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "sightseeing-hiking-az",
+      "name": "Sightseeing and hiking",
+      "kind": "site",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the start of peak season, with the best weather of the year for sightseeing and hiking"
+        },
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "still warm as autumn begins, with the summer heat gone and far fewer visitors"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsiblevacation.com/vacations/azerbaijan/travel-guide/best-time-to-visit-azerbaijan",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://araratour.com/articles/seasons-in-armenia-an-overview-for-tourists",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

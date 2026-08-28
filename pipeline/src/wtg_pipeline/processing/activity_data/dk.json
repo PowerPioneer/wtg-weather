@@ -1,0 +1,47 @@
+{
+  "iso2": "DK",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "tivoli-christmas",
+      "name": "Christmas at Tivoli Gardens",
+      "kind": "festival",
+      "regions": [
+        "DK-84"
+      ],
+      "status": "not-on",
+      "note": "Tivoli itself opens in several distinct seasons through the year and is shut between them — the Christmas season is the one that draws visitors to Copenhagen in winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the Christmas season runs from mid-November into early January, when the 182-year-old park is lit for the holidays"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the season runs into the first days of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.forbes.com/sites/davidnikel/2025/12/03/copenhagens-tivoli-gardens-lights-up-for-the-holiday-season/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

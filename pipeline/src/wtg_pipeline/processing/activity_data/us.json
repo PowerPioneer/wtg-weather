@@ -1,0 +1,92 @@
+{
+  "iso2": "US",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "tioga-road",
+      "name": "Tioga Road, Yosemite",
+      "kind": "drive",
+      "regions": [
+        "US-CA"
+      ],
+      "status": "open",
+      "note": "the high country behind the gate - Tuolumne Meadows and the park's eastern entrance - is unreachable by car while it is shut",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "snow closes the road for the winter. It shuts around November and most years reopens in late May or June; the Park Service does not commit to a date in advance"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            5
+          ],
+          "reason": "the shoulder months the closure and the reopening fall in - the exact day depends on that year's snow"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "reliably open and clear of snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/yose/planyourvisit/tiogaopen.htm",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.nps.gov/yose/planyourvisit/tioga.htm",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "glacier-point-road",
+      "name": "Glacier Point Road, Yosemite",
+      "kind": "drive",
+      "regions": [
+        "US-CA"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "closed for the winter beyond the Badger Pass ski area; it shuts between late October and mid-November and reopens between late May and early June"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            4,
+            5
+          ],
+          "reason": "the shoulder months either side of the closure - the dates move with the snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/yose/planyourvisit/tiogaopen.htm",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "iso2": "IE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "skellig-michael",
+      "name": "Landing on Skellig Michael",
+      "kind": "site",
+      "regions": [
+        "IE-KY"
+      ],
+      "status": "closed",
+      "note": "landing and cruising are two different tickets with two different seasons — the island itself is only walkable in the middle of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7
+          ],
+          "reason": "landing tours run mid-May to the end of September, and this is peak puffin season on the island"
+        },
+        {
+          "status": "open",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the later part of the landing season"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            10
+          ],
+          "reason": "boat tours circle the island from mid-March to early November, but without landing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://skelligmichael.ie/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://skelligislands.com/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "cliffs-of-moher",
+      "name": "Cliffs of Moher",
+      "kind": "site",
+      "regions": [
+        "IE-CE"
+      ],
+      "status": "open",
+      "note": "the clifftop is open all year; it is the boat tours beneath it that have a season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "boats run from Doolin March to September and from Galway April to September, which is the only way to see the cliffs from below"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tuatha.ie/the-cliffs-of-moher/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.ireland.com/en-us/magazine/water-activities/boat-trips-wild-atlantic-way/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

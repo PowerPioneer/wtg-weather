@@ -1,0 +1,122 @@
+{
+  "iso2": "GR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "samaria-gorge",
+      "name": "Samaria Gorge",
+      "kind": "hike",
+      "regions": [
+        "GR-M"
+      ],
+      "status": "closed",
+      "note": "the longest gorge walk in Europe, and the one Cretan sight with a hard gate on it",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "the park is open daily from 1 May to 31 October, 07:00 to 16:00"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "open, but the hottest weeks on an exposed 16 km descent"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://samaria-gorge.gr/FAQ.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.west-crete.com/samaria-gorge.htm",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "acropolis",
+      "name": "The Acropolis, Athens",
+      "kind": "site",
+      "regions": [
+        "GR-A1"
+      ],
+      "status": "open",
+      "note": "open all year. Winter hours (1 November to 31 March) close at 17:00; summer runs to 20:00",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter schedule, when the site is open without the summer queues"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "peak heat on unshaded marble, and the year's heaviest crowds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://acropolisathens.org/opening-hours/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://greektriplanner.me/blog/visiting-greece-in-winter",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "island-ferries",
+      "name": "Island ferries",
+      "kind": "transport",
+      "regions": [
+        "GR-L",
+        "GR-K",
+        "GR-F"
+      ],
+      "status": "open",
+      "note": "the islands stay reachable all year; what changes is how long it takes and how reliably",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "reduced winter timetables and slower boats — Piraeus to Santorini takes at least eight hours rather than under five — and northerly winds cancel dockings at short notice"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://greekferrytravel.com/greek-islands-in-winter-everything-you-need-to-know/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.davestravelpages.com/winter-in-santorini/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

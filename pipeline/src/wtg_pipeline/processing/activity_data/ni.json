@@ -1,0 +1,36 @@
+{
+  "iso2": "NI",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "dry-season-ni",
+      "name": "Volcano and lake trips",
+      "kind": "season",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the dry season, though it can still rain — anything from a shower to several days of downpour"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.adventure-life.com/central-america-mexico/articles/best-times-to-travel-to-central-america",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/central-america/travel-guide/best-time-to-visit-central-america",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "iso2": "MT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "blue-lagoon",
+      "name": "The Blue Lagoon, Comino",
+      "kind": "swim",
+      "status": "open",
+      "note": "the crowding is as seasonal as the water: between 10:00 and 15:00 in high summer the ferries land in numbers, so early or after 16:00 is a different place",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "warm water without the peak-season crowds — autumn is the pick, with the sea still at 24–26 °C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the busiest weeks of the year on a very small island"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ilovecominoboattrips.com/comino-insider-tips-best-time-to-visit-the-blue-lagoon-avoid-the-crowds/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://continenthop.com/blog/blue-lagoon-malta-comino-island/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "sea-swimming-mt",
+      "name": "Sea swimming",
+      "kind": "swim",
+      "status": "open",
+      "note": "Malta holds a sea above 20 °C for six months of the year, a longer window than almost anywhere else in the Mediterranean",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the sea stays above 20 °C from June to November, peaking at 25–26 °C in September and holding 23–24 °C through October"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the tail of the swimming season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.secretescapes.com/magazine/escapist/maltas-monthly-weather-climate-whens-best-to-plan-your-escape/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Climate_of_Malta",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

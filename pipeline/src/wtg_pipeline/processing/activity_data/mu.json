@@ -1,0 +1,44 @@
+{
+  "iso2": "MU",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "cyclone-season-mu",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts; this is about the odds of unsettled weather rather than access",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the height of the cyclone season for Mauritius, and the months usually advised against for settled weather"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            4,
+            5
+          ],
+          "reason": "inside the official season, which runs 15 November to 15 May for Mauritius, but outside its worst months"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://hummingbird.travel/company/journals/seasonality-in-the-indian-ocean-when-to-visit-the-maldives-mauritius-seychelles-sri-lanka-and-reunion-island",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2025%E2%80%9326_South-West_Indian_Ocean_cyclone_season",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

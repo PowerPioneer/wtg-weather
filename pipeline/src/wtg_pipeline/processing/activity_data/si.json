@@ -1,0 +1,42 @@
+{
+  "iso2": "SI",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "vintgar-gorge",
+      "name": "Vintgar Gorge",
+      "kind": "hike",
+      "status": "open",
+      "note": "a boardwalk pinned to the rock above the Radovna, a short way from Lake Bled",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the gorge closes for the winter — the boardwalks are not safe under ice"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the river is at its fullest from mid-April to the end of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bled.si/en/what-to-see-do/attractions/6/vintgar-gorge/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://routinelynomadic.com/vintgar-gorge-slovenia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

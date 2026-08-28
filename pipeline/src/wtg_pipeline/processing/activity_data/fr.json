@@ -1,0 +1,64 @@
+{
+  "iso2": "FR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "provence-lavender",
+      "name": "Provence lavender fields",
+      "kind": "seasonal",
+      "regions": [
+        "FR-04"
+      ],
+      "status": "not-on",
+      "note": "a four-to-five week bloom, not a season — outside it the fields are cut stubble",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "the bloom starts late June and peaks in early July on the Valensole plateau and in the Luberon; the higher fields around Sault run later, and harvesting begins in the second week of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.onlyprovence.com/lavender-fields-provence-guide/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://mariecalfopoulos.com/lavender-fields-in-provence-france-blooming-guide-when-where-to-go-sault-luberon-valensole/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "aiguille-du-midi",
+      "name": "Aiguille du Midi cable car, Chamonix",
+      "kind": "site",
+      "regions": [
+        "FR-74"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11
+          ],
+          "reason": "an annual maintenance shutdown of roughly two to three weeks, the dates set each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chamonix.net/english/leisure/sightseeing/aiguille-du-midi",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.seechamonix.com/lifts/dates/season-dates-for-chamonix-valley-lifts",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

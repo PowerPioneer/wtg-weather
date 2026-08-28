@@ -1,0 +1,34 @@
+{
+  "iso2": "TL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "atauro-whales",
+      "name": "Whales off Atauro Island",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "Atauro sits beside one of the deepest ocean channels in Asia, which is why the migration passes so close to shore",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "the migration months, when pygmy blue whales pass through along with humpbacks, pilot whales and orca"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://divetimor.com/whale-migration-highway/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://diveadventures.com.au/country/timor-leste/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

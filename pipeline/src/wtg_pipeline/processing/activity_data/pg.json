@@ -1,0 +1,48 @@
+{
+  "iso2": "PG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "kokoda-track",
+      "name": "The Kokoda Track",
+      "kind": "trek",
+      "status": "closed",
+      "note": "the operators, not a gate, are what close it — but with them shut the track is not a trip you can book",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the trekking season; the early months bring cooler conditions and fewer walkers on the trail"
+        },
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "most operators close for the heavy rains"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.steppestravel.com/best-time-to-visit/papua-new-guinea/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kokoda_Track",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "iso2": "TR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "cappadocia-balloons",
+      "name": "Cappadocia balloon flights",
+      "kind": "tour",
+      "regions": [
+        "TR-50"
+      ],
+      "status": "open",
+      "note": "flights are scheduled every month of the year — the question is whether yours gets off the ground. Book your first morning, so a cancellation still leaves you another try",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "spring and autumn give the highest chance of flying and the best conditions"
+        },
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "statistically the most reliable month of all, with a cancellation rate around 7%"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "fog, snow and sustained wind cancel more than half of scheduled flights — though January and February are the months to fly if you want the valleys under snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tatildokya.com/en/hot-air-balloon-cappadocia-best-time-to-fly-by-month-2026",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://epicturkeytravel.com/cappadocia-hot-air-balloon-cancellation/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "iso2": "OM",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "ras-al-jinz-turtles",
+      "name": "Green turtle nesting, Ras al Jinz",
+      "kind": "wildlife",
+      "regions": [
+        "OM-SH"
+      ],
+      "status": "open",
+      "note": "green turtles nest here in every month of the year, which is unusual — most nesting beaches have a closed season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "the peak of the nesting season, which runs May to September"
+        },
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "hatchlings emerging, though these are also the hottest weeks of the Omani year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rasaljinz-turtlereserve.com/en/turtle-viewing/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.oman-spirit.com/guides/turtle-watching-ras-al-jinz/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

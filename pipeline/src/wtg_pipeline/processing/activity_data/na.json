@@ -1,0 +1,51 @@
+{
+  "iso2": "NA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "etosha",
+      "name": "Etosha National Park",
+      "kind": "wildlife",
+      "regions": [
+        "NA-OT",
+        "NA-ON",
+        "NA-KU"
+      ],
+      "status": "open",
+      "note": "the park is open all year; the waterholes are what make the dry season worth timing for",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry winter months — with little water elsewhere, the animals gather at the few remaining waterholes"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the wet months, when water is everywhere and the game disperses"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/etosha/best-time",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/namibia/when-to-go",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

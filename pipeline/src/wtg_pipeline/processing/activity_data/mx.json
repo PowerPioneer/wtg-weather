@@ -1,0 +1,46 @@
+{
+  "iso2": "MX",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "monarch-butterflies",
+      "name": "Monarch Butterfly Biosphere Reserve",
+      "kind": "wildlife",
+      "regions": [
+        "MX-MIC",
+        "MX-MEX"
+      ],
+      "status": "not-on",
+      "note": "the sanctuaries in the oyamel fir forests west of Mexico City are open to visitors only while the butterflies are there",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "peak season from mid-January to the end of March, when the overwintering population is at its largest"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the butterflies start arriving in early November and the sanctuaries open from around mid-to-late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mexperience.com/travel/outdoors/monarch-butterflies-mexico/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://monarchjointventure.org/faq/overwintering/visiting-mexican-overwintering-sites",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

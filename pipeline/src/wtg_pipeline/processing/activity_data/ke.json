@@ -1,0 +1,44 @@
+{
+  "iso2": "KE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "mara-migration",
+      "name": "The migration in the Masai Mara",
+      "kind": "wildlife",
+      "regions": [
+        "KE-700"
+      ],
+      "status": "not-on",
+      "note": "the Mara is a year-round reserve with resident game; it is the migration specifically that has a window",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the densest herds and the most frequent Mara River crossing attempts, most reliably between about 15 August and 5 September"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10
+          ],
+          "reason": "the herds build from late July and return south through the last two weeks of October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kenyaluxurysafari.co.uk/kenya-great-migration/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.africanmeccasafaris.com/travel-guide/kenya/parks-reserves/masai-mara/wildebeest-migration",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "iso2": "CZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "prague-old-town",
+      "name": "Prague's old town",
+      "kind": "site",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "reason": "the city is walkable and calm enough to take in without crowd pressure; May and September are the pick"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the peak of the summer crowds in the old town"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-prague",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.ricksteves.com/europe/czech-republic/best-time-to-go-to-prague-czech-republic",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

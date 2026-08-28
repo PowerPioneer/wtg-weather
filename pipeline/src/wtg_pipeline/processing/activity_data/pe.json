@@ -1,0 +1,181 @@
+{
+  "iso2": "PE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "inca-trail",
+      "name": "Classic Inca Trail",
+      "kind": "trek",
+      "regions": ["PE-CUS"],
+      "status": "open",
+      "note": "permit-only, and permits for the dry months sell out well in advance",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [2],
+          "reason": "closed the whole month for maintenance after the rains; reopens 1 March. The Salkantay and Lares treks stay open"
+        },
+        {
+          "status": "best",
+          "months": [5, 6, 7, 8, 9],
+          "reason": "the dry months — driest trail and the clearest views from the passes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.alpacaexpeditions.com/why-the-inca-trail-closes-in-february-and-why-it-reopens-on-march-1/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "vinicunca",
+      "name": "Rainbow Mountain (Vinicunca)",
+      "kind": "hike",
+      "regions": ["PE-CUS"],
+      "status": "open",
+      "note": "a high-altitude day hike above 5,000 m from Cusco",
+      "windows": [
+        {
+          "status": "best",
+          "months": [5, 6, 7, 8, 9],
+          "reason": "dry, stable weather and the colour bands reliably visible"
+        },
+        {
+          "status": "limited",
+          "months": [11, 12, 1, 2, 3],
+          "reason": "the stripes are often under snow or cloud and the trail turns to mud"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://bushop.com/peru/guides/best-time-visit-rainbow-mountain/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.salkantaytrekking.com/blog/rainbow-mountain-vinicunca-everything-need-know/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "machu-picchu",
+      "name": "Machu Picchu",
+      "kind": "site",
+      "regions": ["PE-CUS"],
+      "status": "open",
+      "note": "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "amazon-high-water",
+      "name": "Amazon by canoe",
+      "kind": "wildlife",
+      "regions": ["PE-LOR", "PE-UCA", "PE-MDD"],
+      "status": "limited",
+      "note": "outside the flood the smaller channels are too shallow to paddle",
+      "windows": [
+        {
+          "status": "best",
+          "months": [12, 1, 2, 3, 4, 5],
+          "reason": "high water floods the forest and opens a maze of channels; the peak is March and April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "amazon-jungle-walking",
+      "name": "Amazon walking trails",
+      "kind": "wildlife",
+      "regions": ["PE-LOR", "PE-UCA", "PE-MDD"],
+      "status": "limited",
+      "note": "under high water the forest floor is submerged and travel is by boat",
+      "windows": [
+        {
+          "status": "best",
+          "months": [6, 7, 8, 9, 10, 11],
+          "reason": "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "colca-condors",
+      "name": "Colca Canyon condors",
+      "kind": "wildlife",
+      "regions": ["PE-ARE"],
+      "status": "open",
+      "note": "condors are sighted year-round from the Cruz del Condor viewpoint, best between about 07:30 and 09:00",
+      "windows": [
+        {
+          "status": "best",
+          "months": [4, 5, 6, 7, 8, 9, 10],
+          "reason": "the dry season — clearest visibility down the canyon"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://colcacanyontours-arequipa.com/complete-guide-to-andean-condor-watching-in-colca-canyon-peru-2026/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://perutravel-tours.com/best-time-to-visit-colca-canyon-for-condor-watching/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "inti-raymi",
+      "name": "Inti Raymi",
+      "kind": "festival",
+      "regions": ["PE-CUS"],
+      "status": "not-on",
+      "note": "a fixed-date festival — not on in any other month, which is its calendar rather than a closure",
+      "windows": [
+        {
+          "status": "best",
+          "months": [6],
+          "reason": "held on 24 June in Cusco, at Coricancha, the Plaza de Armas and Sacsayhuaman, for the southern winter solstice"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.perurail.com/peruvian-holidays/all-you-need-to-know-about-inti-raymi/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Inti_Raymi",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

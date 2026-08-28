@@ -1,0 +1,36 @@
+{
+  "iso2": "HU",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "thermal-baths",
+      "name": "The thermal baths",
+      "kind": "site",
+      "status": "open",
+      "note": "Budapest's Turkish baths, some of them 16th and 17th century, are open all year — and the cold months are the point rather than the problem",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the season most thermal destinations are at their peak: the colder the air outside, the better the water"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.lonelyplanet.com/articles/europes-best-hot-springs",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.travelcounsellors.co.uk/find-your-travel-counsellor/kayleigh-benney/the-top-12-thermal-baths-hot-springs-in-europe-you-ll-want-to-save/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "iso2": "KW",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "desert-trips",
+      "name": "Desert trips",
+      "kind": "tour",
+      "status": "open",
+      "note": "operators run all year, and in summer they run them early or late to keep clear of the worst of the heat",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter season, when daytime temperatures sit in a range you can spend a day outdoors in"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            4
+          ],
+          "reason": "the shoulder months, still comfortable enough for time in the open"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the hottest months, reaching the high forties with high humidity on the coast"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://dubaidesertsafaritrip.com/blog/best-time-to-visit-uae-desert/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

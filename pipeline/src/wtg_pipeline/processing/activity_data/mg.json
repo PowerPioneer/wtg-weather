@@ -1,0 +1,46 @@
+{
+  "iso2": "MG",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "lemur-watching",
+      "name": "Lemur watching",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "lemurs are found nowhere else on Earth, and Madagascar has over a hundred species; the parks are reachable all year but the season decides the roads",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, which is when the lemur tours run"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "cyclone risk and rough seas; the months usually advised against, especially for coastal travel"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.africanbudgetsafaris.com/blog/best-time-to-visit-madagascar/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://safari-consultants.com/destinations/madagascar/madagascar-seasons-when-to-travel/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

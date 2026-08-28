@@ -1,0 +1,49 @@
+{
+  "iso2": "PL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "morskie-oko",
+      "name": "Morskie Oko",
+      "kind": "hike",
+      "regions": [
+        "PL-MA"
+      ],
+      "status": "open",
+      "note": "the most walked route in Tatra National Park — a paved road from Palenica Białczańska, two to three hours up to the lake",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the summer walking season in the Tatras"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the road stays open year-round but the high trails beyond the lake need winter equipment"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skyhookadventure.com/blog/tatra-mountains-hiking",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://polandwander.com/tatra-national-park-guide",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

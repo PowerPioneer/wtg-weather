@@ -1,0 +1,159 @@
+{
+  "iso2": "IS",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "highland-f-roads",
+      "name": "Highland F-roads (Landmannalaugar, Askja)",
+      "kind": "drive",
+      "regions": [
+        "IS-8"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the interior is shut for winter - F-roads stay gated until the snow clears and the rivers drop to a fordable depth"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "opening in stages through the month; F208 to Landmannalaugar usually falls around 10-20 June, and the road administration sets each road's date on inspection rather than in advance"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the full network is normally open and the river crossings are at their most manageable"
+        },
+        {
+          "status": "limited",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "roads start closing again as the first snows arrive; check the official road status the morning you drive"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://mapoficeland.is/guides/f-roads-opening-dates-iceland/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.camper.is/%F0%9F%8F%94%EF%B8%8F-the-highland-countdown-f-road-opening-forecast-2026/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "ice-caves",
+      "name": "Natural ice caves (Vatnajokull)",
+      "kind": "tour",
+      "regions": [
+        "IS-8"
+      ],
+      "status": "closed",
+      "note": "the natural caves melt and become unsafe outside the cold months; the year-round man-made ice tunnel is a different trip",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the glacier is cold enough for the natural caves to be stable, and guided tours run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://guidetoiceland.is/nature-info/ice-caves-in-iceland",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "puffins",
+      "name": "Puffin colonies",
+      "kind": "wildlife",
+      "status": "closed",
+      "note": "outside the nesting window the birds are out at sea and the colonies are empty",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the Atlantic puffins are ashore to nest and boat tours to the colonies run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cafevatnajokull.is/puffin-tours",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://guidetoiceland.is/book-trips-holiday/adventure-tours/hiking",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "laugavegur",
+      "name": "Laugavegur trek",
+      "kind": "trek",
+      "regions": [
+        "IS-8"
+      ],
+      "status": "closed",
+      "note": "the huts and the highland bus link close with the F-roads",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the trail is clear of snow, the huts are staffed and the highland buses run"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the edges of the season - it opens with the F-roads around mid-June and winds down through September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://guidetoiceland.is/book-trips-holiday/adventure-tours/hiking",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://mapoficeland.is/guides/f-roads-opening-dates-iceland/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

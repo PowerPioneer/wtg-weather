@@ -1,0 +1,77 @@
+{
+  "iso2": "MV",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "hanifaru-mantas",
+      "name": "Manta rays at Hanifaru Bay",
+      "kind": "dive",
+      "regions": [
+        "MV-20"
+      ],
+      "status": "closed",
+      "note": "a protected bay in Baa Atoll, snorkel-only and time-limited even in season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak, when southwest monsoon currents pack the bay with plankton and the mantas feed in numbers"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            11
+          ],
+          "reason": "the season runs May to November on the same currents"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://amaldives.com/activities/diving/hanifaru-bay-diving",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "atoll-diving",
+      "name": "Atoll diving",
+      "kind": "dive",
+      "status": "open",
+      "note": "the monsoon does not stop the diving, it moves it: in the northeast monsoon the mantas and whale sharks are on the western side of the atolls, in the southwest monsoon on the eastern side",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the northeast monsoon and the Maldivian high season — calmer water and the best visibility"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/whale-shark-and-manta-rays-seasons-in-the-maldives",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.originaldiving.com/indian-ocean/maldives/best-time",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

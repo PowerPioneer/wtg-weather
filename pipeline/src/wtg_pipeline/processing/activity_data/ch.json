@@ -1,0 +1,76 @@
+{
+  "iso2": "CH",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "alpine-passes",
+      "name": "Furka, Grimsel and Susten passes",
+      "kind": "drive",
+      "regions": [
+        "CH-VS",
+        "CH-BE"
+      ],
+      "status": "open",
+      "note": "the Bernina, Julier and Simplon are kept open all year — it is this central cluster that shuts",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "closed under snow: the Furka from late October until late May, the Grimsel through the same window"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the opening and closing months — in 2026 the Furka, Grimsel and Nufenen reopened on 29 May"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the driving and hiking season for the high passes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://planthealps.com/guides/swiss-mountain-passes-open-dates/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.the-ski-guru.com/2026/06/01/switzerland-furka-grimsel-nufenen-passes-reopen-2026/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "jungfraujoch",
+      "name": "Jungfraujoch — Top of Europe",
+      "kind": "site",
+      "regions": [
+        "CH-BE"
+      ],
+      "status": "open",
+      "note": "reached by rack railway rather than road, which is why it runs all year while the passes below it do not",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.jungfrau.ch/en-gb/winter-hiking/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

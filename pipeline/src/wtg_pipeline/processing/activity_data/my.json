@@ -1,0 +1,39 @@
+{
+  "iso2": "MY",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "sipadan",
+      "name": "Diving Sipadan",
+      "kind": "dive",
+      "regions": [
+        "MY-12"
+      ],
+      "status": "closed",
+      "note": "permit-limited as well as seasonal — the number of divers allowed on the island each day is capped",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "the diving season runs April to December, with vertical walls, green and hawksbill turtles and schooling barracuda"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://indochinatravel.com/tours/diving-in-asia",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

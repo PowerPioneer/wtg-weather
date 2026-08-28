@@ -1,0 +1,44 @@
+{
+  "iso2": "UZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "silk-road-cities",
+      "name": "The Silk Road cities (Samarkand, Bukhara, Khiva)",
+      "kind": "site",
+      "regions": [
+        "UZ-SA",
+        "UZ-BU"
+      ],
+      "status": "open",
+      "note": "the monuments are open all year — it is the walking between them that the season decides",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "reason": "spring and autumn, when the cities are at their most pleasant"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "punishing summer heat, often over 40 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

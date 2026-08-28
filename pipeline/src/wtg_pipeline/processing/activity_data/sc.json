@@ -1,0 +1,57 @@
+{
+  "iso2": "SC",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "diving-snorkelling",
+      "name": "Diving and snorkelling",
+      "kind": "dive",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            10,
+            11
+          ],
+          "reason": "the transitional months between the two trade winds: calm seas, peak underwater visibility and lower humidity"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://hummingbird.travel/company/journals/seasonality-in-the-indian-ocean-when-to-visit-the-maldives-mauritius-seychelles-sri-lanka-and-reunion-island",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "cyclone-season-sc",
+      "name": "Travelling in the cyclone season",
+      "kind": "season",
+      "status": "open",
+      "note": "the Seychelles sit far enough north that direct hits are rare; the season is about disruption rather than closure",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the South-West Indian Ocean cyclone season runs 15 November to 30 April, extended to 15 May for the Seychelles and Mauritius"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/2025%E2%80%9326_South-West_Indian_Ocean_cyclone_season",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

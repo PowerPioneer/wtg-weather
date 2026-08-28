@@ -1,0 +1,56 @@
+{
+  "iso2": "CL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "w-trek",
+      "name": "The W trek, Torres del Paine",
+      "kind": "trek",
+      "regions": [
+        "CL-MA"
+      ],
+      "status": "limited",
+      "note": "the route stays open in winter, but most of the park's refugios and trails do not",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            3
+          ],
+          "reason": "the shoulder months — world-class walking without January's peak-season crowds"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the warmest weeks and the height of the season; January is both the best weather and the busiest"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "most hotels and trails shut for the winter; the trek itself remains walkable in a near-empty park"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.swoop-patagonia.com/chile/torres-del-paine/hiking/w-trek",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

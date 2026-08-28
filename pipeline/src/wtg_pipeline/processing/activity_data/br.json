@@ -1,0 +1,86 @@
+{
+  "iso2": "BR",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "pantanal-jaguars",
+      "name": "Tracking jaguars in the Pantanal",
+      "kind": "wildlife",
+      "regions": [
+        "BR-MT",
+        "BR-MS"
+      ],
+      "status": "limited",
+      "note": "the Pantanal floods for half the year, which is when the wildlife disperses and the tracks go under water",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season concentrates the animals and thins the vegetation; August is the pick, with the water at its lowest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.pantanaljaguarsafaris.com/best-time-to-visit",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsiblevacation.com/vacations/brazil-wildlife/travel-guide/best-time-to-go",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "iguacu",
+      "name": "Iguaçu Falls",
+      "kind": "site",
+      "regions": [
+        "BR-PR"
+      ],
+      "status": "open",
+      "note": "good to visit in any month of the year",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.jacadatravel.com/latin-america/brazil/travel-guides/when-is-the-best-time-to-visit-brazil/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "Carnival",
+      "kind": "festival",
+      "regions": [
+        "BR-RJ"
+      ],
+      "status": "not-on",
+      "note": "the date moves with Easter, so it can fall in late February or early March",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "Carnival falls in February, in the warm and humid part of the Brazilian year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.jacadatravel.com/latin-america/brazil/travel-guides/when-is-the-best-time-to-visit-brazil/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/brazil/travel-guide/best-time-to-visit-brazil",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

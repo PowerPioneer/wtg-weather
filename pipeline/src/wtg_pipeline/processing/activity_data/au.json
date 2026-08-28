@@ -1,0 +1,58 @@
+{
+  "iso2": "AU",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "kakadu-falls",
+      "name": "Jim Jim and Twin Falls, Kakadu",
+      "kind": "site",
+      "regions": [
+        "AU-NT"
+      ],
+      "status": "limited",
+      "note": "high-clearance 4WD only even when open, and the district has stayed shut for whole seasons for cyclone repairs - check the park's access report before you go",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the wet season floods the access roads; in those months the falls are reachable only from the air"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when the road normally opens"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            11
+          ],
+          "reason": "the changeover months - the road opens and closes on the park's inspection rather than on a date"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kakadu.gov.au/news/access-and-alerts/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://kakadutourism.com/see-and-do/attractions/jim-jim-falls",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "iso2": "AL",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "albanian-riviera",
+      "name": "The Albanian Riviera",
+      "kind": "swim",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the sweet spot — mid-June and the first three weeks of September, with warm sea, dry air and prices below the midsummer peak"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the wider shoulder season, warm and reliable with lighter crowds, good for the Alps as well as the coast"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the peak weeks, when the beaches and the villa prices are at their busiest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-albania",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://findingalexx.com/albanian-riviera-travel-guide/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

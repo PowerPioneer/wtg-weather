@@ -1,0 +1,47 @@
+{
+  "iso2": "PA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "dry-season-pa",
+      "name": "Diving, snorkelling and the canal",
+      "kind": "season",
+      "status": "open",
+      "note": "Panama's climate is equatorial — hot and damp all year — and the sea is warm enough to swim in every month",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the dry season: barely any rain and the best underwater visibility of the year"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the start of the drier stretch, which runs November to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.adventure-life.com/central-america-mexico/articles/best-times-to-travel-to-central-america",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/central-america/travel-guide/best-time-to-visit-central-america",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.celebritycruises.com/blog/best-time-to-visit-central-america",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

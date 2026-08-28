@@ -1,0 +1,97 @@
+{
+  "iso2": "IT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "stelvio-pass",
+      "name": "Stelvio Pass",
+      "kind": "drive",
+      "regions": [
+        "IT-BZ"
+      ],
+      "status": "open",
+      "note": "48 hairpins to 2,758 m; the road is the attraction",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "shut for the winter under snow — it normally opens in the second half of May and closes again in the first days of November"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            11
+          ],
+          "reason": "the opening and closing months; the exact dates move with the snow"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "reliably open and clear"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Stelvio_Pass",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://italyplanner.com/stelvio-pass-guide.html",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "stelvio-summer-ski",
+      "name": "Summer skiing at Stelvio",
+      "kind": "ski",
+      "regions": [
+        "IT-BZ"
+      ],
+      "status": "closed",
+      "note": "the only true summer ski area in Italy, and it runs on the opposite calendar to the rest of the country's resorts",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the glacier ski area runs through the summer; the season spans roughly May to November"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "the edges of the summer glacier season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.powderhounds.com/Europe/Italy/Stelvio.aspx",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.mondoneve.it/en/passo-stelvio/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

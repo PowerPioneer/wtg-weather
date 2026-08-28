@@ -1,0 +1,43 @@
+{
+  "iso2": "MZ",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "bazaruto-diving",
+      "name": "Diving the Bazaruto Archipelago",
+      "kind": "dive",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the clearest water of the year, as the winter winds settle and the ocean calms"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            5,
+            6,
+            10
+          ],
+          "reason": "the wider dry-season diving window, April to October, with good visibility and active marine life"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.originaldiving.com/africa/mozambique/southern-mozambique-bazaruto-archipelago/best-time",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.safaribookings.com/mozambique/best-time",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

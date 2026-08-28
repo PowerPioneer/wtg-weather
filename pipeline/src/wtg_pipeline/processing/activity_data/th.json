@@ -1,0 +1,57 @@
+{
+  "iso2": "TH",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "similan-islands",
+      "name": "Similan and Surin Islands",
+      "kind": "dive",
+      "regions": [
+        "TH-82"
+      ],
+      "status": "open",
+      "note": "Mu Ko Similan National Park; day trips and liveaboards run from Phuket and Khao Lak",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the national park shuts for about five months each year so the reefs can recover, and because the southwest monsoon makes the crossing unsafe. Recent closures have run mid-May to mid-October"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the closure starts and ends mid-month, so roughly half of each is shut - confirm the year's exact dates before booking"
+        },
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the park is open and the Andaman Sea is at its calmest and clearest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nationthailand.com/news/tourism/40066673",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.thainationalparks.com/mu-ko-similan-national-park",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "iso2": "JP",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "fuji-climb",
+      "name": "Climbing Mount Fuji",
+      "kind": "hike",
+      "regions": [
+        "JP-19",
+        "JP-22"
+      ],
+      "status": "closed",
+      "note": "climbing above the 5th stations outside the official season is prohibited by law - the trails are unmaintained, the huts shut, and the mountain carries snow and ice",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the official climbing season: trails, mountain huts and transport all open. The Yoshida and Subashiri trails usually open 1 July, Fujinomiya and Gotemba around 10 July"
+        },
+        {
+          "status": "limited",
+          "months": [
+            9
+          ],
+          "reason": "the season ends around 10 September and everything closes behind it"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.japan-guide.com/e/e6901.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.fujisan-climb.jp/en/off-season/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "cherry-blossom",
+      "name": "Cherry blossom (sakura)",
+      "kind": "seasonal",
+      "status": "not-on",
+      "note": "a two-week bloom rather than a season, forecast afresh each year - a given tree holds its flowers for about ten days",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "on the 1991-2020 average Tokyo's benchmark tree reaches full bloom around 31 March, with Kyoto and Osaka three to five days later; the bloom front then moves north through April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://selfguidejapan.com/blog/tokyo-cherry-blossom-2027",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.tokyoweekender.com/travel/japan-cherry-blossom-forecast-2026/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "hokkaido-ski",
+      "name": "Skiing in Hokkaido",
+      "kind": "ski",
+      "regions": [
+        "JP-01",
+        "JP-20"
+      ],
+      "status": "closed",
+      "note": "Hokkaido's summers are cool and dry rather than hot and humid, which is a different reason to go and not a skiing one",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "world-class powder in the depths of the northern winter"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            3
+          ],
+          "reason": "the shoulders of the ski season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.adventure-life.com/asia/articles/asia-cruise-when-to-go",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "autumn-colour-jp",
+      "name": "Autumn colour (koyo)",
+      "kind": "seasonal",
+      "status": "not-on",
+      "note": "the front runs the opposite way to the cherry blossom — south from Hokkaido rather than north from Kyushu",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "maple, ginkgo and ash turn from October into early November; Hokkaido peaks first, in October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.odynovotours.com/japan/best-time-to-visit.html",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

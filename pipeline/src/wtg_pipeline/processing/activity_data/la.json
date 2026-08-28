@@ -1,0 +1,37 @@
+{
+  "iso2": "LA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "kuang-si",
+      "name": "Kuang Si Falls",
+      "kind": "site",
+      "regions": [
+        "LA-LP"
+      ],
+      "status": "open",
+      "note": "the falls run all year; the wet season is when they are fullest and the pools their most vivid",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "clear skies and cool air, with the falls still flowing strongly after the rains"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://vinwonders.com/en/wonderpedia/news/southeast-asia-in-november/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.travellocal.com/en/articles/the-best-time-to-visit-laos-and-cambodia",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

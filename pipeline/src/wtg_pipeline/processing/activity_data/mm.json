@@ -1,0 +1,46 @@
+{
+  "iso2": "MM",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "bagan-balloons",
+      "name": "Balloons over Bagan",
+      "kind": "tour",
+      "regions": [
+        "MM-04"
+      ],
+      "status": "closed",
+      "note": "the operators fly only in the dry season and pack the balloons away for the rest of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the heart of the dry season, with the most reliable morning conditions over the temple plain"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            3
+          ],
+          "reason": "the ballooning season opens in October and runs into the spring"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wanderonless.com/south-east-asia-travel-where-to-go/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://vinwonders.com/en/wonderpedia/news/southeast-asia-in-november/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

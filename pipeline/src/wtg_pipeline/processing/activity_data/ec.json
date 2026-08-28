@@ -1,0 +1,75 @@
+{
+  "iso2": "EC",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "galapagos",
+      "name": "Galápagos wildlife",
+      "kind": "wildlife",
+      "regions": [
+        "EC-W"
+      ],
+      "status": "open",
+      "note": "the islands have no closed season and the animals do not migrate away — what changes is which species is doing what",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the cool, dry season: the Humboldt Current brings nutrient-rich water and with it whale sharks, hammerheads and dolphins, plus migratory birds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wildernesstravel.com/latin-america/galapagos/best-time-to-visit-galapagos/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.wildlifeworldwide.com/journal/galapagos-wildlife-calendar",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales",
+      "name": "Humpback whales off the Pacific coast",
+      "kind": "wildlife",
+      "regions": [
+        "EC-M",
+        "EC-SE"
+      ],
+      "status": "not-on",
+      "note": "the whales are in Antarctic waters the rest of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "peak months, with sighting success rates around 95%"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "humpbacks migrate up from Antarctica to breed off the Ecuadorian coast between June and September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://andeantc.com/whale-season-ecuador-pacific/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://wwhandbook.iwc.int/en/country-profiles/ecuador",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

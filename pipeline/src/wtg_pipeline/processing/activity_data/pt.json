@@ -1,0 +1,44 @@
+{
+  "iso2": "PT",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "madeira-levadas",
+      "name": "Madeira levada walks",
+      "kind": "hike",
+      "regions": [
+        "PT-30"
+      ],
+      "status": "open",
+      "note": "the irrigation channels run through laurel forest at a near-constant gradient, and they are walkable in every month — winter included, under subtropical skies",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://wildrovertravel.com/tours/winter-walking-in-madeira/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.wildernesstravel.com/trip/portugal-madeira-island-hiking-tour/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "azores-whales",
+      "name": "Whale watching in the Azores",
+      "kind": "wildlife",
+      "regions": [
+        "PT-20"
+      ],
+      "status": "open",
+      "note": "one of very few places on Earth where sperm whales can be seen reliably in any month; tours run all year",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://wwhandbook.iwc.int/en/country-profiles/portugal",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

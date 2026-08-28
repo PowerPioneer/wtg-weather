@@ -1,0 +1,50 @@
+{
+  "iso2": "VE",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "angel-falls",
+      "name": "Angel Falls by boat",
+      "kind": "tour",
+      "regions": [
+        "VE-F"
+      ],
+      "status": "limited",
+      "note": "the falls are visible from the air all year; it is the river journey to the base that depends on the water level",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the rainy season, when the falls run at their fullest and the rivers are deep enough for boats to reach the base — July and August are the most dramatic"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the dry months, when boats often cannot get through and trips are cancelled"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chimuadventures.com/en/blog/your-guide-visiting-angel-falls-venezuelas-highest-waterfall",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://ospreyexpeditions.com/angel-falls-tour-most-frequently-asked-questions/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

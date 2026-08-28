@@ -1,0 +1,76 @@
+{
+  "iso2": "GB",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "edinburgh-fringe",
+      "name": "Edinburgh Festival Fringe",
+      "kind": "festival",
+      "regions": [
+        "GB-EDH"
+      ],
+      "status": "not-on",
+      "note": "the city's accommodation prices move with it, so it matters even if you are not going to a show",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the Fringe runs through August — 7 to 31 in 2026"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.edfringe.com/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.edinburghfestivalcity.com/festivals/edinburgh-festival-fringe",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "highland-midges",
+      "name": "Walking in the western Highlands and Skye",
+      "kind": "hike",
+      "regions": [
+        "GB-HLD"
+      ],
+      "status": "open",
+      "note": "nothing closes; the midges are simply a fact of the western Highlands in summer, and worst in still air at dawn and dusk near standing water. Edinburgh and the east coast are largely spared",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "peak midge season — July is the worst month, and Glen Coe, Torridon and the Cuillin foothills on Skye are the worst places"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "reason": "long enough days for the hills, either side of the midges"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wildernessscotland.com/blog/midges-in-scotland/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://outdoorscot.co.uk/blog/midge-season-scotland",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

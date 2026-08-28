@@ -1,0 +1,48 @@
+{
+  "iso2": "KH",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "angkor",
+      "name": "Angkor",
+      "kind": "site",
+      "regions": [
+        "KH-17"
+      ],
+      "status": "open",
+      "note": "the temples are open every day of the year; the dry season decides how bearable the walking between them is",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the dry season — clear skies, lower humidity and temperatures between about 22 and 36 °C, with January and February the pick"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the wet months, hot and humid with afternoon downpours"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.asiaodysseytravel.com/cambodia/best-time-to-visit-angkor-wat.html",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.indochinatour.com/best-time-to-visit-angkor-wat.html",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

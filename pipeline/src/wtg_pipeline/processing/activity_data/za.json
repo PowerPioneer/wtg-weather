@@ -1,0 +1,90 @@
+{
+  "iso2": "ZA",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "kruger-game-viewing",
+      "name": "Kruger game viewing",
+      "kind": "wildlife",
+      "regions": [
+        "ZA-MP",
+        "ZA-LP"
+      ],
+      "status": "open",
+      "note": "the park is open all year; what changes is whether you can see through the bush",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the dry winter: animals concentrate at the perennial waterholes and the thinned vegetation makes them visible. Mornings can drop below 5 °C, afternoons reach the low twenties"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the wet months — thick green bush, dispersed water and much harder sightings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/south-africa/when-to-go",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://approachtours.com/south-africa-weather-by-month/",
+          "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "hermanus-whales",
+      "name": "Southern right whales, Hermanus",
+      "kind": "wildlife",
+      "regions": [
+        "ZA-WC"
+      ],
+      "status": "not-on",
+      "note": "the whales are elsewhere in the Southern Ocean the rest of the year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the season runs roughly July to December, with land-based viewing from the Hermanus cliffs among the best anywhere"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            12
+          ],
+          "reason": "the edges of the season — first arrivals in June, stragglers into December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.whalehermanus.com/",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://farandwild.travel/wilder/article/whale-watching-south-africa-complete-guide",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "iso2": "BW",
+  "reviewed": "2026-08-28",
+  "activities": [
+    {
+      "id": "okavango-mokoro",
+      "name": "Mokoro trips in the Okavango Delta",
+      "kind": "tour",
+      "regions": [
+        "BW-NW"
+      ],
+      "status": "limited",
+      "note": "the delta runs on a calendar of its own: it floods during Botswana's *dry* season, fed by rain that fell in the Angolan highlands months earlier and thousands of kilometres away",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the channels are full and the flood peaks, which is what a dugout canoe needs"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            9,
+            10
+          ],
+          "reason": "the wider flood season, with boat safaris and strong game viewing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.okavango.com/best-time-to-visit-okavango-delta.php",
+          "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.cedarberg-travel.com/okavango-delta-flood/",
+          "checked": "2026-08-28"
+        }
+      ]
+    }
+  ]
+}
