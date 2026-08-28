@@ -118,9 +118,30 @@ The image is usable — re-run with ALLOW_UNRENDERED=1 to accept it — but some
 about the builder's networking has drifted. Try: docker buildx rm ${BUILDER_NAME} && $0"
     fi
 else
-    rendered=$(grep -oE "Generating static pages \(([0-9]+)/[0-9]+\)" "$LOG_FILE" \
-        | tail -1 | grep -oE "/[0-9]+" | tr -d '/')
-    log "pre-rendered ${rendered:-?} pages"
+    # Two things this line has to survive, both of which killed the script
+    # silently before — `set -e` plus `pipefail` means a `grep` that matches
+    # nothing takes the whole run down, and it did so *after* a successful
+    # build and one line before the OK below. The documented deploy is
+    # `build-web.sh && docker compose up -d web`, so the effect was an image
+    # that built fine and was never deployed, with nothing printed to say so.
+    #
+    #   1. Next now prints "Generating static pages using 3 workers (777/3111)"
+    #      — the worker count sits between "pages" and the counter, so the old
+    #      anchored pattern stopped matching on a perfectly good build.
+    #   2. A fully cached build re-runs no build step at all, so the line is
+    #      absent however it is spelled.
+    #
+    # Hence `|| true`: the count is a nicety. The claim that matters is the
+    # API-reachability check above, which is a real gate and still fails hard.
+    # A cached build reuses the very layer whose pre-render was verified when
+    # it was built, so "unknown" there is honest rather than alarming.
+    rendered=$(grep -oE "Generating static pages [^(]*\(([0-9]+)/[0-9]+\)" "$LOG_FILE" \
+        | tail -1 | grep -oE "/[0-9]+" | tr -d '/' || true)
+    if [[ -n "$rendered" ]]; then
+        log "pre-rendered ${rendered} pages"
+    else
+        log "pre-rendered ? pages (no build step ran — cached layer reused)"
+    fi
 fi
 
 log "build-web OK — deploy with: docker compose up -d web"
