@@ -11,6 +11,7 @@
  */
 
 import type { CountryRef } from "./countries";
+import { PERU_ACTIVITIES } from "./mock-activities";
 import type {
   CountryData,
   Monthly,
@@ -64,11 +65,11 @@ const PERU: CountryData = {
     { name: "Amazonas", score: 71, tl: [26, 26, 26, 26, 25, 24, 24, 25, 26, 26, 26, 26] },
     { name: "Áncash", score: 84, tl: [19, 19, 19, 19, 18, 17, 17, 17, 18, 19, 19, 19] },
     { name: "Apurímac", score: 88, tl: [15, 15, 15, 15, 13, 12, 11, 12, 14, 15, 15, 15] },
-    { name: "Arequipa", score: 91, tl: [17, 17, 17, 16, 14, 13, 13, 14, 15, 16, 17, 17] },
+    { name: "Arequipa", score: 91, tl: [17, 17, 17, 16, 14, 13, 13, 14, 15, 16, 17, 17], activities: ["colca-condors"] },
     { name: "Ayacucho", score: 86, tl: [16, 16, 16, 15, 13, 12, 12, 13, 14, 15, 16, 16] },
     { name: "Cajamarca", score: 79, tl: [15, 15, 15, 15, 14, 13, 13, 14, 15, 15, 15, 15] },
     { name: "Callao", score: 74, tl: [23, 24, 23, 22, 20, 18, 17, 17, 18, 19, 20, 22] },
-    { name: "Cusco", score: 93, tl: [13, 13, 13, 13, 11, 10, 9, 11, 12, 13, 13, 13] },
+    { name: "Cusco", score: 93, tl: [13, 13, 13, 13, 11, 10, 9, 11, 12, 13, 13, 13], activities: ["inca-trail", "vinicunca", "machu-picchu", "inti-raymi"] },
     { name: "Huancavelica", score: 85, tl: [10, 10, 10, 10, 8, 7, 6, 7, 9, 10, 10, 10] },
     { name: "Huánuco", score: 77, tl: [19, 19, 19, 19, 18, 17, 17, 17, 18, 19, 19, 19] },
     { name: "Ica", score: 78, tl: [23, 24, 23, 22, 20, 18, 17, 17, 18, 19, 20, 22] },
@@ -76,8 +77,8 @@ const PERU: CountryData = {
     { name: "La Libertad", score: 76, tl: [22, 23, 22, 21, 19, 18, 17, 17, 18, 19, 20, 21] },
     { name: "Lambayeque", score: 72, tl: [24, 25, 24, 23, 21, 19, 18, 19, 20, 21, 22, 23] },
     { name: "Lima", score: 74, tl: [23, 24, 23, 22, 20, 18, 17, 17, 18, 19, 20, 22] },
-    { name: "Loreto", score: 62, tl: [26, 26, 26, 26, 26, 25, 25, 26, 26, 26, 26, 26] },
-    { name: "Madre de Dios", score: 64, tl: [26, 26, 26, 26, 24, 22, 22, 24, 26, 26, 26, 26] },
+    { name: "Loreto", score: 62, tl: [26, 26, 26, 26, 26, 25, 25, 26, 26, 26, 26, 26], activities: ["amazon-high-water", "amazon-jungle-walking"] },
+    { name: "Madre de Dios", score: 64, tl: [26, 26, 26, 26, 24, 22, 22, 24, 26, 26, 26, 26], activities: ["amazon-high-water", "amazon-jungle-walking"] },
     { name: "Moquegua", score: 89, tl: [18, 18, 18, 17, 15, 14, 13, 14, 15, 16, 17, 18] },
     { name: "Pasco", score: 81, tl: [10, 10, 10, 10, 9, 8, 7, 8, 9, 10, 10, 10] },
     { name: "Piura", score: 70, tl: [26, 27, 26, 25, 23, 21, 20, 20, 21, 22, 23, 25] },
@@ -85,7 +86,7 @@ const PERU: CountryData = {
     { name: "San Martín", score: 68, tl: [25, 25, 25, 25, 24, 23, 22, 23, 24, 25, 25, 25] },
     { name: "Tacna", score: 87, tl: [19, 19, 19, 18, 16, 14, 14, 14, 15, 16, 17, 18] },
     { name: "Tumbes", score: 73, tl: [26, 27, 27, 26, 25, 24, 23, 23, 23, 24, 25, 26] },
-    { name: "Ucayali", score: 66, tl: [26, 26, 26, 26, 25, 24, 23, 24, 25, 26, 26, 26] },
+    { name: "Ucayali", score: 66, tl: [26, 26, 26, 26, 25, 24, 23, 24, 25, 26, 26, 26], activities: ["amazon-high-water", "amazon-jungle-walking"] },
   ],
   advisories: {
     combined: { level: 2, label: "Exercise increased caution" },
@@ -110,7 +111,7 @@ const PERU: CountryData = {
     { slug: "argentina", name: "Argentina", sub: "Andean neighbour, temperate south", score: 80 },
   ],
   monthNotes: {
-    Jan: "Coast warm and humid; Andes wet (trekking season closed); Amazon peak rains.",
+    Jan: "Coast warm and humid; Andes wet and muddy for trekking; Amazon peak rains.",
     Feb: "Wettest month in the sierra. Inca Trail closed. Coastal cities pleasant.",
     Mar: "Rains tapering. Carnival. Lima still warm, Cusco still wet.",
     Apr: "Shoulder — green sierra, lighter rains. Fewer tourists, lower prices.",
@@ -123,6 +124,7 @@ const PERU: CountryData = {
     Nov: "Transition month. Wet in the Andes, summer building on coast.",
     Dec: "High summer on the coast, full wet season inland. Christmas crowds.",
   },
+  activities: PERU_ACTIVITIES,
 };
 
 /**

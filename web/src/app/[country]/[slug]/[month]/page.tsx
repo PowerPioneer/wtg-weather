@@ -4,7 +4,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ClimateChart } from "@/components/charts";
-import { PlanCta, RegionAdvisoryNotice, SafetySection } from "@/components/country";
+import {
+  ActivitiesSection,
+  PlanCta,
+  RegionAdvisoryNotice,
+  SafetySection,
+} from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { Temperature, TemperatureDelta } from "@/components/units";
@@ -128,6 +133,18 @@ export default async function RegionMonthPage({
         />
 
         <RegionAdvisoryNotice region={reg} countryName={data.name} />
+
+        {/*
+          Narrowed twice: to the activities that name this subdivision, and to
+          this month's statuses. A region with nothing curated renders nothing.
+        */}
+        <ActivitiesSection
+          country={data}
+          monthIdx={idx}
+          monthName={monthName}
+          only={reg.activities ?? []}
+          heading={`Things to do in ${reg.name} in ${monthName}`}
+        />
 
         <RegionMonthStats
           region={reg}

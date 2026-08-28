@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
+  ActivitiesSection,
   BestMonths,
   ClimateGrid,
   CountryHero,
@@ -73,6 +74,7 @@ export default async function CountryPage({
         <CountryHero country={data} />
         <BestMonths country={data} />
         <ClimateGrid country={data} />
+        <ActivitiesSection country={data} />
         <RegionsGrid country={data} />
         <SafetySection advisories={data.advisories} countryName={data.name} />
         <MonthAccordion country={data} />

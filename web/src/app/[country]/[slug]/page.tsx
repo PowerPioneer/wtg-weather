@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { CreateAlertButton } from "@/components/alerts/create-alert-button";
 import { ClimateChart } from "@/components/charts";
 import {
+  ActivitiesSection,
   ClimateGrid,
   MonthHero,
   MonthPager,
@@ -198,6 +199,7 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
             preferences={DEFAULT_PREFERENCES}
           />
         </div>
+        <ActivitiesSection country={country} monthIdx={idx} monthName={monthName} />
         <RegionsGrid country={country} currentMonthIdx={idx} />
         <SafetySection advisories={country.advisories} countryName={country.name} />
         <ClimateGrid country={country} />
@@ -311,6 +313,11 @@ function RegionView({
           </div>
         </section>
 
+        <ActivitiesSection
+          country={country}
+          only={region.activities ?? []}
+          heading={`Things to do in ${region.name}`}
+        />
         <MonthScoreTable country={country} region={region} />
         <NeighbourRegions country={country} currentSlug={regionHref(region)} />
         <SafetySection advisories={country.advisories} countryName={country.name} />

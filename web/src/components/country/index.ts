@@ -1,3 +1,4 @@
+export { ActivitiesSection } from "./activities-section";
 export { CountryHero } from "./country-hero";
 export { BestMonths } from "./best-months";
 export { MonthAccordion } from "./month-accordion";

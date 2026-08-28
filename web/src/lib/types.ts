@@ -108,6 +108,13 @@ export type RegionRow = {
    * safety panel on the same page already states.
    */
   advisory?: { level: AdvisoryLevel; label: string; code: string };
+  /**
+   * Ids of the curated activities that name *this* subdivision, resolved by
+   * the pipeline against ISO-3166-2 so the web never needs that code. Absent
+   * when none do — which is most regions, and is why the section is omitted
+   * rather than rendered empty.
+   */
+  activities?: readonly string[];
   score: number;
   tl: Monthly;      // °C mean
   /** mm / day. Absent on a region the pipeline has no rainfall for. */
@@ -121,6 +128,68 @@ export type RelatedCountry = {
   name: string;
   sub: string;
   score: number;
+};
+
+/**
+ * What a traveller can actually *do* in a place, and when — the one curated,
+ * hand-authored dataset in the payload.
+ *
+ * Everything else here is derived from ERA5 or scraped from a government, and
+ * the prose built from it is checkable against the chart beside it. Activities
+ * cannot work that way: no climatology tells you the classic Inca Trail closes
+ * every February while Machu Picchu itself stays open all year. So each item
+ * carries `sources`, and the pipeline
+ * (`processing/activities.py`) — not this app — turns the structured fields
+ * into sentences. Nothing on the web side composes a claim about a place.
+ */
+export type ActivityStatus = "closed" | "limited" | "best" | "open";
+
+export type ActivitySource = {
+  url: string;
+  /** ISO date a human last read that URL and confirmed it says this. */
+  checked: string;
+};
+
+export type ActivityItem = {
+  id: string;
+  name: string;
+  kind: string;
+  /** ISO-3166-2 codes this names, if any. Empty means country-wide. */
+  regions: readonly string[];
+  yearRound: boolean;
+  /**
+   * A thing that happens on a date rather than a thing that is open — a
+   * festival. It is absent from months it does not fall in, rather than listed
+   * as "closed" in eleven of them, which would be both false and useless.
+   */
+  datedEvent: boolean;
+  /** 1-12 months in which it is actually on. */
+  onMonths: readonly number[];
+  sources: readonly ActivitySource[];
+};
+
+/** One activity's state in one month. `id` keys back into `items`. */
+export type ActivityMonthRow = {
+  id: string;
+  status: ActivityStatus;
+  reason: string;
+};
+
+export type ActivityMonth = {
+  /** The generated one-line lede. Counts only what `rows` shows. */
+  lede: string;
+  /** Worst status first, so a closure is never below something a reader scrolls past. */
+  rows: readonly ActivityMonthRow[];
+};
+
+export type ActivityBlock = {
+  /** ISO date a human last reviewed the whole country file. */
+  reviewed: string;
+  /** The year-level lede, for the country page. */
+  lede: string;
+  items: readonly ActivityItem[];
+  /** Keyed by the same three-letter month labels as `monthNotes`. */
+  months: Record<string, ActivityMonth>;
 };
 
 /**
@@ -146,6 +215,12 @@ export type CountryData = {
   regions: readonly RegionRow[];
   related: readonly RelatedCountry[];
   monthNotes: Record<string, string>;
+  /**
+   * Absent for most countries, and that is the design: coverage is tiered by
+   * how travelled a country is, and a page with no curated activities renders
+   * no section rather than an empty one. See `activity_data/README.md`.
+   */
+  activities?: ActivityBlock;
   capital?: string;
   /** IANA zone id, e.g. `America/Lima`. */
   tz?: string;
