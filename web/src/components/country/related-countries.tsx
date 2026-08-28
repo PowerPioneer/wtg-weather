@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScoreBadge } from "@/components/match";
+import { UnitText } from "@/components/units";
 import type { CountryData } from "@/lib/types";
 
 /**
@@ -31,7 +32,9 @@ export function RelatedCountries({ country }: { country: CountryData }) {
                   <span className="font-display text-[18px] font-medium text-text">{r.name}</span>
                   <ScoreBadge score={r.score} size="sm" />
                 </div>
-                <p className="text-[12.5px] leading-[1.45] text-text-muted">{r.sub}</p>
+                <p className="text-[12.5px] leading-[1.45] text-text-muted">
+                  <UnitText>{r.sub}</UnitText>
+                </p>
               </Link>
             </li>
           ))}
