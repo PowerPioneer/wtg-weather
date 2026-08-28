@@ -102,12 +102,18 @@ describe("measurements inside generated prose", () => {
     expect(out).toContain("45–79 °F");
   });
 
+  it("spells inches out in prose, where 'in' would collide with the preposition", () => {
+    const out = convertMeasurementsInText(SUMMARY, "imperial");
+    // "2.7 in in July" is correct and unreadable.
+    expect(out).not.toMatch(/in in/);
+  });
+
   it("converts rainfall at a precision that survives both denominators", () => {
     const out = convertMeasurementsInText(SUMMARY, "imperial");
     // A monthly total and a daily mean appear in the same sentence.
-    expect(out).toContain("2.7 in in July");
-    expect(out).toContain("11.6 in in March");
-    expect(out).toContain("0.11 in of rain a day");
+    expect(out).toContain("2.7 inches in July");
+    expect(out).toContain("11.6 inches in March");
+    expect(out).toContain("0.11 inches of rain a day");
     expect(out).not.toMatch(/mm/);
   });
 
@@ -125,10 +131,10 @@ describe("measurements inside generated prose", () => {
         "Around 19 °C with 243 mm of rain and 8.7 hours of sun a day.",
         "imperial",
       ),
-    ).toBe("Around 66 °F with 9.6 in of rain and 8.7 hours of sun a day.");
+    ).toBe("Around 66 °F with 9.6 inches of rain and 8.7 hours of sun a day.");
     expect(
       convertMeasurementsInText("19 °C · 76 mm · 9.6 h sun", "imperial"),
-    ).toBe("66 °F · 3.0 in · 9.6 h sun");
+    ).toBe("66 °F · 3.0 inches · 9.6 h sun");
   });
 
   it("converts a wind ceiling where one appears", () => {

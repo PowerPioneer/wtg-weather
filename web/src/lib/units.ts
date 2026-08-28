@@ -228,11 +228,24 @@ const NUMBER = String.raw`-?\d+(?:\.\d+)?`;
  * Inches at a precision that stays informative on both sides of the range the
  * pipeline prints: a monthly total (69 mm → 2.7 in) and a daily mean
  * (2.7 mm → 0.11 in) would otherwise round to the same uselessness.
+ *
+ * Returns the number only; the caller supplies the unit, because prose and
+ * readouts want different ones — see `PROSE_INCHES`.
  */
 function inchesText(mm: number): string {
   const inches = millimetresToInches(mm);
   return inches < 0.5 ? inches.toFixed(2) : inches.toFixed(1);
 }
+
+/**
+ * Sentences say "inches", not "in".
+ *
+ * The abbreviation collides with the preposition, and the pipeline's sentences
+ * are full of both: "rainfall between 2.7 in in July and 11.6 in in March"
+ * is technically correct and unreadable. Readouts keep the abbreviation — a
+ * stat card is a label, not a sentence.
+ */
+const PROSE_INCHES = "inches";
 
 export function convertMeasurementsInText(
   text: string,
@@ -261,11 +274,11 @@ export function convertMeasurementsInText(
       .replace(
         new RegExp(String.raw`(${NUMBER})\s*[–-]\s*(${NUMBER})\s*mm\b`, "g"),
         (_m, lo: string, hi: string) =>
-          `${inchesText(Number(lo))}–${inchesText(Number(hi))} in`,
+          `${inchesText(Number(lo))}–${inchesText(Number(hi))} ${PROSE_INCHES}`,
       )
       .replace(
         new RegExp(String.raw`(${NUMBER})\s*mm\b`, "g"),
-        (_m, value: string) => `${inchesText(Number(value))} in`,
+        (_m, value: string) => `${inchesText(Number(value))} ${PROSE_INCHES}`,
       )
       // "under 30 km/h" — the only speed the generated prose carries.
       .replace(
