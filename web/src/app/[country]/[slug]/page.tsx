@@ -22,6 +22,7 @@ import {
   Temperature,
   TemperatureDelta,
   TemperatureRange,
+  UnitText,
 } from "@/components/units";
 import { SaveTripButton } from "@/components/trip";
 import { getCountry } from "@/lib/api-client";
@@ -168,7 +169,10 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
           month={month}
           score={score}
           verdict={verdict}
-          narrative={narrative}
+          // The narrative is assembled from the pipeline's month note, so it
+          // carries that note's measurements; `MonthHero` renders the verdict
+          // through `UnitText` itself but takes the narrative as a node.
+          narrative={<UnitText>{narrative}</UnitText>}
         />
         <MonthStats country={country} monthIdx={idx} />
         {/*
