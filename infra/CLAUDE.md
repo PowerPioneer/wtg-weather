@@ -288,6 +288,51 @@ two ops subdomains. Site blocks:
 - `plausible.v2.wheretogoforgreatweather.com` — basic-auth, reverse proxy
   to `plausible:8000`. Same reason as GlitchTip.
 
+### A reboot used to take the site down (fixed 2026-08-31)
+
+v2 also had Caddy installed as a **host package**, running from
+`/etc/caddy/Caddyfile` — 26 lines of the distro default, nothing to do with
+this repo — as a systemd unit that was `enabled`. It had been stopped by hand
+at some point but never disabled, so it was invisible until the box was first
+rebooted, when it started at boot, took port 80, and the compose `caddy`
+container could not bind:
+
+```
+failed to bind host port 0.0.0.0:80/tcp: address already in use
+```
+
+Disabled with `systemctl disable --now caddy`. If a future image or `apt`
+operation reinstates it, the same thing happens again; `apt purge caddy` on v2
+would close it permanently.
+
+**The symptom is deliberately misleading and worth recognising.** The site is
+completely down, but nothing looks broken: the box is up, `docker compose ps`
+shows every other service healthy, and Caddy's own logs end with a clean
+`"exiting; byeee!!"` and `exit_code: 0`, because SIGTERM at shutdown is a
+graceful stop. There is no crash, no OOM and no disk symptom to find — the only
+evidence is `ss -tlnp | grep :80` showing a non-Docker process holding it. The
+tell from outside is that **443 refuses while 22 times out**: refused means the
+host is alive and nothing is listening, so reach for this before suspecting
+disk, `.env` or the last deploy.
+
+**Second-order trap: a failed port bind leaves a stale container.** Once the
+conflict is cleared, `docker compose up -d caddy` will happily *start* the
+container created by the failed attempt, and it comes up `healthy` with no
+published ports at all — `docker port wtg-weather-caddy-1` prints nothing and
+`docker compose ps` shows `80/tcp, 443/tcp` rather than `0.0.0.0:80->80/tcp`.
+Caddy is running and serving; nothing on the host forwards to it. Recover with
+`docker compose up -d --force-recreate caddy`, not a plain `up -d`.
+
+### `.env` changes need the container recreated
+
+Compose injects `.env` at container **create** time. Editing `.env` and running
+`docker compose up -d <service>` does nothing when the service is otherwise
+unchanged — the running container keeps the old values. After rotating a
+secret, use `--force-recreate` on every service that reads it. A rotated
+`PADDLE_API_KEY` that only reached `.env` leaves `api` authenticating with the
+revoked one, which surfaces as a 502 from `/api/paddle/checkout-url` and
+nowhere else.
+
 ## Rules
 
 - Never expose Postgres, Redis, GlitchTip, or Plausible ports on the
