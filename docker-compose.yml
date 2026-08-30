@@ -101,7 +101,15 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks: [internal]
+    networks:
+      internal:
+        # `api` alone is not a URL a validator will accept: a single-label host
+        # has no TLD, and Django's URLValidator (which GlitchTip's monitor form
+        # runs) rejects it outright — the uptime monitor could not be pointed at
+        # this service until it had a dotted name. `.internal` is ICANN's
+        # reserved TLD for exactly this. `api:8000` keeps working everywhere it
+        # is already used; this is an additional name, not a replacement.
+        aliases: [api.internal]
 
   web:
     build:
