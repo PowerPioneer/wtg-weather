@@ -50,18 +50,19 @@ class Settings(BaseSettings):
     # `SCORE_BINS`, so the email agrees with the badge the user saw when they
     # created the alert.
     alert_match_score: int = 70
-    # ⚠ AWAITING OWNER CONFIRMATION — `web/design/HANDOFF.md` open decision #3
-    # specs "score delta ≥ 5 points vs baseline" and records it as unconfirmed.
+    # Confirmed by the owner 2026-08-31, closing `web/design/HANDOFF.md` open
+    # decision #3, which specced "score delta ≥ 5 points vs baseline".
+    #
     # It is the hysteresis guard: a run only emails when the score has moved at
     # least this far from the score at the last email, so a value oscillating
     # across the match line cannot mail somebody every Monday.
     #
-    # Note it does not bind today. The published score is quantised to
-    # {25, 60, 75, 90}, so the smallest possible move across the match line is
-    # 15 points. The setting is here named and configurable because the moment
-    # scoring becomes continuous it becomes load-bearing, and because a number
-    # the owner has not signed off on should not be a literal buried in a
-    # conditional.
+    # It does not bind today, and that is why 5 was cheap to accept. The
+    # published score is quantised to {25, 60, 75, 90}, so the smallest possible
+    # move across the match line is 15 points and any threshold from 1 to 15
+    # behaves identically. It is named and configurable because the moment
+    # scoring becomes continuous it becomes load-bearing — revisit it then,
+    # rather than discovering it as a literal buried in a conditional.
     alert_score_delta_points: int = 5
 
     # CDN hostname tile URLs are signed against. Production points the

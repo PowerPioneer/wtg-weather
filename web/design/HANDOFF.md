@@ -125,7 +125,7 @@ NextAuth + email magic link + Google OAuth. Use `react-email` for magic-link / w
 
 1. **PDF export** — listed in the pricing comparison table and trip-detail owner action rail but not in every Premium summary. Decision needed: include in canonical Premium list? (Recommend: yes.)
 2. **Agency branding** — section exists on `Agency.html` but disabled with "Coming 2026" badge. Decision: ship disabled in v2, or hide entirely until ready?
-3. **Email alerts trigger logic** — currently specced on score delta ≥ 5 points vs baseline. Confirm threshold with Paul.
+3. ~~**Email alerts trigger logic** — currently specced on score delta ≥ 5 points vs baseline. Confirm threshold with Paul.~~ **Closed 2026-08-31: confirmed at 5**, as `Settings.alert_score_delta_points`. Note it does not bind at present — published scores are quantised to {25, 60, 75, 90}, so the smallest move across the match line is 15 and any threshold from 1 to 15 behaves the same. It matters only if scoring becomes continuous.
 4. **Map vector tile host** — Cloudflare R2 + custom worker, or Mapbox? Affects `MapCanvas` initialiser.
 5. **Analytics free tier** — PostHog self-host or cloud? Affects session replay feature availability.
 
