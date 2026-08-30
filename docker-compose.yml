@@ -210,6 +210,16 @@ services:
       REDIS_URL: redis://redis:6379/1
       EMAIL_URL: ${GLITCHTIP_EMAIL_URL}
       GLITCHTIP_DOMAIN: http://localhost
+      # The uptime monitor rejects any target resolving to a private IP —
+      # sound SSRF protection on a shared instance, but self-defeating here.
+      # These containers sit on an `internal: true` network with no egress, so
+      # the only addresses they can reach ARE private; with the guard on, the
+      # form accepts a URL only when its hostname fails to resolve — that is,
+      # only when the monitor can never pass. Not hypothetical: the first
+      # monitor saved cleanly against the public hostname and then sat "down"
+      # for 13 days, one failed DNS lookup a minute. This instance has one
+      # human user behind basic auth, so the guard defends nothing reachable.
+      GLITCHTIP_UPTIME_ALLOW_PRIVATE_IPS: "true"
     depends_on:
       postgres:
         condition: service_healthy
@@ -227,6 +237,10 @@ services:
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
       REDIS_URL: redis://redis:6379/1
       GLITCHTIP_DOMAIN: http://localhost
+      # Same setting as glitchtip-web above: the web container validates the
+      # monitor on save, this one runs the checks. Both need it, or a monitor
+      # saved through the form is refused again at check time.
+      GLITCHTIP_UPTIME_ALLOW_PRIVATE_IPS: "true"
     depends_on:
       postgres:
         condition: service_healthy
