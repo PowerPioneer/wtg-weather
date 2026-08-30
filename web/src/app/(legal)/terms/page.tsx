@@ -50,8 +50,8 @@ export default function TermsPage() {
       <LegalSection id="agreement" heading="This agreement">
         <P>
           These terms are between you and{" "}
-          <OwnerPlaceholder>legal entity name</OwnerPlaceholder> of{" "}
-          <OwnerPlaceholder>registered address</OwnerPlaceholder>
+          Power Pioneer, a sole proprietorship (eenmanszaak) established in the Netherlands of{" "}
+          Van Diemenstraat 138, 2518 VG Den Haag, Netherlands
           {" "}(&ldquo;we&rdquo;, &ldquo;us&rdquo;), the operator of
           wheretogoforgreatweather.com and its subdomains. By using the site or
           creating an account you accept them. If you do not accept them, do
@@ -146,7 +146,7 @@ export default function TermsPage() {
         </P>
         <P>
           You must be at least{" "}
-          <OwnerPlaceholder>minimum age, e.g. 16</OwnerPlaceholder> to hold an
+          16 to hold an
           account, and you agree the information you give us is accurate. One
           person, one account; do not share credentials.
         </P>
@@ -194,7 +194,7 @@ export default function TermsPage() {
           <li>
             We may change prices for future billing periods. Existing
             subscribers will be told before a change affects them, with at
-            least <OwnerPlaceholder>notice period, e.g. 30 days</OwnerPlaceholder>{" "}
+            least 30 days{" "}
             notice, and may cancel rather than accept it.
           </li>
         </UL>
@@ -381,9 +381,9 @@ export default function TermsPage() {
       <LegalSection id="law" heading="Governing law">
         <P>
           These terms are governed by the law of{" "}
-          <OwnerPlaceholder>governing law jurisdiction</OwnerPlaceholder>, and
+          the laws of the Netherlands, and
           the courts of{" "}
-          <OwnerPlaceholder>courts / venue for disputes</OwnerPlaceholder> have
+          the courts of The Hague, Netherlands have
           jurisdiction. If you are a consumer resident in the EU, this does not
           deprive you of the protection of the mandatory law of your own
           country, and you may bring proceedings there.
@@ -397,7 +397,7 @@ export default function TermsPage() {
       <LegalSection id="contact" heading="Contact">
         <P>
           Questions about these terms go to{" "}
-          <OwnerPlaceholder>support email</OwnerPlaceholder>, or through the{" "}
+          powerpioneer@pm.me, or through the{" "}
           <Link href="/contact" className="text-text-link underline underline-offset-2">
             contact page
           </Link>

@@ -68,7 +68,7 @@ export default function RefundsPage() {
         <UL>
           <li>
             <strong className="text-text">Ask us</strong> at{" "}
-            <OwnerPlaceholder>support email</OwnerPlaceholder> — include the
+            powerpioneer@pm.me — include the
             email address on the account. We do not ask why.
           </li>
           <li>
@@ -161,7 +161,7 @@ export default function RefundsPage() {
           After 14 days we do not refund the current period as a matter of
           course — cancel and you keep access until it ends, and you will not
           be charged again. If something went genuinely wrong, ask anyway:{" "}
-          <OwnerPlaceholder>support email</OwnerPlaceholder>. Cases where a
+          powerpioneer@pm.me. Cases where a
           charge was duplicated, a payment was taken after a cancellation, or
           the service was unusable for a sustained period are handled as
           corrections, not as favours.

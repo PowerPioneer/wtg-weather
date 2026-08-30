@@ -48,10 +48,10 @@ export default function PrivacyPage() {
       <LegalSection id="who-we-are" heading="Who we are">
         <P>
           Where to Go for Great Weather (&ldquo;the service&rdquo;) is operated
-          by <OwnerPlaceholder>legal entity name</OwnerPlaceholder>, registered
-          at <OwnerPlaceholder>registered address</OwnerPlaceholder>
+          by Power Pioneer, a sole proprietorship (eenmanszaak) established in the Netherlands, registered
+          at Van Diemenstraat 138, 2518 VG Den Haag, Netherlands
           {" "}
-          <OwnerPlaceholder>company registration number, if any</OwnerPlaceholder>.
+          (KvK 98272969).
           That entity is the data controller for the personal data described
           here.
         </P>
@@ -65,13 +65,9 @@ export default function PrivacyPage() {
             the GDPR
           </a>
           , write to{" "}
-          <OwnerPlaceholder>data protection contact email</OwnerPlaceholder>.
-          If the controller is established outside the EU/EEA, an Article 27
-          representative must be named here:{" "}
-          <OwnerPlaceholder>
-            EU representative, or a statement that none is required
-          </OwnerPlaceholder>
-          .
+          powerpioneer@pm.me. No Article 27 representative is named, and none
+          is required: that Article applies to controllers established outside
+          the Union, and this one is established in the Netherlands.
         </P>
       </LegalSection>
 
@@ -153,16 +149,6 @@ export default function PrivacyPage() {
               "Server logs, error reports",
               "Keep the service up, diagnose faults, and limit abuse.",
               "Legitimate interests (Art. 6(1)(f)) in a secure, working service.",
-            ],
-            [
-              "Product analytics after sign-in",
-              "Understand which features signed-in users actually use.",
-              <>
-                Legitimate interests (Art. 6(1)(f)).{" "}
-                <OwnerPlaceholder>
-                  confirm with counsel whether consent is preferred here
-                </OwnerPlaceholder>
-              </>,
             ],
           ]}
         />
@@ -313,7 +299,7 @@ export default function PrivacyPage() {
             [
               "Hosting provider",
               "The server the application and its database run on.",
-              <OwnerPlaceholder key="host">hosting provider &amp; datacentre location</OwnerPlaceholder>,
+              "Scaleway, Amsterdam (nl-ams-1), Netherlands",
             ],
           ]}
         />
@@ -337,14 +323,14 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-text">Account data</strong> — for as long
             as the account exists, and{" "}
-            <OwnerPlaceholder>retention period after closure</OwnerPlaceholder>{" "}
+            30 days{" "}
             after you close it.
           </li>
           <li>
             <strong className="text-text">Purchase and tax records</strong> —
             for the period the applicable tax law requires, which Paddle also
             retains as merchant of record.{" "}
-            <OwnerPlaceholder>statutory retention period</OwnerPlaceholder>
+            seven years, as Dutch tax law requires
           </li>
           <li>
             <strong className="text-text">Backups</strong> — database backups
@@ -355,7 +341,7 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-text">Error reports and server logs</strong>{" "}
-            — <OwnerPlaceholder>log retention period</OwnerPlaceholder>.
+            — 30 days.
           </li>
         </UL>
       </LegalSection>
@@ -387,7 +373,7 @@ export default function PrivacyPage() {
         <P>
           No system is perfect. If you find a security problem, please report
           it to{" "}
-          <OwnerPlaceholder>security contact email</OwnerPlaceholder> before
+          powerpioneer@pm.me before
           disclosing it publicly.
         </P>
       </LegalSection>
@@ -401,7 +387,7 @@ export default function PrivacyPage() {
           gets the same treatment on request regardless of where they live.
         </P>
         <P>
-          Email <OwnerPlaceholder>data protection contact email</OwnerPlaceholder>{" "}
+          Email powerpioneer@pm.me{" "}
           and we will answer within one month. There is currently no
           self-service delete button in the account area — closure and erasure
           are handled by that address.{" "}
@@ -415,7 +401,7 @@ export default function PrivacyPage() {
         </P>
         <P>
           You may also complain to your local supervisory authority. Ours is{" "}
-          <OwnerPlaceholder>lead supervisory authority</OwnerPlaceholder>.
+          the Autoriteit Persoonsgegevens, the Dutch data protection authority.
         </P>
       </LegalSection>
 
@@ -423,7 +409,7 @@ export default function PrivacyPage() {
         <P>
           The service is not directed at children and we do not knowingly
           collect data from anyone under{" "}
-          <OwnerPlaceholder>minimum age, e.g. 16</OwnerPlaceholder>. If you
+          16. If you
           believe a child has created an account, tell us and we will remove
           it.
         </P>

@@ -39,13 +39,13 @@ export default function ContactPage() {
     >
       <LegalSection id="support" heading="Support">
         <P>
-          Email <OwnerPlaceholder>support email</OwnerPlaceholder>. Include the
+          Email powerpioneer@pm.me. Include the
           address your account uses and, if it is about a specific place, the
           country and month you were looking at — a link to the page is ideal.
         </P>
         <P>
           We aim to reply within{" "}
-          <OwnerPlaceholder>target response time, e.g. 2 working days</OwnerPlaceholder>
+          two working days
           . Support is in English:{" "}
           <OwnerPlaceholder>
             list any other supported languages, or delete
@@ -61,7 +61,7 @@ export default function ContactPage() {
           rows={[
             [
               "Anything about the product",
-              <OwnerPlaceholder key="s">support email</OwnerPlaceholder>,
+              "powerpioneer@pm.me",
             ],
             [
               "Refunds, invoices, VAT, cancellation",
@@ -75,21 +75,21 @@ export default function ContactPage() {
             ],
             [
               "Privacy, data access, erasure",
-              <OwnerPlaceholder key="dp">data protection contact email</OwnerPlaceholder>,
+              "powerpioneer@pm.me",
             ],
             [
               "Security vulnerabilities",
-              <OwnerPlaceholder key="sec">security contact email</OwnerPlaceholder>,
+              "powerpioneer@pm.me",
             ],
             [
               "Press, partnerships, licensing the data",
-              <OwnerPlaceholder key="biz">business contact email, or reuse support</OwnerPlaceholder>,
+              "powerpioneer@pm.me",
             ],
           ]}
         />
         <P>
           Postal address, for anything that needs one:{" "}
-          <OwnerPlaceholder>registered address</OwnerPlaceholder>.
+          Van Diemenstraat 138, 2518 VG Den Haag, Netherlands.
         </P>
       </LegalSection>
 
