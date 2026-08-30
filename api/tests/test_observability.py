@@ -41,21 +41,33 @@ def test_init_sentry_noop_when_dsn_blank() -> None:
     assert init_sentry(settings) is False
 
 
-def test_paddle_checkout_url_defaults_sandbox_when_empty() -> None:
-    settings = Settings(paddle_sandbox=True, paddle_checkout_base_url="")
-    assert "sandbox-checkout.paddle.com" in settings.paddle_checkout_base_url
+def test_paddle_payment_link_defaults_to_our_own_domain() -> None:
+    """Not a paddle.com host, and that is the point.
 
-
-def test_paddle_checkout_url_defaults_live_when_sandbox_off() -> None:
-    settings = Settings(paddle_sandbox=False, paddle_checkout_base_url="")
-    assert settings.paddle_checkout_base_url == (
-        "https://checkout.paddle.com/checkout/custom"
+    Paddle Billing's payment link is a page on *our* site that runs Paddle.js;
+    Paddle appends `?_ptxn=` to it. The setting this replaced pointed at
+    `checkout.paddle.com/checkout/custom`, which is Paddle Classic and cannot
+    take a `pri_` price.
+    """
+    settings = Settings(
+        public_web_origin="https://v2.wheretogoforgreatweather.com",
+        paddle_payment_link_url="",
+    )
+    assert settings.paddle_payment_link_url == (
+        "https://v2.wheretogoforgreatweather.com/checkout/pay"
     )
 
 
-def test_paddle_checkout_url_explicit_override_preserved() -> None:
+def test_paddle_payment_link_does_not_double_up_slashes() -> None:
+    settings = Settings(
+        public_web_origin="https://example.com/", paddle_payment_link_url=""
+    )
+    assert settings.paddle_payment_link_url == "https://example.com/checkout/pay"
+
+
+def test_paddle_payment_link_explicit_override_preserved() -> None:
     settings = Settings(
         paddle_sandbox=False,
-        paddle_checkout_base_url="https://mock.example.com/checkout",
+        paddle_payment_link_url="https://mock.example.com/pay",
     )
-    assert settings.paddle_checkout_base_url == "https://mock.example.com/checkout"
+    assert settings.paddle_payment_link_url == "https://mock.example.com/pay"

@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { redirectToCheckout, requestCheckoutUrl, type PaddlePlan } from "@/lib/paddle";
+import { openCheckout, requestCheckout, type PaddlePlan } from "@/lib/paddle";
 
 export type PremiumPlanCardProps = {
   plan: PaddlePlan;
@@ -48,8 +48,10 @@ export function PremiumPlanCard({
     setLoading(true);
     setError(null);
     try {
-      const { checkoutUrl } = await requestCheckoutUrl({ plan, organizationId });
-      redirectToCheckout(checkoutUrl);
+      await openCheckout(await requestCheckout({ plan, organizationId }));
+      // The overlay covers the page rather than navigating, so the button has
+      // to come back — otherwise dismissing the overlay leaves it stuck.
+      setLoading(false);
     } catch {
       setLoading(false);
       setError("Couldn't start checkout. Try again in a moment.");

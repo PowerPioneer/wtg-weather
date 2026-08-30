@@ -572,7 +572,18 @@ class PaddleCheckoutRequest(BaseModel):
 
 
 class PaddleCheckoutResponse(BaseModel):
-    checkout_url: str
+    """A Paddle transaction the caller may open a checkout against.
+
+    `transaction_id` is the one the browser uses —
+    `Paddle.Checkout.open({transactionId})`. `checkout_url` is the same
+    transaction's hosted link (our default payment link + `?_ptxn=`), returned
+    for the server-side `/upgrade` redirect. Both address one transaction that
+    was created *after* this API checked the caller's session and membership,
+    which is what keeps `custom_data` trustworthy at webhook time.
+    """
+
+    transaction_id: str
+    checkout_url: str | None
     sandbox: bool
     plan: str
 

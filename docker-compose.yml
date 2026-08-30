@@ -135,6 +135,9 @@ services:
         NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
         NEXT_PUBLIC_GLITCHTIP_DSN_WEB: ${NEXT_PUBLIC_GLITCHTIP_DSN_WEB}
         NEXT_PUBLIC_GLITCHTIP_RELEASE: ${NEXT_PUBLIC_GLITCHTIP_RELEASE}
+        # Paddle.js cannot open a checkout without this, so an image built
+        # without it has an Upgrade button that fails for every visitor.
+        NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: ${NEXT_PUBLIC_PADDLE_CLIENT_TOKEN}
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -149,6 +152,7 @@ services:
       NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
       NEXT_PUBLIC_GLITCHTIP_DSN_WEB: ${NEXT_PUBLIC_GLITCHTIP_DSN_WEB}
       NEXT_PUBLIC_GLITCHTIP_RELEASE: ${NEXT_PUBLIC_GLITCHTIP_RELEASE}
+      NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: ${NEXT_PUBLIC_PADDLE_CLIENT_TOKEN}
       GLITCHTIP_DSN_WEB: ${GLITCHTIP_DSN_WEB}
     depends_on:
       api:

@@ -12,16 +12,16 @@ import { afterEach, describe, expect, it, vi } from "vitest";
  * is not instant and a visitor who clicks in that window must not be ignored.
  */
 
-const requestCheckoutUrl = vi.fn();
-const redirectToCheckout = vi.fn();
+const requestCheckout = vi.fn();
+const openCheckout = vi.fn();
 
 vi.mock("@/lib/paddle", async () => {
   const actual =
     await vi.importActual<typeof import("@/lib/paddle")>("@/lib/paddle");
   return {
     ...actual,
-    requestCheckoutUrl: (input: unknown) => requestCheckoutUrl(input),
-    redirectToCheckout: (url: string) => redirectToCheckout(url),
+    requestCheckout: (input: unknown) => requestCheckout(input),
+    openCheckout: (checkout: unknown) => openCheckout(checkout),
   };
 });
 
@@ -29,8 +29,8 @@ const { TierCta } = await import("./tier-cta");
 const { findTier, consumerTiers } = await import("./copy");
 
 afterEach(() => {
-  requestCheckoutUrl.mockReset();
-  redirectToCheckout.mockReset();
+  requestCheckout.mockReset();
+  openCheckout.mockReset();
 });
 
 function tier(id: Parameters<typeof findTier>[0]) {
@@ -48,9 +48,10 @@ describe("TierCta", () => {
     expect(cta).toHaveAttribute("data-plan", "consumer_premium");
   });
 
-  it("requests a checkout URL with the right plan on click", async () => {
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/checkout/custom?p=1",
+  it("requests a transaction with the right plan on click", async () => {
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01fff",
+      checkoutUrl: null,
       sandbox: true,
       plan: "consumer_premium",
     });
@@ -58,12 +59,12 @@ describe("TierCta", () => {
     render(<TierCta tier={tier("premium")} />);
     await userEvent.click(screen.getByTestId("upgrade-cta"));
 
-    expect(requestCheckoutUrl).toHaveBeenCalledWith({
+    expect(requestCheckout).toHaveBeenCalledWith({
       plan: "consumer_premium",
       organizationId: undefined,
     });
-    expect(redirectToCheckout).toHaveBeenCalledWith(
-      "https://sandbox-checkout.paddle.com/checkout/custom?p=1",
+    expect(openCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({ transactionId: "txn_01fff" }),
     );
   });
 
@@ -93,12 +94,12 @@ describe("TierCta", () => {
   });
 
   it("says so when checkout cannot be opened, and charges nothing", async () => {
-    requestCheckoutUrl.mockRejectedValue(new Error("failed: 502"));
+    requestCheckout.mockRejectedValue(new Error("failed: 502"));
     render(<TierCta tier={tier("premium")} />);
     await userEvent.click(screen.getByTestId("upgrade-cta"));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/couldn't open checkout/i);
-    expect(redirectToCheckout).not.toHaveBeenCalled();
+    expect(openCheckout).not.toHaveBeenCalled();
   });
 
   it("gives every publicly listed tier a working destination", () => {

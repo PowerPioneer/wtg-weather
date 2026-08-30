@@ -65,15 +65,15 @@ vi.mock("@/hooks/use-stored-preferences", () => ({
   useStoredPreferences: () => {},
 }));
 
-const requestCheckoutUrl = vi.fn();
-const redirectToCheckout = vi.fn();
+const requestCheckout = vi.fn();
+const openCheckout = vi.fn();
 vi.mock("@/lib/paddle", async () => {
   const actual =
     await vi.importActual<typeof import("@/lib/paddle")>("@/lib/paddle");
   return {
     ...actual,
-    requestCheckoutUrl: (input: unknown) => requestCheckoutUrl(input),
-    redirectToCheckout: (url: string) => redirectToCheckout(url),
+    requestCheckout: (input: unknown) => requestCheckout(input),
+    openCheckout: (checkout: unknown) => openCheckout(checkout),
   };
 });
 
@@ -104,8 +104,8 @@ beforeEach(() => {
     error: null,
   };
   trackEvent.mockClear();
-  requestCheckoutUrl.mockReset();
-  redirectToCheckout.mockReset();
+  requestCheckout.mockReset();
+  openCheckout.mockReset();
 });
 
 afterEach(() => cleanup());
@@ -140,8 +140,9 @@ describe("MapExperience when premium tiles are refused", () => {
 
   it("the prompt's CTA starts a checkout, not a trip to /pricing", async () => {
     tileState = { ...tileState, premiumDenied: true };
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/checkout/custom?r=1",
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01ggg",
+      checkoutUrl: null,
       sandbox: true,
       plan: "consumer_premium",
     });
@@ -149,18 +150,18 @@ describe("MapExperience when premium tiles are refused", () => {
     render(<MapExperience isPremium />);
     await userEvent.click(await screen.findByTestId("popover-upgrade"));
 
-    expect(requestCheckoutUrl).toHaveBeenCalledWith({
+    expect(requestCheckout).toHaveBeenCalledWith({
       plan: "consumer_premium",
       organizationId: undefined,
     });
-    expect(redirectToCheckout).toHaveBeenCalledWith(
-      "https://sandbox-checkout.paddle.com/checkout/custom?r=1",
+    expect(openCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({ transactionId: "txn_01ggg" }),
     );
   });
 
   it("says so in the prompt when checkout itself fails, and stays open", async () => {
     tileState = { ...tileState, premiumDenied: true };
-    requestCheckoutUrl.mockRejectedValue(new Error("failed: 500"));
+    requestCheckout.mockRejectedValue(new Error("failed: 500"));
 
     render(<MapExperience isPremium />);
     await userEvent.click(await screen.findByTestId("popover-upgrade"));

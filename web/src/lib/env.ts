@@ -52,6 +52,13 @@ export const PLAUSIBLE_DOMAIN =
 export const PLAUSIBLE_SRC =
   set(process.env.NEXT_PUBLIC_PLAUSIBLE_SRC) ?? "/_plausible/js/script.js";
 
+// Paddle.js client-side token. Safe to expose — it is scoped to opening
+// checkouts and previewing prices, and is not the API key. Must reach the
+// Docker build as a build arg, not only as runtime env: an unset one arrives
+// as "" and the Upgrade button fails with `CheckoutUnavailable`.
+export const PADDLE_CLIENT_TOKEN =
+  set(process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN) ?? "";
+
 // PostHog — cloud, post-login. Loaded only when the user is signed in.
 export const POSTHOG_KEY = set(process.env.NEXT_PUBLIC_POSTHOG_KEY) ?? "";
 export const POSTHOG_HOST =

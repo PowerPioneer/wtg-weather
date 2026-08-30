@@ -28,9 +28,10 @@ import { useCallback, useRef, useState } from "react";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import {
   CheckoutSignInRequired,
+  CheckoutUnavailable,
   checkoutPath,
-  redirectToCheckout,
-  requestCheckoutUrl,
+  openCheckout,
+  requestCheckout,
   type PaddlePlan,
 } from "@/lib/paddle";
 
@@ -81,12 +82,16 @@ export function useCheckout(): UseCheckout {
     });
 
     try {
-      const { checkoutUrl } = await requestCheckoutUrl({
+      const checkout = await requestCheckout({
         plan: input.plan,
         organizationId: input.organizationId,
       });
-      setStatus("pending");
-      redirectToCheckout(checkoutUrl);
+      await openCheckout(checkout);
+      // The overlay is up and covering the page — nothing navigated. Release
+      // the guard so that closing it and pressing Upgrade again works, rather
+      // than leaving a permanently dead button behind.
+      inFlight.current = false;
+      setStatus("idle");
     } catch (err) {
       if (err instanceof CheckoutSignInRequired) {
         // Not a failure — carry the intent through sign-in. `/upgrade` picks
@@ -102,7 +107,13 @@ export function useCheckout(): UseCheckout {
       setStatus("error");
       // The status code is in the thrown message and stays out of the UI: it
       // tells the visitor nothing and the same string ends up in GlitchTip.
-      setError("checkout-failed");
+      // `checkout-unavailable` is split out because it is ours, not Paddle's:
+      // it means the client token never reached the build.
+      setError(
+        err instanceof CheckoutUnavailable
+          ? "checkout-unavailable"
+          : "checkout-failed",
+      );
     }
   }, []);
 

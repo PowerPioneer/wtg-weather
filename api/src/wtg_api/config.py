@@ -6,10 +6,14 @@ from typing import Literal
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_PADDLE_SANDBOX_CHECKOUT = "https://sandbox-checkout.paddle.com/checkout/custom"
-_PADDLE_LIVE_CHECKOUT = "https://checkout.paddle.com/checkout/custom"
 _PADDLE_SANDBOX_API = "https://sandbox-api.paddle.com"
 _PADDLE_LIVE_API = "https://api.paddle.com"
+# The page on *our own* domain that hosts Paddle.js. Paddle Billing has no
+# hand-buildable checkout URL — a transaction's `checkout.url` is this link
+# with `?_ptxn=<transaction id>` appended, and Paddle.js on that page opens the
+# checkout when it sees the parameter. It must be an approved website in
+# Paddle > Checkout > Website approval.
+_PADDLE_PAY_PATH = "/checkout/pay"
 
 
 class Settings(BaseSettings):
@@ -99,9 +103,11 @@ class Settings(BaseSettings):
     # reverse) fails closed with a 403 from Paddle rather than doing something
     # surprising. Left empty to track `paddle_sandbox`.
     paddle_api_base_url: str = ""
-    # Leave empty in .env to auto-pick based on paddle_sandbox. Set explicitly
-    # only to override (e.g. staging pointing at a self-hosted mock).
-    paddle_checkout_base_url: str = ""
+    # Our default payment link — see `_PADDLE_PAY_PATH`. Left empty it tracks
+    # `public_web_origin`; set it only to point at a different approved domain.
+    # Note this is *not* a paddle.com host: the old `paddle_checkout_base_url`
+    # was, and it addressed Paddle Classic, which cannot take a `pri_` price.
+    paddle_payment_link_url: str = ""
     paddle_price_consumer_premium: str = "pri_sandbox_consumer_premium"
     paddle_price_agency_starter: str = "pri_sandbox_agency_starter"
     paddle_price_agency_pro: str = "pri_sandbox_agency_pro"
@@ -123,9 +129,9 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _resolve_paddle_checkout_base_url(self) -> Settings:
-        if not self.paddle_checkout_base_url:
-            self.paddle_checkout_base_url = (
-                _PADDLE_SANDBOX_CHECKOUT if self.paddle_sandbox else _PADDLE_LIVE_CHECKOUT
+        if not self.paddle_payment_link_url:
+            self.paddle_payment_link_url = (
+                f"{self.public_web_origin.rstrip('/')}{_PADDLE_PAY_PATH}"
             )
         if not self.paddle_api_base_url:
             self.paddle_api_base_url = (

@@ -21,6 +21,16 @@ uv run uvicorn wtg_api.main:app --reload
   HMAC via a small plugin/handler before serving. Signature lifetime: 15 min.
 - **Paddle**: `/api/webhooks/paddle` verifies signature via HMAC, updates
   `organizations.plan` and `.seat_cap`. Idempotent by event ID.
+- **Paddle checkout**: `/api/paddle/checkout-url` creates a **transaction**
+  (`POST /transactions`) and returns its id; the browser opens the overlay with
+  `Paddle.Checkout.open({transactionId})`. Paddle Billing has no buildable
+  checkout URL — a `pri_` price is reachable only through Paddle.js or a
+  transaction — so anything that composes a `checkout.paddle.com` URL by hand
+  is Paddle *Classic* and will not work. `custom_data` (`plan`, `user_id`,
+  `organization_id`) is attached **here**, after the membership check, and must
+  stay server-side: `routers/paddle.py::_extract_plan` trusts
+  `custom_data["plan"]` over the price, so a client that could set it would buy
+  the cheapest price and claim the dearest plan.
 - **Entitlements**: all protected routes pass through `services.entitlements`
   which resolves `(user, plan)` and caches for 60 seconds in Redis.
 - **Country data**: `/v1/countries*` serves the pipeline's

@@ -71,7 +71,20 @@ pnpm dev
 
 - Never fetch climate data from the browser; it's baked into PMTiles.
   Browser only fetches: signed tile URL, user's own trips/favourites,
-  `/api/me`, and Paddle checkout URLs.
+  `/api/me`, Paddle transaction ids, and Paddle.js itself.
+- **Checkout is an overlay, opened by transaction id.** The API creates the
+  transaction after checking session and membership (`api/CLAUDE.md`), and
+  `lib/paddle.ts` opens it — the browser never names a price and never composes
+  `custom_data`. Paddle.js does now load in the browser, which the old contract
+  forbade; that could not survive Paddle Billing, and it is confined to
+  `lib/paddle.ts` and `/checkout/pay`. `/checkout/pay` is our **default payment
+  link**, which Paddle requires before it will create any transaction at all
+  and emails to customers for payment-method updates — it is not dead code.
+- **The upgrade path is no longer no-JS.** `/upgrade` is still a real server
+  route, still where `/login?next=` returns to, and still what every CTA anchor
+  points at — but it redirects to a page that needs Paddle.js to open the
+  checkout. Paddle Billing has no server-rendered checkout to redirect to, so
+  this is a constraint rather than a regression to fix.
 - SSR pages must be renderable with ZERO client JS for SEO — progressive
   enhancement only. Test with JS disabled.
 - Use `next/image` for everything non-map. Never `<img>` in RSC.

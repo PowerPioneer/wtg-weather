@@ -8,14 +8,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * page the visitor had usually just come from.
  *
  * Three behaviours are load-bearing and each has cost something before:
- *   - the browser never builds a Paddle URL (that is `lib/paddle.ts`'s
- *     contract; the price ids live server-side and nowhere else),
+ *   - the browser never names a price (that is `lib/paddle.ts`'s contract;
+ *     the price ids and `custom_data` live server-side and nowhere else, so
+ *     the overlay is opened by transaction id),
  *   - an anonymous click is a sign-in bounce that *resumes*, not an error,
  *   - a double click is one checkout, not two.
  */
 
-const requestCheckoutUrl = vi.fn();
-const redirectToCheckout = vi.fn();
+const requestCheckout = vi.fn();
+const openCheckout = vi.fn();
 const trackEvent = vi.fn();
 
 vi.mock("@/lib/analytics", () => ({
@@ -28,8 +29,8 @@ vi.mock("@/lib/paddle", async () => {
     await vi.importActual<typeof import("@/lib/paddle")>("@/lib/paddle");
   return {
     ...actual,
-    requestCheckoutUrl: (input: unknown) => requestCheckoutUrl(input),
-    redirectToCheckout: (url: string) => redirectToCheckout(url),
+    requestCheckout: (input: unknown) => requestCheckout(input),
+    openCheckout: (checkout: unknown) => openCheckout(checkout),
   };
 });
 
@@ -46,16 +47,17 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  requestCheckoutUrl.mockReset();
-  redirectToCheckout.mockReset();
+  requestCheckout.mockReset();
+  openCheckout.mockReset();
   trackEvent.mockReset();
   assign.mockReset();
 });
 
 describe("useCheckout", () => {
-  it("asks the API for a URL and hands the browser to it", async () => {
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/checkout/custom?x=1",
+  it("asks the API for a transaction and opens the overlay on it", async () => {
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01aaa",
+      checkoutUrl: null,
       sandbox: true,
       plan: "consumer_premium",
     });
@@ -65,19 +67,20 @@ describe("useCheckout", () => {
       await result.current.start({ plan: "consumer_premium", source: "pricing" });
     });
 
-    expect(requestCheckoutUrl).toHaveBeenCalledWith({
+    expect(requestCheckout).toHaveBeenCalledWith({
       plan: "consumer_premium",
       organizationId: undefined,
     });
-    expect(redirectToCheckout).toHaveBeenCalledWith(
-      "https://sandbox-checkout.paddle.com/checkout/custom?x=1",
+    expect(openCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({ transactionId: "txn_01aaa" }),
     );
     expect(result.current.error).toBeNull();
   });
 
   it("passes the organization through for an agency plan", async () => {
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/x",
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01bbb",
+      checkoutUrl: null,
       sandbox: true,
       plan: "agency_pro",
     });
@@ -91,14 +94,14 @@ describe("useCheckout", () => {
       });
     });
 
-    expect(requestCheckoutUrl).toHaveBeenCalledWith({
+    expect(requestCheckout).toHaveBeenCalledWith({
       plan: "agency_pro",
       organizationId: "org-1",
     });
   });
 
   it("bounces an anonymous visitor through sign-in, carrying the plan", async () => {
-    requestCheckoutUrl.mockRejectedValue(new CheckoutSignInRequired());
+    requestCheckout.mockRejectedValue(new CheckoutSignInRequired());
 
     const { result } = renderHook(() => useCheckout());
     await act(async () => {
@@ -117,8 +120,8 @@ describe("useCheckout", () => {
   });
 
   it("surfaces a failure without leaking the status code", async () => {
-    requestCheckoutUrl.mockRejectedValue(
-      new Error("requestCheckoutUrl(consumer_premium) failed: 500"),
+    requestCheckout.mockRejectedValue(
+      new Error("requestCheckout(consumer_premium) failed: 500"),
     );
 
     const { result } = renderHook(() => useCheckout());
@@ -129,19 +132,20 @@ describe("useCheckout", () => {
     await waitFor(() => expect(result.current.status).toBe("error"));
     expect(result.current.error).toBe("checkout-failed");
     expect(result.current.error).not.toContain("500");
-    expect(redirectToCheckout).not.toHaveBeenCalled();
+    expect(openCheckout).not.toHaveBeenCalled();
   });
 
   it("lets a failed attempt be retried after reset", async () => {
-    requestCheckoutUrl.mockRejectedValueOnce(new Error("boom"));
+    requestCheckout.mockRejectedValueOnce(new Error("boom"));
     const { result } = renderHook(() => useCheckout());
     await act(async () => {
       await result.current.start({ plan: "consumer_premium", source: "pricing" });
     });
     expect(result.current.status).toBe("error");
 
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/y",
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01ccc",
+      checkoutUrl: null,
       sandbox: true,
       plan: "consumer_premium",
     });
@@ -149,19 +153,20 @@ describe("useCheckout", () => {
     await act(async () => {
       await result.current.start({ plan: "consumer_premium", source: "pricing" });
     });
-    expect(redirectToCheckout).toHaveBeenCalledWith(
-      "https://sandbox-checkout.paddle.com/y",
+    expect(openCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({ transactionId: "txn_01ccc" }),
     );
   });
 
   it("does not start a second checkout while one is in flight", async () => {
-    requestCheckoutUrl.mockImplementation(
+    requestCheckout.mockImplementation(
       () =>
         new Promise((resolve) =>
           setTimeout(
             () =>
               resolve({
-                checkoutUrl: "https://sandbox-checkout.paddle.com/z",
+                transactionId: "txn_01ddd",
+      checkoutUrl: null,
                 sandbox: true,
                 plan: "consumer_premium",
               }),
@@ -177,12 +182,13 @@ describe("useCheckout", () => {
       await Promise.all([a, b]);
     });
 
-    expect(requestCheckoutUrl).toHaveBeenCalledTimes(1);
+    expect(requestCheckout).toHaveBeenCalledTimes(1);
   });
 
   it("reports the source it was started from", async () => {
-    requestCheckoutUrl.mockResolvedValue({
-      checkoutUrl: "https://sandbox-checkout.paddle.com/q",
+    requestCheckout.mockResolvedValue({
+      transactionId: "txn_01eee",
+      checkoutUrl: null,
       sandbox: true,
       plan: "consumer_premium",
     });

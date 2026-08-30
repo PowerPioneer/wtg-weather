@@ -98,5 +98,9 @@ async function mintCheckoutUrl(
   const body = (await res.json().catch(() => null)) as
     | { checkout_url?: unknown }
     | null;
+  // `checkout_url` is the transaction's hosted link — our own `/checkout/pay`
+  // with `?_ptxn=` appended. It is nullable: Paddle only returns one for
+  // automatically-collected transactions, and an account with no default
+  // payment link set does not get one at all.
   return typeof body?.checkout_url === "string" ? body.checkout_url : null;
 }
