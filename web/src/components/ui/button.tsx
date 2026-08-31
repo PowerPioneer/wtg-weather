@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
+import { tv, type VariantProps } from "@/lib/tv";
 
 import { cn } from "@/lib/cn";
 

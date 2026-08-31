@@ -102,12 +102,7 @@ function Content({
       <h1 className="text-2xl font-semibold tracking-tight">{heading}</h1>
       <p className="text-muted-foreground text-sm leading-relaxed">{body}</p>
       {href && cta ? (
-        // `text-primary-foreground` is restated because `Button`'s own
-        // `tv()` call runs tailwind-merge, which groups it with the size
-        // variant's `text-body-sm` and drops the colour — every primary
-        // Button renders navy-on-navy without this. `cn()` is plain clsx, so
-        // a className passed in here survives that merge.
-        <Button as="a" href={href} className="text-primary-foreground">
+        <Button as="a" href={href}>
           {cta}
         </Button>
       ) : null}
