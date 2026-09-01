@@ -139,17 +139,21 @@ no headroom. Daily admin-1 aggregation adds roughly 4 GB of part files plus a
 ~5 GB combined Parquet against ~13 GB free. So the swapfile reclaim is not
 optional:
 
-The 33 GB swapfile was sized for the admin-2 memory cliff that commit
-`f99e881` fixed by streaming. Halve it; do not remove it — `build_feature_
-collection` still holds 49k features and `json.dumps` a ~3.9 GB string.
-Check `df -h /opt/wtg-weather/pipeline/data` before starting aggregation.
+**The swapfile is already 16 GB** as of 2026-09-01 — the reclaim from 33 GB
+had been done at some point and the note here was stale. Do not shrink it
+further: `build_feature_collection` still holds 49k features and `json.dumps`
+a ~3.9 GB string at admin-2. Check
+`df -h /opt/wtg-weather/pipeline/data` before starting aggregation; it was at
+80 % used with 18 GB free when the daily download began, and the daily
+intermediates want most of that.
 
 ### Order
 
 ```bash
-# 1. Download. 840 chunks, slow, resumable — start it early and detached.
-nohup uv run --directory pipeline wtg download era5-daily --years 2016-2025 -v \
-  > /var/log/wtg-era5-daily.log 2>&1 &
+# 1. Download. 840 chunks, resumable. `setsid` so it outlives the SSH session.
+export PATH=/root/.local/bin:$PATH
+setsid nohup uv run --directory pipeline wtg download era5-daily --years 2016-2025 -v \
+  > /var/log/wtg-era5-daily.log 2>&1 < /dev/null &
 
 # 2. Aggregate, then derive. The coverage matrix is built once and cached.
 uv run --directory pipeline wtg process aggregate --level all
@@ -171,6 +175,21 @@ docker compose build api && docker compose up -d api
 NO_CACHE=1 ./infra/scripts/build-web.sh && docker compose up -d web
 ./infra/scripts/rebuild-tiles.sh
 ```
+
+Measured on the first real run (2026-09-01), not estimated: **~66 MB per
+chunk, ~55 GB for the full 840, ~28 s each — six to seven hours end to end.**
+The earlier ~39 GB estimate was low by a third. Progress:
+
+```bash
+grep -c retrieving /var/log/wtg-era5-daily.log
+ls /opt/wtg-weather/pipeline/data/raw/era5/daily/*.nc | wc -l
+```
+
+**Do not `pkill -f era5_daily` over SSH.** The pattern appears in the command
+line pkill is itself running under, so it matches its own shell and kills the
+session before doing anything useful. It presents as the command silently
+producing no output at all, which is a confusing five minutes. Find the PID
+with `ps` and `kill` that.
 
 No migration is expected: this is all file-backed reference data served off the
 read-only mount. Check `docker compose run --rm api alembic current` anyway.
