@@ -248,3 +248,189 @@ def test_validate_sunshine_can_check_real_observations() -> None:
 
     bad = {c.name: ssrd_for(c, scale=0.4) for c in REFERENCE_CITIES}
     assert validate_sunshine(observed_ssrd=bad) is False
+
+
+# ── True WMO sunshine duration (calibration input) ───────────────────
+
+
+def test_solar_noon_is_the_daily_zenith_maximum() -> None:
+    """At 0°E the sun should peak near 12:00 UTC."""
+    from wtg_pipeline.processing.sunshine import cos_solar_zenith_at
+
+    values = [(hour, cos_solar_zenith_at(45.0, 0.0, 172, hour)) for hour in range(24)]
+    peak_hour = max(values, key=lambda pair: pair[1])[0]
+    assert 11 <= peak_hour <= 13
+
+
+def test_solar_noon_shifts_with_longitude() -> None:
+    """90°E sees solar noon six hours earlier in UTC."""
+    from wtg_pipeline.processing.sunshine import cos_solar_zenith_at
+
+    def peak(longitude: float) -> int:
+        return max(
+            ((h, cos_solar_zenith_at(45.0, longitude, 172, h)) for h in range(24)),
+            key=lambda pair: pair[1],
+        )[0]
+
+    assert peak(90.0) == pytest.approx(peak(0.0) - 6, abs=1)
+
+
+def test_sun_is_below_the_horizon_through_polar_night() -> None:
+    from wtg_pipeline.processing.sunshine import cos_solar_zenith_at
+
+    assert all(cos_solar_zenith_at(80.0, 0.0, 355, h) == 0.0 for h in range(24))
+
+
+def test_wmo_sunshine_counts_only_hours_above_the_threshold() -> None:
+    from wtg_pipeline.processing.sunshine import (
+        WMO_SUNSHINE_THRESHOLD_W_M2,
+        cos_solar_zenith_at,
+        wmo_sunshine_hours,
+    )
+
+    latitude, longitude, doy = 0.0, 0.0, 80  # equinox at the equator
+
+    # A strong beam whenever the sun is up: 800 W/m² normal incidence,
+    # projected onto the horizontal and accumulated over the hour.
+    strong = [
+        800.0 * cos_solar_zenith_at(latitude, longitude, doy, h + 0.5) * 3600.0
+        for h in range(24)
+    ]
+    hours = wmo_sunshine_hours(
+        strong, latitude_deg=latitude, longitude_deg=longitude, day_of_year=doy
+    )
+    assert 9.0 <= hours <= 12.0
+
+    # Same geometry, beam dimmed below the threshold: nothing counts.
+    weak = [
+        (WMO_SUNSHINE_THRESHOLD_W_M2 * 0.5)
+        * cos_solar_zenith_at(latitude, longitude, doy, h + 0.5)
+        * 3600.0
+        for h in range(24)
+    ]
+    assert (
+        wmo_sunshine_hours(
+            weak, latitude_deg=latitude, longitude_deg=longitude, day_of_year=doy
+        )
+        == 0.0
+    )
+
+
+def test_wmo_sunshine_is_zero_in_the_dark() -> None:
+    from wtg_pipeline.processing.sunshine import wmo_sunshine_hours
+
+    assert (
+        wmo_sunshine_hours(
+            [0.0] * 24, latitude_deg=0.0, longitude_deg=0.0, day_of_year=80
+        )
+        == 0.0
+    )
+
+
+# ── Fitting ──────────────────────────────────────────────────────────
+
+
+def test_fit_recovers_known_coefficients() -> None:
+    from wtg_pipeline.processing.sunshine import fit_angstrom_prescott
+
+    a_true, b_true = 0.22, 0.54
+    samples = [
+        (a_true + b_true * fraction, fraction)
+        for fraction in (0.0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.0)
+    ]
+    a, b = fit_angstrom_prescott(samples)
+    assert a == pytest.approx(a_true, abs=1e-9)
+    assert b == pytest.approx(b_true, abs=1e-9)
+
+
+def test_fit_refuses_a_sample_with_no_spread() -> None:
+    """One climate cannot determine a slope, and must not look as if it did."""
+    from wtg_pipeline.processing.sunshine import fit_angstrom_prescott
+
+    with pytest.raises(ValueError, match="no spread"):
+        fit_angstrom_prescott([(0.5, 0.5)] * 20)
+
+
+def test_fit_needs_more_than_one_point() -> None:
+    from wtg_pipeline.processing.sunshine import fit_angstrom_prescott
+
+    with pytest.raises(ValueError, match="at least 2"):
+        fit_angstrom_prescott([(0.5, 0.5)])
+
+
+# ── Calibration loading ──────────────────────────────────────────────
+
+
+def test_band_boundaries() -> None:
+    from wtg_pipeline.processing.sunshine import band_for_latitude
+
+    assert band_for_latitude(0.0) == "tropical"
+    assert band_for_latitude(-13.5) == "tropical"
+    assert band_for_latitude(30.0) == "subtropical"
+    assert band_for_latitude(-33.4) == "subtropical"
+    assert band_for_latitude(51.5) == "temperate"
+    assert band_for_latitude(69.6) == "polar"
+    assert band_for_latitude(-89.0) == "polar"
+
+
+def test_defaults_apply_when_uncalibrated(monkeypatch) -> None:
+    import wtg_pipeline.processing.sunshine as mod
+
+    monkeypatch.setattr(mod, "_CALIBRATION", {})
+    assert mod.is_calibrated() is False
+    assert mod.coefficients_for_latitude(51.5) == (
+        mod.ANGSTROM_PRESCOTT_A,
+        mod.ANGSTROM_PRESCOTT_B,
+    )
+
+
+def test_fitted_band_coefficients_are_used(monkeypatch) -> None:
+    import wtg_pipeline.processing.sunshine as mod
+
+    monkeypatch.setattr(
+        mod,
+        "_CALIBRATION",
+        {
+            "global": {"a": 0.20, "b": 0.55},
+            "bands": {"polar": {"a": 0.18, "b": 0.62}},
+        },
+    )
+    assert mod.is_calibrated() is True
+    # Band wins where it exists...
+    assert mod.coefficients_for_latitude(69.6) == (0.18, 0.62)
+    # ...and the global fit covers bands the calibration could not fit, so a
+    # partial calibration still helps rather than being all-or-nothing.
+    assert mod.coefficients_for_latitude(0.0) == (0.20, 0.55)
+
+
+def test_a_broken_calibration_cannot_stop_a_rebuild(monkeypatch) -> None:
+    """Garbage in the file falls back rather than raising mid-pipeline."""
+    import wtg_pipeline.processing.sunshine as mod
+
+    for broken in (
+        {"bands": {"polar": {"a": "nonsense", "b": 0.5}}},
+        {"bands": {"polar": {"a": 0.2, "b": 0.0}}},   # zero slope
+        {"bands": {"polar": {"a": 0.2, "b": -0.5}}},  # negative slope
+    ):
+        monkeypatch.setattr(mod, "_CALIBRATION", broken)
+        assert mod.coefficients_for_latitude(69.6) == (
+            mod.ANGSTROM_PRESCOTT_A,
+            mod.ANGSTROM_PRESCOTT_B,
+        )
+
+
+def test_calibration_changes_the_derived_hours(monkeypatch) -> None:
+    """The wiring is real: a different fit must move the output."""
+    import wtg_pipeline.processing.sunshine as mod
+
+    ssrd = mod.extraterrestrial_daily_j_m2(51.5, 172) * 0.45
+
+    monkeypatch.setattr(mod, "_CALIBRATION", {})
+    default = mod.sunshine_hours_for_day(ssrd, latitude_deg=51.5, day_of_year=172)
+
+    monkeypatch.setattr(
+        mod, "_CALIBRATION", {"bands": {"temperate": {"a": 0.18, "b": 0.62}}}
+    )
+    fitted = mod.sunshine_hours_for_day(ssrd, latitude_deg=51.5, day_of_year=172)
+
+    assert fitted != pytest.approx(default)
