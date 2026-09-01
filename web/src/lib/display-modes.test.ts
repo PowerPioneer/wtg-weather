@@ -130,11 +130,11 @@ describe("reading a mode in the traveller's units", () => {
   it("switches the legend caption and ticks together", () => {
     expect(modeLegendSub(temperature, "metric")).toBe("°C");
     expect(modeLegendSub(temperature, "imperial")).toBe("°F");
-    expect(modeLegendTicks(temperature, "metric")).toEqual(["< 0°", "15°", "> 30°"]);
+    expect(modeLegendTicks(temperature, "metric")).toEqual(["< 5°", "20°", "> 35°"]);
     expect(modeLegendTicks(temperature, "imperial")).toEqual([
-      "< 32°",
-      "59°",
-      "> 86°",
+      "< 41°",
+      "68°",
+      "> 95°",
     ]);
   });
 

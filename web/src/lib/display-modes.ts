@@ -124,24 +124,26 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
       "Mean daily maximum 2m temperature across the selected month over " +
       "2016–2025 — the typical afternoon high, not the 24-hour mean.",
     legend: {
-      // STOPS PENDING RE-DERIVATION. These were chosen against the 24-hour
-      // mean; the map now paints the mean daily maximum, which is warmer
-      // everywhere and by a different amount in each climate — so every
-      // boundary is in the wrong place until they are recomputed from the
-      // rebuilt distribution. Run:
+      // Set for the mean daily maximum, replacing stops chosen against the
+      // 24-hour mean. Round tens rather than quantiles of the distribution:
+      // the bins are not equally populated — the coldest reads thin globally,
+      // because few inhabited places average a daily high below 5 °C — but a
+      // legend a reader can hold in their head is worth more than five equally
+      // busy colours. Each boundary is a temperature people already have a
+      // feel for: freezing-ish, cool, mild, warm, hot.
       //
-      //   uv run python scripts/derive_ramp_stops.py --variable t2m_max
+      //   < 5   cold        5-15  cool       15-25  mild
+      //   25-35 warm        > 35  hot
       //
-      // after the aggregation completes, and paste what it prints. Guessing an
-      // offset here would be inventing a diurnal range that varies from 6 °C
-      // in the wet tropics to 20 °C in a desert.
+      // `scripts/derive_ramp_stops.py --variable t2m_max` prints the
+      // quantile-even alternative if the balance ever needs revisiting.
       title: "Daytime high",
       sub: "°C",
       ramp: ["#08457E", "#5A93C7", "#E6E0C8", "#C97011", "#7A2E2E"],
-      stops: [5, 15, 22, 28],
-      ticks: ["< 0°", "15°", "> 30°"],
+      stops: [5, 15, 25, 35],
+      ticks: ["< 5°", "20°", "> 35°"],
       subImperial: "°F",
-      ticksImperial: ["< 32°", "59°", "> 86°"],
+      ticksImperial: ["< 41°", "68°", "> 95°"],
     },
   },
   rainfall: {
