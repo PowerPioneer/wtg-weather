@@ -17,6 +17,7 @@
 import {
   celsiusToFahrenheit,
   centimetresToInches,
+  formatWind,
   kmhToMph,
   millimetresToInches,
   type UnitSystem,
@@ -118,10 +119,23 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
     unitImperial: "°F",
     toImperial: celsiusToFahrenheit,
     imperialDigits: 0,
-    desc: "Mean daily temperature, 10-year ERA5 climatology.",
-    infoTooltip: "Mean 2m temperature across the selected month over 2015–2024.",
+    desc: "Mean daily maximum, 10-year ERA5 climatology.",
+    infoTooltip:
+      "Mean daily maximum 2m temperature across the selected month over " +
+      "2016–2025 — the typical afternoon high, not the 24-hour mean.",
     legend: {
-      title: "Mean temperature",
+      // STOPS PENDING RE-DERIVATION. These were chosen against the 24-hour
+      // mean; the map now paints the mean daily maximum, which is warmer
+      // everywhere and by a different amount in each climate — so every
+      // boundary is in the wrong place until they are recomputed from the
+      // rebuilt distribution. Run:
+      //
+      //   uv run python scripts/derive_ramp_stops.py --variable t2m_max
+      //
+      // after the aggregation completes, and paste what it prints. Guessing an
+      // offset here would be inventing a diurnal range that varies from 6 °C
+      // in the wet tropics to 20 °C in a desert.
+      title: "Daytime high",
       sub: "°C",
       ramp: ["#08457E", "#5A93C7", "#E6E0C8", "#C97011", "#7A2E2E"],
       stops: [5, 15, 22, 28],
@@ -162,7 +176,10 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
     prop: "s",
     unit: "h/day",
     desc: "Hours of sunshine per day.",
-    infoTooltip: "Estimated from ERA5 surface solar radiation, clear-sky equivalent.",
+    infoTooltip:
+      "Derived from ERA5 daily solar radiation via Ångström–Prescott, " +
+      "calibrated against WMO sunshine duration (direct normal irradiance " +
+      "above 120 W/m²).",
     legend: {
       title: "Daily sunshine",
       sub: "hours",
@@ -181,8 +198,11 @@ export const DISPLAY_MODES: Record<DisplayModeId, DisplayMode> = {
     unitImperial: "mph",
     toImperial: kmhToMph,
     imperialDigits: 0,
-    desc: "Average wind speed at 10m.",
-    infoTooltip: "ERA5 10m wind speed, monthly mean.",
+    desc: "Average wind speed at 10m, on the Beaufort scale.",
+    infoTooltip:
+      "ERA5 10m wind speed, monthly mean. Readouts are Beaufort; the ramp " +
+      "stays continuous because a monthly mean sits at force 2-4 almost " +
+      "everywhere, and colouring by force would flatten the map.",
     legend: {
       title: "Wind speed",
       sub: "km/h",
@@ -365,6 +385,14 @@ export function formatModeValue(
   value: number,
   unit: UnitSystem,
 ): string {
+  // Wind speaks Beaufort in every readout, while the map keeps a continuous
+  // km/h ramp behind it. A monthly-mean 10 m wind sits at force 2–4 almost
+  // everywhere on Earth, so colouring by force would collapse the world into
+  // three shades — but "Fresh breeze" is still what a reader can picture, and
+  // "29 km/h" is not.
+  if (mode.id === "wind") {
+    return formatWind(value, unit, { digits: 0 });
+  }
   return `${modeValue(mode, value, unit).toFixed(modeDigits(mode, unit))} ${modeUnitLabel(mode, unit)}`;
 }
 

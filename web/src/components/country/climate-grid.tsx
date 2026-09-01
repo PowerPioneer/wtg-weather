@@ -34,7 +34,19 @@ export function ClimateGrid({ country }: { country: CountryData }) {
           </h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <ChartFromMonthly kind="temp" values={c.t} bands={{ p10: c.tMin, p90: c.tMax }} context={country.name} />
+          {/*
+            Two lines, not a band. tMin/tMax used to be piped in as the
+            envelope, which is what made the chart look like it was shading a
+            daily range while actually shading ten annual means. They are the
+            mean daily maximum and minimum now, and the envelope is premium —
+            fetched client-side, because this payload is baked into static HTML.
+          */}
+          <ChartFromMonthly
+            kind="temp"
+            values={c.tMax}
+            low={c.tMin}
+            context={country.name}
+          />
           <ChartFromMonthly kind="rain" values={c.r} context={country.name} />
           <ChartFromMonthly kind="sun" values={c.s} context={country.name} />
           {c.w ? <ChartFromMonthly kind="wind" values={c.w} context={country.name} /> : null}
@@ -103,21 +115,26 @@ function PremiumTeaser({
 function ChartFromMonthly({
   kind,
   values,
+  low,
   bands,
   locked,
   context,
 }: {
   kind: ClimateChartKind;
   values: Monthly;
-  bands?: { p10: Monthly; p90: Monthly };
+  /** A second line on the same axis — temperature's overnight low. */
+  low?: Monthly;
+  /** The premium envelope, once it has been fetched. */
+  bands?: { p5: Monthly; p95: Monthly };
   locked?: boolean;
   context: string;
 }) {
   const months: MonthDatum[] = values.map((value, i) => ({
     month: i,
     value,
-    p10: bands?.p10[i],
-    p90: bands?.p90[i],
+    low: low?.[i],
+    p5: bands?.p5[i],
+    p95: bands?.p95[i],
   }));
   return <ClimateChart kind={kind} months={months} locked={locked} context={context} compact />;
 }

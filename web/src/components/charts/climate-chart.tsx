@@ -47,10 +47,20 @@ export type MonthDatum = {
   /** 0–11 — matches MONTH_NAMES. */
   month: number;
   value: number;
-  /** Optional 10th percentile (Premium bands). */
-  p10?: number;
-  /** Optional 90th percentile (Premium bands). */
-  p90?: number;
+  /**
+   * A second line on the same axis. Temperature uses it for the mean daily
+   * minimum, drawn in blue beneath the maximum's red.
+   */
+  low?: number;
+  /**
+   * Envelope edges — the *within-month* spread, premium. For temperature these
+   * are the 5th percentile of daily minima and the 95th of daily maxima: how
+   * much one day differs from the next, not how much one year differs from
+   * another. The old p10/p90 across ten annual means was 2–4 °C wide, because
+   * averaging over a month destroys nearly all the variance.
+   */
+  p5?: number;
+  p95?: number;
 };
 
 export type ClimateChartProps = {
@@ -91,8 +101,12 @@ type KindSpec = {
    * in both systems.
    */
   toImperial?: (value: number) => number;
-  /** SR description verb ("Average temperature", etc.). */
+  /** SR description verb ("Average daytime high", etc.). */
   srNoun: string;
+  /** Colour of the second line, where a kind draws one. */
+  secondColor?: string;
+  /** SR description verb for that second line. */
+  secondSrNoun?: string;
 };
 
 const SPECS: Record<ClimateChartKind, KindSpec> = {
@@ -101,11 +115,16 @@ const SPECS: Record<ClimateChartKind, KindSpec> = {
     unitMetric: "°C",
     unitImperial: "°F",
     color: "#D14A2E",
+    // The overnight low, drawn beneath the daytime high. Both are CVD-safe
+    // Atlas colours, and they are the only pair on the site where red and blue
+    // carry meaning rather than decoration.
+    secondColor: "#0072B2",
+    secondSrNoun: "Average overnight low",
     render: "line",
     decimals: 1,
     imperialDecimals: 0,
     toImperial: celsiusToFahrenheit,
-    srNoun: "Average temperature",
+    srNoun: "Average daytime high",
   },
   rain: {
     title: "Rainfall",
@@ -232,12 +251,17 @@ export function ClimateChart({
 
   const unitLabel = unit === "imperial" ? spec.unitImperial : spec.unitMetric;
   const values = months.map((m) => convert(m.value));
-  const hasBands =
-    months.every((m) => m.p10 != null && m.p90 != null) === true;
+
+  const hasSecondary = months.every((m) => m.low != null);
+  const secondary = hasSecondary
+    ? months.map((m) => convert(m.low as number))
+    : undefined;
+
+  const hasBands = months.every((m) => m.p5 != null && m.p95 != null);
   const bands = hasBands
     ? {
-        p10: months.map((m) => convert(m.p10 as number)),
-        p90: months.map((m) => convert(m.p90 as number)),
+        lower: months.map((m) => convert(m.p5 as number)),
+        upper: months.map((m) => convert(m.p95 as number)),
       }
     : undefined;
 
@@ -247,6 +271,7 @@ export function ClimateChart({
     width,
     height,
     values,
+    secondary,
     bands,
     includeZero: spec.includeZero,
     // The hard bounds are declared in metric (humidity 0–100, sunshine ≤ 14),
@@ -258,6 +283,10 @@ export function ClimateChart({
 
   const linePath =
     spec.render === "line" ? buildLinePath(values, geometry) : "";
+  const secondaryPath =
+    spec.render === "line" && secondary
+      ? buildLinePath(secondary, geometry)
+      : "";
   const bars = spec.render === "bars" ? buildBars(values, geometry) : [];
 
   const srSummary = buildSrSummary({
@@ -314,6 +343,30 @@ export function ClimateChart({
           />
         ) : null}
 
+        {secondaryPath && spec.secondColor ? (
+          <>
+            <path
+              d={secondaryPath}
+              fill="none"
+              stroke={spec.secondColor}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {secondary!.map((v, i) => (
+              <circle
+                key={`low-${i}`}
+                cx={geometry.xOf(i)}
+                cy={geometry.yOf(v)}
+                r={2.5}
+                fill="#FFFFFF"
+                stroke={spec.secondColor}
+                strokeWidth={1.5}
+              />
+            ))}
+          </>
+        ) : null}
+
         {spec.render === "line" ? (
           <>
             <path
@@ -353,10 +406,23 @@ export function ClimateChart({
           : null}
       </svg>
 
-      {bands && !locked ? (
-        <div className="mt-1 flex gap-3 font-mono text-[10.5px] text-accent-text">
-          <span>— median</span>
-          <span>▬ 10 / 90 percentile band</span>
+      {!locked && (bands || secondaryPath) ? (
+        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[10.5px] text-accent-text">
+          {secondaryPath && spec.secondColor ? (
+            <>
+              <span style={{ color: spec.color }}>— daytime high</span>
+              <span style={{ color: spec.secondColor }}>— overnight low</span>
+            </>
+          ) : (
+            <span>— average</span>
+          )}
+          {/*
+            "Typical range", not "5/95 percentile band". The rule this site
+            works by has four outcomes rather than a hundred for the same
+            reason: a quantile in a legend claims a precision the reader has no
+            use for, and most readers cannot act on it.
+          */}
+          {bands ? <span>▬ typical range</span> : null}
         </div>
       ) : null}
 
@@ -374,13 +440,18 @@ export function ClimateChart({
               <th scope="col" className="py-1 pr-2 text-right font-medium">
                 {spec.srNoun} ({unitLabel})
               </th>
+              {secondary ? (
+                <th scope="col" className="py-1 pr-2 text-right font-medium">
+                  {spec.secondSrNoun ?? "Low"} ({unitLabel})
+                </th>
+              ) : null}
               {bands ? (
                 <>
                   <th scope="col" className="py-1 pr-2 text-right font-medium">
-                    p10
+                    Typical low
                   </th>
                   <th scope="col" className="py-1 pr-2 text-right font-medium">
-                    p90
+                    Typical high
                   </th>
                 </>
               ) : null}
@@ -397,13 +468,18 @@ export function ClimateChart({
                 <td className="py-1 pr-2 text-right">
                   {convert(m.value).toFixed(decimals)}
                 </td>
+                {secondary ? (
+                  <td className="py-1 pr-2 text-right">
+                    {convert(m.low as number).toFixed(decimals)}
+                  </td>
+                ) : null}
                 {bands ? (
                   <>
                     <td className="py-1 pr-2 text-right">
-                      {convert(m.p10 as number).toFixed(decimals)}
+                      {convert(m.p5 as number).toFixed(decimals)}
                     </td>
                     <td className="py-1 pr-2 text-right">
-                      {convert(m.p90 as number).toFixed(decimals)}
+                      {convert(m.p95 as number).toFixed(decimals)}
                     </td>
                   </>
                 ) : null}

@@ -65,9 +65,15 @@ export type Monthly = readonly [
  */
 export type ClimateSeries = {
   months: readonly string[];
-  t: Monthly;       // °C mean
-  tMin: Monthly;    // °C 10th percentile
-  tMax: Monthly;    // °C 90th percentile
+  /**
+   * Alias of `tMax`. The headline temperature is the daytime high now, and
+   * this is kept so existing readers do not all have to be re-typed at once.
+   */
+  t: Monthly;
+  /** °C — mean daily minimum. The blue line. */
+  tMin: Monthly;
+  /** °C — mean daily maximum. The red line, and what the map paints. */
+  tMax: Monthly;
   r: Monthly;       // mm / month — for display
   /**
    * mm / day — the unit the scoring rule consumes, and the one the map paints.
@@ -77,6 +83,14 @@ export type ClimateSeries = {
    */
   rDay: Monthly;
   s: Monthly;       // hr / day
+  /**
+   * Mean days per month at or above the WMO's 1.0 mm. "9 rainy days in April"
+   * is legible in a way "2.7 mm/day" never was. Absent on a payload published
+   * before the daily rebuild.
+   */
+  wetDays?: Monthly;
+  /** Mean days per month reaching 70 % of possible daylight. */
+  sunnyDays?: Monthly;
   /** Absent where the polygon carries no wind series. */
   w?: Monthly;
 };

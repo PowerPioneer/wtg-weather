@@ -61,7 +61,9 @@ export type BuildGeometryInput = {
   padT?: number;
   padB?: number;
   values: readonly number[];
-  bands?: { p10: readonly number[]; p90: readonly number[] };
+  /** A second line sharing the axis — temperature's overnight low. */
+  secondary?: readonly number[];
+  bands?: { lower: readonly number[]; upper: readonly number[] };
   /** Force min bound. Otherwise derived from data. */
   minOverride?: number;
   /** Force max bound. Otherwise derived from data. */
@@ -90,8 +92,9 @@ export function buildGeometry(input: BuildGeometryInput): ChartGeometry {
   const innerH = height - padT - padB;
 
   const all: number[] = [...input.values];
+  if (input.secondary) all.push(...input.secondary);
   if (input.bands) {
-    all.push(...input.bands.p10, ...input.bands.p90);
+    all.push(...input.bands.lower, ...input.bands.upper);
   }
   if (input.includeZero ?? false) all.push(0);
 
@@ -178,11 +181,10 @@ export function buildBars(
  * The path traces p90 left-to-right, then p10 right-to-left, then closes.
  */
 export function buildBandPath(
-  bands: { p10: readonly number[]; p90: readonly number[] },
+  bands: { lower: readonly number[]; upper: readonly number[] },
   g: Pick<ChartGeometry, "xOf" | "yOf">,
 ): string {
-  const upper = bands.p90;
-  const lower = bands.p10;
+  const { upper, lower } = bands;
   if (upper.length !== 12 || lower.length !== 12) return "";
   const up = upper
     .map((v, i) => `${i === 0 ? "M" : "L"} ${NUM(g.xOf(i))} ${NUM(g.yOf(v))}`)

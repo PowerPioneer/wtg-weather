@@ -18,6 +18,11 @@ export function MonthStats({
   monthIdx: number;
 }) {
   const c = country.climate;
+  // Genuinely a daily high and low now. These were the 90th and 10th
+  // percentile of the 24-hour mean across ten years — an interannual spread
+  // printed as a bare "15.8 – 28.4 °C", which every reader takes for a day and
+  // a night. It was also 2–4 °C wide, because averaging over a month destroys
+  // the variance.
   const tempLow = c.tMin[monthIdx];
   const tempHigh = c.tMax[monthIdx];
 
@@ -32,7 +37,7 @@ export function MonthStats({
   }[] = [
     {
       key: "temp",
-      title: "Temperature",
+      title: "Day / night",
       value: <TemperatureRange low={tempLow} high={tempHigh} />,
       detail: (
         <>

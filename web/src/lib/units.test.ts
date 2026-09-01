@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  beaufortFromKmh,
+  beaufortName,
+  beaufortTicks,
+  formatBeaufort,
   UNIT_COOKIE,
   celsiusToFahrenheit,
   formatRainfallMonthly,
@@ -69,7 +73,7 @@ describe("rainfall, wind and snow", () => {
   });
 
   it("converts wind and snow", () => {
-    expect(formatWind(30, "imperial", { digits: 0 })).toBe("19 mph");
+    expect(formatWind(30, "imperial", { digits: 0, style: "speed" })).toBe("19 mph");
     expect(formatSnowDepth(25, "imperial")).toBe("9.8 in");
   });
 });
@@ -148,5 +152,61 @@ describe("measurements inside generated prose", () => {
     const prose = "A dry season that runs from May to September.";
     expect(convertMeasurementsInText(prose, "imperial")).toBe(prose);
     expect(convertMeasurementsInText("", "imperial")).toBe("");
+  });
+});
+
+
+describe("beaufort", () => {
+  it("places each force at the canonical m/s boundary", () => {
+    // The scale is defined in m/s; these are those bounds in km/h.
+    expect(beaufortFromKmh(0)).toBe(0);
+    expect(beaufortFromKmh(0.5 * 3.6)).toBe(1);
+    expect(beaufortFromKmh(1.6 * 3.6)).toBe(2);
+    expect(beaufortFromKmh(3.4 * 3.6)).toBe(3);
+    expect(beaufortFromKmh(5.5 * 3.6)).toBe(4);
+    expect(beaufortFromKmh(8.0 * 3.6)).toBe(5);
+    expect(beaufortFromKmh(32.7 * 3.6)).toBe(12);
+  });
+
+  it("stays inside the scale at both ends", () => {
+    expect(beaufortFromKmh(-5)).toBe(0);
+    expect(beaufortFromKmh(Number.NaN)).toBe(0);
+    expect(beaufortFromKmh(1000)).toBe(12);
+  });
+
+  it("just below a boundary is still the lower force", () => {
+    expect(beaufortFromKmh(5.5 * 3.6 - 0.01)).toBe(3);
+    expect(beaufortFromKmh(5.5 * 3.6)).toBe(4);
+  });
+
+  it("names every force", () => {
+    expect(beaufortName(0)).toBe("Calm");
+    expect(beaufortName(4)).toBe("Moderate breeze");
+    expect(beaufortName(12)).toBe("Hurricane force");
+  });
+
+  it("reads as a force, a name and the measured speed", () => {
+    expect(formatWind(22)).toBe("Bft 4 · Moderate breeze (22 km/h)");
+    expect(formatWind(22, "metric", { style: "force" })).toBe("Bft 4");
+    expect(formatWind(22, "metric", { style: "speed" })).toBe("22 km/h");
+    expect(formatBeaufort(22)).toBe("Bft 4 · Moderate breeze");
+  });
+
+  it("is the same force in imperial — only the bracket changes", () => {
+    const metric = formatWind(22, "metric");
+    const imperial = formatWind(22, "imperial");
+    expect(metric.startsWith("Bft 4 · Moderate breeze")).toBe(true);
+    expect(imperial.startsWith("Bft 4 · Moderate breeze")).toBe(true);
+    expect(imperial).toContain("mph");
+  });
+
+  it("gives a chart only the whole forces inside its span", () => {
+    // A typical global wind range: nothing above force 6 on a monthly mean.
+    const ticks = beaufortTicks(0, 45);
+    expect(ticks).toEqual([0, 1, 2, 3, 4, 5, 6]);
+    // And nothing outside the span. Force 4 begins at 5.5 m/s = 19.8 km/h,
+    // so it falls inside a span starting at 19 and outside one starting at 20.
+    expect(beaufortTicks(19, 30)).toEqual([4, 5]);
+    expect(beaufortTicks(20, 30)).toEqual([5]);
   });
 });

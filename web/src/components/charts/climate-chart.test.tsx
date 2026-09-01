@@ -32,17 +32,57 @@ describe("ClimateChart — determinism", () => {
     });
   });
 
-  it("renders p10/p90 bands when provided", () => {
+  it("renders the typical-range envelope when provided", () => {
     const months: MonthDatum[] = FIXTURE.temp.map((value, month) => ({
       month,
       value,
-      p10: value - 3,
-      p90: value + 3,
+      low: value - 8,
+      p5: value - 12,
+      p95: value + 6,
     }));
     const { container } = render(<ClimateChart kind="temp" months={months} />);
     const bandPath = container.querySelector("path[fill-opacity]");
     expect(bandPath).not.toBeNull();
     expect(bandPath!.getAttribute("d")).toMatchSnapshot();
+  });
+
+  it("draws two lines for temperature and one for everything else", () => {
+    const paired: MonthDatum[] = FIXTURE.temp.map((value, month) => ({
+      month,
+      value,
+      low: value - 8,
+    }));
+    const { container: two } = render(
+      <ClimateChart kind="temp" months={paired} />,
+    );
+    const { container: one } = render(
+      <ClimateChart kind="temp" months={toMonths(FIXTURE.temp)} />,
+    );
+
+    const strokes = (root: Element) =>
+      [...root.querySelectorAll("path[stroke]")].map((p) =>
+        p.getAttribute("stroke"),
+      );
+
+    // Red for the daytime high, blue for the overnight low.
+    expect(strokes(two)).toEqual(["#0072B2", "#D14A2E"]);
+    expect(strokes(one)).toEqual(["#D14A2E"]);
+  });
+
+  it("captions the envelope in words rather than quantiles", () => {
+    const months: MonthDatum[] = FIXTURE.temp.map((value, month) => ({
+      month,
+      value,
+      low: value - 8,
+      p5: value - 12,
+      p95: value + 6,
+    }));
+    const { container } = render(<ClimateChart kind="temp" months={months} />);
+    const text = container.textContent ?? "";
+    expect(text).toContain("typical range");
+    expect(text).toContain("daytime high");
+    expect(text).toContain("overnight low");
+    expect(text).not.toMatch(/percentile|p5|p95/);
   });
 
   it("renders a screen-reader data table", () => {

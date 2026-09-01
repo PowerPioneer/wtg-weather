@@ -2,7 +2,8 @@ import { buildBandPath, type ChartGeometry } from "./scale";
 
 export type ChartBandsProps = {
   geometry: ChartGeometry;
-  bands: { p10: readonly number[]; p90: readonly number[] };
+  /** Lower and upper edges of the shaded envelope, in render units. */
+  bands: { lower: readonly number[]; upper: readonly number[] };
   /** Fill hex (matches the series colour). */
   fill: string;
   /** Fill opacity 0–1. Defaults to 0.14 — matches the design ref. */
@@ -10,9 +11,15 @@ export type ChartBandsProps = {
 };
 
 /**
- * Server-rendered 10/50/90 percentile band. Pure SVG `<path>`; no JS runtime.
- * Renders nothing when `bands` is incomplete (the 12-entry guard lives in
+ * Server-rendered shaded envelope. Pure SVG `<path>`; no JS runtime. Renders
+ * nothing when `bands` is incomplete (the 12-entry guard lives in
  * `buildBandPath`).
+ *
+ * For temperature the edges are the 5th percentile of daily minima and the
+ * 95th of daily maxima — a *within-month* spread, i.e. how much one day
+ * differs from the next. It used to be the 10th and 90th percentile across ten
+ * annual means, which is 2–4 °C wide because averaging over a month destroys
+ * the variance, and which looked broken next to two lines.
  */
 export function ChartBands({
   geometry,

@@ -151,14 +151,122 @@ export function rainfallUnitLabel(
   return per === "day" ? `${base}/day` : base;
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+ * Wind, on the Beaufort scale
+ *
+ * "19 km/h" is a figure almost nobody can picture. "Fresh breeze" is one
+ * everybody can, and it is the same argument that replaced the 0–100 match
+ * score with four words: the reader gets the word, and the number stays
+ * available for anyone who wants it.
+ *
+ * Beaufort is defined on wind speed in **m/s**, so the bounds below are the
+ * canonical ones converted here rather than a table of rounded km/h figures
+ * copied from somewhere. It is also unit-system-agnostic — force 4 is force 4
+ * in both — which is why the imperial branch now only affects the number in
+ * brackets.
+ *
+ * One honest limitation: the scale is defined on a 10-minute sustained wind,
+ * and what the tiles carry is a monthly mean of daily means. Calling that
+ * "force 3" is a reasonable description of the month and not a claim about any
+ * particular moment in it.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** Lower bound of each Beaufort force, m/s. Index is the force, 0–12. */
+const BEAUFORT_MIN_MS: readonly number[] = [
+  0, 0.5, 1.6, 3.4, 5.5, 8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7,
+];
+
+/** The scale's own descriptions. */
+const BEAUFORT_NAMES: readonly string[] = [
+  "Calm",
+  "Light air",
+  "Light breeze",
+  "Gentle breeze",
+  "Moderate breeze",
+  "Fresh breeze",
+  "Strong breeze",
+  "Near gale",
+  "Gale",
+  "Strong gale",
+  "Storm",
+  "Violent storm",
+  "Hurricane force",
+];
+
+export type BeaufortForce = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+
+/** Lower bound of a Beaufort force in km/h — the unit the tiles carry. */
+export function beaufortMinKmh(force: BeaufortForce): number {
+  return BEAUFORT_MIN_MS[force] * 3.6;
+}
+
+/** Beaufort force for a wind speed in km/h. Non-finite input reads as calm. */
+export function beaufortFromKmh(kmh: number): BeaufortForce {
+  if (!Number.isFinite(kmh) || kmh <= 0) return 0;
+  const ms = kmh / 3.6;
+  for (let force = BEAUFORT_MIN_MS.length - 1; force >= 0; force--) {
+    if (ms >= BEAUFORT_MIN_MS[force]) return force as BeaufortForce;
+  }
+  return 0;
+}
+
+/** "Fresh breeze". */
+export function beaufortName(force: BeaufortForce): string {
+  return BEAUFORT_NAMES[force] ?? BEAUFORT_NAMES[0];
+}
+
+/**
+ * The Beaufort boundaries that fall inside a km/h span, for a chart axis.
+ *
+ * The axis stays continuous — the underlying value is a real wind speed, and
+ * stepping it would turn a year of monthly means into "3, 3, 3, 3, 4, 3…",
+ * which tells a reader nothing. Only the gridlines are Beaufort, and only at
+ * whole forces.
+ */
+export function beaufortTicks(minKmh: number, maxKmh: number): BeaufortForce[] {
+  const ticks: BeaufortForce[] = [];
+  for (let force = 0; force <= 12; force++) {
+    const bound = beaufortMinKmh(force as BeaufortForce);
+    if (bound >= minKmh && bound <= maxKmh) ticks.push(force as BeaufortForce);
+  }
+  return ticks;
+}
+
+/**
+ * Wind for a reader: the force, its name, and the raw speed in brackets.
+ *
+ * `style` picks how much of that to show — `"full"` for a readout with room,
+ * `"force"` for a chart label or a tooltip where the name would not fit.
+ */
 export function formatWind(
   kmh: number,
   unit: UnitSystem = DEFAULT_UNIT,
-  { digits = 1, unitSuffix = true }: { digits?: number; unitSuffix?: boolean } = {},
+  {
+    digits = 0,
+    unitSuffix = true,
+    style = "full",
+  }: {
+    digits?: number;
+    unitSuffix?: boolean;
+    style?: "full" | "force" | "speed";
+  } = {},
 ): string {
   const imperial = unit === "imperial";
-  const value = imperial ? kmhToMph(kmh) : kmh;
-  return `${value.toFixed(digits)}${unitSuffix ? (imperial ? " mph" : " km/h") : ""}`;
+  const speed = imperial ? kmhToMph(kmh) : kmh;
+  const suffix = unitSuffix ? (imperial ? " mph" : " km/h") : "";
+  const measured = `${speed.toFixed(digits)}${suffix}`;
+
+  if (style === "speed") return measured;
+
+  const force = beaufortFromKmh(kmh);
+  if (style === "force") return `Bft ${force}`;
+  return `Bft ${force} · ${beaufortName(force)} (${measured})`;
+}
+
+/** Just the Beaufort half, for places that print the speed separately. */
+export function formatBeaufort(kmh: number): string {
+  const force = beaufortFromKmh(kmh);
+  return `Bft ${force} · ${beaufortName(force)}`;
 }
 
 export function formatSnowDepth(

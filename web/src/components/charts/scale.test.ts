@@ -82,7 +82,7 @@ describe("buildBandPath", () => {
   it("returns empty when lengths are wrong", () => {
     const g = buildGeometry({ values: MONTH_12 });
     expect(
-      buildBandPath({ p10: [1, 2, 3], p90: [4, 5, 6] }, g),
+      buildBandPath({ lower: [1, 2, 3], upper: [4, 5, 6] }, g),
     ).toBe("");
   });
 
@@ -90,8 +90,8 @@ describe("buildBandPath", () => {
     const g = buildGeometry({ values: MONTH_12 });
     const d = buildBandPath(
       {
-        p10: MONTH_12.map((v) => v - 2),
-        p90: MONTH_12.map((v) => v + 2),
+        lower: MONTH_12.map((v) => v - 2),
+        upper: MONTH_12.map((v) => v + 2),
       },
       g,
     );
