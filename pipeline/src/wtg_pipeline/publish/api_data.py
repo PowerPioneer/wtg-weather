@@ -38,7 +38,7 @@ What is in a payload, and what is deliberately not
 
 Present, because the pipeline knows it:
 
-* the 12-month climatology (p50) with p10/p90 bands for temperature, straight
+* the 12-month climatology: mean daily maximum and minimum, straight
   out of the percentiles Parquet and through the *same* unit conversions the
   tiles use (:func:`widen_percentiles_for_polygon`), so a country page and the
   map cannot disagree about what April looks like;
@@ -166,12 +166,29 @@ class PublishResult:
 class PolygonClimate:
     """One polygon's 12-month series, in the units the web renders."""
 
-    t: list[float]
-    t_min: list[float]
+    #: Mean daily maximum — the red line, and the headline temperature
+    #: everywhere on the site.
     t_max: list[float]
+    #: Mean daily minimum — the blue line.
+    t_min: list[float]
     rain_day: list[float]
     sun: list[float]
     wind: list[float] | None
+    #: Mean days per month at or above the WMO's 1.0 mm.
+    wet_days: list[float] | None = None
+    #: Mean days per month reaching 70 % of possible daylight.
+    sunny_days: list[float] | None = None
+
+    @property
+    def t(self) -> list[float]:
+        """Back-compat alias for the headline temperature series.
+
+        Several call sites read `.t` to mean "the temperature of this place".
+        That is now the daily maximum rather than the 24-hour mean, which is
+        the whole point of the rebuild — so the alias points at `t_max` rather
+        than being deleted and re-typed at every reader.
+        """
+        return self.t_max
 
     def scores(self) -> list[int]:
         """0–100 per month, by the pipeline rule the web reproduces."""
@@ -179,7 +196,8 @@ class PolygonClimate:
         for i in range(12):
             bucket = polygon_score(
                 {
-                    "t2m": self.t[i],
+                    "t2m_max": self.t_max[i],
+                    "t2m_min": self.t_min[i],
                     "tp": self.rain_day[i],
                     "sun_hours": self.sun[i],
                 },  # type: ignore[arg-type]
@@ -212,20 +230,23 @@ def polygon_climate(props: Mapping[str, float]) -> PolygonClimate | None:
     ``None`` means the polygon does not carry a complete set of the three
     scored variables — it is dropped rather than published with holes.
     """
-    t = _twelve(props, "t")
+    t_max = _twelve(props, "t")
     rain = _twelve(props, "r")
     sun = _twelve(props, "s")
-    if t is None or rain is None or sun is None:
+    if t_max is None or rain is None or sun is None:
         return None
     return PolygonClimate(
-        t=t,
-        # The bands are a nicety, not a requirement: a polygon with a p50 but
-        # no p10/p90 still charts, it just charts without a shaded band.
-        t_min=_twelve(props, "t2m_p10") or list(t),
-        t_max=_twelve(props, "t2m_p90") or list(t),
+        t_max=t_max,
+        # A polygon with a daytime high but no overnight low still charts —
+        # it just charts one line. Falling back to the high keeps every
+        # downstream `zip` the same length rather than making each reader
+        # handle a hole.
+        t_min=_twelve(props, "tmin") or list(t_max),
         rain_day=rain,
         sun=sun,
         wind=_twelve(props, "w"),
+        wet_days=_twelve(props, "wet"),
+        sunny_days=_twelve(props, "sunny"),
     )
 
 
@@ -251,17 +272,25 @@ def mean_climate(parts: Sequence[PolygonClimate]) -> PolygonClimate:
     country's own admin-1 units is both the honest construction and the one the
     map's mosaic is already showing; the generated summary says so.
     """
+    def optional(pick) -> list[float] | None:
+        """Mean of a series only every part carries.
+
+        Averaging over the subset that happens to have one would silently
+        describe a different set of regions than the rest of the payload does.
+        """
+        values = [pick(p) for p in parts]
+        if any(v is None for v in values):
+            return None
+        return _mean_series(values)  # type: ignore[arg-type]
+
     return PolygonClimate(
-        t=_mean_series([p.t for p in parts]),
-        t_min=_mean_series([p.t_min for p in parts]),
         t_max=_mean_series([p.t_max for p in parts]),
+        t_min=_mean_series([p.t_min for p in parts]),
         rain_day=_mean_series([p.rain_day for p in parts]),
         sun=_mean_series([p.sun for p in parts]),
-        wind=(
-            _mean_series([p.wind for p in parts if p.wind is not None])
-            if all(p.wind is not None for p in parts)
-            else None
-        ),
+        wind=optional(lambda p: p.wind),
+        wet_days=optional(lambda p: p.wet_days),
+        sunny_days=optional(lambda p: p.sunny_days),
     )
 
 
@@ -915,9 +944,19 @@ def build_payloads(
                 region_temp_span=region_span,
                 from_regions=from_regions,
             ),
+            # `tMax` and `tMin` are the mean daily maximum and minimum — the
+            # red and blue lines. They used to be the interannual p90 and p10
+            # of the 24-hour mean, which the country page printed as a bare
+            # "15.8 – 28.4 °C" and every reader took for a daily high and low.
+            # `t` is kept as an alias of `tMax` so existing readers keep
+            # working; it is the headline temperature now.
+            #
+            # The p5/p95 band is deliberately absent: this payload is baked
+            # into static HTML, so anything here is public, and the band is
+            # premium. The web fetches it client-side for entitled users.
             "climate": {
                 "months": list(MONTH_LABELS),
-                "t": climate.t,
+                "t": climate.t_max,
                 "tMin": climate.t_min,
                 "tMax": climate.t_max,
                 "r": [round(v, 1) for v in climate.rain_month()],
@@ -933,6 +972,12 @@ def build_payloads(
             payload["activities"] = activities_block
         if climate.wind is not None:
             payload["climate"]["w"] = climate.wind  # type: ignore[index]
+        # Counts of days: free, because they are as much the headline as the
+        # lines are, and far more legible than "2.7 mm/day".
+        if climate.wet_days is not None:
+            payload["climate"]["wetDays"] = climate.wet_days  # type: ignore[index]
+        if climate.sunny_days is not None:
+            payload["climate"]["sunnyDays"] = climate.sunny_days  # type: ignore[index]
         if capital is not None:
             payload["capital"] = capital[0]
             if capital[1]:

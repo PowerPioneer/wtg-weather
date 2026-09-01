@@ -65,7 +65,6 @@ from wtg_pipeline.processing.scoring import (
     polygon_score,
 )
 from wtg_pipeline.processing.aggregate import representative_latitude
-from wtg_pipeline.processing.sunshine import sunshine_hours_from_ssrd
 from wtg_pipeline.processing.units import (
     heat_index_c,
     kelvin_to_celsius,
@@ -87,38 +86,62 @@ Level = Literal["country", "admin1", "admin2"]
 # as "temp/rain/sun + wind", and the web's display-mode picker marks the wind
 # mode `tier: "free"`. It was missing here, so every free user who selected
 # Wind speed got a fully grey map.
-FREE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours", "si10")
-PREMIUM_VARIABLES: tuple[str, ...] = (
-    "t2m",
+FREE_VARIABLES: tuple[str, ...] = (
+    "t2m_max",     # the red line and the map's temperature ramp
+    "t2m_min",     # the blue line
     "tp",
     "sun_hours",
-    "si10",  # wind speed
+    "si10",
+    "wet_days",
+    "sunny_days",
+)
+PREMIUM_VARIABLES: tuple[str, ...] = FREE_VARIABLES + (
     "sd",  # snow depth
     "sst",  # sea surface temp
-    "rh",  # relative humidity (derived from t2m + d2m)
-    "heat",  # heat index (derived from t2m + rh)
+    "rh",  # relative humidity (derived from t2m_mean + d2m)
+    "heat",  # heat index (derived from t2m_max + rh)
 )
 
 # Raw ERA5 variable codes that must be read out of the percentiles frame to
 # produce the emitted set above. `ssrd` and `d2m` are inputs only — they are
 # never written to the tiles.
-FREE_SOURCE_VARIABLES: tuple[str, ...] = ("t2m", "tp", "ssrd", "si10")
-PREMIUM_SOURCE_VARIABLES: tuple[str, ...] = (
-    "t2m",
-    "tp",
-    "ssrd",
-    "si10",
+FREE_SOURCE_VARIABLES: tuple[str, ...] = (
+    "t2m_max",
+    "t2m_min",
+    "tp_sum",
+    "sun_hours",
+    "si10_mean",
+    "wet_days",
+    "sunny_days",
+)
+PREMIUM_SOURCE_VARIABLES: tuple[str, ...] = FREE_SOURCE_VARIABLES + (
     "sd",
     "sst",
-    "d2m",
+    "t2m_mean",  # input only: relative humidity needs air temperature
+    "d2m_mean",  # input only: and dewpoint
 )
+
+# Source name (what the percentile stage emits) → emitted name (what the tiles
+# carry). Most are identity; the daily statistics carry their statistic in the
+# name and the tiles should not.
+SOURCE_TO_EMITTED: dict[str, str] = {
+    "tp_sum": "tp",
+    "si10_mean": "si10",
+    "t2m_mean": "t2m_mean",
+    "d2m_mean": "d2m_mean",
+}
 
 # Short property aliases consumed by the web's display-mode catalog
 # (see web/src/lib/display-modes.ts — `prop` field). The pipeline emits
 # `<variable>_p50_<mm>` for analytical use AND `<alias>_<mm>` for the map
 # paint expressions. Keep both in sync if a new mode ships on the web.
 WEB_PROP_ALIAS: dict[str, str] = {
-    "t2m": "t",
+    # `t` is the daily maximum: it is the headline temperature everywhere on
+    # the site now, and the map's ramp reads it.
+    "t2m_max": "t",
+    "t2m_min": "tmin",
+    "wet_days": "wet",
+    "sunny_days": "sunny",
     "tp": "r",
     "sun_hours": "s",
     "si10": "w",
@@ -131,18 +154,32 @@ WEB_PROP_ALIAS: dict[str, str] = {
 # ERA5 SI → display units. Variables absent from this map are emitted as-is
 # (or are derived, and so never reach it).
 UNIT_CONVERSIONS: dict[str, Callable[[float], float]] = {
-    "t2m": kelvin_to_celsius,
+    "t2m_max": kelvin_to_celsius,
+    "t2m_min": kelvin_to_celsius,
+    "t2m_mean": kelvin_to_celsius,
     "sst": kelvin_to_celsius,
-    "d2m": kelvin_to_celsius,
-    "tp": m_per_day_to_mm_per_day,
-    "si10": m_s_to_km_h,
+    "d2m_mean": kelvin_to_celsius,
+    "tp_sum": m_per_day_to_mm_per_day,
+    "si10_mean": m_s_to_km_h,
     "sd": m_to_cm,
+    # sun_hours, wet_days and sunny_days are derived in the percentile stage
+    # and already in final units — a count of days converts to nothing.
 }
 
 # Read to derive other variables, never emitted themselves.
-INTERMEDIATE_VARIABLES: frozenset[str] = frozenset({"ssrd", "d2m"})
+INTERMEDIATE_VARIABLES: frozenset[str] = frozenset({"t2m_mean", "d2m_mean"})
 
-PERCENTILE_STATS: tuple[str, ...] = ("p10", "p50", "p90")
+# Every statistic either shape can carry. The daily percentiles emit
+# mean/p5/p50/p95; the monthly ones emit p10/p50/p90. Listing the union and
+# skipping whatever is absent lets one pass handle both, which matters while
+# `sst` and `sd` are still monthly and everything else is daily.
+PERCENTILE_STATS: tuple[str, ...] = ("mean", "p5", "p10", "p50", "p90", "p95")
+
+# The statistic the map paints and the score reads, in preference order. For
+# daily data that is the *mean* daily maximum — the conventional climate
+# normal, and what "the red line" means. p50 is the fallback for any variable
+# still on the monthly shape.
+HEADLINE_STATS: tuple[str, ...] = ("mean", "p50")
 
 # Lowest zoom at which each level is actually rendered, mirroring the layer
 # `minzoom` values in web/src/lib/map-style.ts.
@@ -175,7 +212,7 @@ def feature_min_zoom(level: str, iso_a2: str) -> int | None:
     return min_zoom
 
 # The variables `polygon_score` consults, in the units it expects.
-SCORED_VARIABLES: tuple[str, ...] = ("t2m", "tp", "sun_hours")
+SCORED_VARIABLES: tuple[str, ...] = ("t2m_max", "t2m_min", "tp", "sun_hours")
 
 # Pipeline `polygon_score` returns 0..3; the web's preferences mode bins on a
 # 0..100 scale (see web/src/lib/scoring.ts SCORE_BINS). These centroids place
@@ -234,21 +271,18 @@ def _score_row(values_by_var: dict[str, float]) -> int:
 
 def _emitted_variable(source_variable: str) -> str:
     """Name the emitted variable derives from / is renamed to."""
-    return "sun_hours" if source_variable == "ssrd" else source_variable
+    return SOURCE_TO_EMITTED.get(source_variable, source_variable)
 
 
-def _converter(source_variable: str, *, latitude: float, month: int) -> Callable[[float], float]:
+def _converter(source_variable: str) -> Callable[[float], float]:
     """Return the SI → display-unit transform for one variable.
 
-    ``ssrd`` is the interesting case: the transform is the full sunshine
-    derivation, which depends on where and when the polygon is. It is
-    monotonic in SSRD for a fixed (latitude, month), so applying it to
-    p10/p50/p90 independently preserves their ordering.
+    Every remaining transform is a linear unit change. Sunshine used to be the
+    exception — a latitude- and month-dependent derivation applied here — but
+    it is non-linear in SSRD, so the mean of the converted daily values is not
+    the conversion of the mean. It is now derived per day in the percentile
+    stage and arrives already in hours.
     """
-    if source_variable == "ssrd":
-        return lambda value: sunshine_hours_from_ssrd(
-            value, latitude_deg=latitude, month=month
-        )
     return UNIT_CONVERSIONS.get(source_variable, lambda value: value)
 
 
@@ -273,8 +307,12 @@ def widen_percentiles_for_polygon(
     sunshine derivation.
     """
     props: dict[str, float] = {}
-    # p50s in display units, kept for the two-variable derivations below.
+    # Headline values in display units, kept for the two-variable derivations
+    # below. Humidity needs the *mean* air temperature against dewpoint; the
+    # heat index is a "feels like" for the hottest part of the day, so it takes
+    # the maximum.
     t2m_c_by_month: dict[int, float] = {}
+    t2m_max_c_by_month: dict[int, float] = {}
     d2m_c_by_month: dict[int, float] = {}
 
     for row in poly_percentiles.itertuples(index=False):
@@ -284,35 +322,56 @@ def widen_percentiles_for_polygon(
         month = int(row.month)
         month_str = f"{month:02d}"
         emitted = _emitted_variable(var)
-        convert = _converter(var, latitude=latitude, month=month)
+        convert = _converter(var)
 
         for stat in PERCENTILE_STATS:
             value = getattr(row, stat, None)
             if value is None or value != value:  # NaN check
                 continue
-            converted = convert(float(value))
             if emitted not in INTERMEDIATE_VARIABLES:
-                props[f"{emitted}_{stat}_{month_str}"] = converted
-            if stat != "p50":
-                continue
-            alias = WEB_PROP_ALIAS.get(emitted)
-            if alias is not None:
-                props[f"{alias}_{month_str}"] = converted
-            if var == "t2m":
-                t2m_c_by_month[month] = converted
-            elif var == "d2m":
-                d2m_c_by_month[month] = converted
+                props[f"{emitted}_{stat}_{month_str}"] = convert(float(value))
 
-    _add_derived_humidity_and_heat(props, t2m_c_by_month, d2m_c_by_month)
+        # Resolved in HEADLINE_STATS order rather than by whichever statistic
+        # happened to come last, so a variable carrying both `mean` and `p50`
+        # cannot paint the map from one and score from the other.
+        headline: float | None = None
+        for stat in HEADLINE_STATS:
+            value = getattr(row, stat, None)
+            if value is not None and value == value:
+                headline = convert(float(value))
+                break
+
+        if headline is None:
+            continue
+        alias = WEB_PROP_ALIAS.get(emitted)
+        if alias is not None:
+            props[f"{alias}_{month_str}"] = headline
+        if var == "t2m_mean":
+            t2m_c_by_month[month] = headline
+        elif var == "d2m_mean":
+            d2m_c_by_month[month] = headline
+        elif var == "t2m_max":
+            t2m_max_c_by_month[month] = headline
+
+    _add_derived_humidity_and_heat(
+        props, t2m_c_by_month, t2m_max_c_by_month, d2m_c_by_month
+    )
     return props
 
 
 def _add_derived_humidity_and_heat(
     props: dict[str, float],
     t2m_c_by_month: dict[int, float],
+    t2m_max_c_by_month: dict[int, float],
     d2m_c_by_month: dict[int, float],
 ) -> None:
-    """Derive `rh` / `heat` from the p50 temperature and dewpoint.
+    """Derive `rh` from mean temperature + dewpoint, and `heat` from the max.
+
+    The heat index answers "how hot does it feel at the worst of it", so it is
+    built on the mean daily *maximum*. Building it on the 24-hour mean — which
+    is what this did before the daily rebuild — understates it by most of the
+    diurnal range, and understates it most in exactly the dry-heat places where
+    the warning matters.
 
     First-order: the median of a two-variable function is not the function
     of the two medians. For humidity and apparent temperature the error is
@@ -328,7 +387,8 @@ def _add_derived_humidity_and_heat(
         rh = relative_humidity_pct(t2m_c, d2m_c)
         props[f"rh_p50_{month_str}"] = rh
         props[f"{WEB_PROP_ALIAS['rh']}_{month_str}"] = rh
-        heat = heat_index_c(t2m_c, rh)
+        heat_base = t2m_max_c_by_month.get(month, t2m_c)
+        heat = heat_index_c(heat_base, rh)
         props[f"heat_p50_{month_str}"] = heat
         props[f"{WEB_PROP_ALIAS['heat']}_{month_str}"] = heat
 
@@ -345,11 +405,13 @@ def score_props(converted: dict[str, float]) -> dict[str, int]:
     props: dict[str, int] = {}
     for month in range(1, 13):
         month_str = f"{month:02d}"
-        values = {
-            variable: converted[f"{variable}_p50_{month_str}"]
-            for variable in SCORED_VARIABLES
-            if f"{variable}_p50_{month_str}" in converted
-        }
+        values = {}
+        for variable in SCORED_VARIABLES:
+            for stat in HEADLINE_STATS:
+                key = f"{variable}_{stat}_{month_str}"
+                if key in converted:
+                    values[variable] = converted[key]
+                    break
         score = _score_row(values)
         props[f"score_{month_str}"] = score
         # `pref_<mm>` is what the web's `preferences` display mode reads;

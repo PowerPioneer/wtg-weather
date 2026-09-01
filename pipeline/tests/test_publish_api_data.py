@@ -40,27 +40,38 @@ def _percentile_rows(
     *,
     kelvin: float,
     metres_per_day: float,
-    ssrd: float,
+    sun_hours: float,
     wind_m_s: float | None = 3.0,
+    diurnal_range_k: float = 10.0,
 ) -> list[dict]:
+    """Daily-shaped statistics for one polygon.
+
+    `kelvin` is the 24-hour mean the old fixtures expressed, split into a
+    daytime high and an overnight low around it — so a fixture that used to
+    say "22 °C" still describes the same place, now with the day/night pair
+    the product actually publishes.
+    """
     rows: list[dict] = []
+    half = diurnal_range_k / 2.0
     variables: list[tuple[str, float]] = [
-        ("t2m", kelvin),
-        ("tp", metres_per_day),
-        ("ssrd", ssrd),
+        ("t2m_max", kelvin + half),
+        ("t2m_min", kelvin - half),
+        ("tp_sum", metres_per_day),
+        ("sun_hours", sun_hours),
     ]
     if wind_m_s is not None:
-        variables.append(("si10", wind_m_s))
+        variables.append(("si10_mean", wind_m_s))
     for month in range(1, 13):
-        for variable, p50 in variables:
+        for variable, value in variables:
             rows.append(
                 {
                     "polygon_id": polygon_id,
                     "variable": variable,
                     "month": month,
-                    "p10": p50 * 0.9,
-                    "p50": p50,
-                    "p90": p50 * 1.1,
+                    "mean": value,
+                    "p50": value,
+                    "p5": value * 0.8,
+                    "p95": value * 1.2,
                 }
             )
     return rows
@@ -127,14 +138,14 @@ def _build(monkeypatch: pytest.MonkeyPatch, **overrides):
     )
 
     country_perc = pd.DataFrame(
-        _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=22_000_000.0)
-        + _percentile_rows("ISL", kelvin=278.15, metres_per_day=0.003, ssrd=8_000_000.0)
+        _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, sun_hours=8.4)
+        + _percentile_rows("ISL", kelvin=278.15, metres_per_day=0.003, sun_hours=1.6)
     )
     admin1_perc = pd.DataFrame(
-        _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=21_000_000.0)
-        + _percentile_rows("PER-2", kelvin=299.15, metres_per_day=0.008, ssrd=16_000_000.0)
-        + _percentile_rows("ARG-1", kelvin=290.15, metres_per_day=0.0005, ssrd=21_500_000.0)
-        + _percentile_rows("ARG-2", kelvin=294.15, metres_per_day=0.001, ssrd=21_000_000.0)
+        _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, sun_hours=7.9)
+        + _percentile_rows("PER-2", kelvin=299.15, metres_per_day=0.008, sun_hours=5.2)
+        + _percentile_rows("ARG-1", kelvin=290.15, metres_per_day=0.0005, sun_hours=8.1)
+        + _percentile_rows("ARG-2", kelvin=294.15, metres_per_day=0.001, sun_hours=7.9)
     )
 
     kwargs = {
@@ -159,14 +170,18 @@ def test_payload_carries_the_free_series_in_display_units(
     peru = entries["peru"]
     climate = peru["climate"]
 
-    # 295.15 K → 22 °C; 0.001 m/day → 1 mm/day → 31 mm in January.
-    assert climate["t"][0] == pytest.approx(22.0, abs=0.01)
+    # A 22 °C 24-hour mean with a 10 K diurnal range: 27 °C days, 17 °C
+    # nights. 0.001 m/day → 1 mm/day → 31 mm in January.
+    assert climate["tMax"][0] == pytest.approx(27.0, abs=0.01)
+    assert climate["tMin"][0] == pytest.approx(17.0, abs=0.01)
     assert climate["rDay"][0] == pytest.approx(1.0, abs=0.01)
     assert climate["r"][0] == pytest.approx(31.0, abs=0.1)
     assert 3.0 < climate["s"][0] < 12.0
     assert climate["months"][0] == "Jan"
-    # p10/p90 bands bracket the median, which is what the chart shades.
-    assert climate["tMin"][0] < climate["t"][0] < climate["tMax"][0]
+    # `t` is the headline temperature, and the headline is now the daytime
+    # high rather than the 24-hour mean.
+    assert climate["t"] == climate["tMax"]
+    assert climate["tMin"][0] < climate["tMax"][0]
 
 
 def test_premium_variables_never_reach_a_payload(
@@ -197,7 +212,7 @@ def test_suppressed_country_is_published_from_its_regions(
     argentina = entries["argentina"]
     assert argentina["climateBasis"] == "admin1-mean"
     # The mean of Mendoza (17 °C) and Salta (21 °C).
-    assert argentina["climate"]["t"][0] == pytest.approx(19.0, abs=0.01)
+    assert argentina["climate"]["t"][0] == pytest.approx(24.0, abs=0.01)
     assert "mosaic of its regions" in argentina["summary"]
     # Peru has a country row of its own and must not be labelled.
     assert "climateBasis" not in entries["peru"]
@@ -209,10 +224,10 @@ def test_country_with_no_series_at_all_is_skipped(
     entries, skipped = _build(
         monkeypatch,
         country_percentiles=pd.DataFrame(
-            _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=22_000_000.0)
+            _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, sun_hours=8.4)
         ),
         admin1_percentiles=pd.DataFrame(
-            _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=21_000_000.0)
+            _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, sun_hours=7.9)
         ),
     )
     # Iceland lost its country row and has no regions to fall back on. It must
@@ -300,10 +315,10 @@ def test_generated_prose_reports_the_series_it_was_built_from(
 ) -> None:
     entries, _skipped = _build(monkeypatch)
     peru = entries["peru"]
-    assert "22 °C" in peru["summary"]
+    assert "27 °C" in peru["summary"]
     # These fixtures are flat across the year, which is the case that used to
-    # produce "from 22 °C in January to 22 °C in January".
-    assert "holds near 22 °C all year" in peru["summary"]
+    # produce "from 27 °C in January to 27 °C in January".
+    assert "holds near 27 °C all year" in peru["summary"]
     # Guard the degenerate phrasing itself rather than counting month names.
     # A month may legitimately be named once per fact — January is both the
     # wettest month and one of the strongest here — so a bare count also fires
@@ -311,7 +326,7 @@ def test_generated_prose_reports_the_series_it_was_built_from(
     # understating how many months clear the preference threshold.
     assert "in January to" not in peru["summary"]
     assert set(peru["monthNotes"]) == set(api_data.MONTH_LABELS)
-    assert "22 °C" in peru["monthNotes"]["Jan"]
+    assert "27 °C" in peru["monthNotes"]["Jan"]
     assert len(peru["bestMonths"]) == 3
     assert all(0 <= month["score"] <= 100 for month in peru["bestMonths"])
 
