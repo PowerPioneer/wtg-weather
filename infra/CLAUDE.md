@@ -92,6 +92,87 @@ restart. It does **not** reach already-rendered pages, which are ISR-cached for
 30 days: a content-only change needs
 `docker compose up -d --force-recreate web`.
 
+## The daily-climatology rebuild
+
+Moving the product from ERA5 monthly means onto daily statistics changes what
+the numbers **mean**, not just their values: `t` is the mean daily maximum
+rather than the 24-hour mean, the chart band is a within-month spread rather
+than an interannual one, and the baked `pref_<mm>` is scored against a
+day/night pair. Tiles and country bundle must therefore ship **together** — a
+window where the map paints daily maxima while the pages still serve 24-hour
+means is worse than either state alone.
+
+### Capacity first
+
+The 100 GB data volume is **Local NVMe** and cannot be resized. Attach a
+Block Storage volume and bind-mount it over the daily-download directory only,
+so nothing existing has to move:
+
+```bash
+LABEL=wtg-era5  /mnt/era5  ext4  defaults,noatime  0  2
+/mnt/era5  /opt/wtg-weather/pipeline/data/raw/era5/daily  none  bind,x-systemd.requires-mounts-for=/mnt/era5  0  0
+```
+
+The `x-systemd.requires-mounts-for` is not decoration: without it the bind can
+run before its source is mounted at boot, leaving an empty directory that looks
+fine and silently is not.
+
+The 33 GB swapfile was sized for the admin-2 memory cliff that commit
+`f99e881` fixed by streaming. Halve it; do not remove it — `build_feature_
+collection` still holds 49k features and `json.dumps` a ~3.9 GB string.
+
+### Order
+
+```bash
+# 1. Download. 840 chunks, slow, resumable — start it early and detached.
+nohup uv run --directory pipeline wtg download era5-daily --years 2016-2025 -v \
+  > /var/log/wtg-era5-daily.log 2>&1 &
+
+# 2. Aggregate, then derive. The coverage matrix is built once and cached.
+uv run --directory pipeline wtg process aggregate --level all
+uv run --directory pipeline wtg process percentiles --level all
+
+# 3. Fit the sunshine coefficients (optional but wanted; see below).
+uv run --directory pipeline python scripts/calibrate_sunshine.py --year 2023 --write
+
+# 4. Re-derive the map's temperature ramp, and paste what it prints into
+#    web/src/lib/display-modes.ts. Do NOT skip this.
+uv run --directory pipeline python scripts/derive_ramp_stops.py --variable t2m_max
+
+# 5. Build and publish.
+uv run --directory pipeline wtg build geojson
+uv run --directory pipeline wtg publish api-data
+
+# 6. Ship, in this order.
+docker compose build api && docker compose up -d api
+NO_CACHE=1 ./infra/scripts/build-web.sh && docker compose up -d web
+./infra/scripts/rebuild-tiles.sh
+```
+
+No migration is expected: this is all file-backed reference data served off the
+read-only mount. Check `docker compose run --rm api alembic current` anyway.
+
+`NO_CACHE=1` on the web build is not optional. The pre-render bakes API
+*responses* into the image while Docker's cache key is the source tree, so a
+republish without it ships the previous pre-render — the country pages would
+keep the old numbers while the map showed the new ones.
+
+Step 4 is the one that looks skippable and is not. The ramp stops were chosen
+against the 24-hour mean; the map now paints the daily maximum, which is warmer
+everywhere and by a different amount in each climate. Skipping it leaves a map
+whose colours are all shifted one bin warm.
+
+Finish by verifying the CDN with a range request against a signed URL and
+comparing `Content-Range`'s total against the on-disk size — that is the check
+that catches bunny serving stale bytes.
+
+### What the sunshine model does without step 3
+
+It runs on the literature Ångström–Prescott coefficients and
+`validate_sunshine` logs `SUNSHINE_UNCALIBRATED` on every pipeline run. That is
+a working state, not a broken one — but grep for that tag before believing any
+claim that the sunshine figures are calibrated.
+
 ## Cutover
 
 The v1 → v2 apex switch is documented step-by-step in `infra/CUTOVER.md`,
