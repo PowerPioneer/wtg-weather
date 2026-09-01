@@ -15,6 +15,15 @@ _PADDLE_LIVE_API = "https://api.paddle.com"
 # Paddle > Checkout > Website approval.
 _PADDLE_PAY_PATH = "/checkout/pay"
 
+# What each email provider needs before it can send anything. `build_provider`
+# and the startup check below read this same map, so a provider cannot be
+# taught to one without the other noticing.
+_EMAIL_CREDENTIALS: dict[str, tuple[str, ...]] = {
+    "sendgrid": ("sendgrid_api_key",),
+    "postmark": ("postmark_token",),
+    "scaleway": ("scaleway_secret_key", "scaleway_project_id"),
+}
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=None, extra="ignore")
@@ -91,9 +100,18 @@ class Settings(BaseSettings):
     google_client_secret: str = ""
     google_redirect_uri: str = "http://localhost:8000/api/auth/google/callback"
 
-    email_provider: Literal["sendgrid", "postmark", "console"] = "console"
+    email_provider: Literal["sendgrid", "postmark", "scaleway", "console"] = "console"
     sendgrid_api_key: str = ""
     postmark_token: str = ""
+    # Scaleway Transactional Email needs *both* a secret key and a project id:
+    # a send is scoped to a project and the API will not infer one from the
+    # token, so a key on its own cannot address the endpoint. `build_provider`
+    # therefore requires the pair before it selects this provider.
+    scaleway_secret_key: str = ""
+    scaleway_project_id: str = ""
+    # `fr-par` is the only region offering the service today. Configurable so a
+    # second one costs a variable rather than a release.
+    scaleway_email_region: str = "fr-par"
     email_from: str = "hello@wheretogoforgreatweather.com"
 
     paddle_api_key: str = ""
@@ -126,6 +144,34 @@ class Settings(BaseSettings):
             "https://wheretogoforgreatweather.com",
         ]
     )
+
+    def missing_email_credentials(self) -> list[str]:
+        """Env var names the selected provider requires and does not have."""
+        return [
+            name.upper()
+            for name in _EMAIL_CREDENTIALS.get(self.email_provider, ())
+            if not getattr(self, name)
+        ]
+
+    @model_validator(mode="after")
+    def _fail_closed_on_half_configured_email(self) -> Settings:
+        """Refuse to boot rather than quietly downgrade to `ConsoleEmail`.
+
+        The fallback is the dangerous part, not the missing key: console mode
+        *prints the magic-link token to the container log* and reports the send
+        as successful, so a typo'd variable looks like a working deploy until
+        somebody notices no mail has arrived — and by then the auth tokens are
+        in the log stream. Same fail-closed shape as Caddy's missing basic-auth
+        hash (`infra/CLAUDE.md`).
+        """
+        missing = self.missing_email_credentials()
+        if missing:
+            raise ValueError(
+                f"EMAIL_PROVIDER={self.email_provider} requires "
+                f"{', '.join(missing)}. Set them, or set EMAIL_PROVIDER=console "
+                "to log mail deliberately."
+            )
+        return self
 
     @model_validator(mode="after")
     def _resolve_paddle_checkout_base_url(self) -> Settings:

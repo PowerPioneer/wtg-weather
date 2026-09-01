@@ -31,6 +31,18 @@ uv run uvicorn wtg_api.main:app --reload
   stay server-side: `routers/paddle.py::_extract_plan` trusts
   `custom_data["plan"]` over the price, so a client that could set it would buy
   the cheapest price and claim the dearest plan.
+- **Email**: `services.email` picks one provider from `EMAIL_PROVIDER` and
+  falls back to `ConsoleEmail` whenever the matching credential is missing —
+  so a misconfigured production box prints magic links to its own logs rather
+  than failing to boot. Prefer **`scaleway`**: the server is already Scaleway,
+  so it is one account, one invoice, and no new EU sub-processor. It is the
+  only provider needing *two* values (`SCALEWAY_SECRET_KEY` **and**
+  `SCALEWAY_PROJECT_ID`) because a send is scoped to a project. Every provider
+  must pass `EmailMessage.headers` through untouched — that is where the alert
+  mail's `List-Unsubscribe` pair lives, which Gmail and Yahoo require on bulk
+  mail and which fails invisibly when dropped. Scaleway's handling of it is
+  **unverified**; confirm with a real send before the first alert run.
+
 - **Entitlements**: all protected routes pass through `services.entitlements`
   which resolves `(user, plan)` and caches for 60 seconds in Redis.
 - **Country data**: `/v1/countries*` serves the pipeline's
