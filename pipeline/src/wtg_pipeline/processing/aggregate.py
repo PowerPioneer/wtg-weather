@@ -25,7 +25,7 @@ import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Literal
+from typing import Iterable, Literal, Sequence
 
 from wtg_pipeline.config import ensure_dir, intermediate_dir
 from wtg_pipeline.processing.country_rules import (
@@ -207,16 +207,24 @@ def _polygon_attributes(
 
 
 def aggregate_variable_year(
-    nc_path: Path,
+    nc_path: "Path | Sequence[Path]",
     variable_code: str,
     polygons: PolygonFrame,
     *,
     coverage_base_dir: Path | None = None,
+    daily: bool = False,
 ) -> "object":
-    """Aggregate one (variable, year) file into per-polygon monthly means.
+    """Aggregate one (variable, year) into per-polygon values.
+
+    ``nc_path`` is a single NetCDF or a sequence of them. Monthly means arrive
+    as one file per (variable, year); daily statistics arrive as twelve, one
+    per month, because that dataset is aggregated at retrieval time and a
+    year-sized request is both slower and a larger unit to lose.
 
     Returns a pandas DataFrame with columns
-    ``[polygon_id, iso_a2, admin1_code, year, month, variable, value]``.
+    ``[polygon_id, iso_a2, admin1_code, year, month, variable, value]`` — plus
+    ``day`` when ``daily=True``, because the within-month percentiles need to
+    tell one day from another.
 
     The polygon/raster overlap is computed **once** per (level, grid) and
     cached — see :mod:`wtg_pipeline.processing.coverage`. Each timestep is then
@@ -227,46 +235,60 @@ def aggregate_variable_year(
     pd = _require_pandas()
     np = _require_numpy()
 
-    da = _raster_from_netcdf(nc_path, variable_code)
-    # Once per file, not once per timestep — the longitude sort is the
-    # expensive half and the layout must match the cached weights exactly.
-    da = normalise_raster(da)
+    paths = [nc_path] if isinstance(nc_path, (str, Path)) else list(nc_path)
+    if not paths:
+        raise ValueError(f"no NetCDF inputs given for {variable_code!r}")
 
-    # ERA5 time coord may be named "time" or "valid_time".
-    time_name = "time" if "time" in da.dims else "valid_time"
+    frames = []
+    matrix = None
+    iso: list[str] = []
+    admin1: list[str] = []
 
-    matrix = build_coverage(
-        level=polygons.level,
-        gdf=polygons.gdf,
-        id_col=polygons.id_col,
-        template2d=da.isel({time_name: 0}),
-        base_dir=coverage_base_dir,
-    )
-    iso, admin1 = _polygon_attributes(polygons, matrix.polygon_ids)
+    for path in paths:
+        da = _raster_from_netcdf(Path(path), variable_code)
+        # Once per file, not once per timestep — the longitude sort is the
+        # expensive half and the layout must match the cached weights exactly.
+        da = normalise_raster(da)
 
-    times = da[time_name].values
-    n_times = len(times)
-    n_poly = matrix.n_polygons
+        # ERA5 time coord may be named "time" or "valid_time".
+        time_name = "time" if "time" in da.dims else "valid_time"
 
-    values = np.empty(n_times * n_poly, dtype="float64")
-    years = np.empty(n_times * n_poly, dtype="int64")
-    months = np.empty(n_times * n_poly, dtype="int64")
+        if matrix is None:
+            matrix = build_coverage(
+                level=polygons.level,
+                gdf=polygons.gdf,
+                id_col=polygons.id_col,
+                template2d=da.isel({time_name: 0}),
+                base_dir=coverage_base_dir,
+            )
+            iso, admin1 = _polygon_attributes(polygons, matrix.polygon_ids)
 
-    for index, t in enumerate(times):
-        ts = pd.Timestamp(t)
-        start = index * n_poly
-        stop = start + n_poly
-        values[start:stop] = matrix.means(da.isel({time_name: index}).values)
-        years[start:stop] = int(ts.year)
-        months[start:stop] = int(ts.month)
+        times = da[time_name].values
+        n_times = len(times)
+        n_poly = matrix.n_polygons
+        size = n_times * n_poly
 
-    da.close()
+        values = np.empty(size, dtype="float64")
+        years = np.empty(size, dtype="int64")
+        months = np.empty(size, dtype="int64")
+        days = np.empty(size, dtype="int64") if daily else None
 
-    # Built column-wise from arrays rather than row-wise from dicts: a daily
-    # variable-year at admin-1 is 1.7M rows, where the per-dict overhead alone
-    # would be several hundred megabytes.
-    return pd.DataFrame(
-        {
+        for index, t in enumerate(times):
+            ts = pd.Timestamp(t)
+            start = index * n_poly
+            stop = start + n_poly
+            values[start:stop] = matrix.means(da.isel({time_name: index}).values)
+            years[start:stop] = int(ts.year)
+            months[start:stop] = int(ts.month)
+            if days is not None:
+                days[start:stop] = int(ts.day)
+
+        da.close()
+
+        # Built column-wise from arrays rather than row-wise from dicts: a
+        # daily variable-year at admin-1 is 1.7M rows, where the per-dict
+        # overhead alone would be several hundred megabytes.
+        columns = {
             "polygon_id": np.tile(np.asarray(matrix.polygon_ids, dtype=object), n_times),
             "iso_a2": np.tile(np.asarray(iso, dtype=object), n_times),
             "admin1_code": np.tile(np.asarray(admin1, dtype=object), n_times),
@@ -275,7 +297,13 @@ def aggregate_variable_year(
             "variable": variable_code,
             "value": values,
         }
-    )
+        if days is not None:
+            columns["day"] = days
+        frames.append(pd.DataFrame(columns))
+
+    if len(frames) == 1:
+        return frames[0]
+    return pd.concat(frames, ignore_index=True)
 
 
 def aggregate_level(

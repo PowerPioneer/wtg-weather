@@ -58,6 +58,46 @@ def download_era5(
     typer.echo(f"wrote {len(paths)} file(s)")
 
 
+@download.command("era5-daily")
+def download_era5_daily(
+    years: Annotated[
+        str, typer.Option("--years", help='Year range, e.g. "2016-2025" or "2020".')
+    ] = "2016-2025",
+    series: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--series",
+            help=(
+                "Daily series stem; may be passed multiple times. "
+                "Defaults to all 7 (t2m_max, t2m_min, t2m_mean, tp_sum, "
+                "si10_mean, d2m_mean, ssrd_sum)."
+            ),
+        ),
+    ] = None,
+    force: Annotated[bool, typer.Option("--force", help="Re-download cache hits.")] = False,
+    verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+) -> None:
+    """Download ERA5 daily statistics (max/min/mean/sum) from the Copernicus CDS.
+
+    One request per (series, year, month) — 840 for the full ten-year set. The
+    dataset is aggregated while the request is served, so this is slow and is
+    meant to be run detached. It resumes: re-running skips every chunk already
+    on disk, so a killed run costs only the chunk it was mid-way through.
+    """
+    _setup_logging(verbose)
+    from wtg_pipeline.sources import era5_daily
+
+    unknown = sorted(set(series or []) - set(era5_daily.DAILY_BY_STEM))
+    if unknown:
+        raise typer.BadParameter(
+            f"unknown series: {', '.join(unknown)}. "
+            f"Known: {', '.join(sorted(era5_daily.DAILY_BY_STEM))}"
+        )
+
+    paths = era5_daily.fetch(years, stems=series, force=force)
+    typer.echo(f"wrote {len(paths)} file(s)")
+
+
 @download.command("boundaries")
 def download_boundaries(
     source: Annotated[
