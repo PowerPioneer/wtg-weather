@@ -537,3 +537,53 @@ def test_a_carve_out_matching_the_country_level_is_not_repeated() -> None:
     assert _region_advisory({"PE-AYA": 2}, "PE-AYA", country_level=2) == {}
     assert _region_advisory({"PE-AYA": 4}, "PE-LIM", country_level=2) == {}
     assert _region_advisory({}, "", country_level=2) == {}
+
+
+def test_the_temperature_envelope_is_published(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The band is free, so it belongs in the static payload.
+
+    It was going to be premium. On a statically generated page that would have
+    meant an authenticated endpoint and a client-side fetch — for a shape drawn
+    behind two lines that are free anyway.
+    """
+    entries, _skipped = _build(monkeypatch)
+    climate = entries["peru"]["climate"]
+
+    assert len(climate["tBandLow"]) == 12
+    assert len(climate["tBandHigh"]) == 12
+
+    for i in range(12):
+        # The envelope must contain both lines, or it is not an envelope.
+        assert climate["tBandLow"][i] <= climate["tMin"][i]
+        assert climate["tBandHigh"][i] >= climate["tMax"][i]
+
+
+def test_the_envelope_edges_come_from_different_series(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Low from the daily *minima*, high from the daily *maxima*.
+
+    Taking both from one series would draw a band around one line rather than
+    around the pair, which is the shape the old chart had and the reason it
+    looked wrong.
+    """
+    entries, _skipped = _build(monkeypatch)
+    climate = entries["peru"]["climate"]
+
+    # The fixture puts p5 at 0.8x and p95 at 1.2x of each series in Kelvin, so
+    # the two edges cannot coincide unless they were read from the same row.
+    assert climate["tBandLow"] != climate["tBandHigh"]
+    span = climate["tBandHigh"][0] - climate["tBandLow"][0]
+    lines = climate["tMax"][0] - climate["tMin"][0]
+    assert span > lines, "the envelope must be wider than the gap between the lines"
+
+
+def test_both_envelope_edges_or_neither(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A half-drawn envelope is worse than none."""
+    entries, _skipped = _build(monkeypatch)
+    for entry in entries.values():
+        climate = entry["climate"]
+        assert ("tBandLow" in climate) == ("tBandHigh" in climate)
+        assert ("wBandLow" in climate) == ("wBandHigh" in climate)

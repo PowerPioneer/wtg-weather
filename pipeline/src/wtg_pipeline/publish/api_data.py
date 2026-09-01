@@ -57,6 +57,13 @@ Absent, because it would have to be invented:
   a premium series in the payload is a premium series in the public HTML. The
   pipeline already treats the tier boundary as a file boundary; this is the
   same boundary drawn on the same reasoning.
+
+  The temperature and wind **envelopes** are *not* on that list. They were
+  going to be, and the tier boundary would have held — but on a statically
+  generated page a premium series needs an authenticated endpoint and a
+  client-side fetch, and the envelope is what makes the two free lines readable
+  rather than a separate thing sold beside them. It is free, and therefore
+  published here.
 * local-language names, currency and official languages. Natural Earth carries
   none of them, and a hand-kept table would drift from the boundary vintage.
 
@@ -178,6 +185,20 @@ class PolygonClimate:
     wet_days: list[float] | None = None
     #: Mean days per month reaching 70 % of possible daylight.
     sunny_days: list[float] | None = None
+    #: The temperature envelope — 5th percentile of daily minima and 95th of
+    #: daily maxima, taken over days pooled across the ten-year window. "How
+    #: cold does a cold night get, how hot does a hot afternoon get."
+    #:
+    #: Free, and therefore in the public payload. It was going to be premium,
+    #: which on a statically generated page would have meant an authenticated
+    #: endpoint and a client-side fetch; making it free is both simpler and a
+    #: better answer, because the envelope is what makes the two lines
+    #: readable rather than a separate thing sold beside them.
+    t_band_low: list[float] | None = None
+    t_band_high: list[float] | None = None
+    #: The same for wind.
+    wind_band_low: list[float] | None = None
+    wind_band_high: list[float] | None = None
 
     @property
     def t(self) -> list[float]:
@@ -247,6 +268,14 @@ def polygon_climate(props: Mapping[str, float]) -> PolygonClimate | None:
         wind=_twelve(props, "w"),
         wet_days=_twelve(props, "wet"),
         sunny_days=_twelve(props, "sunny"),
+        # The envelope's edges come from two different series: the low is the
+        # 5th percentile of daily *minima*, the high the 95th of daily
+        # *maxima*. Taking both from one series would draw a band around one
+        # line rather than around the pair.
+        t_band_low=_twelve(props, "t2m_min_p5"),
+        t_band_high=_twelve(props, "t2m_max_p95"),
+        wind_band_low=_twelve(props, "si10_p5"),
+        wind_band_high=_twelve(props, "si10_p95"),
     )
 
 
@@ -291,6 +320,10 @@ def mean_climate(parts: Sequence[PolygonClimate]) -> PolygonClimate:
         wind=optional(lambda p: p.wind),
         wet_days=optional(lambda p: p.wet_days),
         sunny_days=optional(lambda p: p.sunny_days),
+        t_band_low=optional(lambda p: p.t_band_low),
+        t_band_high=optional(lambda p: p.t_band_high),
+        wind_band_low=optional(lambda p: p.wind_band_low),
+        wind_band_high=optional(lambda p: p.wind_band_high),
     )
 
 
@@ -951,9 +984,11 @@ def build_payloads(
             # `t` is kept as an alias of `tMax` so existing readers keep
             # working; it is the headline temperature now.
             #
-            # The p5/p95 band is deliberately absent: this payload is baked
-            # into static HTML, so anything here is public, and the band is
-            # premium. The web fetches it client-side for entitled users.
+            # The p5/p95 envelope is published here too. It is free, so
+            # being baked into public static HTML is exactly right; the
+            # alternative — premium — would have needed an authenticated
+            # endpoint and a client-side fetch for a shape the chart draws
+            # behind two lines that are free anyway.
             "climate": {
                 "months": list(MONTH_LABELS),
                 "t": climate.t_max,
@@ -978,6 +1013,13 @@ def build_payloads(
             payload["climate"]["wetDays"] = climate.wet_days  # type: ignore[index]
         if climate.sunny_days is not None:
             payload["climate"]["sunnyDays"] = climate.sunny_days  # type: ignore[index]
+        # Both edges or neither: a half-drawn envelope is worse than none.
+        if climate.t_band_low is not None and climate.t_band_high is not None:
+            payload["climate"]["tBandLow"] = climate.t_band_low  # type: ignore[index]
+            payload["climate"]["tBandHigh"] = climate.t_band_high  # type: ignore[index]
+        if climate.wind_band_low is not None and climate.wind_band_high is not None:
+            payload["climate"]["wBandLow"] = climate.wind_band_low  # type: ignore[index]
+            payload["climate"]["wBandHigh"] = climate.wind_band_high  # type: ignore[index]
         if capital is not None:
             payload["capital"] = capital[0]
             if capital[1]:

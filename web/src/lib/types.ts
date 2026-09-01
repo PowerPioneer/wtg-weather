@@ -91,6 +91,20 @@ export type ClimateSeries = {
   wetDays?: Monthly;
   /** Mean days per month reaching 70 % of possible daylight. */
   sunnyDays?: Monthly;
+  /**
+   * The temperature envelope the chart shades behind the two lines: the 5th
+   * percentile of daily minima and the 95th of daily maxima, over days pooled
+   * across the ten-year window. "How cold does a cold night get, how hot does
+   * a hot afternoon get."
+   *
+   * Free, and so present in the static payload. Both or neither — a
+   * half-drawn envelope is worse than none.
+   */
+  tBandLow?: Monthly;
+  tBandHigh?: Monthly;
+  /** The same for wind. */
+  wBandLow?: Monthly;
+  wBandHigh?: Monthly;
   /** Absent where the polygon carries no wind series. */
   w?: Monthly;
 };

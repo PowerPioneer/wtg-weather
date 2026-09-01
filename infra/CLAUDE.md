@@ -104,22 +104,45 @@ means is worse than either state alone.
 
 ### Capacity first
 
-The 100 GB data volume is **Local NVMe** and cannot be resized. Attach a
-Block Storage volume and bind-mount it over the daily-download directory only,
-so nothing existing has to move:
+Two volumes, and only one of them can grow. `vol-distracted-joliot` is **Local
+NVMe**, 100 GB, holds `pipeline/data` *and* Docker's data root, and is fixed by
+the instance type. `wtg-weather-v2-system` is **Block Storage** and is the root
+disk — that one resizes, and was taken from 10 GB to 110 GB on 2026-09-01.
+
+Growing the Scaleway volume does **not** grow the filesystem. Until this runs,
+`df -h /` still reports the old size:
 
 ```bash
-LABEL=wtg-era5  /mnt/era5  ext4  defaults,noatime  0  2
-/mnt/era5  /opt/wtg-weather/pipeline/data/raw/era5/daily  none  bind,x-systemd.requires-mounts-for=/mnt/era5  0  0
+lsblk                       # confirm the device and partition number first
+growpart /dev/sda 1
+resize2fs /dev/sda1
+df -h /
 ```
 
-The `x-systemd.requires-mounts-for` is not decoration: without it the bind can
-run before its source is mounted at boot, leaving an empty directory that looks
-fine and silently is not.
+Then put the raw ERA5 downloads on the newly-large root and bind them into the
+tree, so nothing existing has to move:
+
+```bash
+mkdir -p /srv/era5 /opt/wtg-weather/pipeline/data/raw/era5/daily
+```
+
+```bash
+/srv/era5  /opt/wtg-weather/pipeline/data/raw/era5/daily  none  bind  0 0
+```
+
+This arrangement is better than the separate volume it replaced: Docker's data
+root is on the *other* disk, so filling `/` with ERA5 can no longer take the
+site down.
+
+**The intermediates still land on the Local NVMe**, and that is the disk with
+no headroom. Daily admin-1 aggregation adds roughly 4 GB of part files plus a
+~5 GB combined Parquet against ~13 GB free. So the swapfile reclaim is not
+optional:
 
 The 33 GB swapfile was sized for the admin-2 memory cliff that commit
 `f99e881` fixed by streaming. Halve it; do not remove it — `build_feature_
 collection` still holds 49k features and `json.dumps` a ~3.9 GB string.
+Check `df -h /opt/wtg-weather/pipeline/data` before starting aggregation.
 
 ### Order
 

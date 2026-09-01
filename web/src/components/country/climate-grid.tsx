@@ -35,21 +35,37 @@ export function ClimateGrid({ country }: { country: CountryData }) {
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {/*
-            Two lines, not a band. tMin/tMax used to be piped in as the
-            envelope, which is what made the chart look like it was shading a
-            daily range while actually shading ten annual means. They are the
-            mean daily maximum and minimum now, and the envelope is premium —
-            fetched client-side, because this payload is baked into static HTML.
+            Two lines and an envelope behind them. tMin/tMax used to be piped
+            in *as* the band, which is what made the chart look like it was
+            shading a daily range while actually shading ten annual means.
+            They are the mean daily maximum and minimum now, and the envelope
+            is a separate, wider thing: the day-to-day spread within the month.
           */}
           <ChartFromMonthly
             kind="temp"
             values={c.tMax}
             low={c.tMin}
+            bands={
+              c.tBandLow && c.tBandHigh
+                ? { p5: c.tBandLow, p95: c.tBandHigh }
+                : undefined
+            }
             context={country.name}
           />
           <ChartFromMonthly kind="rain" values={c.r} context={country.name} />
           <ChartFromMonthly kind="sun" values={c.s} context={country.name} />
-          {c.w ? <ChartFromMonthly kind="wind" values={c.w} context={country.name} /> : null}
+          {c.w ? (
+            <ChartFromMonthly
+              kind="wind"
+              values={c.w}
+              bands={
+                c.wBandLow && c.wBandHigh
+                  ? { p5: c.wBandLow, p95: c.wBandHigh }
+                  : undefined
+              }
+              context={country.name}
+            />
+          ) : null}
         </div>
         <div className="mt-6">
           <div className="mb-3 flex items-baseline justify-between">

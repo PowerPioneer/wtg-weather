@@ -59,10 +59,12 @@ describe("ClimateChart — determinism", () => {
       <ClimateChart kind="temp" months={toMonths(FIXTURE.temp)} />,
     );
 
+    // The envelope is also a <path stroke="none">, so filter it out rather
+    // than let a future fixture that adds a band break this confusingly.
     const strokes = (root: Element) =>
-      [...root.querySelectorAll("path[stroke]")].map((p) =>
-        p.getAttribute("stroke"),
-      );
+      [...root.querySelectorAll("path[stroke]")]
+        .map((p) => p.getAttribute("stroke"))
+        .filter((s) => s !== "none");
 
     // Red for the daytime high, blue for the overnight low.
     expect(strokes(two)).toEqual(["#0072B2", "#D14A2E"]);
