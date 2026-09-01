@@ -32,6 +32,7 @@ from wtg_pipeline.processing.country_rules import (
     admin1_contributes,
     is_suppressed,
 )
+from wtg_pipeline.processing.coverage import build_coverage, normalise_raster
 
 log = logging.getLogger(__name__)
 
@@ -74,14 +75,12 @@ def _require_xarray():
     return xr
 
 
-def _require_exactextract():
+def _require_numpy():
     try:
-        from exactextract import exact_extract  # type: ignore[import-not-found]
+        import numpy as np  # type: ignore[import-not-found]
     except ImportError as exc:
-        raise RuntimeError(
-            "exactextract required; run `uv sync` in pipeline/."
-        ) from exc
-    return exact_extract
+        raise RuntimeError("numpy required; run `uv sync` in pipeline/.") from exc
+    return np
 
 
 def _require_pandas():
@@ -169,66 +168,22 @@ def _raster_from_netcdf(nc_path: Path, variable_code: str):
     return da
 
 
-def _mean_per_polygon(da, gdf, id_col: str) -> dict[str, float]:
-    """Area-weighted mean of a 2D DataArray per polygon.
+def _polygon_attributes(
+    polygons: PolygonFrame, order: tuple[str, ...]
+) -> tuple[list[str], list[str]]:
+    """ISO-2 and admin-1 code per polygon, aligned to ``order``.
 
-    Uses exactextract for fractional cell coverage. The DataArray must have
-    ``latitude`` and ``longitude`` dims and no time dim. Longitude is
-    normalised to [-180, 180] (ERA5 ships 0..360) and the rio CRS is set to
-    EPSG:4326 so exactextract can locate cells geographically.
+    Resolved once per file rather than per polygon per timestep — scanning the
+    frame inside the loop is quadratic, which is unnoticeable on a few dozen
+    polygons and ruinous on the ~4,600 the 10m admin-1 layer carries, let alone
+    49k at admin-2.
     """
-    exact_extract = _require_exactextract()
-    import rioxarray  # noqa: F401  — registers .rio accessor
-
-    rast = da
-    if "longitude" in rast.dims and float(rast["longitude"].max()) > 180.0:
-        rast = rast.assign_coords(
-            longitude=(((rast["longitude"] + 180) % 360) - 180)
-        ).sortby("longitude")
-    rast = rast.rename({"longitude": "x", "latitude": "y"})
-    rast = rast.rio.write_crs("EPSG:4326", inplace=False)
-
-    results = exact_extract(
-        rast=rast,
-        vec=gdf,
-        ops=["mean"],
-        include_cols=[id_col],
-        output="pandas",
-    )
-    # exactextract returns a DataFrame with columns [id_col, "mean"].
-    out: dict[str, float] = {}
-    for row in results.itertuples(index=False):
-        value = getattr(row, "mean")
-        pid = getattr(row, id_col)
-        out[str(pid)] = float(value) if value is not None else float("nan")
-    return out
-
-
-def aggregate_variable_year(
-    nc_path: Path,
-    variable_code: str,
-    polygons: PolygonFrame,
-) -> "object":
-    """Aggregate one (variable, year) file into per-polygon monthly means.
-
-    Returns a pandas DataFrame with columns
-    ``[polygon_id, iso_a2, admin1_code, year, month, variable, value]``.
-    """
-    pd = _require_pandas()
-    da = _raster_from_netcdf(nc_path, variable_code)
-
-    # ERA5 time coord may be named "time" or "valid_time".
-    time_name = "time" if "time" in da.dims else "valid_time"
-    rows: list[dict[str, object]] = []
     gdf = polygons.gdf
     iso_col = polygons.iso_a2_col
     id_col = polygons.id_col
     a1_col = polygons.admin1_code_col
-
-    # Resolve each polygon's attributes once. Scanning the frame per polygon
-    # per month is quadratic, which is unnoticeable on a few dozen polygons
-    # and ruinous on the ~4,600 the 10m admin-1 layer carries.
     has_admin1_col = bool(a1_col) and a1_col in gdf.columns
+
     attributes: dict[str, tuple[str, str]] = {}
     for attr_row in gdf.itertuples(index=False):
         pid = str(getattr(attr_row, id_col))
@@ -246,28 +201,81 @@ def aggregate_variable_year(
         )
         attributes[pid] = (iso_a2, admin1_code)
 
+    iso = [attributes.get(pid, ("", ""))[0] for pid in order]
+    admin1 = [attributes.get(pid, ("", ""))[1] for pid in order]
+    return iso, admin1
+
+
+def aggregate_variable_year(
+    nc_path: Path,
+    variable_code: str,
+    polygons: PolygonFrame,
+    *,
+    coverage_base_dir: Path | None = None,
+) -> "object":
+    """Aggregate one (variable, year) file into per-polygon monthly means.
+
+    Returns a pandas DataFrame with columns
+    ``[polygon_id, iso_a2, admin1_code, year, month, variable, value]``.
+
+    The polygon/raster overlap is computed **once** per (level, grid) and
+    cached — see :mod:`wtg_pipeline.processing.coverage`. Each timestep is then
+    a pair of ``bincount`` calls rather than a fresh exactextract pass, which
+    is what makes daily statistics tractable at all: at one geometry pass per
+    timestep, 25,550 daily rasters would be weeks of CPU.
+    """
+    pd = _require_pandas()
+    np = _require_numpy()
+
+    da = _raster_from_netcdf(nc_path, variable_code)
+    # Once per file, not once per timestep — the longitude sort is the
+    # expensive half and the layout must match the cached weights exactly.
+    da = normalise_raster(da)
+
+    # ERA5 time coord may be named "time" or "valid_time".
+    time_name = "time" if "time" in da.dims else "valid_time"
+
+    matrix = build_coverage(
+        level=polygons.level,
+        gdf=polygons.gdf,
+        id_col=polygons.id_col,
+        template2d=da.isel({time_name: 0}),
+        base_dir=coverage_base_dir,
+    )
+    iso, admin1 = _polygon_attributes(polygons, matrix.polygon_ids)
+
     times = da[time_name].values
-    for t in times:
+    n_times = len(times)
+    n_poly = matrix.n_polygons
+
+    values = np.empty(n_times * n_poly, dtype="float64")
+    years = np.empty(n_times * n_poly, dtype="int64")
+    months = np.empty(n_times * n_poly, dtype="int64")
+
+    for index, t in enumerate(times):
         ts = pd.Timestamp(t)
-        year = int(ts.year)
-        month = int(ts.month)
-        slice2d = da.sel({time_name: t})
-        means = _mean_per_polygon(slice2d, gdf, id_col)
-        for pid, value in means.items():
-            iso_a2, admin1_code = attributes.get(pid, ("", ""))
-            rows.append(
-                {
-                    "polygon_id": pid,
-                    "iso_a2": iso_a2,
-                    "admin1_code": admin1_code,
-                    "year": year,
-                    "month": month,
-                    "variable": variable_code,
-                    "value": value,
-                }
-            )
+        start = index * n_poly
+        stop = start + n_poly
+        values[start:stop] = matrix.means(da.isel({time_name: index}).values)
+        years[start:stop] = int(ts.year)
+        months[start:stop] = int(ts.month)
+
     da.close()
-    return pd.DataFrame(rows)
+
+    # Built column-wise from arrays rather than row-wise from dicts: a daily
+    # variable-year at admin-1 is 1.7M rows, where the per-dict overhead alone
+    # would be several hundred megabytes.
+    return pd.DataFrame(
+        {
+            "polygon_id": np.tile(np.asarray(matrix.polygon_ids, dtype=object), n_times),
+            "iso_a2": np.tile(np.asarray(iso, dtype=object), n_times),
+            "admin1_code": np.tile(np.asarray(admin1, dtype=object), n_times),
+            "year": years,
+            "month": months,
+            "variable": variable_code,
+            "value": values,
+        }
+    )
 
 
 def aggregate_level(

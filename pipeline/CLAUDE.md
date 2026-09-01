@@ -100,6 +100,24 @@ uv run wtg --help
   snapshot beats no advisories. See `infra/CLAUDE.md` § "US advisory scrape".
 - Aggregation uses `exactextract` or `rasterstats` — NEVER write a manual
   point-in-polygon loop; it will be too slow.
+- The polygon/raster overlap is computed **once** per `(level, grid)` and
+  cached by `processing/coverage.py`, because it depends only on the polygon
+  set and the raster grid — neither of which moves during a run. Each timestep
+  is then two `np.bincount` calls. Aggregation used to run a full exactextract
+  pass per timestep, which is 328× slower per raster and makes daily
+  statistics (25,550 rasters instead of 1,080) a multi-week job.
+  `CoverageMatrix.means` **must** keep reproducing exactextract's `mean`,
+  which ignores masked cells and renormalises the weights over the survivors:
+  ERA5 is NaN over ocean, so a plain weighted sum poisons a polygon to NaN and
+  a zero-filled one drags every coastal polygon toward zero — plausible-looking
+  and wrong. `test_coverage.py` pins it against `exact_extract` itself, and
+  `test_aggregate_equivalence.py` pins the whole path against the per-timestep
+  algorithm it replaced. Neither is optional.
+- The coverage cache does **not** need `--force` to stay honest: its key hashes
+  the polygon identities *and* their geometries alongside the grid coordinates,
+  so a boundary-vintage change simply misses the cache. Every raster reduced
+  against it must first go through `coverage.normalise_raster`, which is what
+  puts ERA5's 0..360 longitude on the layout the weights were built for.
 - Tippecanoe flags for PMTiles:
   - free: `-Z0 -z5 --no-tiny-polygon-reduction --maximum-tile-bytes=2000000
     --coalesce-smallest-as-needed`
