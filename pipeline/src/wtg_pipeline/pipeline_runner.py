@@ -12,7 +12,7 @@ import os
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Mapping, Sequence
 
 from wtg_pipeline.config import (
     advisory_stale_after_days,
@@ -34,7 +34,6 @@ from wtg_pipeline.processing.aggregate import (
 from wtg_pipeline.processing.percentiles import build_percentiles, percentiles_path
 from wtg_pipeline.processing.sunshine import (
     REFERENCE_CITIES,
-    sunshine_hours_from_ssrd,
 )
 from wtg_pipeline.sources import geoboundaries
 from wtg_pipeline.sources.era5 import ERA5_VARIABLES, parse_year_range
@@ -551,73 +550,142 @@ def run_percentiles(*, level: str, force: bool) -> list[Path]:
     return outputs
 
 
-def validate_sunshine(*, tolerance_hours: float = 1.0) -> bool:
-    """Validate sunshine derivation against the five reference cities.
+def validate_sunshine(
+    *,
+    tolerance_hours: float = 1.0,
+    observed_ssrd: "Mapping[str, Sequence[float]] | None" = None,
+) -> bool:
+    """Check the sunshine model, and say honestly what has been checked.
 
-    Because we don't want to rely on a real ERA5 download here, this runs
-    an internal self-test: apply the derivation to a synthetic "typical
-    clear-sky" SSRD tuned per latitude and confirm that the annual-mean
-    output lands within the tolerance of published norms. For a full
-    integration check, swap this to load real pipeline outputs.
+    Two levels, because they are not the same claim:
+
+    * **Physical invariants** always run, need no data, and are real. Sunshine
+      can never exceed the day length or go negative; it must be monotonic in
+      SSRD; a fully overcast sky (Kt ~ 0.25) must yield essentially nothing;
+      a clear sky (Kt ~ 0.75) must yield most of the day. These catch the
+      class of bug that matters — a broken derivation — and they fail loudly.
+
+    * **Accuracy against the reference cities** runs only when real monthly
+      SSRD is supplied in ``observed_ssrd`` (city name -> 12 monthly means, in
+      J/m2/day). Without it the function reports that accuracy is *unvalidated*
+      rather than pretending otherwise.
+
+    That distinction is the point of this rewrite. The previous version built
+    its own SSRD as ``clear_sky x ratio`` and then divided it back out by
+    ``clear_sky``, so the attenuation coefficient cancelled and the check
+    passed for any value of it. It reported a calibration that had never been
+    performed. See the module docstring in ``processing/sunshine.py``.
     """
+    from wtg_pipeline.processing.sunshine import (
+        ANGSTROM_PRESCOTT_A,
+        ANGSTROM_PRESCOTT_B,
+        DAYS_PER_MONTH_MID,
+        clearness_index,
+        day_length_hours,
+        extraterrestrial_daily_j_m2,
+        sunshine_hours_for_day,
+    )
+
     ok = True
-    for city in REFERENCE_CITIES:
-        hours_year = 0.0
-        for month in range(1, 13):
-            ssrd = _synthetic_monthly_ssrd(city.latitude, month)
-            hours_year += sunshine_hours_from_ssrd(
-                ssrd, latitude_deg=city.latitude, month=month
+
+    # ── Physical invariants ──────────────────────────────────────────
+    for latitude in (-75.0, -45.0, -10.0, 0.0, 10.0, 45.0, 75.0):
+        for doy in (15, 105, 196, 288):
+            daylight = day_length_hours(latitude, doy)
+            toa = extraterrestrial_daily_j_m2(latitude, doy)
+
+            previous = -1.0
+            for fraction in (0.0, 0.1, 0.25, 0.4, 0.6, 0.75, 0.9, 1.0):
+                hours = sunshine_hours_for_day(
+                    toa * fraction, latitude_deg=latitude, day_of_year=doy
+                )
+                if not (0.0 <= hours <= daylight + 1e-9):
+                    log.error(
+                        "SUNSHINE_INVARIANT lat=%.0f doy=%d Kt=%.2f -> %.2f h "
+                        "outside [0, %.2f]", latitude, doy, fraction, hours, daylight,
+                    )
+                    ok = False
+                if hours < previous - 1e-9:
+                    log.error(
+                        "SUNSHINE_INVARIANT not monotonic in SSRD at lat=%.0f doy=%d",
+                        latitude, doy,
+                    )
+                    ok = False
+                previous = hours
+
+            if daylight <= 0:
+                continue
+
+            overcast = sunshine_hours_for_day(
+                toa * ANGSTROM_PRESCOTT_A, latitude_deg=latitude, day_of_year=doy
             )
-        mean_hours = hours_year / 12
+            if overcast > 1e-9:
+                log.error(
+                    "SUNSHINE_INVARIANT overcast sky (Kt=%.2f) yields %.2f h at "
+                    "lat=%.0f doy=%d; the Angstrom-Prescott intercept is not "
+                    "being applied", ANGSTROM_PRESCOTT_A, overcast, latitude, doy,
+                )
+                ok = False
+
+            clear_kt = min(1.0, ANGSTROM_PRESCOTT_A + ANGSTROM_PRESCOTT_B)
+            clear = sunshine_hours_for_day(
+                toa * clear_kt, latitude_deg=latitude, day_of_year=doy
+            )
+            if clear < daylight - 1e-6:
+                log.error(
+                    "SUNSHINE_INVARIANT clear sky (Kt=%.2f) yields %.2f h of a "
+                    "%.2f h day at lat=%.0f doy=%d",
+                    clear_kt, clear, daylight, latitude, doy,
+                )
+                ok = False
+
+    if ok:
+        log.info("sunshine invariants OK (bounds, monotonicity, overcast, clear-sky)")
+
+    # ── Accuracy, only if there is something real to check against ───
+    if observed_ssrd is None:
+        log.warning(
+            "SUNSHINE_UNCALIBRATED accuracy against %d reference cities was NOT "
+            "checked: no observed SSRD supplied. Angstrom-Prescott is running on "
+            "the literature defaults a=%.2f b=%.2f, which are known to fit poorly "
+            "at high latitudes. Run scripts/calibrate_sunshine.py to fit them.",
+            len(REFERENCE_CITIES), ANGSTROM_PRESCOTT_A, ANGSTROM_PRESCOTT_B,
+        )
+        return ok
+
+    for city in REFERENCE_CITIES:
+        monthly = observed_ssrd.get(city.name)
+        if monthly is None or len(monthly) != 12:
+            log.warning("no observed SSRD for %s; skipping accuracy check", city.name)
+            continue
+        hours = [
+            sunshine_hours_for_day(
+                monthly[m - 1],
+                latitude_deg=city.latitude,
+                day_of_year=DAYS_PER_MONTH_MID[m - 1],
+            )
+            for m in range(1, 13)
+        ]
+        mean_hours = sum(hours) / 12
         delta = mean_hours - city.expected_annual_mean_hours_per_day
+        kt = [
+            clearness_index(
+                monthly[m - 1],
+                latitude_deg=city.latitude,
+                day_of_year=DAYS_PER_MONTH_MID[m - 1],
+            )
+            for m in range(1, 13)
+        ]
         log.info(
-            "%s: lat=%.2f expected=%.1f derived=%.2f Δ=%+.2f",
-            city.name,
-            city.latitude,
-            city.expected_annual_mean_hours_per_day,
-            mean_hours,
-            delta,
+            "%s: lat=%.2f Kt=%.2f expected=%.1f derived=%.2f d=%+.2f",
+            city.name, city.latitude, sum(kt) / 12,
+            city.expected_annual_mean_hours_per_day, mean_hours, delta,
         )
         if abs(delta) > tolerance_hours:
             ok = False
-            log.error("  %s outside ±%.1f h/day tolerance", city.name, tolerance_hours)
+            log.error("  %s outside +/-%.1f h/day tolerance", city.name, tolerance_hours)
+
     return ok
-
-
-def _synthetic_monthly_ssrd(latitude_deg: float, month: int) -> float:
-    """Plausible SSRD (J/m²/day) for a city known to have real sunshine.
-
-    Used only by :func:`validate_sunshine` so that the pipeline sanity
-    check doesn't depend on an actual CDS download. The coefficients were
-    chosen so that annual-mean derived sunshine matches published norms.
-    """
-    from wtg_pipeline.processing.sunshine import (
-        DAYS_PER_MONTH_MID,
-        clear_sky_daylight_irradiance,
-        day_length_hours,
-    )
-
-    doy = DAYS_PER_MONTH_MID[month - 1]
-    daylight_h = day_length_hours(latitude_deg, doy)
-    if daylight_h <= 0:
-        return 0.0
-    clear_sky_w = clear_sky_daylight_irradiance(latitude_deg, doy)
-    # Empirical "actual / clear-sky" ratio per city, broadly matches climate.
-    ratio_by_latitude = {
-        "Cusco": 0.56,
-        "London": 0.38,
-        "Phoenix": 0.85,
-        "Singapore": 0.44,
-        "Cairo": 0.77,
-    }
-    # Pick the closest-latitude reference city.
-    from wtg_pipeline.processing.sunshine import REFERENCE_CITIES
-
-    nearest = min(REFERENCE_CITIES, key=lambda c: abs(c.latitude - latitude_deg))
-    ratio = ratio_by_latitude.get(nearest.name, 0.55)
-    ssrd_daytime_w = clear_sky_w * ratio
-    return ssrd_daytime_w * (daylight_h * 3600.0)
-
 
 def run_build_geojson(*, tier: str, force: bool) -> list[Path]:
     try:

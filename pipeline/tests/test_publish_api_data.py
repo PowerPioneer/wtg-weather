@@ -127,14 +127,14 @@ def _build(monkeypatch: pytest.MonkeyPatch, **overrides):
     )
 
     country_perc = pd.DataFrame(
-        _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=13_000_000.0)
-        + _percentile_rows("ISL", kelvin=278.15, metres_per_day=0.003, ssrd=4_000_000.0)
+        _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=22_000_000.0)
+        + _percentile_rows("ISL", kelvin=278.15, metres_per_day=0.003, ssrd=8_000_000.0)
     )
     admin1_perc = pd.DataFrame(
-        _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=12_000_000.0)
-        + _percentile_rows("PER-2", kelvin=299.15, metres_per_day=0.008, ssrd=9_000_000.0)
-        + _percentile_rows("ARG-1", kelvin=290.15, metres_per_day=0.0005, ssrd=12_500_000.0)
-        + _percentile_rows("ARG-2", kelvin=294.15, metres_per_day=0.001, ssrd=12_000_000.0)
+        _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=21_000_000.0)
+        + _percentile_rows("PER-2", kelvin=299.15, metres_per_day=0.008, ssrd=16_000_000.0)
+        + _percentile_rows("ARG-1", kelvin=290.15, metres_per_day=0.0005, ssrd=21_500_000.0)
+        + _percentile_rows("ARG-2", kelvin=294.15, metres_per_day=0.001, ssrd=21_000_000.0)
     )
 
     kwargs = {
@@ -209,10 +209,10 @@ def test_country_with_no_series_at_all_is_skipped(
     entries, skipped = _build(
         monkeypatch,
         country_percentiles=pd.DataFrame(
-            _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=13_000_000.0)
+            _percentile_rows("PER", kelvin=295.15, metres_per_day=0.001, ssrd=22_000_000.0)
         ),
         admin1_percentiles=pd.DataFrame(
-            _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=12_000_000.0)
+            _percentile_rows("PER-1", kelvin=292.15, metres_per_day=0.0015, ssrd=21_000_000.0)
         ),
     )
     # Iceland lost its country row and has no regions to fall back on. It must
@@ -304,7 +304,12 @@ def test_generated_prose_reports_the_series_it_was_built_from(
     # These fixtures are flat across the year, which is the case that used to
     # produce "from 22 °C in January to 22 °C in January".
     assert "holds near 22 °C all year" in peru["summary"]
-    assert peru["summary"].count("January") <= 1
+    # Guard the degenerate phrasing itself rather than counting month names.
+    # A month may legitimately be named once per fact — January is both the
+    # wettest month and one of the strongest here — so a bare count also fires
+    # on correct prose, which it did once the sunshine model stopped
+    # understating how many months clear the preference threshold.
+    assert "in January to" not in peru["summary"]
     assert set(peru["monthNotes"]) == set(api_data.MONTH_LABELS)
     assert "22 °C" in peru["monthNotes"]["Jan"]
     assert len(peru["bestMonths"]) == 3

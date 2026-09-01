@@ -27,8 +27,15 @@ from wtg_pipeline.tiles.build_geojson import (
 pd = pytest.importorskip("pandas")
 
 # SSRD for a bright-but-not-cloudless equatorial month, in J/m²/day.
-BRIGHT_SSRD = 13_000_000.0
-# Same, for a dim high-latitude winter month.
+#
+# 22 MJ is a clearness index of ~0.63 at the equator, which is what a sunny
+# tropical day actually delivers, and derives to ~9.1 h of sunshine. This used
+# to be 13 MJ — Kt ≈ 0.37, which is an *overcast* tropical day. It read as
+# bright only because the pre-Ångström–Prescott model had no diffuse-radiation
+# intercept and so reported a dull sky as a third sunny.
+BRIGHT_SSRD = 22_000_000.0
+# Same, for a dim high-latitude winter month: below the diffuse floor, so no
+# sunshine at all.
 DIM_SSRD = 2_000_000.0
 
 
