@@ -105,6 +105,11 @@ def aggregated_path(level: Level, base_dir: Path | None = None) -> Path:
     return ensure_dir(root) / f"{level}.parquet"
 
 
+def latitudes_path(level: Level, base_dir: Path | None = None) -> Path:
+    """Sidecar written next to the aggregate; read by the daily percentiles."""
+    return aggregated_path(level, base_dir=base_dir).with_name(f"{level}_latitudes.json")
+
+
 def parts_dir(level: Level, base_dir: Path | None = None) -> Path:
     """Directory holding one Parquet part per (variable, year).
 
@@ -166,6 +171,56 @@ def _raster_from_netcdf(nc_path: Path, variable_code: str):
             )
         da = ds[data_vars[0]]
     return da
+
+
+def representative_latitude(geometry: object) -> float:
+    """Latitude of a point guaranteed to lie inside the polygon.
+
+    Feeds the sunshine derivation, which is latitude-dependent. Falls back to
+    the equator if the geometry cannot produce one — that biases only sunshine
+    hours, and only for a polygon that is already malformed.
+
+    Lives here rather than in ``tiles/build_geojson`` because two stages need
+    it now: the GeoJSON build converts SSRD percentiles with it, and the daily
+    percentile stage derives per-day sunshine with it. Having one copy is what
+    stops those two disagreeing about where a polygon is.
+    """
+    for accessor in ("representative_point", "centroid"):
+        try:
+            point = getattr(geometry, accessor)
+            resolved = point() if callable(point) else point
+            return float(resolved.y)
+        except (AttributeError, TypeError, ValueError):
+            continue
+    return 0.0
+
+
+def write_polygon_latitudes(
+    polygons: PolygonFrame, path: Path
+) -> dict[str, float]:
+    """Persist ``polygon_id -> representative latitude`` beside the aggregate.
+
+    The daily percentile stage needs latitude to derive sunshine and count
+    sunny days, and it must not re-read the boundary layers to get it:
+    ``_load_boundary_frames`` is deliberately lazy about admin-2 because that
+    read is slow and can fail on its own, and paying for it twice would put a
+    free-tier run at the mercy of a file it never uses.
+    """
+    import json
+
+    gdf = polygons.gdf
+    id_col = polygons.id_col
+    latitudes: dict[str, float] = {}
+    for row in gdf.itertuples(index=False):
+        pid = str(getattr(row, id_col))
+        latitudes[pid] = representative_latitude(getattr(row, "geometry", None))
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps(latitudes), encoding="utf-8")
+    tmp.replace(path)
+    log.info("wrote %s (%d polygons)", path.name, len(latitudes))
+    return latitudes
 
 
 def _polygon_attributes(
@@ -381,6 +436,7 @@ def aggregate_level(
         raise RuntimeError(f"no NetCDF inputs matched for level={level!r}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    write_polygon_latitudes(polygons, latitudes_path(level, base_dir=base_dir))
     rows = combine_parts(written, out_path)
     log.info("wrote %s (%d rows from %d parts)", out_path, rows, len(written))
     shutil.rmtree(parts, ignore_errors=True)

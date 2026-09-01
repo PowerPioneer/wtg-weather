@@ -64,6 +64,7 @@ from wtg_pipeline.processing.scoring import (
     DEFAULT_PREFERENCES,
     polygon_score,
 )
+from wtg_pipeline.processing.aggregate import representative_latitude
 from wtg_pipeline.processing.sunshine import sunshine_hours_from_ssrd
 from wtg_pipeline.processing.units import (
     heat_index_c,
@@ -229,23 +230,6 @@ def _require_pandas_and_gpd():
 def _score_row(values_by_var: dict[str, float]) -> int:
     # Cast to the right key alias the scoring module expects.
     return polygon_score(values_by_var, DEFAULT_PREFERENCES)  # type: ignore[arg-type]
-
-
-def representative_latitude(geometry: object) -> float:
-    """Latitude of a point guaranteed to lie inside the polygon.
-
-    Feeds the sunshine derivation, which is latitude-dependent. Falls back
-    to the equator if the geometry cannot produce one — that biases only
-    sunshine hours, and only for a polygon that is already malformed.
-    """
-    for accessor in ("representative_point", "centroid"):
-        try:
-            point = getattr(geometry, accessor)
-            resolved = point() if callable(point) else point
-            return float(resolved.y)
-        except (AttributeError, TypeError, ValueError):
-            continue
-    return 0.0
 
 
 def _emitted_variable(source_variable: str) -> str:

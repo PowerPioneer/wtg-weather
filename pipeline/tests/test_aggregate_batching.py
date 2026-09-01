@@ -50,10 +50,34 @@ def _rows(variable: str, year: int, polygons: int = 2):
     )
 
 
+class _StubGeometry:
+    """Just enough shapely surface for `representative_latitude`."""
+
+    def __init__(self, latitude: float):
+        self._latitude = latitude
+
+    def representative_point(self):
+        return type("_Point", (), {"y": self._latitude})()
+
+
 class _StubPolygons:
-    """Stands in for a PolygonFrame; aggregation is faked out per file."""
+    """Stands in for a PolygonFrame; aggregation is faked out per file.
+
+    It still needs a frame, because `aggregate_level` writes the latitude
+    sidecar the daily percentile stage reads to derive sunshine and count
+    sunny days. Faking the aggregation does not fake that away.
+    """
 
     level = "admin2"
+    id_col = "polygon_id"
+
+    def __init__(self):
+        self.gdf = pd.DataFrame(
+            {
+                "polygon_id": ["p0", "p1"],
+                "geometry": [_StubGeometry(-12.0), _StubGeometry(-13.5)],
+            }
+        )
 
 
 def _fake_aggregate(monkeypatch, calls: list[str]):
