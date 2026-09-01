@@ -141,11 +141,21 @@ export function StepPreferences({
           <Card tone="paper" padding="none" bordered elevated={false}>
             <PreferenceRow
               icon={<ThermIcon />}
-              label="Temperature"
-              sub="Daytime mean, in the range you enjoy"
+              label="Daytime high"
+              sub="How warm you like the afternoons"
               value={formatTemperatureRange(
-                DEFAULT_PREFERENCES.tempMin,
-                DEFAULT_PREFERENCES.tempMax,
+                DEFAULT_PREFERENCES.dayMin,
+                DEFAULT_PREFERENCES.dayMax,
+                unit,
+              )}
+            />
+            <PreferenceRow
+              icon={<ThermIcon />}
+              label="Overnight low"
+              sub="How far you are happy for it to cool down"
+              value={formatTemperatureRange(
+                DEFAULT_PREFERENCES.nightMin,
+                DEFAULT_PREFERENCES.nightMax,
                 unit,
               )}
             />

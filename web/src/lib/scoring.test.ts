@@ -90,25 +90,57 @@ describe("preference scoring — parity with the pipeline", () => {
 
     const python = [
       ...block![1].matchAll(
-        /VariablePreference\(\s*"(\w+)",\s*lo=([-\d.]+),\s*hi=([-\d.]+),\s*buffer=([-\d.]+)\s*\)/g,
+        /VariablePreference\(\s*"(\w+)",\s*lo=([-\d.]+),\s*hi=([-\d.]+),\s*buffer=([-\d.]+)(?:,\s*concern="(\w+)")?\s*\)/g,
       ),
     ].map((m) => ({
       variable: m[1],
       lo: Number(m[2]),
       hi: Number(m[3]),
       buffer: Number(m[4]),
+      concern: m[5],
     }));
 
-    expect(python).toHaveLength(3);
+    // Four variables over three concerns: temperature is a day/night pair.
+    expect(python).toHaveLength(4);
+
+    const ALIAS: Record<string, string> = {
+      t2m_max: "t",
+      t2m_min: "tmin",
+      tp: "r",
+      sun_hours: "s",
+    };
     expect(preferenceRanges(DEFAULT_PREFERENCES)).toEqual(
       python.map((p) => ({
-        alias: { t2m: "t", tp: "r", sun_hours: "s" }[p.variable],
+        alias: ALIAS[p.variable],
         variable: p.variable,
+        // Python leaves `concern` off where it defaults to the variable name.
+        concern: p.concern ?? p.variable,
         lo: p.lo,
         hi: p.hi,
         buffer: p.buffer,
       })),
     );
+  });
+
+  it("groups the same variables into the same concerns as the pipeline", () => {
+    // The count of *concerns* is what the bucket thresholds are calibrated
+    // against, so a split on one side and not the other silently changes what
+    // "one variable outside buffer" means and loosens every threshold.
+    const source = pipelineSource("processing/scoring.py");
+    const block = source.match(
+      /DEFAULT_PREFERENCES:\s*tuple\[VariablePreference,\s*\.\.\.\]\s*=\s*\(([\s\S]*?)\n\)/,
+    );
+    const pythonConcerns = new Set(
+      [
+        ...block![1].matchAll(
+          /VariablePreference\(\s*"(\w+)",[^)]*?(?:concern="(\w+)")?\s*\)/g,
+        ),
+      ].map((m) => m[2] ?? m[1]),
+    );
+    const tsConcerns = new Set(preferenceRanges().map((r) => r.concern));
+
+    expect(tsConcerns.size).toBe(pythonConcerns.size);
+    expect(tsConcerns.size).toBe(3);
   });
 
   it("scores exactly the variables the pipeline scores", () => {
@@ -136,30 +168,49 @@ describe("preference scoring — parity with the pipeline", () => {
   });
 
   it("reproduces the pipeline's bucket rule", () => {
-    // 3 — everything inside its range.
-    expect(scoreBucket({ t: 22, r: 1, s: 8 })).toBe(3);
-    // 2 — one variable outside its range but inside the buffer.
-    expect(scoreBucket({ t: 30, r: 1, s: 8 })).toBe(2);
-    // 1 — one variable past the buffer, whatever the others do.
-    expect(scoreBucket({ t: 40, r: 1, s: 8 })).toBe(1);
-    expect(scoreBucket({ t: 40, r: 3.5, s: 8 })).toBe(1);
+    // 3 — every concern inside its range.
+    expect(scoreBucket({ t: 26, tmin: 17, r: 1, s: 8 })).toBe(3);
+    // 2 — one concern outside its range but inside the buffer.
+    expect(scoreBucket({ t: 32, tmin: 17, r: 1, s: 8 })).toBe(2);
+    // 1 — one concern past the buffer, whatever the others do.
+    expect(scoreBucket({ t: 40, tmin: 17, r: 1, s: 8 })).toBe(1);
+    expect(scoreBucket({ t: 40, tmin: 17, r: 3.5, s: 8 })).toBe(1);
     // 0 — two or more past the buffer.
-    expect(scoreBucket({ t: 40, r: 9, s: 8 })).toBe(0);
+    expect(scoreBucket({ t: 40, tmin: 17, r: 9, s: 8 })).toBe(0);
+  });
+
+  it("counts the day/night pair as one concern, like Python does", () => {
+    // Both halves wrong is still a single hard miss, so temperature alone
+    // cannot reach 0. Counting the four ranges independently would make one
+    // miss out of four milder than one out of three and loosen every
+    // threshold — see `polygon_score` in processing/scoring.py.
+    expect(scoreBucket({ t: 40, tmin: 17, r: 1, s: 8 })).toBe(1);
+    expect(scoreBucket({ t: 40, tmin: -10, r: 1, s: 8 })).toBe(1);
+    // A second failing concern does reach the bottom.
+    expect(scoreBucket({ t: 40, tmin: -10, r: 9, s: 8 })).toBe(0);
+  });
+
+  it("scores a sticky tropical night against the place", () => {
+    // The case the split exists for: a 30 °C day with a 27 °C night averaged
+    // to 28.5 °C, which the old single-mean rule called a perfect match.
+    expect(scoreBucket({ t: 30, tmin: 17, r: 1, s: 8 })).toBe(3);
+    expect(scoreBucket({ t: 30, tmin: 27, r: 1, s: 8 })).toBe(1);
   });
 
   it("scores on the boundary the same way Python's <= does", () => {
-    expect(scoreBucket({ t: 18, r: 0, s: 6 })).toBe(3);
-    expect(scoreBucket({ t: 28, r: 2.7, s: 13 })).toBe(3);
-    // 31 = hi + buffer, still inside the buffer.
-    expect(scoreBucket({ t: 31, r: 1, s: 8 })).toBe(2);
-    expect(scoreBucket({ t: 31.1, r: 1, s: 8 })).toBe(1);
+    // lo and hi are both inclusive, on both halves of the pair.
+    expect(scoreBucket({ t: 22, tmin: 12, r: 0, s: 6 })).toBe(3);
+    expect(scoreBucket({ t: 30, tmin: 22, r: 2.7, s: 13 })).toBe(3);
+    // 33 = hi + buffer, still inside the buffer.
+    expect(scoreBucket({ t: 33, tmin: 17, r: 1, s: 8 })).toBe(2);
+    expect(scoreBucket({ t: 33.1, tmin: 17, r: 1, s: 8 })).toBe(1);
   });
 
   it("ignores variables the feature does not carry", () => {
     // A tier or level missing sunshine must not be punished for it — the
     // pipeline skips absent variables rather than scoring them zero.
-    expect(scoreBucket({ t: 22, r: 1 })).toBe(3);
-    expect(scoreBucket({ t: 22, r: 1, s: null })).toBe(3);
+    expect(scoreBucket({ t: 26, r: 1 })).toBe(3);
+    expect(scoreBucket({ t: 26, r: 1, s: null })).toBe(3);
   });
 
   it("returns null — not zero — for a feature with no scored data", () => {
@@ -170,27 +221,32 @@ describe("preference scoring — parity with the pipeline", () => {
   });
 
   it("converts buckets to the 0–100 bins the map paints", () => {
-    expect(preferenceScore({ t: 22, r: 1, s: 8 })).toBe(90);
-    expect(scoreBin(preferenceScore({ t: 22, r: 1, s: 8 })!)).toBe("perfect");
-    expect(scoreBin(preferenceScore({ t: 30, r: 1, s: 8 })!)).toBe("good");
-    expect(scoreBin(preferenceScore({ t: 40, r: 1, s: 8 })!)).toBe("acceptable");
-    expect(scoreBin(preferenceScore({ t: 40, r: 9, s: 8 })!)).toBe("avoid");
+    expect(preferenceScore({ t: 26, tmin: 17, r: 1, s: 8 })).toBe(90);
+    expect(scoreBin(preferenceScore({ t: 26, tmin: 17, r: 1, s: 8 })!)).toBe("perfect");
+    expect(scoreBin(preferenceScore({ t: 32, tmin: 17, r: 1, s: 8 })!)).toBe("good");
+    expect(scoreBin(preferenceScore({ t: 40, tmin: 17, r: 1, s: 8 })!)).toBe("acceptable");
+    expect(scoreBin(preferenceScore({ t: 40, tmin: 17, r: 9, s: 8 })!)).toBe("avoid");
   });
 });
 
 describe("preference scoring — custom preferences", () => {
   it("moves the score when the user's band moves", () => {
-    const cold = { ...DEFAULT_PREFERENCES, tempMin: 0, tempMax: 10 };
-    expect(scoreBucket({ t: 22, r: 1, s: 8 })).toBe(3);
-    expect(scoreBucket({ t: 22, r: 1, s: 8 }, cold)).toBe(1);
+    const cold = { ...DEFAULT_PREFERENCES, dayMin: 0, dayMax: 10 };
+    expect(scoreBucket({ t: 26, r: 1, s: 8 })).toBe(3);
+    expect(scoreBucket({ t: 26, r: 1, s: 8 }, cold)).toBe(1);
     expect(scoreBucket({ t: 6, r: 1, s: 8 }, cold)).toBe(3);
+
+    // And the night band moves independently of the day one.
+    const mild = { ...DEFAULT_PREFERENCES, nightMin: 18, nightMax: 24 };
+    expect(scoreBucket({ t: 26, tmin: 14, r: 1, s: 8 })).toBe(3);
+    expect(scoreBucket({ t: 26, tmin: 14, r: 1, s: 8 }, mild)).toBe(1);
   });
 
   it("treats rainfall as a ceiling and sunshine as a floor", () => {
     const strict = { ...DEFAULT_PREFERENCES, rainMax: 0.5, sunMin: 10 };
-    expect(scoreBucket({ t: 22, r: 4, s: 11 }, strict)).toBe(1);
-    expect(scoreBucket({ t: 22, r: 0.4, s: 4 }, strict)).toBe(1);
-    expect(scoreBucket({ t: 22, r: 0.4, s: 11 }, strict)).toBe(3);
+    expect(scoreBucket({ t: 26, r: 4, s: 11 }, strict)).toBe(1);
+    expect(scoreBucket({ t: 26, r: 0.4, s: 4 }, strict)).toBe(1);
+    expect(scoreBucket({ t: 26, r: 0.4, s: 11 }, strict)).toBe(3);
   });
 });
 
@@ -198,32 +254,41 @@ describe("clampPreferences", () => {
   it("returns the defaults for empty or nonsense input", () => {
     expect(clampPreferences(null)).toEqual(DEFAULT_PREFERENCES);
     expect(clampPreferences({})).toEqual(DEFAULT_PREFERENCES);
-    expect(clampPreferences({ tempMin: Number.NaN })).toEqual({
+    expect(clampPreferences({ dayMin: Number.NaN })).toEqual({
       ...DEFAULT_PREFERENCES,
-      tempMin: PREFERENCE_LIMITS.temp.min,
+      dayMin: PREFERENCE_LIMITS.day.min,
     });
   });
 
   it("holds every value inside its slider's range", () => {
     const p = clampPreferences({
-      tempMin: -999,
-      tempMax: 999,
+      dayMin: -999,
+      dayMax: 999,
+      nightMin: -999,
+      nightMax: 999,
       rainMax: 500,
       sunMin: 99,
     });
-    expect(p.tempMin).toBe(PREFERENCE_LIMITS.temp.min);
-    expect(p.tempMax).toBe(PREFERENCE_LIMITS.temp.max);
+    expect(p.dayMin).toBe(PREFERENCE_LIMITS.day.min);
+    expect(p.dayMax).toBe(PREFERENCE_LIMITS.day.max);
+    expect(p.nightMin).toBe(PREFERENCE_LIMITS.night.min);
+    expect(p.nightMax).toBe(PREFERENCE_LIMITS.night.max);
     expect(p.rainMax).toBe(PREFERENCE_LIMITS.rain.max);
     // A sunshine floor above the range's own ceiling would score nothing.
     expect(p.sunMin).toBe(PREFERENCE_LIMITS.sun.max);
-    expect(p.sunMin).toBe(preferenceRanges(p)[2].hi);
+    const sun = preferenceRanges(p).find((r) => r.concern === "sun")!;
+    expect(p.sunMin).toBe(sun.hi);
   });
 
   it("swaps an inverted temperature band rather than dropping it", () => {
-    // A hand-edited `?tmin=30&tmax=10` is unambiguous about what was meant.
-    expect(clampPreferences({ tempMin: 30, tempMax: 10 })).toMatchObject({
-      tempMin: 10,
-      tempMax: 30,
+    // A hand-edited `?dmin=30&dmax=10` is unambiguous about what was meant.
+    expect(clampPreferences({ dayMin: 30, dayMax: 10 })).toMatchObject({
+      dayMin: 10,
+      dayMax: 30,
+    });
+    expect(clampPreferences({ nightMin: 20, nightMax: 5 })).toMatchObject({
+      nightMin: 5,
+      nightMax: 20,
     });
   });
 });
@@ -235,7 +300,7 @@ describe("isDefaultPreferences", () => {
   });
 
   it("treats an out-of-range value as the clamped one it will be scored as", () => {
-    expect(isDefaultPreferences({ ...DEFAULT_PREFERENCES, tempMax: 28.04 })).toBe(true);
+    expect(isDefaultPreferences({ ...DEFAULT_PREFERENCES, dayMax: 30.04 })).toBe(true);
   });
 });
 
@@ -300,7 +365,7 @@ describe("safety limit", () => {
     const parsed = parseWeatherPreferences({ tempMin: 10, safetyMax: 1 });
     expect(parsed?.safetyMax).toBe(1);
     // A record written before the limit existed gets the default, not zero.
-    expect(parseWeatherPreferences({ tempMin: 10 })?.safetyMax).toBe(
+    expect(parseWeatherPreferences({ dayMin: 10 })?.safetyMax).toBe(
       DEFAULT_SAFETY_MAX,
     );
   });

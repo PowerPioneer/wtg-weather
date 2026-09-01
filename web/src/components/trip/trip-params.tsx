@@ -8,7 +8,7 @@ import {
   type WeatherPreferences,
 } from "@/lib/scoring";
 
-type IconKind = "temp" | "rain" | "sun" | "safety";
+type IconKind = "temp" | "night" | "rain" | "sun" | "safety";
 
 function PrefIcon({ kind }: { kind: IconKind }) {
   const common = {
@@ -76,11 +76,21 @@ export function TripParams({
   const rows: { key: IconKind; label: string; range: ReactNode }[] = [
     {
       key: "temp",
-      label: "Temperature",
+      label: "Daytime high",
       range: (
         <TemperatureRange
-          low={preferences.tempMin}
-          high={preferences.tempMax}
+          low={preferences.dayMin}
+          high={preferences.dayMax}
+        />
+      ),
+    },
+    {
+      key: "night",
+      label: "Overnight low",
+      range: (
+        <TemperatureRange
+          low={preferences.nightMin}
+          high={preferences.nightMax}
         />
       ),
     },

@@ -206,7 +206,8 @@ function toAlert(raw: RawAlert, countries: Map<string, CountryData>): AccountAle
     // visitor's unit is only known in the browser. Rainfall reads as its level
     // rather than its ceiling, which is the vocabulary the control now uses.
     conditions: [
-      `${prefs.tempMin}–${prefs.tempMax} °C`,
+      `days ${prefs.dayMin}–${prefs.dayMax} °C`,
+      `nights ${prefs.nightMin}–${prefs.nightMax} °C`,
       `${rainLevelForCeiling(prefs.rainMax).label.toLowerCase()} or drier`,
       `over ${prefs.sunMin} h sun`,
       `advisories to ${SAFETY_LIMIT_LABEL[clampSafetyMax(prefs.safetyMax)].toLowerCase()}`,

@@ -35,6 +35,7 @@ import { MONTH_NAMES, MONTH_SLUGS, monthIndex, type MonthSlug } from "./months";
 import {
   DEFAULT_PREFERENCES,
   preferenceRanges,
+  type ScoredAlias,
   type WeatherPreferences,
 } from "./scoring";
 import type { CountryData } from "./types";
@@ -74,8 +75,9 @@ export function comfortMargin(
   prefs: WeatherPreferences = DEFAULT_PREFERENCES,
 ): number {
   const c = country.climate;
-  const values: Record<"t" | "r" | "s", number | undefined> = {
-    t: c.t[monthIdx],
+  const values: Record<ScoredAlias, number | undefined> = {
+    t: c.tMax[monthIdx],
+    tmin: c.tMin[monthIdx],
     r: c.rDay[monthIdx],
     s: c.s[monthIdx],
   };

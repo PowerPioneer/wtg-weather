@@ -299,7 +299,7 @@ describe("MapCanvas tile-URL handling", () => {
         premiumTilesUrl={null}
         mode="preferences"
         month={4}
-        preferences={{ ...DEFAULT_PREFERENCES, tempMax: 22 }}
+        preferences={{ ...DEFAULT_PREFERENCES, dayMax: 22 }}
       />,
     );
 

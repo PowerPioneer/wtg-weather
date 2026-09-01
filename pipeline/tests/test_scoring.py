@@ -29,7 +29,7 @@ def test_temperature_is_two_variables_but_one_concern() -> None:
     """Four variables, three concerns — the thing that keeps the thresholds
     meaning what they meant when there were three of each."""
     concerns = {p.group for p in DEFAULT_PREFERENCES}
-    assert concerns == {"temperature", "tp", "sun_hours"}
+    assert concerns == {"temperature", "rain", "sun"}
 
     temperature = [p for p in DEFAULT_PREFERENCES if p.group == "temperature"]
     assert {p.variable for p in temperature} == {"t2m_max", "t2m_min"}

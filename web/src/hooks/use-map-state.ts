@@ -55,8 +55,13 @@ const unitParser = parseAsStringEnum<Unit>(["metric", "imperial"]).withDefault("
 const monthParser = parseAsInteger.withDefault(currentMonth());
 
 const preferenceParsers = {
-  tmin: parseAsFloat.withDefault(DEFAULT_PREFERENCES.tempMin),
-  tmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.tempMax),
+  // Named for day and night rather than `tmin`/`tmax`: `tmin` is the alias
+  // for the daily *minimum* everywhere else in the codebase, and a URL
+  // parameter that meant the opposite would be a trap.
+  dmin: parseAsFloat.withDefault(DEFAULT_PREFERENCES.dayMin),
+  dmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.dayMax),
+  nmin: parseAsFloat.withDefault(DEFAULT_PREFERENCES.nightMin),
+  nmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.nightMax),
   rmax: parseAsFloat.withDefault(DEFAULT_PREFERENCES.rainMax),
   smin: parseAsFloat.withDefault(DEFAULT_PREFERENCES.sunMin),
   // Integer, not float: it is one of four advisory levels, and `parseAsFloat`
@@ -103,21 +108,33 @@ export function useMapState(): MapState {
   const preferences = useMemo(
     () =>
       clampPreferences({
-        tempMin: prefsRaw.tmin,
-        tempMax: prefsRaw.tmax,
+        dayMin: prefsRaw.dmin,
+        dayMax: prefsRaw.dmax,
+        nightMin: prefsRaw.nmin,
+        nightMax: prefsRaw.nmax,
         rainMax: prefsRaw.rmax,
         sunMin: prefsRaw.smin,
         safetyMax: prefsRaw.smax,
       }),
-    [prefsRaw.tmin, prefsRaw.tmax, prefsRaw.rmax, prefsRaw.smin, prefsRaw.smax],
+    [
+      prefsRaw.dmin,
+      prefsRaw.dmax,
+      prefsRaw.nmin,
+      prefsRaw.nmax,
+      prefsRaw.rmax,
+      prefsRaw.smin,
+      prefsRaw.smax,
+    ],
   );
 
   const setPreferences = useCallback(
     (next: WeatherPreferences) => {
       const clamped = clampPreferences(next);
       void setPrefsRaw({
-        tmin: clamped.tempMin,
-        tmax: clamped.tempMax,
+        dmin: clamped.dayMin,
+        dmax: clamped.dayMax,
+        nmin: clamped.nightMin,
+        nmax: clamped.nightMax,
         rmax: clamped.rainMax,
         smin: clamped.sunMin,
         smax: clamped.safetyMax,
@@ -128,8 +145,10 @@ export function useMapState(): MapState {
 
   const resetPreferences = useCallback(() => {
     void setPrefsRaw({
-      tmin: null,
-      tmax: null,
+      dmin: null,
+      dmax: null,
+      nmin: null,
+      nmax: null,
       rmax: null,
       smin: null,
       smax: null,

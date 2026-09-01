@@ -127,10 +127,16 @@ export default async function BestWeatherInMonthPage({
                 the rest of the year, and current travel-advisory levels.
               </p>
               <p className="mt-4 max-w-[680px] text-[13px] leading-[1.6] text-text-subtle">
-                Scored against the default profile:{" "}
+                Scored against the default profile: days{" "}
                 <TemperatureRange
-                  low={DEFAULT_PREFERENCES.tempMin}
-                  high={DEFAULT_PREFERENCES.tempMax}
+                  low={DEFAULT_PREFERENCES.dayMin}
+                  high={DEFAULT_PREFERENCES.dayMax}
+                  separator="–"
+                />
+                , nights{" "}
+                <TemperatureRange
+                  low={DEFAULT_PREFERENCES.nightMin}
+                  high={DEFAULT_PREFERENCES.nightMax}
                   separator="–"
                 />
                 , no more than{" "}

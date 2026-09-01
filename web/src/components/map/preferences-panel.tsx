@@ -171,16 +171,38 @@ export function PreferencesPanel({
       ) : null}
 
       <div className="flex flex-col gap-4">
+        {/*
+          Two controls, because the site now publishes two numbers. This said
+          "daytime mean" while scoring the 24-hour mean, so a traveller who set
+          18–28 thinking about afternoons was matched against places whose
+          afternoons ran 24–34.
+
+          They are one *concern* for scoring — the worse of the two decides
+          temperature, see `scoreBucket` — but two questions for a person, and
+          the night one is the reason the split exists: a tropical night that
+          holds 27 °C used to average with a 30 °C day into a perfect match.
+        */}
         <DualRangeSlider
-          label="Temperature"
-          hint="daytime mean"
-          value={[value.tempMin, value.tempMax]}
-          min={PREFERENCE_LIMITS.temp.min}
-          max={PREFERENCE_LIMITS.temp.max}
-          step={PREFERENCE_LIMITS.temp.step}
+          label="Daytime high"
+          hint="mean daily maximum"
+          value={[value.dayMin, value.dayMax]}
+          min={PREFERENCE_LIMITS.day.min}
+          max={PREFERENCE_LIMITS.day.max}
+          step={PREFERENCE_LIMITS.day.step}
           format={fmtTemp}
           boundLabels={["Coolest acceptable", "Warmest acceptable"]}
-          onChange={([tempMin, tempMax]) => onChange({ ...value, tempMin, tempMax })}
+          onChange={([dayMin, dayMax]) => onChange({ ...value, dayMin, dayMax })}
+        />
+        <DualRangeSlider
+          label="Overnight low"
+          hint="mean daily minimum"
+          value={[value.nightMin, value.nightMax]}
+          min={PREFERENCE_LIMITS.night.min}
+          max={PREFERENCE_LIMITS.night.max}
+          step={PREFERENCE_LIMITS.night.step}
+          format={fmtTemp}
+          boundLabels={["Coldest acceptable", "Warmest acceptable"]}
+          onChange={([nightMin, nightMax]) => onChange({ ...value, nightMin, nightMax })}
         />
         {/*
           Levels, not millimetres. Nobody holds a preference in mm/day, and

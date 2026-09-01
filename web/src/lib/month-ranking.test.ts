@@ -28,7 +28,7 @@ function flat(value: number): Monthly {
 
 function country(
   slug: string,
-  { t, rDay, s }: { t: number; rDay: number; s: number },
+  { tMax, tMin, rDay, s }: { tMax: number; tMin: number; rDay: number; s: number },
 ): CountryData {
   return {
     slug,
@@ -39,9 +39,10 @@ function country(
     bestMonths: [],
     climate: {
       months: [...MONTH_SLUGS],
-      t: flat(t),
-      tMin: flat(t - 5),
-      tMax: flat(t + 5),
+      // `t` is an alias of the daily maximum now, not a separate series.
+      t: flat(tMax),
+      tMin: flat(tMin),
+      tMax: flat(tMax),
       r: flat(rDay * 30),
       rDay: flat(rDay),
       s: flat(s),
@@ -52,10 +53,13 @@ function country(
   };
 }
 
-/** Dead centre of all three default ranges: 23°C, 1.35 mm/day, 9.5 h sun. */
-const IDEAL = { t: 23, rDay: 1.35, s: 9.5 };
-/** Scores the same as IDEAL (all three inside the ranges) but hugging the edges. */
-const EDGE = { t: 18, rDay: 2.6, s: 6.1 };
+/**
+ * Dead centre of every default range: 26 °C days, 17 °C nights, 1.35 mm/day,
+ * 9.5 h sun.
+ */
+const IDEAL = { tMax: 26, tMin: 17, rDay: 1.35, s: 9.5 };
+/** Scores the same as IDEAL (all inside the ranges) but hugging the edges. */
+const EDGE = { tMax: 22.2, tMin: 12.2, rDay: 2.6, s: 6.1 };
 
 function publish(...slugs: string[]): void {
   getCountryIndex.mockResolvedValue(
@@ -82,15 +86,24 @@ describe("comfortMargin", () => {
   });
 
   it("goes negative for a month outside the ranges", () => {
-    expect(comfortMargin(country("hot", { t: 44, rDay: 11, s: 1 }), 0)).toBeLessThan(0);
+    expect(
+      comfortMargin(country("hot", { tMax: 44, tMin: 32, rDay: 11, s: 1 }), 0),
+    ).toBeLessThan(0);
   });
 
   it("reads the month it is asked about", () => {
     const c = country("seasonal", IDEAL);
     // Rewrite July only, to something far outside every range.
-    const t = [...c.climate.t] as number[];
-    t[6] = 45;
-    const seasonal = { ...c, climate: { ...c.climate, t: t as unknown as Monthly } };
+    const tMax = [...c.climate.tMax] as number[];
+    tMax[6] = 45;
+    const seasonal = {
+      ...c,
+      climate: {
+        ...c.climate,
+        t: tMax as unknown as Monthly,
+        tMax: tMax as unknown as Monthly,
+      },
+    };
     expect(comfortMargin(seasonal, 6)).toBeLessThan(comfortMargin(seasonal, 5));
   });
 
@@ -98,7 +111,7 @@ describe("comfortMargin", () => {
     // Same values, custom preferences: a country at 23°C is central under the
     // default band and at the very edge of a 10–23 one.
     const c = country("x", IDEAL);
-    const narrow = comfortMargin(c, 0, { ...DEFAULT_PREFERENCES, tempMin: 10, tempMax: 23 });
+    const narrow = comfortMargin(c, 0, { ...DEFAULT_PREFERENCES, dayMin: 10, dayMax: 23 });
     expect(narrow).toBeLessThan(comfortMargin(c, 0));
   });
 });
@@ -108,8 +121,9 @@ describe("topCountriesForMonth", () => {
     publish("good", "perfect", "bad");
     getCountry.mockImplementation(async (slug) => {
       if (slug === "perfect") return country("perfect", IDEAL);
-      if (slug === "good") return country("good", { t: 23, rDay: 1.35, s: 5.2 });
-      return country("bad", { t: 45, rDay: 11, s: 0.5 });
+      if (slug === "good")
+        return country("good", { tMax: 26, tMin: 17, rDay: 1.35, s: 5.2 });
+      return country("bad", { tMax: 45, tMin: 33, rDay: 11, s: 0.5 });
     });
 
     const ranked = await topCountriesForMonth("april");
@@ -176,11 +190,14 @@ describe("topCountriesForMonth", () => {
 
   it("carries the month's own figures for display", async () => {
     publish("one");
-    getCountry.mockResolvedValue(country("one", { t: 23, rDay: 2, s: 8 }));
+    getCountry.mockResolvedValue(
+      country("one", { tMax: 26, tMin: 17, rDay: 2, s: 8 }),
+    );
 
     const [top] = await topCountriesForMonth("april");
 
-    expect(top!.temp).toBe(23);
+    // The figure a card prints is the daytime high.
+    expect(top!.temp).toBe(26);
     expect(top!.rain).toBe(60); // rDay × 30 in the fixture
     expect(top!.sun).toBe(8);
     expect(top!.region).toBe("Test Region");

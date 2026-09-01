@@ -86,8 +86,8 @@ class VariablePreference:
 DEFAULT_PREFERENCES: tuple[VariablePreference, ...] = (
     VariablePreference("t2m_max", lo=22.0, hi=30.0, buffer=3.0, concern="temperature"),  # °C, daytime high
     VariablePreference("t2m_min", lo=12.0, hi=22.0, buffer=3.0, concern="temperature"),  # °C, overnight low
-    VariablePreference("tp", lo=0.0, hi=2.7, buffer=1.3),  # mm / day (≈ 80 mm/month)
-    VariablePreference("sun_hours", lo=6.0, hi=13.0, buffer=1.5),  # h / day
+    VariablePreference("tp", lo=0.0, hi=2.7, buffer=1.3, concern="rain"),  # mm / day (≈ 80 mm/month)
+    VariablePreference("sun_hours", lo=6.0, hi=13.0, buffer=1.5, concern="sun"),  # h / day
 )
 
 

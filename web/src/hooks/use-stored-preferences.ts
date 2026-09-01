@@ -68,8 +68,10 @@ export function readStoredPreferences(
 
 function fingerprint(prefs: WeatherPreferences): string {
   return [
-    prefs.tempMin,
-    prefs.tempMax,
+    prefs.dayMin,
+    prefs.dayMax,
+    prefs.nightMin,
+    prefs.nightMax,
     prefs.rainMax,
     prefs.sunMin,
     prefs.safetyMax,

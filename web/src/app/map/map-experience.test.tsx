@@ -249,10 +249,10 @@ describe("MapExperience preferences", () => {
   const setSlider = (name: string, value: number) =>
     fireEvent.change(screen.getByLabelText(name), { target: { value: String(value) } });
 
-  /** Narrow the temperature band to 5–15°C, lower thumb first so it can move. */
+  /** Narrow the daytime band to 5–15°C, lower thumb first so it can move. */
   const chooseCoolWeather = () => {
-    setSlider("Temperature — Coolest acceptable", 5);
-    setSlider("Temperature — Warmest acceptable", 15);
+    setSlider("Daytime high — Coolest acceptable", 5);
+    setSlider("Daytime high — Warmest acceptable", 15);
   };
 
   it("starts at the defaults the pipeline baked into the tiles", async () => {
@@ -272,8 +272,8 @@ describe("MapExperience preferences", () => {
 
     const canvas = screen.getByTestId("canvas");
     expect(JSON.parse(canvas.getAttribute("data-prefs") ?? "{}")).toMatchObject({
-      tempMin: 5,
-      tempMax: 15,
+      dayMin: 5,
+      dayMax: 15,
     });
     // Preference changes must never re-sign or refetch tiles — the score is
     // computed from properties already in the loaded features.

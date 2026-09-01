@@ -84,7 +84,7 @@ const OWNER_TRIP = {
   country_iso2: "PE",
   region_code: null,
   month: 4,
-  preferences: { tempMin: 18, tempMax: 28, rainMax: 2.7, sunMin: 6 },
+  preferences: { dayMin: 22, dayMax: 30, nightMin: 12, nightMax: 22, rainMax: 2.7, sunMin: 6 },
   client_id: null,
   share_token: null,
 };
@@ -95,7 +95,7 @@ const SHARED_TRIP = {
   country_iso2: "PE",
   region_code: null,
   month: 4,
-  preferences: { tempMin: 18, tempMax: 28, rainMax: 2.7, sunMin: 6 },
+  preferences: { dayMin: 22, dayMax: 30, nightMin: 12, nightMax: 22, rainMax: 2.7, sunMin: 6 },
 };
 
 function stubFetch(body: unknown, status = 200) {
@@ -216,8 +216,10 @@ describe("getOwnTrip", () => {
     expect(trip!.usesDefaultPreferences).toBe(true);
     expect(trip!.preferences).toEqual({
       safetyMax: 3,
-      tempMin: 18,
-      tempMax: 28,
+      dayMin: 22,
+      dayMax: 30,
+      nightMin: 12,
+      nightMax: 22,
       rainMax: 2.7,
       sunMin: 6,
     });

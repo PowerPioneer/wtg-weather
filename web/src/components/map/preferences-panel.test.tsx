@@ -38,7 +38,8 @@ const setSlider = (name: string | RegExp, value: number) =>
 describe("PreferencesPanel", () => {
   it("shows the current preferences as readable values", () => {
     renderPanel();
-    expect(screen.getByText("18°C – 28°C")).toBeInTheDocument();
+    expect(screen.getByText("22°C – 30°C")).toBeInTheDocument();
+    expect(screen.getByText("12°C – 22°C")).toBeInTheDocument();
     expect(screen.getByText("6.0 h")).toBeInTheDocument();
     // Rain and safety read as words, with the numeric band in brackets — the
     // whole point of the level controls.
@@ -84,8 +85,11 @@ describe("PreferencesPanel", () => {
   it("reports each control's change with the rest of the preferences intact", () => {
     const { onChange } = renderPanel();
 
-    setSlider("Temperature — Warmest acceptable", 24);
-    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, tempMax: 24 });
+    setSlider("Daytime high — Warmest acceptable", 28);
+    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, dayMax: 28 });
+
+    setSlider("Overnight low — Coldest acceptable", 8);
+    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, nightMin: 8 });
 
     setSlider("Sunshine", 9);
     expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, sunMin: 9 });
@@ -96,12 +100,12 @@ describe("PreferencesPanel", () => {
     // an inverted band scores nothing at all.
     const { onChange } = renderPanel();
 
-    setSlider("Temperature — Warmest acceptable", 4);
-    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, tempMax: 18 });
+    setSlider("Daytime high — Warmest acceptable", 4);
+    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, dayMax: 22 });
 
     onChange.mockClear();
-    setSlider("Temperature — Coolest acceptable", 40);
-    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, tempMin: 28 });
+    setSlider("Daytime high — Coolest acceptable", 40);
+    expect(onChange).toHaveBeenLastCalledWith({ ...DEFAULT_PREFERENCES, dayMin: 30 });
   });
 
   it("offers Reset only once something has actually changed", async () => {
@@ -131,7 +135,7 @@ describe("PreferencesPanel", () => {
   it("switches the temperature readout to °F", async () => {
     renderPanel();
     await userEvent.click(screen.getByTestId("unit-imperial"));
-    expect(screen.getByText("64°F – 82°F")).toBeInTheDocument();
+    expect(screen.getByText("72°F – 86°F")).toBeInTheDocument();
   });
 
   it("gates the premium variables and routes a click to the upgrade flow", async () => {
@@ -150,8 +154,9 @@ describe("PreferencesPanel", () => {
     // semantics; the labels are what makes two thumbs on one track legible.
     renderPanel();
     const sliders = screen.getAllByRole("slider");
-    // Two temperature thumbs, rainfall, sunshine, safety.
-    expect(sliders).toHaveLength(5);
+    // Two thumbs each for the daytime high and the overnight low, plus
+    // rainfall, sunshine and safety.
+    expect(sliders).toHaveLength(7);
     for (const slider of sliders) {
       expect(slider).toHaveAccessibleName();
       expect(slider).toHaveAttribute("aria-valuetext");

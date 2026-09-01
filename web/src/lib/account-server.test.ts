@@ -154,7 +154,7 @@ describe("getConsumerAccount", () => {
           country_iso2: "PE",
           region_code: null,
           month: 4,
-          preferences: { tempMin: 18, tempMax: 28, rainMax: 2.7, sunMin: 6 },
+          preferences: { dayMin: 22, dayMax: 30, nightMin: 12, nightMax: 22, rainMax: 2.7, sunMin: 6 },
         },
       ],
     });
@@ -231,7 +231,7 @@ describe("getConsumerAccount", () => {
           country_iso2: "PE",
           region_code: "PER-1",
           month: 7,
-          preferences: { tempMin: 14, tempMax: 22, rainMax: 2, sunMin: 6 },
+          preferences: { dayMin: 14, dayMax: 22, nightMin: 6, nightMax: 14, rainMax: 2, sunMin: 6 },
           active: false,
         },
       ],
@@ -242,7 +242,7 @@ describe("getConsumerAccount", () => {
       id: "a1",
       label: "Cusco in July",
       conditions:
-        "14–22 °C · light rain or drier · over 6 h sun · advisories to reconsider travel",
+        "days 14–22 °C · nights 6–14 °C · light rain or drier · over 6 h sun · advisories to reconsider travel",
       active: false,
     });
   });

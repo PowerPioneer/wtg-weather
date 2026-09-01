@@ -147,9 +147,9 @@ describe("buildPreferenceScoreExpression", () => {
 
   const PREFERENCE_SETS: WeatherPreferences[] = [
     DEFAULT_PREFERENCES,
-    { tempMin: 0, tempMax: 10, rainMax: 2.7, sunMin: 6, safetyMax: 3 },
-    { tempMin: 18, tempMax: 28, rainMax: 0.5, sunMin: 10, safetyMax: 3 },
-    { tempMin: -10, tempMax: 45, rainMax: 12, sunMin: 0, safetyMax: 4 },
+    { dayMin: 0, dayMax: 10, nightMin: -5, nightMax: 5, rainMax: 2.7, sunMin: 6, safetyMax: 3 },
+    { dayMin: 18, dayMax: 28, nightMin: 10, nightMax: 20, rainMax: 0.5, sunMin: 10, safetyMax: 3 },
+    { dayMin: -10, dayMax: 45, nightMin: -20, nightMax: 35, rainMax: 12, sunMin: 0, safetyMax: 4 },
   ];
 
   it("computes the same score as scoring.ts for every case", () => {
@@ -200,7 +200,7 @@ describe("preferences mode paint", () => {
     const expr = JSON.stringify(
       buildFillColorExpression("preferences", 5, {
         ...DEFAULT_PREFERENCES,
-        tempMax: 24,
+        dayMax: 24,
       }),
     );
     expect(expr).not.toContain("pref_05");
@@ -211,8 +211,10 @@ describe("preferences mode paint", () => {
 
   it("colours a feature by the bin its custom score falls in", () => {
     const chilly = {
-      tempMin: 0,
-      tempMax: 10,
+      dayMin: 0,
+      dayMax: 10,
+      nightMin: -10,
+      nightMax: 5,
       rainMax: 2.7,
       sunMin: 6,
       safetyMax: 4 as const,
@@ -451,7 +453,7 @@ describe("safety veto in the paint expression", () => {
     // and only the veto in front of it changes.
     const strict: WeatherPreferences = {
       ...DEFAULT_PREFERENCES,
-      tempMax: 26,
+      dayMax: 26,
       safetyMax: 1,
     };
     const expr = buildFillColorExpression("preferences", 5, strict);
@@ -467,7 +469,7 @@ describe("safety veto in the paint expression", () => {
     // would otherwise compare as safer than level 1.
     const strict: WeatherPreferences = {
       ...DEFAULT_PREFERENCES,
-      tempMax: 26,
+      dayMax: 26,
       safetyMax: 1,
     };
     const expr = buildFillColorExpression("preferences", 5, strict);
@@ -502,7 +504,7 @@ describe("safety veto in the paint expression", () => {
     for (const { safety, prefs } of cases) {
       // A custom temperature band keeps the expression on the computed path,
       // which is the one that can drift from `scoreBucket`.
-      const custom: WeatherPreferences = { ...prefs, tempMax: 26 };
+      const custom: WeatherPreferences = { ...prefs, dayMax: 26 };
       const expr = buildFillColorExpression("preferences", 5, custom);
       const props: Record<string, number> = { t_05: 22, r_05: 1, s_05: 8 };
       if (safety != null) props.safety = safety;

@@ -106,13 +106,13 @@ describe("reading values", () => {
     expect(
       readPreferenceScore(GEORGIA, 4, {
         ...DEFAULT_PREFERENCES,
-        tempMin: 5,
-        tempMax: 15,
+        dayMin: 5,
+        dayMax: 15,
       }),
     ).toBe(60);
     // Still null when the feature carries nothing to score.
     expect(
-      readPreferenceScore({}, 4, { ...DEFAULT_PREFERENCES, tempMax: 24 }),
+      readPreferenceScore({}, 4, { ...DEFAULT_PREFERENCES, dayMax: 24 }),
     ).toBeNull();
   });
 

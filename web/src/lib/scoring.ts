@@ -35,18 +35,34 @@ export type ScoreBin = "perfect" | "good" | "acceptable" | "avoid";
  * ──────────────────────────────────────────────────────────────────────────── */
 
 /**
- * What a traveller is looking for. Three controls, because those are the three
- * variables the pipeline scores (`SCORED_VARIABLES` in `build_geojson.py`) and
- * therefore the three the baked score can be reproduced from.
+ * What a traveller is looking for. Four controls over three concerns, matching
+ * the variables the pipeline scores (`SCORED_VARIABLES` in `build_geojson.py`)
+ * and therefore the set the baked score can be reproduced from.
  *
  * Rain and sun are one-sided in the UI — nobody asks for a *minimum* rainfall —
  * but the underlying rule is a range either way, so the fixed side is pinned by
  * `RAIN_MIN` / `SUN_MAX` below.
  */
 export type WeatherPreferences = {
-  /** Comfortable temperature band, °C. */
-  tempMin: number;
-  tempMax: number;
+  /**
+   * Comfortable **daytime high** band, °C — the mean daily maximum.
+   *
+   * This used to be one range compared against the 24-hour mean, while the
+   * slider that set it was labelled "daytime mean". A traveller picked 18–28
+   * thinking about days and was matched against places whose days ran 24–34.
+   */
+  dayMin: number;
+  dayMax: number;
+  /**
+   * Comfortable **overnight low** band, °C — the mean daily minimum.
+   *
+   * Nobody asks for a night-time ceiling in the abstract, but "it never cooled
+   * down" and "it was freezing after dark" are both common complaints, and a
+   * tropical night holding 27 °C used to average with a 30 °C day into a
+   * 28.5 °C "perfect match".
+   */
+  nightMin: number;
+  nightMax: number;
   /** Most rain the traveller will tolerate, mm/day. */
   rainMax: number;
   /** Least sunshine the traveller wants, hours/day. */
@@ -85,8 +101,10 @@ export const DEFAULT_SAFETY_MAX: AdvisoryLimit = 3;
  * three climate variables. `safetyMax` has no counterpart there by design.
  */
 export const DEFAULT_PREFERENCES: WeatherPreferences = {
-  tempMin: 18,
-  tempMax: 28,
+  dayMin: 22,
+  dayMax: 30,
+  nightMin: 12,
+  nightMax: 22,
   rainMax: 2.7,
   sunMin: 6,
   safetyMax: DEFAULT_SAFETY_MAX,
@@ -105,7 +123,8 @@ const SUN_MAX = 13;
 
 /** Slider bounds. `sun.max` is `SUN_MAX`: a minimum above the range's top would score nothing. */
 export const PREFERENCE_LIMITS = {
-  temp: { min: -10, max: 45, step: 1 },
+  day: { min: -10, max: 45, step: 1 },
+  night: { min: -20, max: 35, step: 1 },
   rain: { min: 0, max: 12, step: 0.1 },
   sun: { min: 0, max: SUN_MAX, step: 0.5 },
   safety: { min: 1, max: 4, step: 1 },
@@ -217,29 +236,39 @@ export const SAFETY_LIMIT_BLURB: Record<AdvisoryLimit, string> = {
 };
 
 /** Short per-month property aliases the tiles carry, per scored variable. */
-export type ScoredAlias = "t" | "r" | "s";
+/** `t` is the mean daily maximum; `tmin` the mean daily minimum. */
+export type ScoredAlias = "t" | "tmin" | "r" | "s";
+
+/**
+ * What a range speaks for. Ranges sharing a concern are collapsed to their
+ * worst verdict before {@link scoreBucket} counts anything — see there for
+ * why that matters more than it looks.
+ */
+export type PreferenceConcern = "temperature" | "rain" | "sun";
 
 export type PreferenceRange = {
   alias: ScoredAlias;
   /** Raw ERA5 code, for cross-referencing the pipeline. */
-  variable: "t2m" | "tp" | "sun_hours";
+  variable: "t2m_max" | "t2m_min" | "tp" | "sun_hours";
+  concern: PreferenceConcern;
   lo: number;
   hi: number;
   buffer: number;
 };
 
 /**
- * The three ranges a set of preferences expands to. Single source for both the
- * TypeScript scorer and the MapLibre paint expression, so the two cannot
- * disagree about what the user asked for.
+ * The four ranges a set of preferences expands to, across three concerns.
+ * Single source for both the TypeScript scorer and the MapLibre paint
+ * expression, so the two cannot disagree about what the user asked for.
  */
 export function preferenceRanges(
   prefs: WeatherPreferences = DEFAULT_PREFERENCES,
 ): readonly PreferenceRange[] {
   return [
-    { alias: "t", variable: "t2m", lo: prefs.tempMin, hi: prefs.tempMax, buffer: TEMP_BUFFER },
-    { alias: "r", variable: "tp", lo: RAIN_MIN, hi: prefs.rainMax, buffer: RAIN_BUFFER },
-    { alias: "s", variable: "sun_hours", lo: prefs.sunMin, hi: SUN_MAX, buffer: SUN_BUFFER },
+    { alias: "t", variable: "t2m_max", concern: "temperature", lo: prefs.dayMin, hi: prefs.dayMax, buffer: TEMP_BUFFER },
+    { alias: "tmin", variable: "t2m_min", concern: "temperature", lo: prefs.nightMin, hi: prefs.nightMax, buffer: TEMP_BUFFER },
+    { alias: "r", variable: "tp", concern: "rain", lo: RAIN_MIN, hi: prefs.rainMax, buffer: RAIN_BUFFER },
+    { alias: "s", variable: "sun_hours", concern: "sun", lo: prefs.sunMin, hi: SUN_MAX, buffer: SUN_BUFFER },
   ];
 }
 
@@ -292,23 +321,39 @@ export function scoreBucket(
   // veto over it, not a substitute for it.
   const vetoed = failsSafetyLimit(values.safety, prefs);
 
-  let evaluated = 0;
-  let inBuffer = 0;
-  let outOfBuffer = 0;
+  // 0 = in range, 1 = in buffer, 2 = a hard miss. The worst verdict wins
+  // within a concern, so a place whose nights are fine and whose days are
+  // impossible is judged on the days.
+  //
+  // Temperature is two ranges and one concern. Counting the four ranges
+  // independently would make one miss out of four milder than one out of
+  // three and quietly loosen every threshold below — more of the map would
+  // turn green for no reason the data supports. Mirrors `polygon_score` in
+  // `pipeline/src/wtg_pipeline/processing/scoring.py`.
+  const worstByConcern = new Map<PreferenceConcern, 0 | 1 | 2>();
 
   for (const range of preferenceRanges(prefs)) {
     const value = values[range.alias];
     if (value == null || !Number.isFinite(value)) continue;
-    evaluated++;
-    if (value >= range.lo && value <= range.hi) continue; // in range
-    if (value >= range.lo - range.buffer && value <= range.hi + range.buffer) {
-      inBuffer++;
-    } else {
-      outOfBuffer++;
+    let verdict: 0 | 1 | 2 = 2;
+    if (value >= range.lo && value <= range.hi) {
+      verdict = 0;
+    } else if (value >= range.lo - range.buffer && value <= range.hi + range.buffer) {
+      verdict = 1;
     }
+    const previous = worstByConcern.get(range.concern) ?? 0;
+    worstByConcern.set(range.concern, Math.max(previous, verdict) as 0 | 1 | 2);
   }
 
-  if (evaluated === 0) return null;
+  if (worstByConcern.size === 0) return null;
+
+  let inBuffer = 0;
+  let outOfBuffer = 0;
+  for (const verdict of worstByConcern.values()) {
+    if (verdict === 1) inBuffer++;
+    else if (verdict === 2) outOfBuffer++;
+  }
+
   if (vetoed) return 0;
   if (outOfBuffer >= 2) return 0;
   if (outOfBuffer === 1) return 1;
@@ -350,12 +395,17 @@ export function clampPreferences(
     | undefined,
 ): WeatherPreferences {
   const raw = { ...DEFAULT_PREFERENCES, ...(input ?? {}) };
-  let tempMin = clampTo(raw.tempMin, PREFERENCE_LIMITS.temp);
-  let tempMax = clampTo(raw.tempMax, PREFERENCE_LIMITS.temp);
-  if (tempMin > tempMax) [tempMin, tempMax] = [tempMax, tempMin];
+  let dayMin = clampTo(raw.dayMin, PREFERENCE_LIMITS.day);
+  let dayMax = clampTo(raw.dayMax, PREFERENCE_LIMITS.day);
+  if (dayMin > dayMax) [dayMin, dayMax] = [dayMax, dayMin];
+  let nightMin = clampTo(raw.nightMin, PREFERENCE_LIMITS.night);
+  let nightMax = clampTo(raw.nightMax, PREFERENCE_LIMITS.night);
+  if (nightMin > nightMax) [nightMin, nightMax] = [nightMax, nightMin];
   return {
-    tempMin: round1(tempMin),
-    tempMax: round1(tempMax),
+    dayMin: round1(dayMin),
+    dayMax: round1(dayMax),
+    nightMin: round1(nightMin),
+    nightMax: round1(nightMax),
     rainMax: round1(clampTo(raw.rainMax, PREFERENCE_LIMITS.rain)),
     sunMin: round1(clampTo(raw.sunMin, PREFERENCE_LIMITS.sun)),
     safetyMax: clampSafetyMax(raw.safetyMax),
@@ -390,8 +440,10 @@ export function parseWeatherPreferences(
     return typeof value === "number" && Number.isFinite(value) ? value : undefined;
   };
   const parsed = {
-    tempMin: numeric("tempMin"),
-    tempMax: numeric("tempMax"),
+    dayMin: numeric("dayMin"),
+    dayMax: numeric("dayMax"),
+    nightMin: numeric("nightMin"),
+    nightMax: numeric("nightMax"),
     rainMax: numeric("rainMax"),
     sunMin: numeric("sunMin"),
     // A record written before the safety limit existed simply has none, and
@@ -419,8 +471,10 @@ export function parseWeatherPreferences(
 export function isDefaultPreferences(prefs: WeatherPreferences): boolean {
   const p = clampPreferences(prefs);
   return (
-    p.tempMin === DEFAULT_PREFERENCES.tempMin &&
-    p.tempMax === DEFAULT_PREFERENCES.tempMax &&
+    p.dayMin === DEFAULT_PREFERENCES.dayMin &&
+    p.dayMax === DEFAULT_PREFERENCES.dayMax &&
+    p.nightMin === DEFAULT_PREFERENCES.nightMin &&
+    p.nightMax === DEFAULT_PREFERENCES.nightMax &&
     p.rainMax === DEFAULT_PREFERENCES.rainMax &&
     p.sunMin === DEFAULT_PREFERENCES.sunMin
   );
