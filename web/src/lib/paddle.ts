@@ -176,6 +176,16 @@ export function paddleEnvironment(): "sandbox" | "production" {
   return PADDLE_ENV;
 }
 
+/**
+ * Paddle's checkout lifecycle, re-broadcast as a DOM event.
+ *
+ * Paddle.js takes a single `eventCallback` at initialisation, and this module
+ * owns that call — so anything that wants to know whether a checkout actually
+ * opened has to hear about it from here. `detail` is Paddle's own event name
+ * (`checkout.loaded`, `checkout.closed`, `checkout.error`, …).
+ */
+export const PADDLE_EVENT = "wtg:paddle";
+
 /** Paddle.js, initialised once per page and reused. */
 export function getPaddle(): Promise<Paddle | undefined> {
   if (paddle) return paddle;
@@ -189,6 +199,10 @@ export function getPaddle(): Promise<Paddle | undefined> {
   paddle = initializePaddle({
     token: PADDLE_CLIENT_TOKEN,
     environment,
+    eventCallback: (event) => {
+      if (typeof window === "undefined" || !event?.name) return;
+      window.dispatchEvent(new CustomEvent(PADDLE_EVENT, { detail: event.name }));
+    },
     // Checkout settings live here rather than at each `Checkout.open` call:
     // opening by `transactionId` takes no `settings` object, so this is the
     // only place they can be set.
