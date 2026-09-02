@@ -68,3 +68,23 @@ export function nextMonth(slug: MonthSlug): MonthSlug {
   const i = monthIndex(slug);
   return MONTH_SLUGS[(i + 1) % 12];
 }
+
+/**
+ * Days per calendar month, non-leap. Used to turn the pipeline's mm/day
+ * rainfall into the mm/month the rainfall chart labels its axis with.
+ * A leap day moves a February total by ~3%, which is inside the noise of a
+ * ten-year mean and well under the chart's one-millimetre resolution.
+ */
+export const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+
+/**
+ * mm/day → mm/month.
+ *
+ * The two shapes are a real trap: `CountryData.climate.r` is already
+ * mm/month (the pipeline converts it in `api_data.py`), while a region's
+ * `rl` is mm/day. Feeding `rl` straight to a `kind="rain"` chart draws a
+ * Dutch province as 2mm of rain in April under an axis labelled "mm".
+ */
+export function rainDayToMonth(perDay: readonly number[]): number[] {
+  return perDay.map((v, i) => v * DAYS_IN_MONTH[i]);
+}

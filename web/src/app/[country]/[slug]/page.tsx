@@ -3,7 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CreateAlertButton } from "@/components/alerts/create-alert-button";
-import { ClimateChart } from "@/components/charts";
+import {
+  ClimateChart,
+  type ClimateChartKind,
+  type MonthDatum,
+} from "@/components/charts";
 import {
   ActivitiesSection,
   ClimateGrid,
@@ -35,6 +39,7 @@ import {
   MONTH_SLUGS,
   isMonthSlug,
   monthIndex,
+  rainDayToMonth,
   type MonthSlug,
 } from "@/lib/months";
 import { DEFAULT_PREFERENCES, scoreLabel } from "@/lib/scoring";
@@ -259,8 +264,6 @@ function RegionView({
   const regionTempMean = region.tl.reduce((s, v) => s + v, 0) / region.tl.length;
   const delta = regionTempMean - countryTempMean;
 
-  const months = region.tl.map((v, i) => ({ month: i, value: v }));
-
   return (
     <>
       <PageHeader />
@@ -289,29 +292,7 @@ function RegionView({
 
         <RegionAdvisoryNotice region={region} countryName={country.name} />
 
-        <section className="border-b border-border bg-surface">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
-            <div className="mb-6">
-              <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
-                12-month temperature · {region.name}
-              </div>
-              <h2 className="mt-1 font-display text-[28px] font-medium leading-[1.2] text-text">
-                How the year moves in {region.name}
-              </h2>
-              <p className="mt-2 max-w-[680px] text-[14px] text-text-muted">
-                Monthly mean temperature from ERA5, aggregated over{" "}
-                {region.name} itself. The month-by-month scores below read this
-                region&rsquo;s own rainfall and sunshine too
-                {region.rl && region.sl ? "" : ", where the pipeline has them"}.
-              </p>
-            </div>
-            <ClimateChart
-              kind="temp"
-              months={months}
-              context={`${region.name}, ${country.name}`}
-            />
-          </div>
-        </section>
+        <RegionClimate country={country} region={region} />
 
         <ActivitiesSection
           country={country}
@@ -333,6 +314,85 @@ function RegionView({
         dangerouslySetInnerHTML={{ __html: regionJsonLd(country, region) }}
       />
     </>
+  );
+}
+
+/**
+ * The region's own climate — all of it, not just its temperature.
+ *
+ * A region row carries three series (`tl` °C, `rl` mm/day, `sl` hr/day) and
+ * this section used to draw only the first, so the rainfall and sunshine that
+ * the month-by-month scores below are computed from were never shown. Each
+ * chart renders only when the pipeline actually published that series; where
+ * it did not, `lib/regions.ts` scores the region against its country's figure,
+ * which is what the closing sentence says out loud rather than drawing a
+ * national series under a regional heading.
+ *
+ * `rl` is mm/**day**, while the country page's `climate.r` is already
+ * mm/**month** — hence `rainDayToMonth`. Passing `rl` through unconverted
+ * draws a Dutch province as 2mm of April rain under an axis labelled "mm".
+ */
+function RegionClimate({
+  country,
+  region,
+}: {
+  country: CountryData;
+  region: RegionRow;
+}) {
+  const toMonths = (values: readonly number[]): MonthDatum[] =>
+    values.map((value, month) => ({ month, value }));
+
+  const charts: { kind: ClimateChartKind; months: MonthDatum[] }[] = [
+    { kind: "temp", months: toMonths(region.tl) },
+  ];
+  if (region.rl) {
+    charts.push({ kind: "rain", months: toMonths(rainDayToMonth(region.rl)) });
+  }
+  if (region.sl) {
+    charts.push({ kind: "sun", months: toMonths(region.sl) });
+  }
+
+  const missing = [
+    region.rl ? null : "rainfall",
+    region.sl ? null : "sunshine",
+  ].filter((v): v is string => v !== null);
+
+  return (
+    <section className="border-b border-border bg-surface">
+      <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
+        <div className="mb-6">
+          <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
+            12-month climate · {region.name}
+          </div>
+          <h2 className="mt-1 font-display text-[28px] font-medium leading-[1.2] text-text">
+            How the year moves in {region.name}
+          </h2>
+          <p className="mt-2 max-w-[680px] text-[14px] text-text-muted">
+            Ten years of ERA5, aggregated over {region.name} itself rather than
+            over {country.name} as a whole — the same series the
+            month-by-month scores below are built from.
+            {missing.length > 0 ? (
+              <>
+                {" "}
+                The pipeline has no {missing.join(" or ")} series for this
+                region, so those scores fall back to the national figure.
+              </>
+            ) : null}
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {charts.map((chart) => (
+            <ClimateChart
+              key={chart.kind}
+              kind={chart.kind}
+              months={chart.months}
+              context={`${region.name}, ${country.name}`}
+              compact
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
