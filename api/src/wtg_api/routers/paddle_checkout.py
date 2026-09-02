@@ -27,6 +27,7 @@ rather than by price id.
 from __future__ import annotations
 
 import logging
+import time
 import uuid
 from typing import Any
 
@@ -73,7 +74,87 @@ async def prices() -> PaddlePricesResponse:
         for plan, price in ((p, _price_for(p)) for p in Plan)
         if price
     }
-    return PaddlePricesResponse(prices=configured, sandbox=s.paddle_sandbox)
+    formatted = await _formatted_base_prices(
+        api_base=s.paddle_api_base_url,
+        api_key=s.paddle_api_key,
+        price_ids=configured,
+    )
+    return PaddlePricesResponse(
+        prices=configured, formatted=formatted, sandbox=s.paddle_sandbox
+    )
+
+
+# Paddle's own formatted amounts, cached in-process. Prices change roughly
+# never, the pricing page is public and cacheable, and asking Paddle on every
+# render would put an outbound HTTP call in front of an anonymous page.
+_PRICE_CACHE: dict[str, tuple[float, dict[str, str]]] = {}
+_PRICE_CACHE_TTL = 300.0
+
+
+async def _formatted_base_prices(
+    *, api_base: str, api_key: str, price_ids: dict[str, str]
+) -> dict[str, str]:
+    """`{plan: "€2.99"}` from Paddle, or `{}` if it cannot be reached.
+
+    Empty is a supported answer, not an error: the web falls back to its own
+    copy rather than rendering a pricing page with a hole in it. What it must
+    never do is invent a number, which is the whole point of sourcing this
+    from Paddle instead of from a constant somebody edits by hand.
+    """
+    if not api_key or not price_ids:
+        return {}
+
+    key = "|".join(sorted(price_ids.values()))
+    hit = _PRICE_CACHE.get(key)
+    if hit and (time.monotonic() - hit[0]) < _PRICE_CACHE_TTL:
+        return hit[1]
+
+    body = {
+        "items": [{"price_id": pid, "quantity": 1} for pid in price_ids.values()]
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            res = await http.post(
+                f"{api_base}/pricing-preview",
+                json=body,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
+            )
+    except httpx.HTTPError:
+        logger.warning("paddle.pricing_preview.transport_error")
+        return {}
+
+    if res.status_code >= 400:
+        logger.warning(
+            "paddle.pricing_preview.rejected", extra={"status": res.status_code}
+        )
+        return {}
+
+    payload = res.json()
+    data = payload.get("data") if isinstance(payload, dict) else None
+    details = data.get("details") if isinstance(data, dict) else None
+    line_items = details.get("line_items") if isinstance(details, dict) else None
+    if not isinstance(line_items, list):
+        return {}
+
+    by_price: dict[str, str] = {}
+    for item in line_items:
+        if not isinstance(item, dict):
+            continue
+        price = item.get("price")
+        totals = item.get("formatted_totals")
+        pid = price.get("id") if isinstance(price, dict) else None
+        total = totals.get("total") if isinstance(totals, dict) else None
+        if isinstance(pid, str) and isinstance(total, str):
+            by_price[pid] = total
+
+    out = {
+        plan: by_price[pid] for plan, pid in price_ids.items() if pid in by_price
+    }
+    _PRICE_CACHE[key] = (time.monotonic(), out)
+    return out
 
 
 @router.post("/checkout-url", response_model=PaddleCheckoutResponse)

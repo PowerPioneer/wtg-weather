@@ -4,6 +4,7 @@ import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import { featuredCountries } from "@/lib/featured";
 import { MONTH_NAMES, MONTH_SLUGS } from "@/lib/months";
+import { PREMIUM_PRICE_MONTHLY } from "@/components/upgrade";
 
 /**
  * Landing page. Keeps a lightweight hero plus a "featured countries" grid so
@@ -64,7 +65,7 @@ export default async function HomePage() {
                   href="/pricing"
                   className="inline-flex items-center rounded-md border border-border bg-surface px-5 py-3 text-[14px] font-medium text-text hover:bg-surface-2"
                 >
-                  See pricing · €2.99/mo
+                  {`See pricing · ${PREMIUM_PRICE_MONTHLY}`}
                 </Link>
               </div>
             </div>

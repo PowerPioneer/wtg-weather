@@ -17,10 +17,31 @@
 import type { PaddlePlan } from "@/lib/paddle";
 import type { Tier } from "@/lib/types";
 
+/**
+ * The Premium price, as a display string.
+ *
+ * **This is a fallback, not the source of truth.** Paddle is — the API serves
+ * its formatted amount from `/api/paddle/prices` and the pricing page renders
+ * that; `TierPrice` then localises per visitor with `PricePreview()`. This
+ * constant is what the server renders when Paddle cannot be reached, and what
+ * copy embedded in prose falls back to.
+ *
+ * It exists as one constant because the same number used to be typed out in
+ * twelve places across eight files, and drifted twice — see the notes in
+ * `account/agency-billing.tsx` (€49/€149 against the pricing page's €39/€99)
+ * and `onboarding/step-premium.tsx` (€89 for Pro). One wrong price on one
+ * surface is a customer quoting it back at you.
+ *
+ * Keep it in step with the Paddle price it mirrors; everything below reads it.
+ */
+export const PREMIUM_PRICE = "€2.99";
+/** The same, with the interval — the form most copy wants. */
+export const PREMIUM_PRICE_MONTHLY = `${PREMIUM_PRICE}/mo`;
+
 export const PRICING_HERO = {
   eyebrow: "Pricing",
   headline: "Plan trips around the weather you actually like.",
-  sub: "Ten years of ERA5 climate data and six-government travel advisories in one map. Free to explore. €2.99/mo to go deeper.",
+  sub: `Ten years of ERA5 climate data and six-government travel advisories in one map. Free to explore. ${PREMIUM_PRICE_MONTHLY} to go deeper.`,
 } as const;
 
 export const PREMIUM_COPY = {
@@ -46,7 +67,7 @@ export const UPGRADE_PROMPTS = {
   alerts: {
     title: "Alerts are a Premium feature.",
     body: "Get an email the moment a destination starts matching your preferences — no need to keep checking back.",
-    cta: "See Premium · €2.99/mo",
+    cta: `See Premium · ${PREMIUM_PRICE_MONTHLY}`,
   },
 } as const;
 
@@ -63,7 +84,7 @@ export type UpgradePromptId = keyof typeof UPGRADE_PROMPTS;
  */
 export const CHECKOUT_COPY = {
   /** Primary label. Matches `TIERS.premium.cta.label` by construction below. */
-  cta: "Try Premium · €2.99/mo",
+  cta: `Try Premium · ${PREMIUM_PRICE_MONTHLY}`,
   pending: "Opening checkout…",
   /** Shown when `requestCheckoutUrl` fails for any reason but a missing session. */
   error: "Couldn't open checkout. Try again in a moment.",
@@ -94,7 +115,7 @@ export type PremiumFeatureId = keyof typeof PREMIUM_FEATURE_COPY;
 
 /** Footnote under the display-mode picker when the session is not entitled. */
 export const DISPLAY_MODE_UPSELL =
-  "Unlock all 10 variables, saved trips, percentile bands, and no ads for €2.99/mo.";
+  `Unlock all 10 variables, saved trips, percentile bands, and no ads for ${PREMIUM_PRICE_MONTHLY}.`;
 
 /**
  * Copy for the two Paddle return pages. The success page polls `/api/me`
@@ -154,7 +175,7 @@ const TIERS: readonly TierEntry[] = [
     featured: true,
     price: { monthly: 2.99, yearly: 24, suffix: "/mo" },
     yearlyNote: "€24/yr — save 33%",
-    cta: { label: "Try Premium · €2.99/mo", kind: "primary" },
+    cta: { label: `Try Premium · ${PREMIUM_PRICE_MONTHLY}`, kind: "primary" },
     subline: "Everything in Free, plus:",
     featuredBullets: [
       "Admin-2 (district) deep zoom",
@@ -273,7 +294,7 @@ export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [
 
 export const PRICING_FAQ: readonly { q: string; a: string }[] = [
   {
-    q: "What does the €2.99/mo actually unlock?",
+    q: `What does the ${PREMIUM_PRICE_MONTHLY} actually unlock?`,
     a: "Deeper zoom (admin-2 districts, not just countries), four extra variables (snow, sea-surface temperature, heat index, humidity), percentile bands on every chart so you can see variability not just averages, the per-government breakdown of travel advisories, PDF export of your match reports, saved trips, email alerts, and no ads.",
   },
   {

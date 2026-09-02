@@ -133,6 +133,11 @@ async def test_prices_endpoint_lists_only_configured_plans(
     # Sold by "contact sales" — no price id, so nothing to preview.
     assert "agency_enterprise" not in body["prices"]
     assert "free" not in body["prices"]
+    # No API key in the test settings, so Paddle is never called and the
+    # formatted amounts come back empty rather than invented. The web treats
+    # that as "use your own copy", which is the only honest fallback: a price
+    # this endpoint made up would be a price nobody is charged.
+    assert body["formatted"] == {}
 
 
 @pytest.mark.asyncio

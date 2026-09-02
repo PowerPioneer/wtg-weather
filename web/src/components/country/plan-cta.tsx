@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PREMIUM_PRICE } from "@/components/upgrade";
 
 /**
  * Bottom-of-page CTA band. Dark ink treatment matches the Final-design
@@ -9,7 +10,7 @@ export function PlanCta({
   primaryHref = "/map",
   primaryLabel = "Open the map",
   secondaryHref = "/pricing",
-  secondaryLabel = "Try Premium · €2.99",
+  secondaryLabel = `Try Premium · ${PREMIUM_PRICE}`,
 }: {
   headline?: string;
   primaryHref?: string;

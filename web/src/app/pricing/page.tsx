@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { getPaddlePriceIds } from "@/lib/paddle-prices";
+import { getPaddlePricing } from "@/lib/paddle-prices";
 
 import { PageFooter, PageHeader } from "@/components/layout";
 import {
   CHECKOUT_COPY,
+  PREMIUM_PRICE_MONTHLY,
   PRICING_FAQ,
   PRICING_HERO,
   TRUST_SIGNALS,
@@ -15,7 +16,7 @@ import { canonical } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Pricing · Atlas Weather",
   description:
-    "Free forever for country-level climate and combined safety advisories. Consumer Premium at €2.99/mo unlocks district-level zoom, percentile bands, four extra variables, and PDF export.",
+    `Free forever for country-level climate and combined safety advisories. Consumer Premium at ${PREMIUM_PRICE_MONTHLY} unlocks district-level zoom, percentile bands, four extra variables, and PDF export.`,
   alternates: { canonical: canonical("/pricing") },
 };
 
@@ -36,7 +37,7 @@ export default async function PricingPage({
   // source of truth with `PADDLE_PRICE_*`. They are only for display —
   // `PricePreview` needs them in the browser — and buying still goes through
   // `/api/paddle/checkout-url`, which is where the checks are.
-  const priceIds = await getPaddlePriceIds();
+  const pricing = await getPaddlePricing();
   // Where `/upgrade` sends a visitor whose checkout could not be opened —
   // the no-JS path has no inline error state of its own, so it comes back here
   // with something to read rather than to a page that looks like the click
@@ -76,7 +77,12 @@ export default async function PricingPage({
 
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {tiers.map((t) => (
-                <TierCard key={t.id} tier={t} priceId={priceIds[t.id]} />
+                <TierCard
+                  key={t.id}
+                  tier={t}
+                  priceId={pricing[t.id]?.priceId}
+                  formattedPrice={pricing[t.id]?.formatted}
+                />
               ))}
             </div>
           </div>

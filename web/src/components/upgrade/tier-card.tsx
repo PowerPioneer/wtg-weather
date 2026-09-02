@@ -27,6 +27,13 @@ export type TierCardProps = {
   tier: Tier;
   /** Paddle price id for this tier, when it has a purchasable one. */
   priceId?: string;
+  /**
+   * Paddle's own formatted base price, fetched server-side. Preferred over the
+   * static figure in `copy.ts` so the server-rendered page — the one crawlers
+   * and JS-off visitors get — shows a price that came from Paddle rather than
+   * one maintained by hand. `TierPrice` still localises over the top of it.
+   */
+  formattedPrice?: string;
 };
 
 /**
@@ -65,9 +72,13 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-export function TierCard({ tier, priceId }: TierCardProps) {
+export function TierCard({ tier, priceId, formattedPrice }: TierCardProps) {
   const featured = Boolean(tier.featured);
-  const { currency, main, suffix } = staticPrice(tier);
+  // Paddle first, our own copy only if Paddle could not be reached.
+  const fallback = staticPrice(tier);
+  const { currency, main, suffix } = formattedPrice
+    ? { currency: undefined, main: formattedPrice, suffix: tier.price.suffix || "/mo" }
+    : fallback;
 
   return (
     <article

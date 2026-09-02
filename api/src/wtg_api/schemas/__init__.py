@@ -588,6 +588,12 @@ class PaddlePricesResponse(BaseModel):
     """
 
     prices: dict[str, str]
+    #: Paddle's own formatted base price per plan, e.g. `{"consumer_premium":
+    #: "€2.99"}`. In the account's base currency, not the visitor's — the
+    #: browser localises per-visitor with `PricePreview()`. This is what the
+    #: server-rendered copy shows, so that a price appears in exactly one
+    #: place: Paddle. Empty when Paddle could not be reached.
+    formatted: dict[str, str]
     sandbox: bool
 
 

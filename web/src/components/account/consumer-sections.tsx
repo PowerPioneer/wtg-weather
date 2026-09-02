@@ -2,7 +2,12 @@ import Link from "next/link";
 
 import { ScoreBadge } from "@/components/match/score-badge";
 import { UnitToggle } from "@/components/units";
-import { CHECKOUT_COPY, UpgradeButton } from "@/components/upgrade";
+import {
+  CHECKOUT_COPY,
+  PREMIUM_PRICE,
+  PREMIUM_PRICE_MONTHLY,
+  UpgradeButton,
+} from "@/components/upgrade";
 import type { BillingSummary } from "@/lib/billing-server";
 import { cn } from "@/lib/cn";
 import { firstName, monthYear, planLabel } from "@/lib/session-user";
@@ -80,7 +85,7 @@ export function ConsumerOverview({ session, account }: Props) {
             href="/pricing"
             className="rounded-sm bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Upgrade · €2.99/mo →
+            {`Upgrade · ${PREMIUM_PRICE_MONTHLY} →`}
           </Link>
         ) : (
           <a
@@ -379,7 +384,7 @@ export function ConsumerBilling({ session, billing }: Props) {
     <>
       <SectionHead
         eyebrow="Billing"
-        title={isFree ? "You're on Free." : "Premium · €2.99 / month"}
+        title={isFree ? "You're on Free." : `Premium · ${PREMIUM_PRICE} / month`}
         sub={
           isFree
             ? "Upgrade for unlimited trips, four extra climate variables, and email alerts."
@@ -394,7 +399,7 @@ export function ConsumerBilling({ session, billing }: Props) {
           sub={
             isFree
               ? "€0 · forever"
-              : ["€2.99 / month", since && `since ${since}`].filter(Boolean).join(" · ")
+              : [`${PREMIUM_PRICE} / month`, since && `since ${since}`].filter(Boolean).join(" · ")
           }
         />
         <BillingCard

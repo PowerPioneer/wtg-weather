@@ -26,9 +26,23 @@ const PLAN_BY_TIER: Partial<Record<TierId, string>> = {
   // no price id, so neither appears here and both fall back to static copy.
 };
 
-type PricesResponse = { prices?: Record<string, string> };
+type PricesResponse = {
+  prices?: Record<string, string>;
+  formatted?: Record<string, string>;
+};
 
-export async function getPaddlePriceIds(): Promise<Partial<Record<TierId, string>>> {
+export type TierPricing = {
+  /** Paddle price id, for the client-side `PricePreview()` call. */
+  priceId?: string;
+  /**
+   * Paddle's own formatted base price, e.g. "€2.99". Server-rendered, so the
+   * no-JS and crawler view shows a real Paddle price rather than a number
+   * maintained by hand. Absent when Paddle could not be reached.
+   */
+  formatted?: string;
+};
+
+export async function getPaddlePricing(): Promise<Partial<Record<TierId, TierPricing>>> {
   let body: PricesResponse | null = null;
   try {
     const res = await fetch(`${INTERNAL_API_URL}/api/paddle/prices`, {
@@ -46,10 +60,17 @@ export async function getPaddlePriceIds(): Promise<Partial<Record<TierId, string
   }
 
   const prices = body?.prices ?? {};
-  const out: Partial<Record<TierId, string>> = {};
+  const formatted = body?.formatted ?? {};
+  const out: Partial<Record<TierId, TierPricing>> = {};
   for (const [tier, plan] of Object.entries(PLAN_BY_TIER) as [TierId, string][]) {
     const id = prices[plan];
-    if (typeof id === "string" && id) out[tier] = id;
+    const label = formatted[plan];
+    if (typeof id === "string" && id) {
+      out[tier] = {
+        priceId: id,
+        formatted: typeof label === "string" && label ? label : undefined,
+      };
+    }
   }
   return out;
 }
