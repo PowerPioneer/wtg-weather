@@ -68,6 +68,21 @@ services:
       SESSION_SECRET: ${SESSION_SECRET}
       TILE_SIGNING_SECRET: ${TILE_SIGNING_SECRET}
       PADDLE_WEBHOOK_SECRET: ${PADDLE_WEBHOOK_SECRET}
+      # The rest of the Paddle configuration. Root `.env` only *interpolates*
+      # into this file — a variable reaches the container solely because it is
+      # named here — so these were silently absent while sitting correctly in
+      # `.env`, and `Settings` fell back to its defaults: an empty API key
+      # (every checkout 503s) and placeholder `pri_sandbox_*` ids.
+      PADDLE_API_KEY: ${PADDLE_API_KEY}
+      # Defaulted to sandbox, and the direction matters: an unset value must
+      # not put the API on the live account. Note this has to move in step
+      # with the web's NEXT_PUBLIC_PADDLE_ENV — the API creates the
+      # transaction and the browser opens it, so if they disagree the browser
+      # asks the wrong account for an id it has never heard of.
+      PADDLE_SANDBOX: ${PADDLE_SANDBOX:-true}
+      PADDLE_PRICE_CONSUMER_PREMIUM: ${PADDLE_PRICE_CONSUMER_PREMIUM}
+      PADDLE_PRICE_AGENCY_STARTER: ${PADDLE_PRICE_AGENCY_STARTER}
+      PADDLE_PRICE_AGENCY_PRO: ${PADDLE_PRICE_AGENCY_PRO}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER}

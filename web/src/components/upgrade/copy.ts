@@ -173,8 +173,10 @@ const TIERS: readonly TierEntry[] = [
     shortName: "Premium",
     eyebrow: "Most travellers",
     featured: true,
-    price: { monthly: 2.99, yearly: 24, suffix: "/mo" },
-    yearlyNote: "€24/yr — save 33%",
+    // €2.99/Monthly in Paddle ("Individu"). `yearly` is null for the same
+    // reason as the agency tiers: Paddle holds no yearly price, so the €24
+    // that used to sit here was a discount nobody could actually buy.
+    price: { monthly: 2.99, yearly: null, suffix: "/mo" },
     cta: { label: `Try Premium · ${PREMIUM_PRICE_MONTHLY}`, kind: "primary" },
     subline: "Everything in Free, plus:",
     featuredBullets: [
@@ -201,7 +203,9 @@ const TIERS: readonly TierEntry[] = [
     eyebrow: "Small agencies",
     agency: true,
     hidden: true,
-    price: { monthly: 39, yearly: Math.round(39 * 12 * 0.83), suffix: "/mo" },
+    // €8.00/Monthly in Paddle ("Klein zakelijk"). `yearly` is null because
+    // no yearly price exists in Paddle — a number here would be invented.
+    price: { monthly: 8, yearly: null, suffix: "/mo" },
     seats: "3 seats included",
     cta: { label: "Start 14-day trial", kind: "outline" },
     subline: "Everything in Premium for 3 seats, plus:",
@@ -219,7 +223,8 @@ const TIERS: readonly TierEntry[] = [
     eyebrow: "Growing agencies",
     agency: true,
     hidden: true,
-    price: { monthly: 99, yearly: Math.round(99 * 12 * 0.83), suffix: "/mo" },
+    // €20.00/Monthly in Paddle ("Groot zakelijk"). See above re `yearly`.
+    price: { monthly: 20, yearly: null, suffix: "/mo" },
     seats: "10 seats included",
     cta: { label: "Start 14-day trial", kind: "outline" },
     subline: "Everything in Starter, plus:",
