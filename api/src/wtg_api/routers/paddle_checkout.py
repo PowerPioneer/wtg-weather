@@ -38,7 +38,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from wtg_api.config import get_settings
 from wtg_api.deps import current_user, db_session
 from wtg_api.models import Membership, Plan, User
-from wtg_api.schemas import PaddleCheckoutRequest, PaddleCheckoutResponse
+from wtg_api.schemas import (
+    PaddleCheckoutRequest,
+    PaddleCheckoutResponse,
+    PaddlePricesResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +56,24 @@ def _price_for(plan: Plan) -> str | None:
         Plan.agency_starter: s.paddle_price_agency_starter,
         Plan.agency_pro: s.paddle_price_agency_pro,
     }.get(plan)
+
+
+@router.get("/prices", response_model=PaddlePricesResponse)
+async def prices() -> PaddlePricesResponse:
+    """Price ids for the pricing page's `Paddle.PricePreview()` call.
+
+    Unauthenticated: the pricing page is public and is the whole point. Only
+    plans that actually have a price id are listed, so a plan sold by "contact
+    sales" (`agency_enterprise`) simply does not appear and the page has
+    nothing to preview for it.
+    """
+    s = get_settings()
+    configured = {
+        plan.value: price
+        for plan, price in ((p, _price_for(p)) for p in Plan)
+        if price
+    }
+    return PaddlePricesResponse(prices=configured, sandbox=s.paddle_sandbox)
 
 
 @router.post("/checkout-url", response_model=PaddleCheckoutResponse)
@@ -98,12 +120,22 @@ async def checkout_url(
             "paddle checkout is not configured in this environment",
         )
 
+    # Prefills the email at checkout. Best-effort: a failure here costs the
+    # buyer one field of typing, so it must not cost them the checkout.
+    # `Checkout.open` takes `transactionId` *instead of* an items array and
+    # will not accept a `customer` alongside it, so this is the only place the
+    # prefill can come from.
+    customer_id = await _find_or_create_customer(
+        api_base=s.paddle_api_base_url, api_key=s.paddle_api_key, email=user.email
+    )
+
     created = await _create_transaction(
         api_base=s.paddle_api_base_url,
         api_key=s.paddle_api_key,
         price_id=price_id,
         custom_data=custom_data,
         payment_link_url=s.paddle_payment_link_url,
+        customer_id=customer_id,
     )
     if created is None:
         raise HTTPException(
@@ -119,6 +151,57 @@ async def checkout_url(
     )
 
 
+async def _find_or_create_customer(
+    *, api_base: str, api_key: str, email: str
+) -> str | None:
+    """The Paddle customer id for this email, creating one if needed.
+
+    Looked up before creating rather than relying on the 409 that a duplicate
+    email returns, because the lookup is the common case after the first
+    purchase and reading the conflict body to recover the existing id is more
+    fragile than just asking.
+
+    Returns None on any failure. The caller treats a missing customer as "let
+    the checkout collect the email", which is exactly what happened before
+    this existed — never as a reason to fail the checkout.
+    """
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            found = await http.get(
+                f"{api_base}/customers",
+                params={"email": email, "status": "active"},
+                headers=headers,
+            )
+            if found.status_code < 400:
+                data = found.json().get("data")
+                if isinstance(data, list) and data:
+                    first = data[0]
+                    existing = first.get("id") if isinstance(first, dict) else None
+                    if isinstance(existing, str):
+                        return existing
+
+            made = await http.post(
+                f"{api_base}/customers", json={"email": email}, headers=headers
+            )
+    except httpx.HTTPError:
+        # No email in the log line — `.claude/rules/security.md` forbids it.
+        logger.warning("paddle.customer.transport_error")
+        return None
+
+    if made.status_code >= 400:
+        logger.warning("paddle.customer.rejected", extra={"status": made.status_code})
+        return None
+
+    payload = made.json()
+    data = payload.get("data") if isinstance(payload, dict) else None
+    new_id = data.get("id") if isinstance(data, dict) else None
+    return new_id if isinstance(new_id, str) else None
+
+
 async def _create_transaction(
     *,
     api_base: str,
@@ -126,6 +209,7 @@ async def _create_transaction(
     price_id: str,
     custom_data: dict[str, str],
     payment_link_url: str,
+    customer_id: str | None = None,
 ) -> tuple[str, str | None] | None:
     """POST /transactions, returning `(transaction_id, checkout_url)`.
 
@@ -133,16 +217,17 @@ async def _create_transaction(
     on the empty test key, and the tests that exercise this monkeypatch it, the
     same arrangement `routers/billing.py::_create_portal_session` uses.
 
-    No `customer_id` is sent, so Paddle leaves the transaction `draft` and the
-    checkout collects the email and address itself. Passing one would mean a
-    find-or-create round trip against `/customers` and a 409 conflict path for
-    an email Paddle already knows; the webhook stores `paddle_customer_id` off
-    the event anyway, which is all the portal needs.
+    `customer_id` is optional and the transaction stays `draft` either way —
+    Paddle only marks one `ready` once it has an address too, which the
+    checkout collects. With a customer the email is prefilled; without, the
+    buyer types it.
     """
     body: dict[str, Any] = {
         "items": [{"price_id": price_id, "quantity": 1}],
         "custom_data": custom_data,
     }
+    if customer_id:
+        body["customer_id"] = customer_id
     # Names the page we expect Paddle to send customers to, rather than
     # depending on the dashboard's default payment link matching this repo.
     if payment_link_url:

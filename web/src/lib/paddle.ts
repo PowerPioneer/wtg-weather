@@ -22,7 +22,7 @@
 
 import { initializePaddle, type Paddle } from "@paddle/paddle-js";
 
-import { PADDLE_CLIENT_TOKEN } from "@/lib/env";
+import { PADDLE_CLIENT_TOKEN, PADDLE_ENV, SITE_URL } from "@/lib/env";
 
 export type PaddlePlan = "consumer_premium" | "agency_starter" | "agency_pro";
 
@@ -79,6 +79,21 @@ export class CheckoutUnavailable extends Error {
   }
 }
 
+/**
+ * Thrown when Paddle configuration is present but wrong.
+ *
+ * Separate from `CheckoutUnavailable` because the operator response differs:
+ * unavailable means a value never reached the build; misconfigured means two
+ * values disagree and one of them points at the wrong Paddle account. The
+ * message is for logs and developers and is never rendered to a buyer.
+ */
+export class CheckoutMisconfigured extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CheckoutMisconfigured";
+  }
+}
+
 export type RequestCheckoutInput = {
   plan: PaddlePlan;
   /** Agency plans only — pass the org the seats should be assigned to. */
@@ -126,31 +141,97 @@ export function resetPaddleForTests(): void {
 }
 
 /**
- * Sandbox or production, read off the token rather than configured separately.
+ * Sandbox or production. Read from configuration and never guessed.
  *
- * Paddle stamps the environment into the client-side token — `test_…` for
- * sandbox, `live_…` for production — so a second setting could only ever agree
- * with it or be a bug. A mismatched pair fails inside Paddle.js with an opaque
- * error, which is a poor way to learn that two env vars disagree.
+ * There is no default on purpose. Defaulting either way is silent: the wrong
+ * account has its own prices, its own customers and — one way round — real
+ * money, and nothing about the failure would say so.
  *
- * The API reports its own environment as `PaddleCheckout.sandbox`, derived
- * from `PADDLE_SANDBOX`. The two are independent settings and they should
- * match; if they ever do not, the transaction simply will not be found,
- * because a sandbox transaction id means nothing to production Paddle.
+ * Paddle also stamps the environment into the token itself (`test_…` sandbox,
+ * `live_…` production), so the two are cross-checked here. A mismatch is a
+ * misconfiguration that would otherwise surface deep inside Paddle.js as an
+ * opaque error, or worse, as a checkout against the wrong account.
  */
 export function paddleEnvironment(): "sandbox" | "production" {
-  return PADDLE_CLIENT_TOKEN.startsWith("test_") ? "sandbox" : "production";
+  if (!PADDLE_ENV) {
+    throw new CheckoutMisconfigured(
+      "NEXT_PUBLIC_PADDLE_ENV is not set. It must be 'sandbox' or 'production' — " +
+        "there is deliberately no default.",
+    );
+  }
+  if (PADDLE_ENV !== "sandbox" && PADDLE_ENV !== "production") {
+    throw new CheckoutMisconfigured(
+      `NEXT_PUBLIC_PADDLE_ENV is "${PADDLE_ENV}"; expected 'sandbox' or 'production'.`,
+    );
+  }
+  const fromToken = PADDLE_CLIENT_TOKEN.startsWith("test_")
+    ? "sandbox"
+    : "production";
+  if (PADDLE_CLIENT_TOKEN && fromToken !== PADDLE_ENV) {
+    throw new CheckoutMisconfigured(
+      `NEXT_PUBLIC_PADDLE_ENV says "${PADDLE_ENV}" but the client token is a ` +
+        `${fromToken} token. Refusing to open a checkout against the wrong account.`,
+    );
+  }
+  return PADDLE_ENV;
 }
 
 /** Paddle.js, initialised once per page and reused. */
 export function getPaddle(): Promise<Paddle | undefined> {
   if (paddle) return paddle;
   if (!PADDLE_CLIENT_TOKEN) return Promise.reject(new CheckoutUnavailable());
+  let environment: "sandbox" | "production";
+  try {
+    environment = paddleEnvironment();
+  } catch (err) {
+    return Promise.reject(err);
+  }
   paddle = initializePaddle({
     token: PADDLE_CLIENT_TOKEN,
-    environment: paddleEnvironment(),
+    environment,
+    // Checkout settings live here rather than at each `Checkout.open` call:
+    // opening by `transactionId` takes no `settings` object, so this is the
+    // only place they can be set.
+    checkout: {
+      settings: {
+        displayMode: "overlay",
+        variant: "one-page",
+        successUrl: `${SITE_URL}/welcome`,
+      },
+    },
   });
   return paddle;
+}
+
+/**
+ * Country-localized prices for display, straight from Paddle.
+ *
+ * No country is passed. There is no geo header to read — this runs behind
+ * Caddy and a CDN, not Vercel — and `PricePreview` resolves the visitor's
+ * location from their IP when asked for none, which is both more accurate
+ * than a header we do not have and correct for a page served from cache.
+ *
+ * Returns Paddle's own `formattedTotals.total` verbatim, keyed by price id.
+ * These strings are already localised and already carry their currency
+ * symbol and separators; formatting them again is how you turn "€2.99" into
+ * "$2.99" or "3". Nothing here does arithmetic on a price.
+ */
+export async function previewPrices(
+  priceIds: readonly string[],
+): Promise<Record<string, string>> {
+  if (priceIds.length === 0) return {};
+  const client = await getPaddle();
+  if (!client) throw new CheckoutUnavailable();
+
+  const preview = await client.PricePreview({
+    items: priceIds.map((priceId) => ({ priceId, quantity: 1 })),
+  });
+
+  const out: Record<string, string> = {};
+  for (const line of preview.data.details.lineItems) {
+    out[line.price.id] = line.formattedTotals.total;
+  }
+  return out;
 }
 
 /** Open the Paddle overlay for a transaction the API already created. */

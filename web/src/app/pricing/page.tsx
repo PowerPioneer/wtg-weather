@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getPaddlePriceIds } from "@/lib/paddle-prices";
 
 import { PageFooter, PageHeader } from "@/components/layout";
 import {
@@ -23,16 +23,20 @@ export const metadata: Metadata = {
 // for every tweak. Pricing values themselves come from code, not CMS.
 export const revalidate = 2592000;
 
-type Search = { billing?: "monthly" | "yearly"; checkout?: string };
+type Search = { checkout?: string };
 
 export default async function PricingPage({
   searchParams,
 }: {
   searchParams: Promise<Search>;
 }) {
-  const { billing: billingParam, checkout } = await searchParams;
-  const billing: "monthly" | "yearly" = billingParam === "yearly" ? "yearly" : "monthly";
+  const { checkout } = await searchParams;
   const tiers = consumerTiers();
+  // Price ids come from the API rather than this app's env so there is one
+  // source of truth with `PADDLE_PRICE_*`. They are only for display —
+  // `PricePreview` needs them in the browser — and buying still goes through
+  // `/api/paddle/checkout-url`, which is where the checks are.
+  const priceIds = await getPaddlePriceIds();
   // Where `/upgrade` sends a visitor whose checkout could not be opened —
   // the no-JS path has no inline error state of its own, so it comes back here
   // with something to read rather than to a page that looks like the click
@@ -56,36 +60,6 @@ export default async function PricingPage({
             </div>
 
             <div className="mt-8 flex items-center gap-3">
-              <div className="inline-flex items-center gap-0 rounded-full border border-border bg-surface p-1 font-sans">
-                <Link
-                  href="/pricing"
-                  replace
-                  className={
-                    "rounded-full px-4 py-[7px] text-[13px] font-medium " +
-                    (billing === "monthly" ? "bg-primary text-primary-foreground" : "text-text")
-                  }
-                >
-                  Monthly
-                </Link>
-                <Link
-                  href="/pricing?billing=yearly"
-                  replace
-                  className={
-                    "rounded-full px-4 py-[7px] text-[13px] font-medium " +
-                    (billing === "yearly" ? "bg-primary text-primary-foreground" : "text-text")
-                  }
-                >
-                  Yearly
-                  <span
-                    className={
-                      "ml-1.5 text-[10px] font-semibold " +
-                      (billing === "yearly" ? "text-[#E0C98A]" : "text-accent-text")
-                    }
-                  >
-                    −33%
-                  </span>
-                </Link>
-              </div>
               <span className="font-mono text-[11.5px] text-text-muted">
                 Paddle handles VAT, invoices, and refunds.
               </span>
@@ -102,7 +76,7 @@ export default async function PricingPage({
 
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {tiers.map((t) => (
-                <TierCard key={t.id} tier={t} billing={billing} />
+                <TierCard key={t.id} tier={t} priceId={priceIds[t.id]} />
               ))}
             </div>
           </div>

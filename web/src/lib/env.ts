@@ -59,6 +59,14 @@ export const PLAUSIBLE_SRC =
 export const PADDLE_CLIENT_TOKEN =
   set(process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN) ?? "";
 
+// Which Paddle account we are talking to. Deliberately **not** defaulted: a
+// wrong guess here does not fail, it quietly transacts against the other
+// environment, and the sandbox and production accounts have different prices,
+// different customers and different money. `paddleEnvironment()` in
+// `lib/paddle.ts` requires this and cross-checks it against the token's own
+// `test_` / `live_` prefix, so the two cannot disagree in silence.
+export const PADDLE_ENV = set(process.env.NEXT_PUBLIC_PADDLE_ENV) ?? "";
+
 // PostHog — cloud, post-login. Loaded only when the user is signed in.
 export const POSTHOG_KEY = set(process.env.NEXT_PUBLIC_POSTHOG_KEY) ?? "";
 export const POSTHOG_HOST =

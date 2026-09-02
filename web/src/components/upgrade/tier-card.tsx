@@ -1,8 +1,18 @@
 /**
  * TierCard — server component. Renders a single pricing tier with the Atlas
  * treatment (featured tier gets dark ink background, accent ribbon, and
- * highlighted bullets). Billing period is a URL search param on the pricing
- * page so the whole experience stays zero-JS; no useState here.
+ * highlighted bullets).
+ *
+ * The price itself is the one client-side part: `TierPrice` swaps our static
+ * euro figure for Paddle's own country-localized string once `PricePreview()`
+ * answers. The card stays a server component so the page still renders whole
+ * without JS.
+ *
+ * There is no monthly/yearly split. Paddle holds exactly one price per plan,
+ * so a toggle could only ever have re-labelled the same charge — it used to
+ * do `Math.round(yearly / 12)` over hard-coded euros, which is both frontend
+ * price maths and wrong for anyone not paying in euros. Reinstate it when
+ * yearly `pri_` ids exist, driven by those, not by arithmetic.
  *
  * Visual source: web/design/pricing/PricingKit.jsx — TierCard().
  */
@@ -11,29 +21,24 @@ import { cn } from "@/lib/cn";
 import type { Tier } from "@/lib/types";
 import { PREMIUM_COPY } from "./copy";
 import { TierCta } from "./tier-cta";
-
-type Billing = "monthly" | "yearly";
+import { TierPrice } from "./tier-price";
 
 export type TierCardProps = {
   tier: Tier;
-  billing: Billing;
+  /** Paddle price id for this tier, when it has a purchasable one. */
+  priceId?: string;
 };
 
-function formatPrice(tier: Tier, billing: Billing): { currency?: string; main: string; suffix: string } {
+/**
+ * The statically-known price, used server-side and as the pre-Paddle fallback.
+ *
+ * No arithmetic: it prints the number `copy.ts` states. The `€` is ours and is
+ * dropped as soon as Paddle's localized string replaces the whole thing.
+ */
+function staticPrice(tier: Tier): { currency?: string; main: string; suffix: string } {
   if (tier.priceDisplay) return { main: tier.priceDisplay, suffix: "" };
   const monthly = tier.price.monthly;
-  const yearly = tier.price.yearly;
-
-  if (monthly === 0 && yearly === 0) return { main: "Free", suffix: "" };
-
-  if (billing === "yearly") {
-    if (tier.id === "premium") {
-      return { currency: "€", main: "2", suffix: "/mo" };
-    }
-    if (yearly != null) {
-      return { currency: "€", main: String(Math.round(yearly / 12)), suffix: tier.price.suffix || "/mo" };
-    }
-  }
+  if (monthly === 0) return { main: "Free", suffix: "" };
   if (monthly != null) {
     const amount = monthly % 1 === 0 ? monthly.toFixed(0) : monthly.toFixed(2);
     return { currency: "€", main: amount, suffix: tier.price.suffix || "/mo" };
@@ -60,9 +65,9 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-export function TierCard({ tier, billing }: TierCardProps) {
+export function TierCard({ tier, priceId }: TierCardProps) {
   const featured = Boolean(tier.featured);
-  const { currency, main, suffix } = formatPrice(tier, billing);
+  const { currency, main, suffix } = staticPrice(tier);
 
   return (
     <article
@@ -105,25 +110,27 @@ export function TierCard({ tier, billing }: TierCardProps) {
             featured ? "text-primary-foreground" : "text-text",
           )}
         >
-          {currency && <span className="text-[24px] font-medium">{currency}</span>}
-          <span
-            className={cn(
-              "font-medium tabular-nums",
-              featured ? "text-[48px] tracking-[-0.02em]" : "text-[36px] tracking-[-0.02em]",
-            )}
-          >
-            {main}
-          </span>
-          {suffix && (
+          <TierPrice priceId={priceId}>
+            {currency && <span className="text-[24px] font-medium">{currency}</span>}
             <span
               className={cn(
-                "ml-0.5 font-sans text-[13px] font-normal",
-                featured ? "text-[rgba(247,246,242,0.72)]" : "text-text-muted",
+                "font-medium tabular-nums",
+                featured ? "text-[48px] tracking-[-0.02em]" : "text-[36px] tracking-[-0.02em]",
               )}
             >
-              {suffix}
+              {main}
             </span>
-          )}
+            {suffix && (
+              <span
+                className={cn(
+                  "ml-0.5 font-sans text-[13px] font-normal",
+                  featured ? "text-[rgba(247,246,242,0.72)]" : "text-text-muted",
+                )}
+              >
+                {suffix}
+              </span>
+            )}
+          </TierPrice>
         </div>
         {tier.seats && (
           <div
@@ -133,14 +140,6 @@ export function TierCard({ tier, billing }: TierCardProps) {
             )}
           >
             {tier.seats}
-          </div>
-        )}
-        {tier.id === "premium" && billing === "yearly" && tier.yearlyNote && (
-          <div className="mt-1 text-[11.5px] text-[#E0C98A]">{tier.yearlyNote}</div>
-        )}
-        {tier.id === "premium" && billing === "monthly" && (
-          <div className="mt-1 text-[11.5px] text-[rgba(247,246,242,0.72)]">
-            or €24/yr · <span className="text-[#E0C98A]">save 33%</span>
           </div>
         )}
       </header>

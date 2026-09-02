@@ -571,6 +571,26 @@ class PaddleCheckoutRequest(BaseModel):
     organization_id: uuid.UUID | None = None
 
 
+class PaddlePricesResponse(BaseModel):
+    """The price ids the pricing page previews, keyed by plan.
+
+    Public on purpose. `Paddle.PricePreview()` runs in the browser — it has to,
+    because it localises against the *visitor's* IP and the page is served
+    through a CDN — so the ids reach the client either way. They are not
+    credentials: a price id can be previewed, but buying still goes through
+    `/api/paddle/checkout-url`, which is where the session and membership
+    checks live and where `custom_data` is stamped.
+
+    Served from here rather than baked into the web image so there is one
+    source of truth. The alternative was a second set of `NEXT_PUBLIC_` vars
+    duplicating `PADDLE_PRICE_*`, which would drift the first time only one
+    was updated.
+    """
+
+    prices: dict[str, str]
+    sandbox: bool
+
+
 class PaddleCheckoutResponse(BaseModel):
     """A Paddle transaction the caller may open a checkout against.
 

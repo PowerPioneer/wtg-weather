@@ -10,6 +10,7 @@ from tests.conftest import login
 from wtg_api.models import Organization, User
 
 TXN = "txn_01hv8zt3q9m2xk4c7wbn6yrfda"
+CUSTOMER = "ctm_01hv8zt3q9m2xk4c7wbn6yrfdb"
 CHECKOUT = f"http://localhost:3000/checkout/pay?_ptxn={TXN}"
 
 
@@ -27,8 +28,19 @@ def paddle_api(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
         sent.update(kwargs)
         return TXN, CHECKOUT
 
+    async def fake_customer(**kwargs: Any) -> str:
+        sent["customer_email"] = kwargs.get("email")
+        return CUSTOMER
+
     monkeypatch.setattr(
         "wtg_api.routers.paddle_checkout._create_transaction", fake_create
+    )
+    # Stubbed as well as `_create_transaction`: without this the endpoint makes
+    # a real HTTPS call to Paddle from the test suite, which
+    # `.claude/rules/testing.md` forbids. It passed anyway only because the
+    # helper swallows transport errors and returns None — an accidental pass.
+    monkeypatch.setattr(
+        "wtg_api.routers.paddle_checkout._find_or_create_customer", fake_customer
     )
     monkeypatch.setattr(
         "wtg_api.routers.paddle_checkout.get_settings",
@@ -95,6 +107,35 @@ async def test_checkout_stamps_custom_data_server_side(
 
 
 @pytest.mark.asyncio
+async def test_checkout_prefills_the_signed_in_email(
+    client: AsyncClient, user: User, paddle_api: dict[str, Any]
+) -> None:
+    """The buyer should not retype an address we already hold."""
+    login(client, user)
+    r = await client.post(
+        "/api/paddle/checkout-url", json={"plan": "consumer_premium"}
+    )
+    assert r.status_code == 200
+    assert paddle_api["customer_email"] == user.email
+    assert paddle_api["customer_id"] == CUSTOMER
+
+
+@pytest.mark.asyncio
+async def test_prices_endpoint_lists_only_configured_plans(
+    client: AsyncClient,
+) -> None:
+    """Public, unauthenticated, and silent about plans with no price."""
+    r = await client.get("/api/paddle/prices")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["sandbox"] is True
+    assert "consumer_premium" in body["prices"]
+    # Sold by "contact sales" — no price id, so nothing to preview.
+    assert "agency_enterprise" not in body["prices"]
+    assert "free" not in body["prices"]
+
+
+@pytest.mark.asyncio
 async def test_checkout_rejects_forged_org(
     client: AsyncClient, user: User, paddle_api: dict[str, Any]
 ) -> None:
@@ -154,8 +195,15 @@ async def test_checkout_paddle_failure_is_502(
     async def fake_create(**_: Any) -> None:
         return None
 
+    async def no_customer(**_: Any) -> None:
+        return None
+
     monkeypatch.setattr(
         "wtg_api.routers.paddle_checkout._create_transaction", fake_create
+    )
+    # Also stubbed, or this test reaches Paddle over the network.
+    monkeypatch.setattr(
+        "wtg_api.routers.paddle_checkout._find_or_create_customer", no_customer
     )
     monkeypatch.setattr(
         "wtg_api.routers.paddle_checkout.get_settings", _settings_with_key()
