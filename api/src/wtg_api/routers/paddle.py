@@ -188,6 +188,21 @@ async def paddle_webhook(
 
     org = await _subject_organization(session, payload, event_type)
     if org is None:
+        # A verified event we cannot attribute to anybody. For an activating
+        # event that is the worst outcome in this file — somebody has paid and
+        # nothing will unlock — and it used to return 200 and log nothing at
+        # all, so the first sign of it was a customer complaining. Warned about
+        # loudly, at a level that survives a production log filter; the
+        # response stays 200 because retrying will not find an owner either.
+        # No PII: an event type and the ids Paddle already sent us.
+        logger.warning(
+            "paddle.webhook.unattributed event_type=%s event_id=%s "
+            "user_id=%s organization_id=%s",
+            event_type,
+            event_id,
+            _extract_user_id(payload),
+            _extract_org_id(payload),
+        )
         await session.commit()
         return Response(status_code=status.HTTP_200_OK)
 
