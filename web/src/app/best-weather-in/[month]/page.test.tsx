@@ -12,6 +12,11 @@ const getCountry = vi.fn<(slug: string) => Promise<CountryData | null>>();
 vi.mock("@/lib/api-client", () => ({
   getCountryIndex: (...args: []) => getCountryIndex(...args),
   getCountry: (...args: [string]) => getCountry(...args),
+  // The page renders `PageHeader`, whose account CTA resolves the session in
+  // the browser — so every page rendering the header now reaches for
+  // `/api/me`. Anonymous is the right default here: these assertions are about
+  // the ranked list and its JSON-LD, not about who is reading it.
+  fetchMe: () => Promise.resolve(null),
 }));
 
 class NotFoundSignal extends Error {

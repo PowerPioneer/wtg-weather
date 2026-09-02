@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
+import { HeaderAccountLink } from "./header-account-link";
+
 type NavItem = { href: string; label: string };
 
 const NAV: readonly NavItem[] = [
@@ -73,12 +75,14 @@ export function PageHeader({ activePath }: { activePath?: string } = {}) {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/login"
-            className="rounded-md border border-border px-3 py-1.5 text-text hover:bg-surface-2"
-          >
-            Sign in
-          </Link>
+          {/*
+            `min-w` is not decoration: the label swaps from "Sign in" to
+            "Account" once the session resolves in the browser, and this is the
+            last item in a flex row, so an unreserved width would shove every
+            nav link sideways on load. Reserving the wider of the two labels
+            keeps that inside the CLS < 0.05 budget.
+          */}
+          <HeaderAccountLink className="inline-flex min-w-[4.75rem] justify-center rounded-md border border-border px-3 py-1.5 text-text hover:bg-surface-2" />
         </nav>
 
         <details className="group relative shrink-0 md:hidden">
@@ -116,12 +120,7 @@ export function PageHeader({ activePath }: { activePath?: string } = {}) {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/login"
-              className="mt-1 rounded-sm border border-border px-3 py-2.5 text-center text-[14px] font-medium text-text hover:bg-surface-2"
-            >
-              Sign in
-            </Link>
+            <HeaderAccountLink className="mt-1 block rounded-sm border border-border px-3 py-2.5 text-center text-[14px] font-medium text-text hover:bg-surface-2" />
           </nav>
         </details>
       </div>
