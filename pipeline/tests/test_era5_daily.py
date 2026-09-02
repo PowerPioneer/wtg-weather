@@ -219,3 +219,28 @@ def test_parse_year_range():
     assert era5_daily.parse_year_range("2020") == [2020]
     with pytest.raises(ValueError):
         era5_daily.parse_year_range("2025-2016")
+
+
+def test_a_year_request_is_satisfied_by_twelve_monthly_files(tmp_path):
+    """The resume seam across the mid-flight chunking change.
+
+    The first real run left 120 complete `t2m_max` monthly files behind. A
+    year-chunked resume must treat those as done rather than re-fetch them.
+    """
+    for m in range(1, 13):
+        era5_daily.target_path("t2m_max", 2020, m, base_dir=tmp_path).write_bytes(b"x")
+
+    client = FakeClient()
+    era5_daily.download([2020], ["t2m_max"], client=client, base_dir=tmp_path)
+    assert client.calls == [], "re-fetched a year that was already complete"
+
+
+def test_an_incomplete_year_is_still_fetched(tmp_path):
+    """Eleven months is not a year — the twelfth would be a hole in the data."""
+    for m in range(1, 12):
+        era5_daily.target_path("t2m_min", 2020, m, base_dir=tmp_path).write_bytes(b"x")
+
+    client = FakeClient()
+    era5_daily.download([2020], ["t2m_min"], client=client, base_dir=tmp_path)
+    assert len(client.calls) == 1
+    assert era5_daily.target_path("t2m_min", 2020, None, base_dir=tmp_path).exists()

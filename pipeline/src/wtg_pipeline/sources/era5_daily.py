@@ -192,6 +192,23 @@ def year_inputs(stem: str, year: int, base_dir: Path | None = None) -> list[Path
     ]
 
 
+def have_complete_year(stem: str, year: int, base_dir: Path | None = None) -> bool:
+    """Whether one (variable, year) is fully on disk, in either shape.
+
+    True for a whole-year file, and equally true for twelve monthly chunks.
+    Without this a year-chunked run would re-download every month the earlier
+    month-chunked run had already fetched — which for the first real run was
+    120 complete `t2m_max` files, about 8 GB and, at the queue rates that
+    forced the switch, most of a day.
+    """
+    whole = target_path(stem, year, None, base_dir=base_dir)
+    if _is_cache_hit(whole):
+        return True
+    return all(
+        _is_cache_hit(path) for path in year_paths(stem, year, base_dir=base_dir)
+    )
+
+
 def parse_year_range(spec: str) -> list[int]:
     """Parse ``"2016-2025"`` or ``"2020"`` into a sorted list of ints."""
     spec = spec.strip()
@@ -284,7 +301,14 @@ def download(
     total = len(plan)
     skipped = 0
     for idx, req in enumerate(plan, start=1):
-        if not force and _is_cache_hit(req.target):
+        # A year request is satisfied by twelve monthly files just as well as
+        # by one year file — see `have_complete_year`.
+        already = (
+            have_complete_year(req.daily.stem, req.year, base_dir=out_dir)
+            if req.month is None
+            else _is_cache_hit(req.target)
+        )
+        if not force and already:
             skipped += 1
             written.append(req.target)
             # One line per file is 840 lines of noise on a resume; the summary
