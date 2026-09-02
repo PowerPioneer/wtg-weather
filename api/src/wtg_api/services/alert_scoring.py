@@ -52,10 +52,20 @@ SUN_BUFFER = 1.5
 RAIN_MIN = 0.0
 SUN_MAX = 13.0
 
-DEFAULT_TEMP_MIN = 18.0
-DEFAULT_TEMP_MAX = 28.0
+# The daytime range's defaults. These are the pipeline's `t2m_max` bounds:
+# since the move to daily statistics the bundle's `t` is the mean daily
+# *maximum*, not a 24-hour mean, so the old 18–28 belonged to a variable that
+# no longer exists.
+DEFAULT_TEMP_MIN = 22.0
+DEFAULT_TEMP_MAX = 30.0
 DEFAULT_RAIN_MAX = 2.7
 DEFAULT_SUN_MIN = 6.0
+
+# The overnight band's defaults — the pipeline's `t2m_min` bounds, and the
+# web's `nightMin`/`nightMax` slider defaults. Used when an alert stores no
+# night of its own, which is every alert saved before temperature split.
+DEFAULT_NIGHT_MIN = 12.0
+DEFAULT_NIGHT_MAX = 22.0
 
 # Slider bounds, from `PREFERENCE_LIMITS` in `lib/scoring.ts`.
 TEMP_LIMITS = (-10.0, 45.0)
@@ -69,8 +79,15 @@ BUCKET_SCORES: tuple[int, int, int, int] = (25, 60, 75, 90)
 
 @dataclass(frozen=True)
 class WeatherPreferences:
+    #: The *daytime* band, scored against the bundle's `t` / `tMax`.
     temp_min: float = DEFAULT_TEMP_MIN
     temp_max: float = DEFAULT_TEMP_MAX
+    #: The *overnight* band, scored against `tMin`. User-settable, matching
+    #: the web's `nightMin`/`nightMax` sliders — the UI has four controls
+    #: over three concerns, and an alert has to agree with the map the
+    #: traveller set them on.
+    night_min: float = DEFAULT_NIGHT_MIN
+    night_max: float = DEFAULT_NIGHT_MAX
     rain_max: float = DEFAULT_RAIN_MAX
     sun_min: float = DEFAULT_SUN_MIN
 
@@ -113,8 +130,21 @@ def parse_preferences(raw: Any) -> WeatherPreferences:
     """
     if not isinstance(raw, Mapping):
         return DEFAULT_PREFERENCES
-    temp_min = _numeric(raw, "tempMin")
-    temp_max = _numeric(raw, "tempMax")
+    # Two shapes are stored. The web writes `dayMin`/`dayMax` and
+    # `nightMin`/`nightMax` since temperature split into a day/night pair;
+    # alerts saved before that carry `tempMin`/`tempMax` and no night at all.
+    # Legacy rows map onto the *daytime* band — that is the half a traveller
+    # was choosing when there was only one — and take the default night.
+    # Reading only the old keys would have silently scored every alert saved
+    # by the current UI against the defaults, ignoring what its owner set.
+    temp_min = _numeric(raw, "dayMin")
+    if temp_min is None:
+        temp_min = _numeric(raw, "tempMin")
+    temp_max = _numeric(raw, "dayMax")
+    if temp_max is None:
+        temp_max = _numeric(raw, "tempMax")
+    night_min = _numeric(raw, "nightMin")
+    night_max = _numeric(raw, "nightMax")
     rain_max = _numeric(raw, "rainMax")
     sun_min = _numeric(raw, "sunMin")
 
@@ -122,9 +152,15 @@ def parse_preferences(raw: Any) -> WeatherPreferences:
     hi = _clamp(DEFAULT_TEMP_MAX if temp_max is None else temp_max, TEMP_LIMITS)
     if lo > hi:
         lo, hi = hi, lo
+    n_lo = _clamp(DEFAULT_NIGHT_MIN if night_min is None else night_min, TEMP_LIMITS)
+    n_hi = _clamp(DEFAULT_NIGHT_MAX if night_max is None else night_max, TEMP_LIMITS)
+    if n_lo > n_hi:
+        n_lo, n_hi = n_hi, n_lo
     return WeatherPreferences(
         temp_min=_round1(lo),
         temp_max=_round1(hi),
+        night_min=_round1(n_lo),
+        night_max=_round1(n_hi),
         rain_max=_round1(_clamp(DEFAULT_RAIN_MAX if rain_max is None else rain_max, RAIN_LIMITS)),
         sun_min=_round1(_clamp(DEFAULT_SUN_MIN if sun_min is None else sun_min, SUN_LIMITS)),
     )
@@ -135,14 +171,36 @@ class _Range:
     lo: float
     hi: float
     buffer: float
+    #: Which *concern* this range speaks for. Ranges sharing a concern are
+    #: collapsed to their worst verdict before the buckets count anything —
+    #: `VariablePreference.concern` in the pipeline's `scoring.py`.
+    concern: str = ""
 
 
-def preference_ranges(prefs: WeatherPreferences) -> tuple[_Range, _Range, _Range]:
-    """The three ranges, in ``(t, rDay, s)`` order — the bundle's own key order."""
+def preference_ranges(
+    prefs: WeatherPreferences,
+) -> tuple[_Range, _Range, _Range, _Range]:
+    """The four ranges, in ``(t, rDay, s, tMin)`` order.
+
+    The first three are the bundle's own key order. The overnight range is
+    **appended rather than placed beside the daytime one** so that a
+    three-value sequence — the shape every caller used before temperature
+    split — still lines up with `t`, `rDay` and `s` instead of silently
+    scoring rainfall against a temperature bound. A caller that supplies only
+    three values simply does not have the night evaluated, which is how the
+    pipeline treats an absent variable.
+
+    Temperature is two ranges and one concern: a traveller holds a view about
+    the days and a view about the nights but experiences one verdict, so the
+    worse of the two speaks for temperature. Keeping the count at three
+    concerns is also what stops the split quietly loosening every threshold —
+    one miss out of four is a milder complaint than one out of three.
+    """
     return (
-        _Range(prefs.temp_min, prefs.temp_max, TEMP_BUFFER),
-        _Range(RAIN_MIN, prefs.rain_max, RAIN_BUFFER),
-        _Range(prefs.sun_min, SUN_MAX, SUN_BUFFER),
+        _Range(prefs.temp_min, prefs.temp_max, TEMP_BUFFER, "temperature"),
+        _Range(RAIN_MIN, prefs.rain_max, RAIN_BUFFER, "rain"),
+        _Range(prefs.sun_min, SUN_MAX, SUN_BUFFER, "sun"),
+        _Range(prefs.night_min, prefs.night_max, TEMP_BUFFER, "temperature"),
     )
 
 
@@ -157,20 +215,27 @@ def score_bucket(
     with no series must not read as "scores zero, tell them it stopped
     matching".
     """
-    evaluated = in_buffer = out_of_buffer = 0
+    # 0 = inside the range, 1 = inside the buffer, 2 = a hard miss. Worst
+    # verdict wins within a concern, so a place whose nights are fine and
+    # whose days are impossible is judged on the days. Mirrors
+    # `polygon_score` in the pipeline's `processing/scoring.py`.
+    worst_by_concern: dict[str, int] = {}
     for value, rng in zip(values, preference_ranges(prefs)):
         if value is None or value != value:
             continue
-        evaluated += 1
         if rng.lo <= value <= rng.hi:
-            continue
-        if rng.lo - rng.buffer <= value <= rng.hi + rng.buffer:
-            in_buffer += 1
+            verdict = 0
+        elif rng.lo - rng.buffer <= value <= rng.hi + rng.buffer:
+            verdict = 1
         else:
-            out_of_buffer += 1
+            verdict = 2
+        group = rng.concern
+        worst_by_concern[group] = max(worst_by_concern.get(group, 0), verdict)
 
-    if evaluated == 0:
+    if not worst_by_concern:
         return None
+    in_buffer = sum(1 for v in worst_by_concern.values() if v == 1)
+    out_of_buffer = sum(1 for v in worst_by_concern.values() if v == 2)
     if out_of_buffer >= 2:
         return 0
     if out_of_buffer == 1:
@@ -258,7 +323,16 @@ class BundleMatchScorer:
     def _series_for(
         self, payload: Mapping[str, Any], region_code: str | None
     ) -> tuple[list[Any], str | None] | None:
-        """``([t, rDay, s], region name)`` for the country or one of its regions.
+        """``([t, rDay, s, tMin], region name)`` for the country, or three for a region.
+
+        A region's rows carry no overnight series — the bundle publishes only
+        `tl`/`rl`/`sl` — so a regional alert is scored on days, rain and sun
+        alone, with the night treated as an absent variable the way the
+        pipeline treats one. That is deliberate degradation rather than a fix:
+        the *tiles* do score admin-1 polygons on both bounds, so a regional
+        alert can still disagree with the colour on the map when a place has
+        acceptable days and impossible nights. Closing it needs the pipeline
+        to publish a regional night series; this cannot be done from here.
 
         A ``region_code`` that names no region in the payload returns ``None``
         rather than falling back to the country. The regions come and go with
@@ -281,7 +355,15 @@ class BundleMatchScorer:
         climate = payload.get("climate")
         if not isinstance(climate, Mapping):
             return None
-        return [climate.get("t"), climate.get("rDay"), climate.get("s")], None
+        # `tMin` last, matching `preference_ranges`' ordering. `t` is the mean
+        # daily *maximum* since the move to daily statistics, so these two are
+        # the day/night pair the pipeline scores.
+        return [
+            climate.get("t"),
+            climate.get("rDay"),
+            climate.get("s"),
+            climate.get("tMin"),
+        ], None
 
     def score(self, alert: Alert) -> AlertOutcome | None:
         """``None`` when the bundle cannot answer for this alert.

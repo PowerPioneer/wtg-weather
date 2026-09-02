@@ -54,21 +54,34 @@ def test_default_ranges_and_buffers_match_the_pipeline() -> None:
     )
     assert block, "could not locate DEFAULT_PREFERENCES in scoring.py"
 
-    python = [
-        (m[1], float(m[2]), float(m[3]), float(m[4]))
+    # `[^)]*` after buffer so a new keyword on the constructor — `concern`
+    # was added when temperature split into day and night — widens the table
+    # rather than silently matching nothing. The previous pattern required
+    # the call to close right after `buffer=`, so it found zero entries and
+    # the failure read "0 == 3" instead of naming what had changed.
+    python = {
+        m[1]: (float(m[2]), float(m[3]), float(m[4]))
         for m in re.finditer(
-            r'VariablePreference\(\s*"(\w+)",\s*lo=([-\d.]+),\s*hi=([-\d.]+),\s*buffer=([-\d.]+)\s*\)',
+            r'VariablePreference\(\s*"(\w+)",\s*lo=([-\d.]+),\s*hi=([-\d.]+),'
+            r"\s*buffer=([-\d.]+)[^)]*\)",
             block[1],
         )
-    ]
-    assert len(python) == 3
+    }
+    assert python, "regex matched no VariablePreference entries — has the call shape changed?"
 
-    ours = preference_ranges(DEFAULT_PREFERENCES)
-    # Rain and sun are one-sided in the UI; the fixed bound lives here, so
-    # compare the full triple the scorer actually evaluates.
-    assert [(r.lo, r.hi, r.buffer) for r in ours] == [
-        (lo, hi, buf) for _, lo, hi, buf in python
-    ]
+    # Keyed by variable rather than positional: this asserts the *rule*, and
+    # the two files order it differently on purpose (see `preference_ranges`).
+    day, rain, sun, night = preference_ranges(DEFAULT_PREFERENCES)
+    assert (day.lo, day.hi, day.buffer) == python["t2m_max"]
+    assert (night.lo, night.hi, night.buffer) == python["t2m_min"]
+    assert (rain.lo, rain.hi, rain.buffer) == python["tp"]
+    assert (sun.lo, sun.hi, sun.buffer) == python["sun_hours"]
+
+    # Four variables, three concerns: temperature speaks once. Pinned because
+    # a fourth concern would quietly loosen every threshold — one miss out of
+    # four is a milder complaint than one out of three.
+    assert len(python) == 4
+    assert {r.concern for r in (day, rain, sun, night)} == {"temperature", "rain", "sun"}
 
 
 def test_bucket_scores_match_score_to_pref() -> None:
@@ -82,8 +95,8 @@ def test_bucket_scores_match_score_to_pref() -> None:
 @pytest.mark.parametrize(
     ("values", "expected"),
     [
-        ((22.0, 1.0, 7.0), 3),  # all three inside their range
-        ((30.0, 1.0, 7.0), 2),  # temp inside the buffer only
+        ((26.0, 1.0, 7.0), 3),  # all three inside their range
+        ((32.0, 1.0, 7.0), 2),  # temp inside the buffer only (22-30, buffer to 33)
         ((40.0, 1.0, 7.0), 1),  # temp beyond the buffer
         ((40.0, 9.0, 7.0), 0),  # two beyond the buffer
         ((40.0, 9.0, 0.5), 0),  # three beyond the buffer is still the floor
@@ -111,7 +124,7 @@ def test_empty_preferences_fall_back_to_defaults() -> None:
 
 def test_partial_preferences_keep_the_defaults_for_the_rest() -> None:
     assert parse_preferences({"tempMin": 25}) == WeatherPreferences(
-        temp_min=25.0, temp_max=28.0, rain_max=2.7, sun_min=6.0
+        temp_min=25.0, temp_max=30.0, rain_max=2.7, sun_min=6.0
     )
 
 
@@ -212,9 +225,10 @@ def test_month_less_alert_scores_its_best_month(published_bundle) -> None:
 
 
 def test_alert_preferences_change_the_verdict(published_bundle) -> None:
-    published_bundle.publish(temp=30.0, rain_day=1.0, sun=7.0)
+    published_bundle.publish(temp=32.0, rain_day=1.0, sun=7.0)
     scorer = BundleMatchScorer()
-    # 30 °C is inside the default band's buffer (15–31) but outside its range.
+    # 32 °C is inside the daytime band's buffer (22–30, so 19–33) but outside
+    # its range.
     assert scorer.score(alert()).score == 75
     # A user who asked for 29–36 °C gets a perfect match from the same data.
     hot = alert(preferences={"tempMin": 29, "tempMax": 36})
@@ -232,3 +246,45 @@ def test_a_republish_is_seen_by_a_fresh_scorer(published_bundle) -> None:
     assert BundleMatchScorer().score(alert()).matches is True
     published_bundle.publish(temp=40.0, rain_day=9.0, sun=1.0)
     assert BundleMatchScorer().score(alert()).matches is False
+
+
+def test_reads_both_stored_preference_shapes() -> None:
+    """Alerts exist in two vintages and both have to score as their owner meant.
+
+    The web wrote `tempMin`/`tempMax` when temperature was one variable, and
+    writes `dayMin`/`dayMax` plus `nightMin`/`nightMax` now that it is a
+    day/night pair. Reading only the old keys would have scored every alert
+    saved by the current UI against the defaults — silently, since a missing
+    key is indistinguishable from an unset one.
+    """
+    current = parse_preferences(
+        {"dayMin": 24, "dayMax": 29, "nightMin": 15, "nightMax": 20, "rainMax": 2.0}
+    )
+    assert (current.temp_min, current.temp_max) == (24.0, 29.0)
+    assert (current.night_min, current.night_max) == (15.0, 20.0)
+
+    # Legacy: maps onto the daytime band, takes the default night.
+    legacy = parse_preferences({"tempMin": 20, "tempMax": 26})
+    assert (legacy.temp_min, legacy.temp_max) == (20.0, 26.0)
+    assert (legacy.night_min, legacy.night_max) == (
+        DEFAULT_PREFERENCES.night_min,
+        DEFAULT_PREFERENCES.night_max,
+    )
+
+
+def test_temperature_is_one_concern_not_two() -> None:
+    """Day and night collapse to their worst verdict before the buckets count.
+
+    Otherwise the split would have quietly loosened every threshold: one miss
+    out of four concerns is a milder complaint than one out of three, so a
+    place would score better after the migration than before for no reason in
+    the data.
+    """
+    # Days fine, nights a hard miss: temperature speaks once, with the worse
+    # verdict, so this is one miss out of three concerns — not one out of four.
+    assert score_bucket([26.0, 1.0, 7.0, 40.0]) == 1
+    # Both halves fine.
+    assert score_bucket([26.0, 1.0, 7.0, 16.0]) == 3
+    # A three-value sequence still lines up with (t, rDay, s); the night is
+    # simply not evaluated, as the pipeline treats an absent variable.
+    assert score_bucket([26.0, 1.0, 7.0]) == 3

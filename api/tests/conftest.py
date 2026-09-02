@@ -149,7 +149,14 @@ class PublishedBundle:
         slug: str = "peru",
         name: str = "Peru",
         iso2: str = "PE",
-        temp: list[float] | float = 22.0,
+        temp: list[float] | float = 26.0,
+        # The overnight low, scored against its own fixed 12-22 band. Separate
+        # from `temp` because they used to be the same value, which quietly
+        # published a country whose nights were as hot as its days — once
+        # temperature split into a day/night pair that is a hard miss on the
+        # night bound, and every fixture using a warm `temp` started scoring
+        # a bucket lower for a reason no test meant to express.
+        night: list[float] | float = 16.0,
         rain_day: list[float] | float = 1.0,
         sun: list[float] | float = 7.0,
         regions: list[dict[str, Any]] | None = None,
@@ -168,7 +175,7 @@ class PublishedBundle:
             "climate": {
                 "months": MONTH_LABELS,
                 "t": series(temp),
-                "tMin": series(temp),
+                "tMin": series(night),
                 "tMax": series(temp),
                 "r": [v * 30 for v in series(rain_day)],
                 "rDay": series(rain_day),
