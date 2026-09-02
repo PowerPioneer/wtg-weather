@@ -113,6 +113,23 @@ services:
         # reserved TLD for exactly this. `api:8000` keeps working everywhere it
         # is already used; this is an additional name, not a replacement.
         aliases: [api.internal]
+      # Egress. `internal` is `internal: true`, which blocks outbound traffic
+      # *and* stops Docker's embedded resolver forwarding upstream, so a
+      # container on it alone cannot even resolve a public name — the symptom
+      # is `httpx.ConnectError: [Errno -3] Temporary failure in name
+      # resolution`, not a timeout, which reads like a broken DNS config
+      # rather than a missing network.
+      #
+      # Every outbound call the API makes needs this: the transactional email
+      # provider, Paddle's `POST /transactions`, and Google's OAuth token
+      # exchange. All three fail identically without it.
+      #
+      # This does NOT publish a port. Joining a non-internal network grants
+      # egress via NAT; only a `ports:` key exposes anything to the host, and
+      # the API deliberately has none — Caddy still reaches it over `internal`.
+      # The rule in `infra/CLAUDE.md` about postgres/redis/glitchtip/plausible
+      # is about published ports, and is untouched by this.
+      public:
 
   web:
     build:
