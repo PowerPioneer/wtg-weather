@@ -158,6 +158,10 @@ services:
         # Paddle.js cannot open a checkout without this, so an image built
         # without it has an Upgrade button that fails for every visitor.
         NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: ${NEXT_PUBLIC_PADDLE_CLIENT_TOKEN}
+        # Which Paddle account. `paddleEnvironment()` throws rather than
+        # defaulting, so an image built without this has a checkout that fails
+        # closed instead of transacting against the wrong account.
+        NEXT_PUBLIC_PADDLE_ENV: ${NEXT_PUBLIC_PADDLE_ENV}
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -173,6 +177,7 @@ services:
       NEXT_PUBLIC_GLITCHTIP_DSN_WEB: ${NEXT_PUBLIC_GLITCHTIP_DSN_WEB}
       NEXT_PUBLIC_GLITCHTIP_RELEASE: ${NEXT_PUBLIC_GLITCHTIP_RELEASE}
       NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: ${NEXT_PUBLIC_PADDLE_CLIENT_TOKEN}
+      NEXT_PUBLIC_PADDLE_ENV: ${NEXT_PUBLIC_PADDLE_ENV}
       GLITCHTIP_DSN_WEB: ${GLITCHTIP_DSN_WEB}
     depends_on:
       api:
