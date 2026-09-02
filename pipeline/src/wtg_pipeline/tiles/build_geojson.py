@@ -192,7 +192,19 @@ HEADLINE_STATS: tuple[str, ...] = ("mean", "p50")
 # does render. Emitting a per-feature `tippecanoe.minzoom` keeps admin-2 out of
 # the zoom range where it is invisible.
 # admin-1 mirrors ZOOM_ADMIN1_MIN, admin-2 mirrors ZOOM_ADMIN2_MIN.
-LEVEL_MIN_ZOOM: dict[str, int] = {"admin1": 3, "admin2": 6}
+#
+# admin-2 is 7, not 6, and the extra zoom is load-bearing. A z6 tile is too
+# small to hold this layer: measured on the 2026-08-30 build, tile 6/32/21
+# shipped 92 of the 189 Dutch municipalities that intersect it and left 32.8%
+# of the country covered by no admin-2 polygon at all. Nothing logs that —
+# tippecanoe only names the four tiles it had to thin explicitly, and 6/32/21
+# is not one of them — so it surfaced as holes on the map rather than as a
+# warning here. MapLibre serves map zoom 6.0-6.99 from z6 tiles, so hinting
+# admin-2 to 7 keeps the level out of the tiles that cannot carry it whole;
+# admin-1 (intact at every zoom) covers that band, and `ZOOM_ADMIN1_MAX` in
+# web/src/lib/map-style.ts moved to 7.0 to match. Verify a rebuild with
+# `scripts/audit_tile_coverage.py`.
+LEVEL_MIN_ZOOM: dict[str, int] = {"admin1": 3, "admin2": 7}
 
 
 def feature_min_zoom(level: str, iso_a2: str) -> int | None:

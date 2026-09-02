@@ -128,10 +128,24 @@ uv run wtg --help
   z4, 61% at z5), and each lost polygon is a hole on the map because the
   country layer stops at zoom 3.5.
 - Levels carry a per-feature `tippecanoe.minzoom` matching the web's layer
-  `minzoom` (admin-1 → 3, admin-2 → 6), because `-Z` is global and tiling a
+  `minzoom` (admin-1 → 3, admin-2 → **7**), because `-Z` is global and tiling a
   level below the zoom it renders at just crowds out the levels that do.
   **Exception:** suppressed countries' admin-1 features stay unhinted — the
   web paints them as a mosaic *below* zoom 3, so hinting them would empty it.
+- admin-2's hint is 7 rather than 6 because a z6 tile cannot carry the level
+  whole. Measured on the 2026-08-30 build: tile 6/32/21 shipped 92 of the 189
+  Dutch municipalities intersecting it and left **32.8%** of the country with
+  no admin-2 polygon. Tippecanoe logged nothing — it names only the four tiles
+  it thinned explicitly, and that was not one of them. MapLibre serves map zoom
+  6.0–6.99 from z6 tiles, and `ZOOM_ADMIN1_MAX` was 6.5, so the 6.5–7.0 band
+  had admin-2 as its only fill and a third of the Netherlands rendered as bare
+  background. Both constants moved to 7.0 together; they are one decision.
+- Verify it after a rebuild rather than trusting it — the failure is silent:
+  `uv run python scripts/audit_tile_coverage.py --iso NLD --level admin2`
+  decodes the built tiles and prints the fraction of source area no feature
+  covers, per zoom. A few points that do **not** move with zoom are the two
+  boundary datasets disagreeing about water; loss that appears at one zoom and
+  is gone at the next is this bug.
 - All intermediate files are cached. Re-running a step with the same inputs
   should be a no-op unless `--force` is passed.
 - Long-running steps must log progress every 30 seconds minimum.

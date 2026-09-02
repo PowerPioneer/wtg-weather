@@ -333,8 +333,13 @@ def test_admin1_of_a_normal_country_is_hinted_to_the_handover_zoom() -> None:
         assert feature_min_zoom("admin1", iso) == 3, iso
     # Country is the world-view layer and must never be hinted away.
     assert feature_min_zoom("country", "PE") is None
-    # admin-2 is premium-only and never renders below 6, suppressed or not.
-    assert feature_min_zoom("admin2", "AR") == 6
+    # admin-2 is premium-only and never renders below 7, suppressed or not.
+    # 7 rather than 6 because a z6 tile cannot carry the level whole: the
+    # 2026-08-30 build put 92 of the 189 Dutch municipalities intersecting
+    # tile 6/32/21 into it and left 32.8% of the country uncovered, which
+    # the map drew as background once admin-1 stopped. Mirrors
+    # ZOOM_ADMIN2_MIN in web/src/lib/map-style.ts.
+    assert feature_min_zoom("admin2", "AR") == 7
 
 
 def test_admin2_features_carry_a_tippecanoe_minzoom_hint() -> None:
@@ -345,7 +350,7 @@ def test_admin2_features_carry_a_tippecanoe_minzoom_hint() -> None:
 
     fc = build_feature_collection(_build_input("admin2"), tier="premium")
     feature = fc["features"][0]
-    assert feature["tippecanoe"] == {"minzoom": 6}
+    assert feature["tippecanoe"] == {"minzoom": 7}
 
 
 def test_country_level_carries_no_zoom_hint() -> None:

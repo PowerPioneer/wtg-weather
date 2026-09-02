@@ -76,11 +76,26 @@ export const SUPPRESSED_COUNTRIES: readonly string[] = [
   "CL",
 ];
 
-// Zoom thresholds must match the tippecanoe `-Z/-z` flags in pipeline/CLAUDE.md.
+// Zoom thresholds must match the tippecanoe `-Z/-z` flags and the per-feature
+// `tippecanoe.minzoom` hints in pipeline/CLAUDE.md.
+//
+// The admin-1 → admin-2 handover is at 7.0, not 6.5, and that is measured
+// rather than chosen. MapLibre serves map zoom 6.0–6.99 from the archive's
+// *z6* tiles, and a z6 tile cannot hold the admin-2 layer: tile 6/32/21 was
+// built with 92 of the 189 Dutch municipalities that intersect it, leaving
+// 32.8% of the country's area with no admin-2 polygon at all. Under the old
+// 6.5 handover that band had admin-2 as its only fill, so a third of the
+// Netherlands rendered as bare background — the "regions disappear at certain
+// zoom levels" holes. Admin-1 is intact at every zoom (its ~10% shortfall
+// against geoBoundaries is the two datasets disagreeing about where the
+// IJsselmeer is, and does not move with zoom), so it is what covers the band.
+//
+// The pipeline stops emitting admin-2 into z6 tiles at all (`LEVEL_MIN_ZOOM`
+// in build_geojson.py); these two constants and that hint are one decision.
 const ZOOM_COUNTRY_MAX = 3.5;
 const ZOOM_ADMIN1_MIN = 3.0;
-const ZOOM_ADMIN1_MAX = 6.5;
-const ZOOM_ADMIN2_MIN = 6.0;
+const ZOOM_ADMIN1_MAX = 7.0;
+const ZOOM_ADMIN2_MIN = 7.0;
 
 const SURFACE_BG = "#F7F6F2";
 const WATER = "#E4E8EC";
