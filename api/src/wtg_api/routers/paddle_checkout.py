@@ -232,6 +232,27 @@ async def checkout_url(
     )
 
 
+def _paddle_error(res: httpx.Response) -> dict[str, Any]:
+    try:
+        payload = res.json()
+    except ValueError:
+        return {}
+    err = payload.get("error") if isinstance(payload, dict) else None
+    return err if isinstance(err, dict) else {}
+
+
+def _paddle_error_code(res: httpx.Response) -> str:
+    code = _paddle_error(res).get("code")
+    return code if isinstance(code, str) else "unknown"
+
+
+def _paddle_error_detail(res: httpx.Response) -> str:
+    detail = _paddle_error(res).get("detail")
+    # Truncated: Paddle's details are a sentence, but a log line is not the
+    # place to discover that assumption was wrong.
+    return detail[:200] if isinstance(detail, str) else ""
+
+
 async def _find_or_create_customer(
     *, api_base: str, api_key: str, email: str
 ) -> str | None:
@@ -330,11 +351,20 @@ async def _create_transaction(
         return None
 
     if res.status_code >= 400:
-        # A 403 here usually means a sandbox key against the live host or the
-        # reverse; a 400 usually means the price id is from the other
-        # environment. Both are configuration, not a customer's problem.
+        # Paddle's own machine-readable code, in the message rather than in
+        # `extra`, because the default formatter drops extras and a bare
+        # "rejected" is not actionable — every one of these is a configuration
+        # problem with a specific name. `transaction_checkout_url_domain_is_
+        # not_approved` means the payment link's domain is not approved;
+        # a 403 usually means a sandbox key against the live host or the
+        # reverse; `price_id` errors mean ids from the other environment.
+        # The code and detail are Paddle's own descriptions of *our* config
+        # and carry no customer data.
         logger.warning(
-            "paddle.transaction.rejected", extra={"status": res.status_code}
+            "paddle.transaction.rejected status=%s code=%s detail=%s",
+            res.status_code,
+            _paddle_error_code(res),
+            _paddle_error_detail(res),
         )
         return None
 

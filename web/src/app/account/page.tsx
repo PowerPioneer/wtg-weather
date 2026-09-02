@@ -143,7 +143,7 @@ function renderConsumerSection(
 ) {
   switch (id) {
     case "overview":
-      return <ConsumerOverview session={session} account={account} />;
+      return <ConsumerOverview session={session} account={account} billing={billing} />;
     case "trips":
       return <ConsumerTrips session={session} account={account} />;
     case "favourites":

@@ -28,7 +28,7 @@ type Props = {
   billing?: BillingSummary | null;
 };
 
-export function ConsumerOverview({ session, account }: Props) {
+export function ConsumerOverview({ session, account, billing }: Props) {
   const isFree = session.plan === "free";
   const activeAlerts = account.alerts.filter((a) => a.active).length;
   const since = monthYear(session.createdAt);
@@ -88,12 +88,17 @@ export function ConsumerOverview({ session, account }: Props) {
             {`Upgrade · ${PREMIUM_PRICE_MONTHLY} →`}
           </Link>
         ) : (
-          <a
-            href="https://paddle.com"
-            className="rounded-sm border border-white/30 px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground hover:bg-white/10"
-          >
-            Manage on Paddle ↗
-          </a>
+          // Mints a real customer-portal session for *this* customer. What
+          // sat here was `<a href="https://paddle.com">` — Paddle's own
+          // homepage, which tells the subscriber nothing and offers them no
+          // way to their invoices. The same bug was fixed in ConsumerBilling
+          // below and pinned by a test; this copy in the premium branch was
+          // missed because that test only covers the free branch.
+          <ManageBillingButton
+            label="Manage on Paddle ↗"
+            available={billing?.portalAvailable ?? false}
+            variant="secondary"
+          />
         )}
       </div>
 

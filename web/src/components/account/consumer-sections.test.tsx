@@ -193,6 +193,32 @@ describe("ConsumerBilling", () => {
     expect(screen.getByText("No active subscription")).toBeInTheDocument();
   });
 
+  it("never links a premium subscriber at paddle.com's homepage", () => {
+    // The same bug as the test below, in the *other* branch. It survived the
+    // first fix because that one only exercised the free path: a premium
+    // subscriber's "Manage on Paddle" button in ConsumerOverview was still a
+    // plain anchor to https://paddle.com, which drops a paying customer on a
+    // marketing page with no route to their own invoices.
+    const { container } = render(
+      <ConsumerOverview
+        session={session({ plan: "consumer_premium" })}
+        account={EMPTY}
+        billing={{
+          plan: "consumer_premium",
+          hasSubscription: true,
+          portalAvailable: true,
+          sandbox: true,
+          seatCap: null,
+        }}
+      />,
+    );
+    const offsite = [...container.querySelectorAll("a[href]")].filter((a) =>
+      (a.getAttribute("href") ?? "").includes("paddle.com"),
+    );
+    expect(offsite).toHaveLength(0);
+    expect(screen.getByTestId("manage-billing")).toBeInTheDocument();
+  });
+
   it("points the free upgrade CTA at checkout, not at paddle.com", () => {
     // The button here used to be `<a href="https://paddle.com">` — the
     // company's marketing homepage, labelled as if it managed your plan.
