@@ -45,6 +45,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    // The index every country page is one click from. Unlike the month-first
+    // pages below it renders with nothing published (it says so), so it is
+    // not gated on `countries.length`.
+    {
+      url: `${SITE_URL}/countries`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ];
 
   const countries = await routableCountries();

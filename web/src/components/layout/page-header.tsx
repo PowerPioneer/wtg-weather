@@ -7,7 +7,7 @@ type NavItem = { href: string; label: string };
 
 const NAV: readonly NavItem[] = [
   { href: "/map", label: "Map" },
-  { href: "/", label: "Countries" },
+  { href: "/countries", label: "Countries" },
   { href: "/pricing", label: "Pricing" },
 ];
 

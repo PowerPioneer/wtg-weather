@@ -31,6 +31,7 @@ describe("sitemap", () => {
     expect(urls).toContain(`${BASE}/`);
     expect(urls).toContain(`${BASE}/map`);
     expect(urls).toContain(`${BASE}/pricing`);
+    expect(urls).toContain(`${BASE}/countries`);
 
     expect(urls).toContain(`${BASE}/best-weather-in/january`);
     expect(urls).toContain(`${BASE}/best-weather-in/december`);
@@ -38,8 +39,8 @@ describe("sitemap", () => {
 
     expect(urls).toContain(`${BASE}/peru`);
     expect(urls).toContain(`${BASE}/peru/april`);
-    // 3 marketing + 12 months + 2 countries × 13
-    expect(urls).toHaveLength(3 + 12 + 26);
+    // 4 marketing + 12 months + 2 countries × 13
+    expect(urls).toHaveLength(4 + 12 + 26);
   });
 
   it("omits the month landings when nothing is published", async () => {
@@ -54,7 +55,14 @@ describe("sitemap", () => {
 
     const urls = (await sitemap()).map((entry) => entry.url);
 
-    expect(urls).toEqual([`${BASE}/`, `${BASE}/map`, `${BASE}/pricing`]);
+    // `/countries` stays: unlike the month landings it renders with nothing
+    // published, saying the index is being rebuilt.
+    expect(urls).toEqual([
+      `${BASE}/`,
+      `${BASE}/map`,
+      `${BASE}/pricing`,
+      `${BASE}/countries`,
+    ]);
   });
 
   it("does not advertise the legal pages", async () => {
