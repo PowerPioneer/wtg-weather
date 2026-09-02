@@ -44,7 +44,7 @@ from wtg_api.services.billing import (
     ensure_personal_organization,
     find_personal_organization,
 )
-from wtg_api.services.paddle import verify_signature
+from wtg_api.services.paddle import signature_failure_reason, verify_signature
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +162,14 @@ async def paddle_webhook(
     raw = await request.body()
 
     if not verify_signature(raw, paddle_signature, s.paddle_webhook_secret):
-        logger.warning("paddle.webhook.bad_signature")
+        # The reason is for us, not the caller: the 403 stays bare so a forger
+        # learns nothing about why their attempt failed. A rejected webhook is
+        # a paid subscription that never activates, so "why" has to be in the
+        # log or the first symptom is a customer asking where their plan went.
+        logger.warning(
+            "paddle.webhook.bad_signature reason=%s",
+            signature_failure_reason(raw, paddle_signature, s.paddle_webhook_secret),
+        )
         raise HTTPException(status.HTTP_403_FORBIDDEN, "invalid signature")
 
     payload = await request.json()
