@@ -76,6 +76,16 @@ def download_era5_daily(
     ] = None,
     force: Annotated[bool, typer.Option("--force", help="Re-download cache hits.")] = False,
     verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+    chunk: Annotated[
+        str,
+        typer.Option(
+            "--chunk",
+            help=(
+                "'year' (default, 1 request per variable-year) or 'month' "
+                "(12). The CDS throttle counts requests, not bytes."
+            ),
+        ),
+    ] = "year",
 ) -> None:
     """Download ERA5 daily statistics (max/min/mean/sum) from the Copernicus CDS.
 
@@ -94,7 +104,7 @@ def download_era5_daily(
             f"Known: {', '.join(sorted(era5_daily.DAILY_BY_STEM))}"
         )
 
-    paths = era5_daily.fetch(years, stems=series, force=force)
+    paths = era5_daily.fetch(years, stems=series, force=force, chunk=chunk)
     typer.echo(f"wrote {len(paths)} file(s)")
 
 

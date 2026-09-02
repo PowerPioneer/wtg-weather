@@ -13,9 +13,13 @@ Three properties of that dataset shape this module:
 * **It is computed at retrieval time, not archived.** The daily aggregation
   happens while your request is served, so requests are slower than an archived
   lookup and a large one is more likely to time out. Hence the download is
-  chunked **by month**, not by year — a failed chunk costs one month, and a
-  ten-year run stays resumable at a granularity that matters over a job this
-  long.
+  chunked **by year** by default. It was by month, on the reasoning that a
+  failed chunk should cost one month rather than twelve. The first real run
+  showed that trade is dominated by something else: **the CDS throttle counts
+  requests, not bytes.** 840 monthly requests degraded from ~40 s to over an
+  hour of queue wait each as fair-share priority decayed, projecting three
+  weeks; 70 yearly requests do not. `chunk="month"` is still available and is
+  the better trade whenever the queue is fast.
 
 * **``frequency`` decides whether a daily maximum is real.** At ``6_hourly``
   the sampler can miss the ~14:00 diurnal peak entirely and the "maximum"
@@ -125,9 +129,11 @@ class CDSClient(Protocol):
 
 @dataclass(frozen=True)
 class ERA5DailyRequest:
+    """One CDS request. ``month=None`` asks for the whole year at once."""
+
     daily: DailyVariable
     year: int
-    month: int
+    month: int | None
     target: Path
 
     def to_cds_request(self) -> dict:
@@ -135,7 +141,7 @@ class ERA5DailyRequest:
             "product_type": DEFAULT_PRODUCT_TYPE,
             "variable": [self.daily.variable],
             "year": str(self.year),
-            "month": [f"{self.month:02d}"],
+            "month": list(MONTHS) if self.month is None else [f"{self.month:02d}"],
             # Asking for 31 days in a 30-day month is accepted and returns the
             # days that exist, which keeps this table constant.
             "day": list(DAYS),
@@ -146,19 +152,44 @@ class ERA5DailyRequest:
         }
 
 
-def target_path(stem: str, year: int, month: int, base_dir: Path | None = None) -> Path:
-    """Where one (variable, year, month) chunk lands.
+def target_path(
+    stem: str, year: int, month: int | None = None, base_dir: Path | None = None
+) -> Path:
+    """Where one chunk lands. ``month=None`` is the whole-year file.
 
-    Monthly rather than yearly because the aggregation is computed while the
-    request is served — see the module docstring.
+    The two names are deliberately distinguishable — ``t2m_max_2016.nc`` for a
+    year, ``t2m_max_201601.nc`` for a month — so a directory can hold both
+    shapes at once and :func:`year_inputs` can tell them apart.
     """
     root = base_dir if base_dir is not None else era5_raw_dir() / "daily"
+    if month is None:
+        return root / f"{stem}_{year}.nc"
     return root / f"{stem}_{year}{month:02d}.nc"
 
 
 def year_paths(stem: str, year: int, base_dir: Path | None = None) -> list[Path]:
-    """The twelve chunks that make up one (variable, year), in month order."""
+    """The twelve monthly chunks that make up one (variable, year)."""
     return [target_path(stem, year, m, base_dir=base_dir) for m in range(1, 13)]
+
+
+def year_inputs(stem: str, year: int, base_dir: Path | None = None) -> list[Path]:
+    """Every file holding data for one (variable, year), whichever shape it is.
+
+    Returns the single year file if it exists, otherwise the monthly chunks
+    that are present, in month order. This is what lets a download that
+    started monthly and finished yearly aggregate as one dataset: the first
+    real run switched chunking mid-flight when the CDS throttle bit, and
+    ``t2m_max`` is on disk as twelve files per year while everything after it
+    is one.
+    """
+    whole = target_path(stem, year, None, base_dir=base_dir)
+    if whole.exists() and whole.stat().st_size > 0:
+        return [whole]
+    return [
+        path
+        for path in year_paths(stem, year, base_dir=base_dir)
+        if path.exists() and path.stat().st_size > 0
+    ]
 
 
 def parse_year_range(spec: str) -> list[int]:
@@ -177,7 +208,22 @@ def plan_requests(
     stems: list[str],
     years: list[int],
     base_dir: Path | None = None,
+    chunk: str = "year",
 ) -> list[ERA5DailyRequest]:
+    """Build the request list, one per year (default) or one per month.
+
+    ``chunk="year"`` is the default because **the CDS throttle counts
+    requests, not bytes.** The first real run asked month by month — 840
+    requests — and its queue wait degraded from ~40 s to over an hour per
+    chunk as fair-share priority decayed, projecting three weeks for the
+    remainder. Twelve times fewer requests is the lever that actually moves.
+
+    ``chunk="month"`` is kept because a failed year costs twelve months of
+    re-download, which is the right trade only while the queue is fast.
+    """
+    if chunk not in ("year", "month"):
+        raise ValueError(f"chunk must be 'year' or 'month', got {chunk!r}")
+
     requests: list[ERA5DailyRequest] = []
     for stem in stems:
         if stem not in DAILY_BY_STEM:
@@ -187,7 +233,10 @@ def plan_requests(
             )
         daily = DAILY_BY_STEM[stem]
         for year in years:
-            for month in range(1, 13):
+            months: list[int | None] = (
+                [None] if chunk == "year" else list(range(1, 13))
+            )
+            for month in months:
                 requests.append(
                     ERA5DailyRequest(
                         daily=daily,
@@ -210,8 +259,9 @@ def download(
     client: CDSClient | None = None,
     base_dir: Path | None = None,
     force: bool = False,
+    chunk: str = "year",
 ) -> list[Path]:
-    """Download daily statistics for (variables x years), one month per request.
+    """Download daily statistics for (variables x years).
 
     Returns every target path, cache hits included. If ``client`` is ``None`` a
     real :class:`cdsapi.Client` is constructed — tests must pass a mock.
@@ -226,7 +276,7 @@ def download(
     out_dir = ensure_dir(
         base_dir if base_dir is not None else era5_raw_dir() / "daily"
     )
-    plan = plan_requests(stems, years, base_dir=out_dir)
+    plan = plan_requests(stems, years, base_dir=out_dir, chunk=chunk)
 
     resolved_client = client if client is not None else _build_default_client()
 
@@ -241,10 +291,11 @@ def download(
             # at the end is what a human actually reads.
             log.debug("[%d/%d] cache hit: %s", idx, total, req.target.name)
             continue
+        span = "whole year" if req.month is None else f"{req.month:02d}"
         log.info(
-            "[%d/%d] retrieving %s %s %d-%02d → %s",
+            "[%d/%d] retrieving %s %s %d %s → %s",
             idx, total, req.daily.variable, req.daily.daily_statistic,
-            req.year, req.month, req.target.name,
+            req.year, span, req.target.name,
         )
         req.target.parent.mkdir(parents=True, exist_ok=True)
         # Written under a temp name and renamed, because a chunk is treated as
@@ -275,6 +326,7 @@ def fetch(
     client: CDSClient | None = None,
     base_dir: Path | None = None,
     force: bool = False,
+    chunk: str = "year",
 ) -> list[Path]:
     """CLI-facing entry point. Parses a year spec and delegates to download()."""
     years = parse_year_range(years_spec)
@@ -284,4 +336,5 @@ def fetch(
         client=client,
         base_dir=base_dir,
         force=force,
+        chunk=chunk,
     )
