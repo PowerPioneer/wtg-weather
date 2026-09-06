@@ -51,6 +51,20 @@ MAILTO=""
 # only thing that republishes data mid-year.
 0 4 * * 1 /opt/wtg-weather/infra/scripts/weekly-alerts.sh >> /var/log/wtg-alerts.log 2>&1
 
+# Every 15 min: restart the ERA5 daily download if it has died.
+#
+# TEMPORARY — remove this line once the daily-climatology rebuild has finished
+# downloading. It is here because a transient CDS `400 The job has failed` on
+# 2026-09-03 killed a run that had eight years in hand, and nothing alerts on a
+# dead download: it sat idle for three days before anyone looked.
+#
+# Cheap when there is nothing to do — it exits within milliseconds if the
+# download is running, and after one `uv` invocation if the set is complete.
+# It never re-downloads: the CLI skips every chunk already on disk. A crash
+# loop is capped at 5 consecutive restarts, after which it refuses and says so
+# in its log rather than hammering CDS.
+*/15 * * * * /opt/wtg-weather/infra/scripts/era5-daily-watchdog.sh >> /var/log/wtg-era5-watchdog.log 2>&1
+
 # Yearly Jan 15 04:00 UTC: full ERA5 rebuild — download the new year,
 # re-aggregate, percentiles, both tile tiers + CDN purge, republish the SSR
 # bundle, and recreate `web` so the ISR cache lets the new numbers through.
