@@ -56,6 +56,12 @@ STATE_DIR="${STATE_DIR:-/var/lib/wtg}"
 STATE="${STATE:-$STATE_DIR/era5-watchdog.state}"
 LOCK="${LOCK:-/var/lock/wtg-era5-watchdog.lock}"
 
+# The process pattern, overridable so the crash-loop guard below can actually
+# be exercised. Without this the running-download check short-circuits every
+# test of the guard, which is the one piece of logic here that protects a
+# third party (CDS) from us.
+MATCH="${MATCH:-[b]in/wtg download era5-daily}"
+
 MAX_RESTARTS="${MAX_RESTARTS:-5}"
 # A run that survives this long counts as healthy, so the consecutive-failure
 # counter resets. Generous: one year-sized CDS request has measured 2-4 hours,
@@ -78,7 +84,7 @@ fi
 # The bracket keeps the pattern from matching this script's own command line —
 # `pkill -f era5-daily` over SSH kills its own session for exactly this reason
 # (infra/CLAUDE.md § "The daily-climatology rebuild").
-if pgrep -f "[b]in/wtg download era5-daily" >/dev/null 2>&1; then
+if pgrep -f "$MATCH" >/dev/null 2>&1; then
   exit 0
 fi
 
@@ -149,7 +155,7 @@ setsid nohup "$UV" run --directory "$REPO/pipeline" \
   >> "$DOWNLOAD_LOG" 2>&1 < /dev/null &
 
 sleep 10
-if pgrep -f "[b]in/wtg download era5-daily" >/dev/null 2>&1; then
+if pgrep -f "$MATCH" >/dev/null 2>&1; then
   log "restarted; see $DOWNLOAD_LOG"
 else
   log "WARNING: restart did not stay up for 10s — check $DOWNLOAD_LOG"
