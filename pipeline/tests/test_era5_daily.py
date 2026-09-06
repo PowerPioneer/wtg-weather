@@ -244,3 +244,45 @@ def test_an_incomplete_year_is_still_fetched(tmp_path):
     era5_daily.download([2020], ["t2m_min"], client=client, base_dir=tmp_path)
     assert len(client.calls) == 1
     assert era5_daily.target_path("t2m_min", 2020, None, base_dir=tmp_path).exists()
+
+
+def test_a_transient_cds_failure_is_retried(tmp_path):
+    """One bad job must not kill a run measured in days.
+
+    `t2m_min 2024` failed CDS-side on the first real run after eight years had
+    landed, and the download sat dead for three days.
+    """
+    class FlakyClient:
+        def __init__(self):
+            self.calls = 0
+
+        def retrieve(self, name, request, target):
+            self.calls += 1
+            if self.calls == 1:
+                raise RuntimeError("400 Client Error: The job has failed")
+            Path(target).write_bytes(b"netcdf")
+
+    client = FlakyClient()
+    era5_daily.download([2020], ["t2m_min"], client=client, base_dir=tmp_path)
+
+    assert client.calls == 2, "should have retried exactly once"
+    assert era5_daily.target_path("t2m_min", 2020, None, base_dir=tmp_path).exists()
+    assert not list(tmp_path.glob("*.tmp")), "temp file leaked between attempts"
+
+
+def test_a_persistent_failure_still_raises(tmp_path):
+    """Retrying is not the same as tolerating — a hole must still be loud."""
+    class DeadClient:
+        def __init__(self):
+            self.calls = 0
+
+        def retrieve(self, name, request, target):
+            self.calls += 1
+            raise RuntimeError("the job has failed")
+
+    client = DeadClient()
+    with pytest.raises(RuntimeError, match="failed after 4 attempts"):
+        era5_daily.download([2020], ["t2m_min"], client=client, base_dir=tmp_path)
+
+    assert client.calls == era5_daily.RETRY_ATTEMPTS
+    assert not era5_daily.target_path("t2m_min", 2020, None, base_dir=tmp_path).exists()
