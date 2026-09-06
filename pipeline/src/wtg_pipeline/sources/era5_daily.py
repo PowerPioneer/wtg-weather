@@ -326,7 +326,7 @@ def download(
         # complete purely because it exists and is non-empty — a half-written
         # file would poison every later resume.
         tmp = req.target.with_name(req.target.name + ".tmp")
-        resolved_client.retrieve(DEFAULT_DATASET, req.to_cds_request(), str(tmp))
+        _retrieve_with_retry(resolved_client, req, tmp)
         tmp.replace(req.target)
         written.append(req.target)
 
@@ -335,6 +335,54 @@ def download(
         total, skipped, total - skipped,
     )
     return written
+
+
+#: How many times to attempt one chunk before giving up on the whole run.
+RETRY_ATTEMPTS = 4
+
+#: Seconds to wait before each retry. Long, because a CDS job that failed
+#: server-side does not recover in the time it takes to ask again — and this
+#: job's unit of work is hours, so a fifteen-minute back-off is cheap.
+RETRY_BACKOFF_SECONDS: tuple[int, ...] = (60, 300, 900)
+
+
+def _retrieve_with_retry(client: CDSClient, req: "ERA5DailyRequest", tmp: Path) -> None:
+    """Fetch one chunk, retrying a failed CDS job before giving up.
+
+    The run used to abort on the first failure. That was the right instinct —
+    a silently-skipped chunk is a hole in the climatology nothing downstream
+    can detect — but the wrong trade for a job measured in days: on the first
+    real run a single transient `400 The job has failed` on `t2m_min 2024`
+    killed a download that had eight years in hand, and it sat dead for three
+    days before anyone looked.
+
+    So: retry with a long back-off, and only then raise. Failing loudly is
+    preserved; failing *immediately* is not.
+    """
+    import time
+
+    last: Exception | None = None
+    for attempt in range(1, RETRY_ATTEMPTS + 1):
+        try:
+            client.retrieve(DEFAULT_DATASET, req.to_cds_request(), str(tmp))
+            return
+        except Exception as exc:  # noqa: BLE001 — cdsapi raises bare HTTPError
+            last = exc
+            # A half-written file must never survive into the next attempt:
+            # a chunk counts as complete purely because it exists.
+            tmp.unlink(missing_ok=True)
+            if attempt == RETRY_ATTEMPTS:
+                break
+            wait = RETRY_BACKOFF_SECONDS[min(attempt - 1, len(RETRY_BACKOFF_SECONDS) - 1)]
+            log.warning(
+                "chunk %s failed (attempt %d/%d): %s — retrying in %ds",
+                req.target.name, attempt, RETRY_ATTEMPTS, exc, wait,
+            )
+            time.sleep(wait)
+
+    raise RuntimeError(
+        f"{req.target.name} failed after {RETRY_ATTEMPTS} attempts: {last}"
+    ) from last
 
 
 def _build_default_client() -> CDSClient:
