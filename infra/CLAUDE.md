@@ -150,9 +150,11 @@ intermediates want most of that.
 ### Order
 
 ```bash
-# 1. Download. 840 chunks, resumable. `setsid` so it outlives the SSH session.
+# 1. Download. One request per (series, year); `setsid` so it outlives the
+#    SSH session. Resumable — re-running skips whatever is already on disk.
 export PATH=/root/.local/bin:$PATH
-setsid nohup uv run --directory pipeline wtg download era5-daily --years 2016-2025 -v \
+setsid nohup uv run --directory pipeline wtg download era5-daily --years 2016-2025 \
+  --series t2m_min --series tp_sum --series ssrd_sum \
   > /var/log/wtg-era5-daily.log 2>&1 < /dev/null &
 
 # 2. Aggregate, then derive. The coverage matrix is built once and cached.
@@ -176,20 +178,39 @@ NO_CACHE=1 ./infra/scripts/build-web.sh && docker compose up -d web
 ./infra/scripts/rebuild-tiles.sh
 ```
 
-Measured on the first real run (2026-09-01), not estimated: **~66 MB per
-chunk, ~55 GB for the full 840, ~28 s each — six to seven hours end to end.**
-The earlier ~39 GB estimate was low by a third. Progress:
+**Chunk by year, not by month — the CDS throttle counts requests, not bytes.**
+The first attempt (2026-09-01) asked month by month, 840 requests. Queue wait
+started at ~40 s per chunk and decayed as fair-share priority dropped: ~3 min
+by chunk 125, **~45 min** by chunk 150, over an hour by chunk 166. 166 chunks
+landed in 17.5 h and the rest projected to three weeks. The transfers were
+never the problem — they run at 60-90 MB/s and take about a second. One
+request per (series, year) turns 840 requests into 70; a year-sized request
+measured **2-4 h** end to end, nearly all of it CDS-side processing.
+
+Sizes: ~66 MB per monthly chunk, ~700-790 MB per year file.
+
+Progress (the `tr` matters — at `-v` the log is mostly progress bars):
 
 ```bash
-grep -c retrieving /var/log/wtg-era5-daily.log
+tr '\r' '\n' < /var/log/wtg-era5-daily.log | grep -a retrieving | tail -3
 ls /opt/wtg-weather/pipeline/data/raw/era5/daily/*.nc | wc -l
 ```
+
+**A dead download is silent.** On 2026-09-03 a transient CDS `400 The job has
+failed` on `t2m_min 2024` stopped a run with eight years already in hand, and
+it sat idle for three days. The downloader now retries a chunk four times with
+a 60s/300s/900s back-off, and `era5-daily-watchdog.sh` (cron, every 15 min)
+restarts the process if it dies for any other reason.
+
+**Long remote commands need `setsid nohup`.** A foreground `ssh host '<long
+command>'` that the caller later backgrounds sends SIGHUP to the remote
+process; a CDS probe died that way after two minutes having printed nothing.
 
 **Do not `pkill -f era5_daily` over SSH.** The pattern appears in the command
 line pkill is itself running under, so it matches its own shell and kills the
 session before doing anything useful. It presents as the command silently
-producing no output at all, which is a confusing five minutes. Find the PID
-with `ps` and `kill` that.
+producing no output at all, which is a confusing five minutes. Use the
+bracket trick — `ps -eo pid,cmd | grep "[b]in/wtg"` — and kill the PIDs.
 
 No migration is expected: this is all file-backed reference data served off the
 read-only mount. Check `docker compose run --rm api alembic current` anyway.
@@ -223,7 +244,7 @@ without reading it end to end.
 
 ## Cron (on host, not in container)
 
-The four jobs live in `infra/cron/crontab`, which is the complete table —
+The jobs live in `infra/cron/crontab`, which is the complete table —
 `crontab <file>` replaces rather than merges, so `crontab -l` and that file
 must agree. Install it (and back up whatever is there first):
 
@@ -244,6 +265,12 @@ absent from the default, which is why the file sets PATH explicitly.
 - Weekly Mon 04:00 UTC: `weekly-alerts.sh` — recompute alert matches, email on transitions
 - Yearly Jan 15 04:00 UTC: `yearly-era5.sh` — full pipeline rebuild, old year swap
 - Nightly 02:00 UTC: `backup-postgres.sh` — dump, encrypt, upload to B2
+- Every 15 min (**temporary**): `era5-daily-watchdog.sh` — restart the ERA5
+  daily download if it has died. Remove this line once the rebuild's download
+  has finished; it exists because a transient CDS failure killed a run that had
+  eight years in hand and nothing noticed for three days. It never
+  re-downloads (the CLI skips what is on disk) and caps itself at 5 consecutive
+  restarts, logging to `/var/log/wtg-era5-watchdog.log`.
 
 ## US advisory scrape (Cloudflare 403)
 
