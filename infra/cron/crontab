@@ -42,7 +42,23 @@ MAILTO=""
 # hand from a permitted network; `wtg process advisories` logs ADVISORY_STALE
 # when that has not happened recently. See infra/CLAUDE.md § "US advisory
 # scrape (Cloudflare 403)".
-0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
+# DISABLED 2026-09-07 for the duration of the daily-climatology rebuild.
+#
+# This box's checkout is on `feat/daily-climatology` so the ERA5 download and
+# its watchdog can run. This job runs *pipeline code from that checkout* against
+# *production data*, and on 2026-09-06 that combination republished the country
+# bundle and rebuilt the tiles with code expecting a percentile schema the
+# on-disk Parquet does not have yet. Result: a 22-byte index, ~2,800 country
+# pages at 404, and a colourless map for 38 hours.
+#
+# `publish api-data` now refuses to write an empty or collapsed bundle, and
+# `rebuild-tiles.sh` refuses a tile that has lost most of its bytes — so the
+# same accident would now fail loudly instead of destroying data. This stays
+# commented anyway, because a weekly republish is pointless mid-rebuild and the
+# advisory staleness threshold is three weeks.
+#
+# RE-ENABLE once the rebuild has shipped and the checkout is back on `main`.
+# 0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
 
 # Weekly Mon 04:00 UTC: recompute alert matches, email on transition.
 # Runs the job inside the `api` container (it needs Postgres, which is on the

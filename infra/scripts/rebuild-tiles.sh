@@ -78,6 +78,20 @@ command -v "$UV" >/dev/null 2>&1 || fail "uv not on PATH; install with: curl -Ls
 # `tiles/`; override with BACKUP_DIR if the two are the same disk.
 BACKUP_DIR="${BACKUP_DIR:-./pipeline/data/intermediate/tile-backups}"
 SAFETY_MARGIN_BYTES="${SAFETY_MARGIN_BYTES:-536870912}"   # 512 MB
+
+# How much of its size a tile may lose in one rebuild before that is treated as
+# damage rather than an edit.
+#
+# `verify-pmtiles.py` catches a *truncated* archive. It cannot catch a
+# structurally perfect archive whose features carry no data, which is what the
+# 2026-09-06 weekly cron produced when it ran feature-branch code against the
+# old percentile schema: free went 39.9 MB -> 4.7 MB and premium 1.56 GB ->
+# 338 MB, both valid, both painted nothing, and both published and pushed to
+# the CDN without complaint.
+#
+# 50% is deliberately loose. Advisory movement changes these files by a few
+# per cent at most, so anything approaching half is not a content edit.
+SHRINK_TOLERANCE_PCT="${SHRINK_TOLERANCE_PCT:-50}"
 mkdir -p "$BACKUP_DIR"
 
 for tier in $TIERS; do
@@ -105,8 +119,10 @@ for tier in $TIERS; do
     # 92 GB volume, and premium.pmtiles is 1.5 GB — copying it next to itself
     # leaves ~1.3 GB to write a 1.5 GB replacement into. The safety net was
     # what would have caused the failure.
+    prev_bytes=0
     if [[ -f "$final" ]]; then
-        need=$(stat -c '%s' "$final")
+        prev_bytes=$(stat -c '%s' "$final")
+        need="$prev_bytes"
         avail=$(df --output=avail -B1 "$BACKUP_DIR" | tail -1)
         if [[ "$avail" -lt $((need + SAFETY_MARGIN_BYTES)) ]]; then
             fail "only ${avail}B free on ${BACKUP_DIR} — need ${need}B for the ${tier} backup"
@@ -129,8 +145,20 @@ for tier in $TIERS; do
         rollback "$final" "$backup"
         fail "pmtiles output for tier=${tier} is incomplete — previous file restored"
     fi
-    rm -f "$backup"
     size_bytes=$(stat -c '%s' "$final")
+
+    # A tile that has lost most of its bytes is almost certainly carrying no
+    # feature properties — structurally valid, and useless. See
+    # SHRINK_TOLERANCE_PCT above for what this is guarding against.
+    if [[ "$prev_bytes" -gt 0 ]]; then
+        floor=$(( prev_bytes * (100 - SHRINK_TOLERANCE_PCT) / 100 ))
+        if [[ "$size_bytes" -lt "$floor" ]]; then
+            rollback "$final" "$backup"
+            fail "tier=${tier} shrank from ${prev_bytes}B to ${size_bytes}B"                  "(more than ${SHRINK_TOLERANCE_PCT}%) — previous file restored."                  "This is what an empty-property build looks like: check that the"                  "percentile schema matches this revision. Override with"                  "SHRINK_TOLERANCE_PCT=100 if the drop is genuinely intended."
+        fi
+    fi
+
+    rm -f "$backup"
     log "tier=${tier} published size=${size_bytes}B"
 done
 
