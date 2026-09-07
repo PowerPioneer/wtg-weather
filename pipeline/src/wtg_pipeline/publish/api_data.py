@@ -75,8 +75,10 @@ every sentence is checkable against the series printed on the same page.
 
 from __future__ import annotations
 
+import json
 import logging
 import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -1050,6 +1052,87 @@ def build_payloads(
     return entries, skipped
 
 
+#: How far the country count may fall in one publish before it is treated as
+#: damage rather than an edit. A country genuinely leaving the set is rare and
+#: happens one at a time; a tenth of them vanishing at once never is.
+PUBLISH_SHRINK_TOLERANCE = 0.10
+
+
+class PublishRefused(RuntimeError):
+    """The bundle about to be written looks like damage, not an edit."""
+
+
+def assert_publishable(
+    entries: Mapping[str, object], *, base_dir: Path | None = None
+) -> None:
+    """Refuse to overwrite a good bundle with an empty or collapsed one.
+
+    On 2026-09-06 the weekly advisory cron ran `publish api-data` from a
+    checkout that happened to be on a feature branch. That code reads a
+    percentile schema the on-disk Parquet did not have yet, so every country
+    failed the "complete series" check, `entries` came back empty, and the
+    publish **succeeded** — writing a 22-byte index over a working bundle and
+    taking all ~2,800 country pages to 404 until someone noticed.
+
+    Nothing about that was a code bug in the strict sense: each step did what
+    it was told. The defect is that publishing *nothing* was indistinguishable
+    from publishing something, so there was no point at which the pipeline
+    could notice it was destroying data. This is that point.
+
+    Raises :class:`PublishRefused` when the new bundle is empty, or when it has
+    lost more than :data:`PUBLISH_SHRINK_TOLERANCE` of the countries the
+    current index lists. Set ``WTG_ALLOW_PUBLISH_SHRINK=1`` to override, which
+    is the right thing to do exactly once: when countries really have been
+    withdrawn on purpose.
+    """
+    if os.environ.get("WTG_ALLOW_PUBLISH_SHRINK") == "1":
+        log.warning(
+            "WTG_ALLOW_PUBLISH_SHRINK=1 — publishing %d payload(s) without the "
+            "collapse check",
+            len(entries),
+        )
+        return
+
+    if not entries:
+        raise PublishRefused(
+            "refusing to publish an empty bundle: no country produced a "
+            "complete climate series. The usual cause is a percentile Parquet "
+            "whose schema does not match this code — check that "
+            "`wtg process percentiles` has run against the same revision. "
+            "Set WTG_ALLOW_PUBLISH_SHRINK=1 only if you truly mean to publish "
+            "nothing."
+        )
+
+    previous = _existing_index_count(base_dir)
+    if previous is None:
+        return
+
+    floor = previous * (1.0 - PUBLISH_SHRINK_TOLERANCE)
+    if len(entries) < floor:
+        raise PublishRefused(
+            f"refusing to publish {len(entries)} countries over an index that "
+            f"lists {previous}: a drop of more than "
+            f"{PUBLISH_SHRINK_TOLERANCE:.0%} is damage, not an edit. If it is "
+            f"genuinely intended, re-run with WTG_ALLOW_PUBLISH_SHRINK=1."
+        )
+
+
+def _existing_index_count(base_dir: Path | None) -> int | None:
+    """How many countries the currently-published index lists, if readable.
+
+    Returns ``None`` when there is no index yet (a first publish, which has
+    nothing to be measured against) or when it cannot be parsed — an
+    unreadable index is not evidence that the new bundle is wrong.
+    """
+    path = index_path(base_dir)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    countries = payload.get("countries") if isinstance(payload, dict) else payload
+    return len(countries) if isinstance(countries, list) else None
+
+
 def write_bundle(
     entries: Mapping[str, dict[str, object]],
     *,
@@ -1123,6 +1206,7 @@ def run_publish_api_data(*, base_dir: Path | None = None) -> PublishResult:
         advisories=advisories,
         region_levels=region_levels,
     )
+    assert_publishable(entries, base_dir=base_dir)
     changed, pruned = write_bundle(entries, base_dir=base_dir)
 
     suppressed_published = sum(
