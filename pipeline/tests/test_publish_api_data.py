@@ -587,3 +587,49 @@ def test_both_envelope_edges_or_neither(monkeypatch: pytest.MonkeyPatch) -> None
         climate = entry["climate"]
         assert ("tBandLow" in climate) == ("tBandHigh" in climate)
         assert ("wBandLow" in climate) == ("wBandHigh" in climate)
+
+
+def test_publishing_nothing_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The guard that would have prevented the 2026-09-06 outage.
+
+    A cron ran `publish api-data` from a checkout whose code expected a
+    percentile schema the on-disk Parquet did not have. Every country failed
+    the complete-series check, the bundle came back empty, and the publish
+    succeeded — overwriting a working index with 22 bytes and taking ~2,800
+    country pages to 404.
+    """
+    with pytest.raises(api_data.PublishRefused, match="empty bundle"):
+        api_data.assert_publishable({}, base_dir=None)
+
+
+def test_a_collapse_against_the_published_index_is_refused(tmp_path) -> None:
+    """Losing a tenth of the countries at once is damage, not an edit."""
+    index = api_data.index_path(tmp_path)
+    index.parent.mkdir(parents=True, exist_ok=True)
+    index.write_text(
+        json.dumps({"countries": [{"slug": f"c{i}"} for i in range(200)]}),
+        encoding="utf-8",
+    )
+
+    # A handful fewer is an ordinary edit and must pass.
+    api_data.assert_publishable({f"c{i}": {} for i in range(195)}, base_dir=tmp_path)
+
+    with pytest.raises(api_data.PublishRefused, match="damage, not an edit"):
+        api_data.assert_publishable({f"c{i}": {} for i in range(100)}, base_dir=tmp_path)
+
+
+def test_the_collapse_guard_can_be_overridden(tmp_path, monkeypatch) -> None:
+    """Countries can genuinely be withdrawn — but it has to be deliberate."""
+    index = api_data.index_path(tmp_path)
+    index.parent.mkdir(parents=True, exist_ok=True)
+    index.write_text(
+        json.dumps({"countries": [{"slug": f"c{i}"} for i in range(200)]}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("WTG_ALLOW_PUBLISH_SHRINK", "1")
+    api_data.assert_publishable({"c0": {}}, base_dir=tmp_path)
+
+
+def test_a_first_publish_has_nothing_to_compare_against(tmp_path) -> None:
+    """No index yet is not evidence the new bundle is wrong."""
+    api_data.assert_publishable({"peru": {}}, base_dir=tmp_path)
