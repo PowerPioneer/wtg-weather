@@ -229,7 +229,13 @@ export function PreferencesPanel({
           max={PREFERENCE_LIMITS.sun.max}
           step={PREFERENCE_LIMITS.sun.step}
           format={fmtSun}
-          fill="end"
+          // Filled from the left, though the preference is a floor ("at
+          // least 6 hours"). Filling rightward from the thumb is the literal
+          // reading — that band is what qualifies — but it puts this one
+          // control's paint in the opposite direction to every other slider
+          // here, and side by side that reads as a bug rather than as meaning.
+          // Consistency wins; the "at least" in the label carries the sense.
+          fill="start"
           onChange={(sunMin) => onChange({ ...value, sunMin })}
         />
         {/*

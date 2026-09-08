@@ -24,9 +24,23 @@ export default async function MapPage() {
   const publishedCountrySlugs = (await routableCountries()).map((c) => c.slug);
 
   return (
-    <>
+    // `100dvh`, not `100vh`, and not a header constant subtracted from either.
+    //
+    // On a phone `100vh` is the *large* viewport — it includes the strip behind
+    // the browser's collapsible toolbar — so a map sized to it is taller than
+    // what you can see. The page then scrolls: the legend sits below the fold,
+    // and scrolling to reach it pushes the Display/month/Prefs controls up
+    // behind the header. `100dvh` tracks the toolbar, so the map is exactly the
+    // space actually available.
+    //
+    // The header's height is measured rather than assumed. `--size-header` is a
+    // fixed 56px, but below `sm` the header wraps the product name onto two
+    // lines and is taller than that, so every `calc(100vh - 56px)` was wrong on
+    // exactly the devices that could least afford it. A flex column makes the
+    // browser do the subtraction.
+    <div className="flex h-screen h-[100dvh] flex-col overflow-hidden">
       <PageHeader activePath="/map" />
-      <main className="relative flex-1 overflow-hidden">
+      <main className="relative min-h-0 flex-1 overflow-hidden">
         <Suspense fallback={<MapLoading />}>
           <MapExperience
             isPremium={entitlement.premium}
@@ -34,7 +48,7 @@ export default async function MapPage() {
           />
         </Suspense>
       </main>
-    </>
+    </div>
   );
 }
 
@@ -42,7 +56,7 @@ function MapLoading() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[calc(100vh-var(--size-header,56px))] items-center justify-center bg-surface-sunken"
+      className="flex h-full items-center justify-center bg-surface-sunken"
     >
       <div className="flex flex-col items-center gap-3 text-text-muted">
         <div className="h-1 w-24 overflow-hidden rounded-full bg-border">

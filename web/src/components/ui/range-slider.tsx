@@ -18,24 +18,55 @@ import { useId } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * The input is invisible; the visible track is a sibling. Thumbs get their
- * pointer events back so both handles stay independently draggable.
+ * Touch sizing, and why the numbers look large.
+ *
+ * The visible track is 6px and the thumb was 16px. On a phone that is roughly
+ * a third of the ~44px a fingertip can reliably hit, and because the input
+ * body had `pointer-events-none` the *only* place that responded was the thumb
+ * itself — tapping the track did nothing, so a slider you missed felt broken
+ * rather than merely fiddly.
+ *
+ * So: the hit area is 44px tall below `md` (the visible track stays 6px and
+ * centred inside it), the thumb grows to 24px, and `touch-action: none` stops
+ * a drag along the track from scrolling the sheet out from under the finger.
  */
-const SLIDER_INPUT = [
-  "pointer-events-none absolute inset-x-0 top-0 h-5 w-full cursor-pointer appearance-none bg-transparent",
-  "focus:outline-none disabled:cursor-not-allowed",
-  "[&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4",
+const HIT_AREA = "relative h-11 md:h-5";
+
+const THUMB = [
+  "[&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6",
+  "md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4",
   "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full",
   "[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary",
   "[&::-webkit-slider-thumb]:bg-surface [&::-webkit-slider-thumb]:shadow-sm",
-  "[&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4",
+  "[&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6",
+  "md:[&::-moz-range-thumb]:h-4 md:[&::-moz-range-thumb]:w-4",
   "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full",
   "[&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary",
   "[&::-moz-range-thumb]:bg-surface",
 ].join(" ");
 
+const INPUT_BASE = [
+  "absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent touch-none",
+  "focus:outline-none disabled:cursor-not-allowed",
+  THUMB,
+].join(" ");
+
+/**
+ * The dual slider stacks two inputs, so their bodies must not swallow each
+ * other's pointers — only the thumbs stay live. A single slider has no such
+ * conflict and keeps a fully tappable track, which is what makes it usable
+ * with a thumb.
+ */
+const STACKED_INPUT = [
+  INPUT_BASE,
+  "pointer-events-none",
+  "[&::-webkit-slider-thumb]:pointer-events-auto",
+  "[&::-moz-range-thumb]:pointer-events-auto",
+].join(" ");
+
 const TRACK_WRAPPER =
-  "relative h-5 rounded-full transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[color:var(--color-focus-ring)] has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-surface";
+  HIT_AREA +
+  " rounded-full transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[color:var(--color-focus-ring)] has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-surface";
 
 function pct(value: number, min: number, max: number): number {
   if (max <= min) return 0;
@@ -127,7 +158,7 @@ export function RangeSlider({
         />
         <input
           type="range"
-          className={SLIDER_INPUT}
+          className={INPUT_BASE}
           min={min}
           max={max}
           step={step}
@@ -187,7 +218,7 @@ export function DualRangeSlider({
           // Above the upper thumb once the band is squeezed to the top of the
           // scale, where the two handles would otherwise sit on top of each
           // other and only the last-painted one could be grabbed.
-          className={cn(SLIDER_INPUT, loPct > 90 ? "z-20" : "z-10")}
+          className={cn(STACKED_INPUT, loPct > 90 ? "z-20" : "z-10")}
           min={min}
           max={max}
           step={step}
@@ -201,7 +232,7 @@ export function DualRangeSlider({
         />
         <input
           type="range"
-          className={cn(SLIDER_INPUT, "z-10")}
+          className={cn(STACKED_INPUT, "z-10")}
           min={min}
           max={max}
           step={step}
