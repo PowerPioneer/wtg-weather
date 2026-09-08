@@ -50,14 +50,19 @@ export type LevelSliderProps = {
   className?: string;
 };
 
+// Sized for a fingertip below `md` — see the note in `range-slider.tsx`. The
+// hit area is 44px, the visible track stays 6px and centred, and
+// `touch-action: none` keeps a drag from scrolling the sheet away underneath.
 const SLIDER_INPUT = [
-  "absolute inset-x-0 top-0 h-5 w-full cursor-pointer appearance-none bg-transparent",
+  "absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent touch-none",
   "focus:outline-none",
-  "[&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4",
+  "[&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6",
+  "md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4",
   "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full",
   "[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary",
   "[&::-webkit-slider-thumb]:bg-surface [&::-webkit-slider-thumb]:shadow-sm",
-  "[&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4",
+  "[&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6",
+  "md:[&::-moz-range-thumb]:h-4 md:[&::-moz-range-thumb]:w-4",
   "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full",
   "[&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary",
   "[&::-moz-range-thumb]:bg-surface",
@@ -102,7 +107,7 @@ export function LevelSlider({
         </span>
       </div>
 
-      <div className="relative h-5 rounded-full transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[color:var(--color-focus-ring)] has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-surface">
+      <div className="relative h-11 rounded-full transition md:h-5 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[color:var(--color-focus-ring)] has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-surface">
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-surface-sunken"
