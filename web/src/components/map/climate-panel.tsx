@@ -142,7 +142,12 @@ export function ClimatePanel({
         transition: drag.dragging ? "none" : "transform 180ms ease-out",
       }}
       className={cn(
-        "pointer-events-auto absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] flex-col rounded-t-xl border-t border-border bg-surface shadow-lg",
+        // 88% rather than 70%: on a phone this is the country's whole
+        // readout — match, advisory, temperature, the CTA — and at 70% of a
+        // short viewport the footer button sat below the fold with nothing to
+        // indicate it was there. The remaining strip is deliberate: it shows
+        // the map still behind, and it is where you tap to dismiss.
+        "pointer-events-auto absolute inset-x-0 bottom-0 z-20 flex max-h-[88%] flex-col rounded-t-xl border-t border-border bg-surface shadow-lg",
         "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[420px] md:rounded-none md:border-l md:border-t-0",
         className,
       )}

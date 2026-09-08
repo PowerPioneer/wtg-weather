@@ -273,7 +273,7 @@ export function MapExperience({
   const prefsAreDefault = isDefaultPreferenceSet(preferences);
 
   return (
-    <div className="relative h-[calc(100vh-var(--size-header,56px))] w-full bg-surface-sunken">
+    <div className="relative h-full w-full overflow-hidden bg-surface-sunken">
       {tiles.error ? (
         <MapError message={tiles.error} />
       ) : (
@@ -323,7 +323,7 @@ export function MapExperience({
         <Button
           variant="secondary"
           size="sm"
-          className="pointer-events-auto shadow-sm"
+          className="pointer-events-auto h-10 shadow-sm md:h-8"
           onClick={() => setPickerOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={pickerOpen}
@@ -350,7 +350,7 @@ export function MapExperience({
         <Button
           variant="secondary"
           size="sm"
-          className="pointer-events-auto shadow-sm"
+          className="pointer-events-auto h-10 shadow-sm md:h-8"
           onClick={() => setPrefsOpen((open) => !open)}
           aria-haspopup="dialog"
           aria-expanded={prefsOpen}
@@ -381,7 +381,7 @@ export function MapExperience({
           // 13" laptop viewport, so without this the Reset button and the
           // premium-layer card sat below the bottom of the screen with no way
           // to reach them.
-          className="pointer-events-auto absolute left-4 top-[60px] z-20 max-h-[calc(100vh-var(--size-header,56px)-5rem)] w-[320px] overflow-y-auto overscroll-contain rounded-lg border border-border bg-surface p-4 shadow-lg"
+          className="pointer-events-auto absolute left-4 top-[60px] z-20 max-h-[calc(100%-5rem)] w-[320px] overflow-y-auto overscroll-contain rounded-lg border border-border bg-surface p-4 shadow-lg"
         >
           <PreferencesPanel
             value={preferences}
@@ -469,7 +469,10 @@ function MonthNudge({
       type="button"
       onClick={onClick}
       aria-label={direction === "prev" ? "Previous month" : "Next month"}
-      className="inline-flex size-6 items-center justify-center rounded-sm text-text-muted outline-none transition hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-[color:var(--color-focus-ring)]"
+      // 36px below `md`, 24px above. These sit inside a pill next to the month
+      // label, and at 24px square they were the smallest touch target on the
+      // map — a stepper you had to aim at, on the control people use most.
+      className="inline-flex size-9 items-center justify-center rounded-sm text-text-muted outline-none transition hover:bg-surface-2 md:size-6 focus-visible:ring-2 focus-visible:ring-[color:var(--color-focus-ring)]"
     >
       <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {direction === "prev" ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 6l6 6-6 6" />}
