@@ -558,6 +558,27 @@ def run_process_advisories(
     )
 
 
+#: Monthly variables standing in for daily series that are not downloaded yet.
+#:
+#: `build_geojson` asks for `si10_mean`, `t2m_mean` and `d2m_mean`. Those are
+#: daily statistics, and the download of them was deliberately deferred: CDS
+#: throttling put a year-sized request at five to six hours, serialised, and
+#: the full seven-series set at about a week. The monthly means stand in.
+#:
+#: The consequence is visible and correct rather than hidden: a stand-in
+#: carries `p10`/`p90` and no `p5`/`p95`, so the wind chart draws its line and
+#: simply no envelope. Without the alias the variables would be absent
+#: entirely and every free user would get a grey wind map — a bug this
+#: codebase has already shipped once.
+#:
+#: Delete this map once the three series are downloaded.
+MONTHLY_STANDINS: dict[str, str] = {
+    "si10": "si10_mean",
+    "t2m": "t2m_mean",
+    "d2m": "d2m_mean",
+}
+
+
 def run_percentiles(*, level: str, force: bool) -> list[Path]:
     """Derive the statistics from whatever the aggregate turned out to be.
 
@@ -575,6 +596,15 @@ def run_percentiles(*, level: str, force: bool) -> list[Path]:
             log.warning("no aggregated parquet for %s; skipping", lv)
             continue
 
+        daily_agg = aggregated_path(lv, daily=True)
+        sources = [agg] + ([daily_agg] if daily_agg.exists() else [])
+        if not daily_agg.exists():
+            log.warning(
+                "no daily aggregate for %s — statistics will be interannual "
+                "only; run `wtg process aggregate --daily` first",
+                lv,
+            )
+
         lat_path = latitudes_path(lv)
         latitudes = None
         if lat_path.exists():
@@ -589,9 +619,10 @@ def run_percentiles(*, level: str, force: bool) -> list[Path]:
         outputs.append(
             build_percentiles(
                 level=lv,
-                aggregated_parquet=agg,
+                aggregated_parquet=sources,
                 force=force,
                 latitudes=latitudes,
+                aliases=MONTHLY_STANDINS,
             )
         )
     return outputs
