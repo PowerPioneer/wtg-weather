@@ -370,6 +370,7 @@ def aggregate_level(
     years: Iterable[int],
     force: bool = False,
     base_dir: Path | None = None,
+    daily: bool = False,
 ) -> Path:
     """Aggregate every (variable, year) file for one admin level and write Parquet.
 
@@ -416,13 +417,28 @@ def aggregate_level(
                 written.append(part_path)
                 continue
 
-            nc_path = netcdf_dir / f"{variable}_{year}.nc"
-            if not nc_path.exists():
-                log.warning("missing %s; skipping", nc_path)
-                continue
+            # Daily statistics arrive as one file per year, or as twelve
+            # monthly ones from a run that was chunked that way — `year_inputs`
+            # returns whichever is on disk, so an aggregate spanning both
+            # shapes reads as one dataset. Monthly means are always one file.
+            if daily:
+                from wtg_pipeline.sources.era5_daily import year_inputs
+
+                inputs: list[Path] | Path = year_inputs(
+                    variable, year, base_dir=netcdf_dir
+                )
+                if not inputs:
+                    log.warning("no daily inputs for %s %d; skipping", variable, year)
+                    continue
+            else:
+                nc_path = netcdf_dir / f"{variable}_{year}.nc"
+                if not nc_path.exists():
+                    log.warning("missing %s; skipping", nc_path)
+                    continue
+                inputs = nc_path
 
             log.info("[%d/%d] aggregating %s %d → %s", idx, total, variable, year, level)
-            df = aggregate_variable_year(nc_path, variable, polygons)
+            df = aggregate_variable_year(inputs, variable, polygons, daily=daily)
             # Write to a temp name first: a part is treated as complete purely
             # because it exists, so a half-written file would poison a resume.
             tmp_path = part_path.with_suffix(".parquet.tmp")

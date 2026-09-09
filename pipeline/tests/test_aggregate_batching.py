@@ -83,9 +83,12 @@ class _StubPolygons:
 def _fake_aggregate(monkeypatch, calls: list[str]):
     import wtg_pipeline.processing.aggregate as agg
 
-    def fake(nc_path: Path, variable_code: str, polygons: object):
-        calls.append(nc_path.name)
-        year = int(nc_path.stem.split("_")[-1])
+    def fake(nc_path, variable_code: str, polygons: object, **kwargs: object):
+        # `nc_path` is a single file for monthly means and a list for daily
+        # statistics — the real function takes either, so the stub must too.
+        first = nc_path if isinstance(nc_path, Path) else nc_path[0]
+        calls.append(first.name)
+        year = int(first.stem.split("_")[-1])
         return _rows(variable_code, year)
 
     monkeypatch.setattr(agg, "aggregate_variable_year", fake)
@@ -245,3 +248,97 @@ def test_percentiles_values_match_a_single_pass(tmp_path: Path) -> None:
     expected = single.sort_values(key).reset_index(drop=True)
     for col in ("p10", "p50", "p90", "n_years"):
         assert merged[col].tolist() == pytest.approx(expected[col].tolist())
+
+
+def test_daily_aggregation_reads_year_files(tmp_path: Path, monkeypatch) -> None:
+    """The daily pass reads `raw/era5/daily`, not the monthly means beside it.
+
+    They are different files carrying different variables, so a `--daily` run
+    that picked up the monthly tree would silently produce a monthly aggregate
+    and label it daily — and `build_percentiles` decides which statistics to
+    compute from the presence of a `day` column, so the mislabel would survive
+    all the way to a band that says "within-month" and is not.
+    """
+    calls: list[str] = []
+    _fake_aggregate(monkeypatch, calls)
+
+    daily_dir = tmp_path / "daily"
+    daily_dir.mkdir()
+    for year in (2020, 2021):
+        (daily_dir / f"t2m_max_{year}.nc").write_bytes(b"stub")
+
+    aggregate_level(
+        level="admin2",
+        polygons=_StubPolygons(),
+        netcdf_dir=daily_dir,
+        variable_codes=["t2m_max"],
+        years=[2020, 2021],
+        base_dir=tmp_path / "agg",
+        daily=True,
+    )
+
+    assert calls == ["t2m_max_2020.nc", "t2m_max_2021.nc"]
+
+
+def test_daily_aggregation_accepts_the_monthly_chunk_shape(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """A year fetched as twelve monthly chunks aggregates as one year.
+
+    The first real download was chunked by month before the CDS throttle forced
+    a switch to year-sized requests, so both shapes are on disk. `year_inputs`
+    is what makes them one dataset; this pins that the daily path goes through
+    it rather than guessing a filename.
+    """
+    calls: list[str] = []
+    _fake_aggregate(monkeypatch, calls)
+
+    daily_dir = tmp_path / "daily"
+    daily_dir.mkdir()
+    for month in range(1, 13):
+        (daily_dir / f"t2m_max_2020{month:02d}.nc").write_bytes(b"stub")
+
+    aggregate_level(
+        level="admin2",
+        polygons=_StubPolygons(),
+        netcdf_dir=daily_dir,
+        variable_codes=["t2m_max"],
+        years=[2020],
+        base_dir=tmp_path / "agg",
+        daily=True,
+    )
+
+    # One call, handed the twelve chunks in month order.
+    assert calls == ["t2m_max_202001.nc"]
+
+
+def test_daily_aggregation_writes_the_latitude_sidecar(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """Sunshine and the sunny-day count are derived per polygon latitude.
+
+    Without the sidecar the percentile stage would have to re-read the boundary
+    layers, which at admin-2 is slow and can fail on its own.
+    """
+    import json
+
+    from wtg_pipeline.processing.aggregate import latitudes_path
+
+    _fake_aggregate(monkeypatch, [])
+    daily_dir = tmp_path / "daily"
+    daily_dir.mkdir()
+    (daily_dir / "t2m_max_2020.nc").write_bytes(b"stub")
+    base = tmp_path / "agg"
+
+    aggregate_level(
+        level="admin2",
+        polygons=_StubPolygons(),
+        netcdf_dir=daily_dir,
+        variable_codes=["t2m_max"],
+        years=[2020],
+        base_dir=base,
+        daily=True,
+    )
+
+    written = json.loads(latitudes_path("admin2", base_dir=base).read_text())
+    assert written == {"p0": -12.0, "p1": -13.5}

@@ -196,12 +196,23 @@ def process_aggregate(
     ] = "2016-2025",
     force: Annotated[bool, typer.Option("--force", help="Ignore cached outputs.")] = False,
     verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+    daily: Annotated[
+        bool,
+        typer.Option(
+            "--daily",
+            help=(
+                "Aggregate the ERA5 daily statistics in raw/era5/daily instead "
+                "of the monthly means. Separate files, separate variables, "
+                "separate pass."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Aggregate ERA5 rasters over boundary polygons (exactextract)."""
     _setup_logging(verbose)
     from wtg_pipeline.pipeline_runner import run_aggregate
 
-    run_aggregate(level=level, years_spec=years, force=force)
+    run_aggregate(level=level, years_spec=years, force=force, daily=daily)
 
 
 @process.command("percentiles")
