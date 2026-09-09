@@ -100,17 +100,35 @@ def _require_pyarrow():
     return pa, pq
 
 
-def aggregated_path(level: Level, base_dir: Path | None = None) -> Path:
+def aggregated_path(
+    level: Level, base_dir: Path | None = None, *, daily: bool = False
+) -> Path:
+    """Where one level's aggregate lands.
+
+    Daily and monthly are separate files, and must be. They are not two
+    versions of the same thing: the monthly aggregate is still the only source
+    for snow, sea-surface temperature, wind and dewpoint, while the daily one
+    carries temperature, rain and sunshine at day resolution. Sharing a path
+    made the daily run read the monthly file as its own cache hit and do
+    nothing at all — a silent no-op that looked like a successful run.
+    """
     root = base_dir if base_dir is not None else intermediate_dir() / "aggregated"
-    return ensure_dir(root) / f"{level}.parquet"
+    suffix = "_daily" if daily else ""
+    return ensure_dir(root) / f"{level}{suffix}.parquet"
 
 
 def latitudes_path(level: Level, base_dir: Path | None = None) -> Path:
-    """Sidecar written next to the aggregate; read by the daily percentiles."""
+    """Sidecar written next to the aggregate; read by the daily percentiles.
+
+    One per level regardless of which pass wrote it — a polygon's latitude does
+    not depend on the raster it was aggregated against.
+    """
     return aggregated_path(level, base_dir=base_dir).with_name(f"{level}_latitudes.json")
 
 
-def parts_dir(level: Level, base_dir: Path | None = None) -> Path:
+def parts_dir(
+    level: Level, base_dir: Path | None = None, *, daily: bool = False
+) -> Path:
     """Directory holding one Parquet part per (variable, year).
 
     Aggregation writes here first and streams the parts into the combined
@@ -118,7 +136,7 @@ def parts_dir(level: Level, base_dir: Path | None = None) -> Path:
     whole level. It also makes a run resumable: at admin-2 scale a single pass
     is days long, and losing it to a crash on the last file is not acceptable.
     """
-    return aggregated_path(level, base_dir=base_dir).with_suffix(".parts")
+    return aggregated_path(level, base_dir=base_dir, daily=daily).with_suffix(".parts")
 
 
 def _open_era5_dataset(nc_path: Path):
@@ -390,12 +408,12 @@ def aggregate_level(
     * output absent but parts present — resume, skipping completed parts.
       This is the crash-recovery path for multi-day runs.
     """
-    out_path = aggregated_path(level, base_dir=base_dir)
+    out_path = aggregated_path(level, base_dir=base_dir, daily=daily)
     if not force and out_path.exists() and out_path.stat().st_size > 0:
         log.info("cache hit: %s", out_path.name)
         return out_path
 
-    parts = parts_dir(level, base_dir=base_dir)
+    parts = parts_dir(level, base_dir=base_dir, daily=daily)
     if force and parts.exists():
         # A stale part is indistinguishable from a fresh one, so `--force`
         # has to clear them or it would quietly aggregate over old polygons.

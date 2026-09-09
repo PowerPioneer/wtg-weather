@@ -19,6 +19,7 @@ pd = pytest.importorskip("pandas")
 pytest.importorskip("pyarrow")
 
 from wtg_pipeline.processing.percentiles import (  # noqa: E402
+    COMBINED_COLUMNS,
     DAILY_COLUMNS,
     build_percentiles,
     compute_daily_statistics,
@@ -274,7 +275,17 @@ def test_build_percentiles_daily_end_to_end(tmp_path) -> None:
     assert set(result["variable"]) == {
         "t2m_max", "tp_sum", "wet_days", "sun_hours", "sunny_days",
     }
-    assert list(result.columns) == list(DAILY_COLUMNS)
+    # The file carries the union of both statistic shapes, because one
+    # percentiles file is fed by two aggregates — daily for temperature, rain
+    # and sunshine, monthly for snow, SST, wind and dewpoint.
+    assert list(result.columns) == list(COMBINED_COLUMNS)
+
+    # What matters is not which columns exist but which are *populated*: a
+    # daily row must carry no interannual band at all. p10/p90 present on a
+    # within-month row would be exactly the mislabel this rebuild removed.
+    assert result["p10"].isna().all()
+    assert result["p90"].isna().all()
+    assert set(DAILY_COLUMNS) <= set(result.columns)
 
     wet = result[result["variable"] == "wet_days"].iloc[0]
     assert wet["mean"] == pytest.approx(5.0)
@@ -326,3 +337,83 @@ def test_daily_is_detected_from_the_input_not_declared(tmp_path) -> None:
         build_percentiles(level="country", aggregated_parquet=monthly_agg, base_dir=tmp_path)
     )
     assert "p10" in monthly.columns and "p90" in monthly.columns
+
+
+def _monthly_rows(variable: str, values_by_year: dict[int, float]) -> pd.DataFrame:
+    """A monthly aggregate: one value per (polygon, year, month), no `day`."""
+    return pd.DataFrame(
+        [
+            {
+                "polygon_id": "p1",
+                "iso_a2": "PE",
+                "admin1_code": "",
+                "year": year,
+                "month": 1,
+                "variable": variable,
+                "value": value,
+            }
+            for year, value in values_by_year.items()
+        ]
+    )
+
+
+def test_one_percentiles_file_is_built_from_both_aggregates(tmp_path) -> None:
+    """Daily and monthly statistics land in one file, keeping their own shape.
+
+    `build_geojson` reads a single percentiles file, but two aggregates feed
+    it: the daily statistics for temperature, rain and sunshine, and the
+    monthly means that are still the only source for snow, SST, wind and
+    dewpoint.
+    """
+    source = tmp_path / "aggregated"
+    source.mkdir()
+
+    monthly = source / "admin1.parquet"
+    _monthly_rows("si10", {2020: 4.0, 2021: 5.0, 2022: 6.0}).to_parquet(
+        monthly, index=False
+    )
+
+    daily = source / "admin1_daily.parquet"
+    _daily_rows("t2m_max", {2020: [20.0] * DAYS_IN_JAN}).to_parquet(daily, index=False)
+
+    out = build_percentiles(
+        level="admin1",
+        aggregated_parquet=[monthly, daily],
+        base_dir=tmp_path,
+        latitudes={"p1": -12.0},
+        aliases={"si10": "si10_mean"},
+    )
+
+    result = pd.read_parquet(out)
+    # The monthly variable arrives under the name build_geojson asks for.
+    assert set(result["variable"]) == {"si10_mean", "t2m_max"}
+
+    wind = result[result["variable"] == "si10_mean"].iloc[0]
+    temp = result[result["variable"] == "t2m_max"].iloc[0]
+
+    # Each keeps its own statistic and gains nothing it did not earn. This is
+    # the assertion that matters: a monthly stand-in must not acquire a
+    # within-month envelope, and a daily series must not acquire an
+    # interannual one. Either would be a band drawn from the wrong axis.
+    assert pd.notna(wind["p10"]) and pd.notna(wind["p90"])
+    assert pd.isna(wind["p5"]) and pd.isna(wind["p95"])
+    assert pd.notna(temp["p5"]) and pd.notna(temp["p95"])
+    assert pd.isna(temp["p10"]) and pd.isna(temp["p90"])
+
+
+def test_a_monthly_only_run_still_works(tmp_path) -> None:
+    """The daily aggregate is optional; without it nothing daily is claimed."""
+    source = tmp_path / "aggregated"
+    source.mkdir()
+    monthly = source / "admin1.parquet"
+    _monthly_rows("si10", {2020: 4.0, 2021: 5.0, 2022: 6.0}).to_parquet(
+        monthly, index=False
+    )
+
+    out = build_percentiles(
+        level="admin1", aggregated_parquet=[monthly], base_dir=tmp_path
+    )
+    result = pd.read_parquet(out)
+    assert result["p5"].isna().all()
+    assert result["p95"].isna().all()
+    assert pd.notna(result.iloc[0]["p50"])

@@ -52,7 +52,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from wtg_pipeline.config import ensure_dir, intermediate_dir
 from wtg_pipeline.processing.sunshine import (
@@ -70,6 +70,21 @@ log = logging.getLogger(__name__)
 DAILY_COLUMNS = (
     "polygon_id", "iso_a2", "admin1_code", "month", "variable",
     "mean", "p50", "p5", "p95", "n_days", "n_years",
+)
+
+#: Every column the combined output can carry, monthly and daily together.
+#:
+#: One percentiles file feeds `build_geojson`, but two aggregates feed it: the
+#: daily statistics for temperature, rain and sunshine, and the monthly means
+#: that are still the only source for snow, sea-surface temperature, wind and
+#: dewpoint. Their statistics differ — interannual `p10`/`p90` against
+#: within-month `p5`/`p95` — so both are written and the absent ones are null.
+#: That is what lets a consumer draw an envelope where there is one and none
+#: where there is not, rather than drawing an interannual band and calling it a
+#: within-month one.
+COMBINED_COLUMNS = (
+    "polygon_id", "iso_a2", "admin1_code", "month", "variable",
+    "mean", "p50", "p5", "p95", "p10", "p90", "n_days", "n_years",
 )
 
 #: Source variable → the variable name emitted for its derived daily count.
@@ -301,19 +316,28 @@ def _reduce_count(frame, count_name: str, pd, np):
 def build_percentiles(
     *,
     level: str,
-    aggregated_parquet: Path,
+    aggregated_parquet: "Path | Sequence[Path]",
     force: bool = False,
     base_dir: Path | None = None,
     daily: bool | None = None,
     latitudes: Mapping[str, float] | None = None,
+    aliases: Mapping[str, str] | None = None,
 ) -> Path:
-    """Read the aggregated Parquet and write the statistics Parquet.
+    """Read one or more aggregated Parquets and write the statistics Parquet.
 
-    ``daily`` is detected from the input rather than declared: a daily
-    aggregate carries a ``day`` column and a monthly one does not. Passing the
-    wrong flag would either crash or, worse, compute an interannual band and
-    label it a within-month one — so the input decides, and the flag is only
-    for forcing the issue in a test.
+    ``daily`` is detected per input rather than declared: a daily aggregate
+    carries a ``day`` column and a monthly one does not. Passing the wrong flag
+    would either crash or, worse, compute an interannual band and label it a
+    within-month one — so the input decides, and the flag is only for forcing
+    the issue in a test. With several inputs it is detected for each in turn,
+    which is the point: they are usually one of each.
+
+    ``aliases`` renames an emitted variable, and exists for one temporary
+    reason. ``build_geojson`` asks for ``si10_mean``, ``t2m_mean`` and
+    ``d2m_mean`` — daily series that have not been downloaded yet — so the
+    monthly ``si10``, ``t2m`` and ``d2m`` stand in for them. The stand-ins
+    carry ``p10``/``p90`` and no ``p5``/``p95``, so the wind chart draws a line
+    and no envelope, rather than drawing the wrong envelope.
     """
     pd = _require_pandas()
     out = percentiles_path(level, base_dir=base_dir)
@@ -321,65 +345,83 @@ def build_percentiles(
         log.info("cache hit: %s", out.name)
         return out
 
-    if daily is None:
-        daily = _has_day_column(aggregated_parquet)
-
-    if daily and latitudes is None:
-        latitudes = load_latitudes(level)
+    sources = (
+        [aggregated_parquet]
+        if isinstance(aggregated_parquet, (str, Path))
+        else list(aggregated_parquet)
+    )
+    declared = daily
+    alias_map = dict(aliases or {})
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    log.info(
-        "computing %s statistics for %s from %s",
-        "daily within-month" if daily else "interannual",
-        level,
-        aggregated_parquet.name,
-    )
-
-    # Percentile groups are keyed by (polygon, month, variable), so no group
-    # ever spans two variables — the work splits cleanly one variable at a
-    # time. Reading the whole aggregate at once is what this avoids: at
-    # admin-2 scale it is ~53 million rows monthly and far more daily.
-    variables = _distinct_variables(aggregated_parquet)
-    log.info("  %d variable(s) to process one at a time", len(variables))
 
     pa, pq = _require_pyarrow()
     writer = None
     rows = 0
     tmp_out = out.with_suffix(".parquet.tmp")
     try:
-        for index, variable in enumerate(variables, start=1):
-            chunk = pd.read_parquet(
-                aggregated_parquet, filters=[("variable", "==", variable)]
-            )
-            if chunk.empty:
-                continue
-            if daily:
-                result = compute_daily_statistics(
-                    chunk, variable=variable, latitudes=latitudes
-                )
-            else:
-                result = compute_percentiles(chunk)
-            del chunk
-            if result.empty:
-                continue
-            table = pa.Table.from_pandas(result, preserve_index=False)
-            if writer is None:
-                writer = pq.ParquetWriter(tmp_out, table.schema)
-            else:
-                table = table.cast(writer.schema)
-            writer.write_table(table)
-            rows += len(result)
+        for source in sources:
+            is_daily = declared if declared is not None else _has_day_column(source)
+            if is_daily and latitudes is None:
+                latitudes = load_latitudes(level)
+
             log.info(
-                "  [%d/%d] %s → %d rows (%d total)",
-                index, len(variables), variable, len(result), rows,
+                "computing %s statistics for %s from %s",
+                "daily within-month" if is_daily else "interannual",
+                level,
+                Path(source).name,
             )
-            del result
+
+            # Groups are keyed by (polygon, month, variable), so no group ever
+            # spans two variables — the work splits cleanly one variable at a
+            # time. Reading a whole aggregate at once is what this avoids: at
+            # admin-2 scale it is ~53 million rows monthly and far more daily.
+            variables = _distinct_variables(source)
+            log.info("  %d variable(s) to process one at a time", len(variables))
+
+            for index, variable in enumerate(variables, start=1):
+                chunk = pd.read_parquet(
+                    source, filters=[("variable", "==", variable)]
+                )
+                if chunk.empty:
+                    continue
+                if is_daily:
+                    result = compute_daily_statistics(
+                        chunk, variable=variable, latitudes=latitudes
+                    )
+                else:
+                    result = compute_percentiles(chunk)
+                del chunk
+                if result.empty:
+                    continue
+
+                if alias_map:
+                    result["variable"] = [
+                        alias_map.get(v, v) for v in result["variable"]
+                    ]
+
+                # Both shapes land in one file, so every result is widened to
+                # the union and the columns it does not have are null.
+                result = result.reindex(columns=list(COMBINED_COLUMNS))
+
+                table = pa.Table.from_pandas(result, preserve_index=False)
+                if writer is None:
+                    writer = pq.ParquetWriter(tmp_out, table.schema)
+                else:
+                    table = table.cast(writer.schema)
+                writer.write_table(table)
+                rows += len(result)
+                log.info(
+                    "  [%d/%d] %s → %d rows (%d total)",
+                    index, len(variables), variable, len(result), rows,
+                )
+                del result
     finally:
         if writer is not None:
             writer.close()
 
     if writer is None:
-        raise RuntimeError(f"no rows in {aggregated_parquet}")
+        raise RuntimeError("no rows in " + str([str(x) for x in sources]))
     tmp_out.replace(out)
     log.info("wrote %s (%d rows)", out, rows)
     return out
