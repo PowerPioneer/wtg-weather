@@ -402,6 +402,12 @@ def run_aggregate(
             years=years,
             force=force,
             daily=daily,
+            # Admin-2 kept at day resolution is 719 million rows; rolled up it
+            # is the size the monthly aggregate has always been. It loses the
+            # within-month band and the day counts, neither of which any
+            # admin-2 surface renders, and keeps the mean daily maximum — so
+            # the map does not change meaning when you cross zoom 7.
+            rollup_monthly=daily and lv == "admin2",
         )
         outputs.append(out)
 

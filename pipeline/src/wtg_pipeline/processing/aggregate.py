@@ -286,6 +286,7 @@ def aggregate_variable_year(
     *,
     coverage_base_dir: Path | None = None,
     daily: bool = False,
+    rollup_monthly: bool = False,
 ) -> "object":
     """Aggregate one (variable, year) into per-polygon values.
 
@@ -374,9 +375,71 @@ def aggregate_variable_year(
             columns["day"] = days
         frames.append(pd.DataFrame(columns))
 
-    if len(frames) == 1:
-        return frames[0]
-    return pd.concat(frames, ignore_index=True)
+    frame = frames[0] if len(frames) == 1 else pd.concat(frames, ignore_index=True)
+    if daily and rollup_monthly:
+        frame = _rollup_to_monthly(frame, variable_code, polygons)
+    return frame
+
+
+#: Rolled-up SSRD is emitted under this name, already in hours.
+ROLLUP_SUNSHINE = "sun_hours"
+
+
+def _rollup_to_monthly(frame, variable_code: str, polygons: PolygonFrame):
+    """Reduce a daily frame to one row per (polygon, year, month).
+
+    Admin-2 is the reason. Kept at day resolution it is 719 million rows and
+    ~22 GB for the four series, and the percentile stage would have to pull 180
+    million of them into pandas per variable. Rolled up it is the same size the
+    monthly aggregate has always been.
+
+    What admin-2 loses by this is real but not displayed: the within-month
+    band and the wet/sunny day counts, neither of which any admin-2 surface
+    renders. What it keeps is the thing that matters — `t` is still the mean
+    daily maximum, so the map does not change meaning when you cross zoom 7.
+
+    **Sunshine has to be derived before the mean, not after.** It is
+    non-linear in SSRD, so the sunshine of the average day is not the average
+    of the days' sunshine; averaging first would quietly overstate it in every
+    cloudy climate. So each day is converted here and the hours are what get
+    averaged, and the variable is renamed to say so.
+    """
+    pd = _require_pandas()
+    np = _require_numpy()
+
+    if variable_code == "ssrd_sum":
+        from wtg_pipeline.processing.sunshine import sunshine_hours_for_day
+
+        latitudes = {
+            str(getattr(row, polygons.id_col)): representative_latitude(
+                getattr(row, "geometry", None)
+            )
+            for row in polygons.gdf.itertuples(index=False)
+        }
+        doy = (
+            pd.to_datetime(
+                dict(
+                    year=frame["year"], month=frame["month"], day=frame["day"]
+                )
+            )
+            .dt.dayofyear
+            .to_numpy()
+        )
+        lat = np.asarray(
+            [latitudes.get(pid, 0.0) for pid in frame["polygon_id"]], dtype="float64"
+        )
+        frame = frame.assign(
+            value=[
+                sunshine_hours_for_day(
+                    float(v), latitude_deg=float(la), day_of_year=int(d)
+                )
+                for v, la, d in zip(frame["value"].to_numpy(), lat, doy)
+            ],
+            variable=ROLLUP_SUNSHINE,
+        )
+
+    keys = ["polygon_id", "iso_a2", "admin1_code", "year", "month", "variable"]
+    return frame.groupby(keys, dropna=False, sort=False)["value"].mean().reset_index()
 
 
 def aggregate_level(
@@ -389,6 +452,7 @@ def aggregate_level(
     force: bool = False,
     base_dir: Path | None = None,
     daily: bool = False,
+    rollup_monthly: bool = False,
 ) -> Path:
     """Aggregate every (variable, year) file for one admin level and write Parquet.
 
@@ -456,7 +520,9 @@ def aggregate_level(
                 inputs = nc_path
 
             log.info("[%d/%d] aggregating %s %d → %s", idx, total, variable, year, level)
-            df = aggregate_variable_year(inputs, variable, polygons, daily=daily)
+            df = aggregate_variable_year(
+                inputs, variable, polygons, daily=daily, rollup_monthly=rollup_monthly
+            )
             # Write to a temp name first: a part is treated as complete purely
             # because it exists, so a half-written file would poison a resume.
             tmp_path = part_path.with_suffix(".parquet.tmp")
