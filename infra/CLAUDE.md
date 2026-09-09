@@ -265,12 +265,12 @@ absent from the default, which is why the file sets PATH explicitly.
 - Weekly Mon 04:00 UTC: `weekly-alerts.sh` — recompute alert matches, email on transitions
 - Yearly Jan 15 04:00 UTC: `yearly-era5.sh` — full pipeline rebuild, old year swap
 - Nightly 02:00 UTC: `backup-postgres.sh` — dump, encrypt, upload to B2
-- Every 15 min (**temporary**): `era5-daily-watchdog.sh` — restart the ERA5
-  daily download if it has died. Remove this line once the rebuild's download
-  has finished; it exists because a transient CDS failure killed a run that had
-  eight years in hand and nothing noticed for three days. It never
-  re-downloads (the CLI skips what is on disk) and caps itself at 5 consecutive
-  restarts, logging to `/var/log/wtg-era5-watchdog.log`.
+`era5-daily-watchdog.sh` is **not** scheduled. It was, every 15 minutes,
+while the 2026-09 daily download ran — a transient CDS failure had killed a run
+with eight years in hand and nothing noticed for three days. It came out of the
+table on 2026-09-09 when the download finished and it began reporting
+"nothing to restart" every quarter hour. The script stays in the repo: schedule
+it again for the next multi-day download, and take it out again afterwards.
 
 ## US advisory scrape (Cloudflare 403)
 
