@@ -29,6 +29,7 @@ from wtg_pipeline.processing.aggregate import (
     PolygonFrame,
     aggregate_level,
     aggregated_path,
+    latitudes_path,
     apply_country_rules,
 )
 from wtg_pipeline.processing.percentiles import build_percentiles, percentiles_path
@@ -367,12 +368,29 @@ def _resolve_levels(level: str) -> tuple[Level, ...]:
     return (level,)  # type: ignore[return-value]
 
 
-def run_aggregate(*, level: str, years_spec: str, force: bool) -> list[Path]:
+def run_aggregate(
+    *, level: str, years_spec: str, force: bool, daily: bool = False
+) -> list[Path]:
+    """Aggregate the rasters to polygons, monthly means or daily statistics.
+
+    The two are separate passes over separate files, not a flag on one dataset:
+    monthly means live in `raw/era5/<var>_<year>.nc` and daily statistics in
+    `raw/era5/daily/<stem>_<year>.nc`, and they carry different variables. A
+    daily run also writes the latitude sidecar the percentile stage needs to
+    derive sunshine and count sunny days.
+    """
     years = parse_year_range(years_spec)
     resolved = _resolve_levels(level)
     frames = _load_boundary_frames(resolved)
-    variables = list(ERA5_VARIABLES.values())
-    nc_dir = era5_raw_dir()
+
+    if daily:
+        from wtg_pipeline.sources.era5_daily import ERA5_DAILY_VARIABLES
+
+        variables = [v.stem for v in ERA5_DAILY_VARIABLES]
+        nc_dir = era5_raw_dir() / "daily"
+    else:
+        variables = list(ERA5_VARIABLES.values())
+        nc_dir = era5_raw_dir()
 
     outputs: list[Path] = []
     for lv in resolved:
@@ -383,6 +401,7 @@ def run_aggregate(*, level: str, years_spec: str, force: bool) -> list[Path]:
             variable_codes=variables,
             years=years,
             force=force,
+            daily=daily,
         )
         outputs.append(out)
 
@@ -540,13 +559,41 @@ def run_process_advisories(
 
 
 def run_percentiles(*, level: str, force: bool) -> list[Path]:
+    """Derive the statistics from whatever the aggregate turned out to be.
+
+    `build_percentiles` decides monthly-vs-daily from the presence of a `day`
+    column rather than from a flag, so nothing here has to know which pass ran.
+    The latitudes are passed when the sidecar exists: a daily run needs them
+    for sunshine and the sunny-day count, and a monthly one ignores them.
+    """
+    import json
+
     outputs: list[Path] = []
     for lv in _resolve_levels(level):
         agg = aggregated_path(lv)
         if not agg.exists():
             log.warning("no aggregated parquet for %s; skipping", lv)
             continue
-        outputs.append(build_percentiles(level=lv, aggregated_parquet=agg, force=force))
+
+        lat_path = latitudes_path(lv)
+        latitudes = None
+        if lat_path.exists():
+            try:
+                latitudes = json.loads(lat_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                # Not fatal on a monthly run, which never reads them. A daily
+                # run without latitudes fails loudly inside build_percentiles
+                # rather than silently emitting sunshine derived from lat 0.
+                log.warning("could not read %s", lat_path.name)
+
+        outputs.append(
+            build_percentiles(
+                level=lv,
+                aggregated_parquet=agg,
+                force=force,
+                latitudes=latitudes,
+            )
+        )
     return outputs
 
 
