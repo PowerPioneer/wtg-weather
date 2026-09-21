@@ -114,3 +114,103 @@ def test_missing_admin1_falls_back_to_the_naive_aggregate() -> None:
     assert len(portugal) == 1
     assert portugal.iloc[0]["polygon_id"] == "PRT"
     assert portugal.iloc[0]["value"] == pytest.approx(17.0)
+
+
+# ── Daily frames ─────────────────────────────────────────────────────
+#
+# The rules were written when there was one aggregate and it was monthly.
+# A daily one carries a `day` column, and both halves of this function have
+# to notice: the recompute must keep the days, and the suppression must still
+# drop the countries. Neither failure raises.
+
+DAILY_COLUMNS = COLUMNS[:5] + ["day"] + COLUMNS[5:]
+
+
+def _daily_admin1_rows(iso: str, codes_and_values: dict[str, float], days=(1, 2, 3)):
+    return pd.DataFrame(
+        [
+            {
+                "polygon_id": f"{iso}-poly-{index}",
+                "iso_a2": iso,
+                "admin1_code": code,
+                "year": 2020,
+                "month": 1,
+                "day": day,
+                "variable": "t2m_max",
+                "value": value + day,
+            }
+            for index, (code, value) in enumerate(codes_and_values.items())
+            for day in days
+        ],
+        columns=DAILY_COLUMNS,
+    )
+
+
+def _daily_country_rows(polygon_id: str, iso: str, value: float, days=(1, 2, 3)):
+    return pd.DataFrame(
+        [
+            {
+                "polygon_id": polygon_id,
+                "iso_a2": iso,
+                "admin1_code": "",
+                "year": 2020,
+                "month": 1,
+                "day": day,
+                "variable": "t2m_max",
+                "value": value + day,
+            }
+            for day in days
+        ],
+        columns=DAILY_COLUMNS,
+    )
+
+
+def test_a_recomputed_country_keeps_its_days() -> None:
+    """The grouping key has to grow a `day` or the days silently collapse.
+
+    Without it a whitelisted country comes back as one row per month while
+    every other country keeps 365 — a difference no row count in the log
+    would show, surfacing only as France and the Netherlands having no
+    within-month band while their neighbours do.
+    """
+    admin1 = _daily_admin1_rows("FR", {"FR-75": 12.0, "FR-29": 10.0, "FR-GF": 27.0})
+    country = _daily_country_rows("FRA", "FR", 16.0)
+
+    result = apply_country_rules(admin1, country)
+    fr = result[result["iso_a2"] == "FR"]
+
+    assert sorted(fr["day"]) == [1, 2, 3]
+    # And the overseas département is still excluded from each day's mean:
+    # mainland is 12 and 10, so 11 plus the day offset, not 16.33.
+    day_one = fr[fr["day"] == 1].iloc[0]
+    assert day_one["value"] == pytest.approx(12.0)
+
+
+def test_suppressed_countries_are_dropped_from_a_daily_frame() -> None:
+    """A single national colour for Russia is the claim this refuses to make."""
+    admin1 = _daily_admin1_rows("FR", {"FR-75": 12.0})
+    country = pd.concat(
+        [
+            _daily_country_rows("RUS", "RU", 5.0),
+            _daily_country_rows("NLD", "NL", 14.0),
+        ],
+        ignore_index=True,
+    )
+
+    result = apply_country_rules(admin1, country)
+
+    assert "RU" not in set(result["iso_a2"])
+    assert "NL" in set(result["iso_a2"])
+
+
+def test_a_monthly_frame_is_unaffected_by_the_day_awareness() -> None:
+    """The month-only path must behave exactly as it did before."""
+    admin1 = _admin1_rows("FR", {"FR-75": 12.0, "FR-29": 10.0, "FR-GF": 27.0})
+    country = _country_row("FRA", "FR", 16.0)
+
+    result = apply_country_rules(admin1, country)
+    fr = result[result["iso_a2"] == "FR"]
+
+    assert len(fr) == 1
+    assert "day" not in result.columns
+    assert fr.iloc[0]["value"] == pytest.approx(11.0)

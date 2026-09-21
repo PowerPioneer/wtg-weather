@@ -649,11 +649,17 @@ def apply_country_rules(admin1_df: "object", country_df: "object") -> "object":
             )
             fallback_isos.append(iso)
             continue
-        grouped = (
-            filtered.groupby(["iso_a2", "year", "month", "variable"], as_index=False)[
-                "value"
-            ].mean()
-        )
+        # `day` joins the key when the frame has one. Without it a daily
+        # aggregate would be silently collapsed to one row per month for
+        # exactly the seven whitelisted countries, and nowhere else — so the
+        # damage would be invisible in a row count and would surface only as
+        # France and the Netherlands having no within-month band.
+        group_keys = [
+            k
+            for k in ("iso_a2", "year", "month", "day", "variable")
+            if k in filtered.columns
+        ]
+        grouped = filtered.groupby(group_keys, as_index=False)["value"].mean()
         grouped["polygon_id"] = polygon_id_by_iso.get(iso, iso)
         grouped["admin1_code"] = ""
         recomputed.append(grouped)

@@ -413,23 +413,39 @@ def run_aggregate(
 
     # Country-level gets rewritten through country_rules.
     if "country" in resolved:
-        _apply_country_rules_to_disk()
+        _apply_country_rules_to_disk(daily=daily)
     return outputs
 
 
-def _apply_country_rules_to_disk() -> None:
-    """Rewrite the country Parquet after applying the Phase 3a rules."""
+def _apply_country_rules_to_disk(*, daily: bool = False) -> None:
+    """Rewrite the country Parquet after applying the Phase 3a rules.
+
+    Has to run against whichever aggregate was just built. It used to take the
+    monthly path unconditionally, which after the daily/monthly path split
+    meant the daily country aggregate never saw these rules at all — so all
+    ten suppressed countries kept a country-level row and the map would have
+    painted one national colour for Russia, Brazil and the United States,
+    which is the single claim `SUPPRESSED_COUNTRIES` exists to refuse.
+    """
     try:
         import pandas as pd  # type: ignore[import-not-found]
     except ImportError as exc:
         raise RuntimeError("pandas required; run `uv sync`.") from exc
 
-    admin1_path = aggregated_path("admin1")
-    country_path = aggregated_path("country")
+    admin1_path = aggregated_path("admin1", daily=daily)
+    country_path = aggregated_path("country", daily=daily)
     if not admin1_path.exists() or not country_path.exists():
         log.warning("skipping country_rules: admin1 or country parquet missing")
         return
-    admin1_df = pd.read_parquet(admin1_path)
+
+    # Only the whitelisted countries are ever read out of admin-1
+    # (`apply_country_rules` indexes it by those ISO-2 codes and nothing
+    # else), so the read is filtered to them. At daily scale that is the
+    # difference between seven countries and 67 million rows.
+    whitelist = sorted(country_rules.MAINLAND_WHITELIST)
+    admin1_df = pd.read_parquet(
+        admin1_path, filters=[("iso_a2", "in", whitelist)]
+    )
     country_df = pd.read_parquet(country_path)
     fixed = apply_country_rules(admin1_df, country_df)
     fixed.to_parquet(country_path, index=False)
