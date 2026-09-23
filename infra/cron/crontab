@@ -42,32 +42,28 @@ MAILTO=""
 # hand from a permitted network; `wtg process advisories` logs ADVISORY_STALE
 # when that has not happened recently. See infra/CLAUDE.md § "US advisory
 # scrape (Cloudflare 403)".
-# DISABLED 2026-09-07 for the duration of the daily-climatology rebuild.
+# RE-ENABLED 2026-09-23. It was disabled 2026-09-07 for the duration of the
+# daily-climatology rebuild; that rebuild has now shipped, which is exactly the
+# condition the note below set. The daily aggregation and percentiles are on
+# disk, and the tiles and the country bundle were rebuilt from them together.
 #
-# Not a precaution — this job took the site down on 2026-09-06.
+# Why it was off, kept because the failure is worth recognising: this job took
+# the site down on 2026-09-06. `main` carried the daily-climatology pipeline,
+# which reads the new percentile schema (mean/p5/p95), while the Parquet on disk
+# was still the old monthly one (p10/p50/p90) because the aggregation had not
+# run yet. Every country failed the complete-series check, the cron republished
+# the bundle and rebuilt the tiles from that, and the result was a 22-byte
+# index, ~2,800 country pages at 404, and a colourless map for 38 hours.
 #
-# `main` already carries the daily-climatology pipeline, which reads the new
-# percentile schema (mean/p5/p95). The Parquet on disk is still the old monthly
-# one (p10/p50/p90), because the aggregation has not run yet: the ERA5 download
-# is still going. So every country fails the complete-series check. The cron
-# republished the bundle and rebuilt the tiles from that, and the result was a
-# 22-byte index, ~2,800 country pages at 404, and a colourless map for 38 hours.
+# Not a stale-checkout accident that a `git pull` fixes — a clean, current
+# `main` did it. Code and data ship together or not at all, and that is the
+# thing to re-check before disabling or re-enabling this line again.
 #
-# The point to hold on to: this is not a stale-checkout accident that a
-# `git pull` fixes. Running this job from a **clean, current `main`** does the
-# same thing, and will keep doing it until `wtg process aggregate` +
-# `percentiles` have run against the daily data. Code and data ship together or
-# not at all.
-#
-# `publish api-data` now refuses to write an empty or collapsed bundle, and
-# `rebuild-tiles.sh` refuses a tile that has lost most of its bytes, so the same
-# run would now fail loudly and leave the good artifacts in place. This stays
-# commented anyway: a weekly republish is pointless mid-rebuild, and the
-# advisory staleness threshold is three weeks.
-#
-# RE-ENABLE once the rebuild has shipped — that is, once the aggregation has run
-# and the tiles and bundle have been rebuilt from daily data together.
-# 0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
+# Two guards landed since, and they are what make running it routine rather
+# than a gamble: `publish api-data` refuses to write an empty or collapsed
+# bundle, and `rebuild-tiles.sh` refuses a tile that has lost most of its bytes,
+# so the same mismatch would fail loudly and leave the good artifacts in place.
+0 3 * * 0 /opt/wtg-weather/infra/scripts/weekly-advisories.sh >> /var/log/wtg-advisories.log 2>&1
 
 # Weekly Mon 04:00 UTC: recompute alert matches, email on transition.
 # Runs the job inside the `api` container (it needs Postgres, which is on the

@@ -147,6 +147,30 @@ a ~3.9 GB string at admin-2. Check
 80 % used with 18 GB free when the daily download began, and the daily
 intermediates want most of that.
 
+**Free memory before the tile rebuild, and mind the order.** Building the
+premium admin-2 GeoJSON peaks around 12 GB RSS, so on a 16 GB box it fails or
+succeeds on a margin of one or two gigabytes — the same run can OOM having
+worked an hour earlier. It was killed that way on 2026-09-23
+(`Out of memory: Killed process … (wtg) … anon-rss:12081872kB`, exit 137).
+
+The step order in this runbook is itself a contributor: `build-web.sh` leaves a
+`buildx_buildkit_wtg-*` builder resident on the compose network, holding ~1.3 GB
+long after the web build finishes, and the tile rebuild runs straight after it.
+So do this first:
+
+```bash
+docker stop buildx_buildkit_wtg-internal0      # build-web.sh recreates it
+sync; echo 3 > /proc/sys/vm/drop_caches
+free -m                                         # want ~14 GB available
+```
+
+That took available memory from 13.4 GB to 14.7 GB and the rebuild then ran
+clean. Note the failure is *partial*: the script builds tiers in order, so a
+kill during premium leaves a new `free.pmtiles` on disk beside the previous
+`premium.pmtiles`, and no purge — a mixed state the CDN never hears about.
+Re-run the one tier with `TIERS=premium ./infra/scripts/rebuild-tiles.sh`
+rather than redoing both; the purge at the end covers the whole zone either way.
+
 ### Order
 
 ```bash
