@@ -150,6 +150,12 @@ uv run wtg --help
 - A change that adds per-feature properties must re-check `test_tiles_content.py`
   and the `tile x/y/z size is N ... >MAX` lines tippecanoe prints, because
   nothing else fails: the archive builds, *grows*, and passes the shrink guard.
+- Conversely, a change that **removes** properties has to watch that guard:
+  slimming to the whitelist took free −44.6% and premium −44.2%, both just inside
+  `rebuild-tiles.sh`'s 50% `SHRINK_TOLERANCE_PCT`. A little more and the script
+  would have refused the archive and restored the previous one, which reads as a
+  failed rebuild rather than a successful optimisation. Expect it, and pass
+  `SHRINK_TOLERANCE_PCT=<n>` deliberately when the drop is intended.
 - Levels carry a per-feature `tippecanoe.minzoom` matching the web's layer
   `minzoom` (admin-1 → 3, admin-2 → **7**), because `-Z` is global and tiling a
   level below the zoom it renders at just crowds out the levels that do.
