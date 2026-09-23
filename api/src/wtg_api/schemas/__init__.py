@@ -377,6 +377,23 @@ class ClimateSeries(BaseModel):
     rDay: list[float]  # noqa: N815 - mm / day, what the scoring rule consumes
     s: list[float]
     w: list[float] | None = None
+    # The daily rebuild's additions. Optional because a payload published
+    # before it carries none of them, and because Pydantic *drops* a field it
+    # has never heard of rather than complaining: the pipeline published the
+    # envelope and the web drew it conditionally, so omitting these here made
+    # the band silently vanish between the two with nothing failing anywhere.
+    wetDays: list[float] | None = None  # noqa: N815
+    sunnyDays: list[float] | None = None  # noqa: N815
+    # Both or neither, per the web's contract — a half-drawn envelope is worse
+    # than none. The 5th percentile of daily minima and the 95th of daily
+    # maxima, over days pooled across the ten-year window.
+    tBandLow: list[float] | None = None  # noqa: N815
+    tBandHigh: list[float] | None = None  # noqa: N815
+    # Absent until `si10_mean` is downloaded at day resolution: the wind series
+    # is still standing in from the monthly aggregate, which has no within-month
+    # spread to report. Declared now so that landing it needs no API change.
+    wBandLow: list[float] | None = None  # noqa: N815
+    wBandHigh: list[float] | None = None  # noqa: N815
 
 
 class BestMonth(BaseModel):

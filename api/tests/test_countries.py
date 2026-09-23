@@ -41,6 +41,10 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
             "rDay": _series(1.0),
             "s": _series(7.0),
             "w": _series(11.0),
+            "wetDays": _series(9.0),
+            "sunnyDays": _series(12.0),
+            "tBandLow": _series(14.0),
+            "tBandHigh": _series(30.0),
         },
         "bestMonths": [{"month": "June", "score": 90, "note": "22 °C · 31 mm · 7.0 h sun"}],
         "regions": [
@@ -195,7 +199,59 @@ async def test_premium_variables_are_not_in_the_response(api: AsyncClient) -> No
     """
     res = await api.get("/v1/countries/peru")
     body = res.json()
-    assert set(body["climate"]) == {"months", "t", "tMin", "tMax", "r", "rDay", "s", "w"}
+    assert set(body["climate"]) == {
+        "months", "t", "tMin", "tMax", "r", "rDay", "s", "w",
+        # Free, added by the daily rebuild. Listed so this stays an exact
+        # whitelist: a premium series appearing here must break this test.
+        "wetDays", "sunnyDays", "tBandLow", "tBandHigh", "wBandLow", "wBandHigh",
+    }
+
+
+@pytest.mark.asyncio
+async def test_the_within_month_band_reaches_the_client(api: AsyncClient) -> None:
+    """The envelope must survive the response model.
+
+    It did not, once. The pipeline published `tBandLow`/`tBandHigh` and the
+    country page shaded the band only `if (c.tBandLow && c.tBandHigh)`, but
+    `ClimateSeries` had no field for either — and Pydantic drops what it has
+    never heard of. So the band vanished between a pipeline that emitted it and
+    a page that wanted it, with every test green and nothing logged. The day
+    counts went the same way.
+    """
+    res = await api.get("/v1/countries/peru")
+    body = res.json()
+    climate = body["climate"]
+    assert climate["tBandLow"][0] == 14.0
+    assert climate["tBandHigh"][0] == 30.0
+    assert climate["wetDays"][0] == 9.0
+    assert climate["sunnyDays"][0] == 12.0
+    # Wider than the mean daily max/min pair it is drawn behind, or it is not a
+    # within-month spread.
+    assert climate["tBandLow"][0] < climate["tMin"][0]
+    assert climate["tBandHigh"][0] > climate["tMax"][0]
+
+
+@pytest.mark.asyncio
+async def test_a_payload_without_the_band_still_serves(api: AsyncClient) -> None:
+    """Both or neither, and neither must not be an error.
+
+    A bundle published before the daily rebuild carries no envelope at all.
+    The fields are optional for that reason, and the page renders the absence.
+    """
+    from wtg_api.schemas import ClimateSeries
+
+    old = ClimateSeries(
+        months=MONTHS,
+        t=_series(22.0),
+        tMin=_series(18.0),
+        tMax=_series(26.0),
+        r=_series(31.0),
+        rDay=_series(1.0),
+        s=_series(7.0),
+    )
+    assert old.tBandLow is None
+    assert old.tBandHigh is None
+    assert old.wetDays is None
 
 
 @pytest.mark.asyncio
