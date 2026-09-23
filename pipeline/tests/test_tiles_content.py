@@ -316,10 +316,12 @@ def free_scoring_props(free_tiles: Path) -> dict[str, dict[str, object]]:
 
 @pytest.fixture(scope="module")
 def premium_scoring_props(premium_tiles: Path) -> dict[str, dict[str, object]]:
-    # Reaches zoom 6 so the admin-2 layer — hinted to minzoom 6 — is sampled
-    # at all. It is the level that never existed before the premium rebuild,
-    # and the one nothing had ever checked the scoring inputs on.
-    return _sample_scoring_props(premium_tiles, max_zoom=6)
+    # Reaches zoom 7 so the admin-2 layer is sampled at all. The hint was 6
+    # when this fixture was written and moved to 7 with the daily rebuild: a z6
+    # tile cannot carry the level whole (tile 6/32/21 shipped 92 of the 189
+    # Dutch municipalities intersecting it), so admin-2 is now absent below 7 by
+    # design and sampling to 6 found nothing at all to check.
+    return _sample_scoring_props(premium_tiles, max_zoom=7)
 
 
 @pytest.mark.parametrize("layer", ["country", "admin1"])
