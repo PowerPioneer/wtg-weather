@@ -432,6 +432,89 @@ def score_props(converted: dict[str, float]) -> dict[str, int]:
     return props
 
 
+#: Per-month property prefixes that actually reach the tiles, and who reads each.
+#:
+#: `widen_percentiles_for_polygon` deliberately computes *every* statistic each
+#: variable carries, because `score_props` reads the headline values back out of
+#: that dict to score against `DEFAULT_PREFERENCES`. What it computes and what
+#: the map needs are two different sets, and for a while they were the same set:
+#: 438 properties per feature, of which the web read about 170. The surplus was
+#: not free. It pushed the z3/z4 tiles past `--maximum-tile-bytes`, tippecanoe
+#: coalesced polygons away to fit, and admin-1 coverage fell to 53% at z3 — the
+#: ceiling had to go 2MB → 6MB on 2026-09-23 to hold a layer that was mostly
+#: statistics nobody looked up.
+#:
+#: So this is the shipped set, and it is a whitelist on purpose: a new statistic
+#: in the percentiles frame now has to be named here before it costs tile bytes.
+#: Every entry says what reads it, and `web/src/lib/feature-climate.ts` is the
+#: other half of the contract — `test_build_geojson.py` pins the two together.
+SHIPPED_MONTHLY_PREFIXES: frozenset[str] = frozenset(
+    {
+        # Headline values. The map's display modes paint these (`mode.prop` in
+        # web/src/lib/display-modes.ts), the scoring rule reads t/tmin/r/s, and
+        # the panel and hover card draw their lines from them.
+        "t",
+        "tmin",
+        "r",
+        "s",
+        "w",
+        "snow",
+        "sst",
+        "hum",
+        "heat",
+        # Baked default-preference score, 0..100. The `preferences` display mode
+        # reads it directly whenever the traveller has changed nothing.
+        "pref",
+        # Envelope edges for the panel's charts. Temperature's two halves come
+        # from different variables: the 5th percentile of daily minima under the
+        # 95th of daily maxima, the pair the country page shades as
+        # `tBandLow`/`tBandHigh`.
+        "t2m_min_p5",
+        "t2m_max_p95",
+        "tp_p5",
+        "tp_p95",
+        "sun_hours_p5",
+        "sun_hours_p95",
+        # Same role, p10/p90, for the variables still aggregated monthly — an
+        # interannual spread rather than a within-month one. These become p5/p95
+        # when `si10_mean` and friends land at day resolution.
+        "si10_p10",
+        "si10_p90",
+        "sd_p10",
+        "sd_p90",
+        "sst_p10",
+        "sst_p90",
+    }
+)
+
+#: Properties carried once per feature rather than per month.
+SHIPPED_FLAT_KEYS: frozenset[str] = frozenset(
+    {"id", "iso_a2", "admin1_code", "name", "level", "safety"}
+)
+
+_MONTH_SUFFIXES: tuple[str, ...] = tuple(f"_{m:02d}" for m in range(1, 13))
+
+
+def shipped_properties(props: dict[str, object]) -> dict[str, object]:
+    """Drop everything the map and the panel never look up.
+
+    Runs last, so the scoring pass upstream still sees the full statistic set.
+    `score_<mm>` is dropped here too: it is the 0..3 bucket `pref_<mm>` is
+    rebased from, useful inside the build and read by nothing outside it.
+    """
+    kept: dict[str, object] = {}
+    for key, value in props.items():
+        if key in SHIPPED_FLAT_KEYS:
+            kept[key] = value
+            continue
+        for suffix in _MONTH_SUFFIXES:
+            if key.endswith(suffix):
+                if key[: -len(suffix)] in SHIPPED_MONTHLY_PREFIXES:
+                    kept[key] = value
+                break
+    return kept
+
+
 def build_feature_collection(
     build_input: BuildInput,
     *,
@@ -502,7 +585,7 @@ def build_feature_collection(
         feature: dict[str, object] = {
             "type": "Feature",
             "geometry": geometry.__geo_interface__,
-            "properties": props,
+            "properties": shipped_properties(props),
         }
         min_zoom = feature_min_zoom(build_input.level, iso_a2)
         if min_zoom is not None:

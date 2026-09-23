@@ -119,7 +119,7 @@ uv run wtg --help
   against it must first go through `coverage.normalise_raster`, which is what
   puts ERA5's 0..360 longitude on the layout the weights were built for.
 - Tippecanoe flags for PMTiles:
-  - free: `-Z0 -z5 --no-tiny-polygon-reduction --maximum-tile-bytes=6000000
+  - free: `-Z0 -z5 --no-tiny-polygon-reduction --maximum-tile-bytes=2000000
     --coalesce-smallest-as-needed`
   - premium: the same plus `-z9` and `--drop-densest-as-needed`
 - `--no-tiny-polygon-reduction` and the raised byte ceiling are NOT tuning
@@ -127,17 +127,29 @@ uv run wtg --help
   lost most of its features in the mid-zoom band (20% surviving at z3, 42% at
   z4, 61% at z5), and each lost polygon is a hole on the map because the
   country layer stops at zoom 3.5.
-- **The ceiling has to move when the properties do.** It went 2MB → 6MB on
-  2026-09-23: the daily rebuild put mean/p5/p50/p95 on every feature where a
-  p10/p50/p90 triplet used to be, admin-1's GeoJSON grew 85MB → 115MB for the
-  same polygon count, and coalescing came straight back — 53% coverage at z3 and
-  80% at z4, against the 98% `test_tiles_content.py` requires above the
-  handover. A change that adds per-feature properties must re-check that test
+- **The ceiling is measured against a property set; the two numbers only mean
+  anything together.** On 2026-09-23 the daily rebuild put mean/p5/p50/p95 on
+  every feature where a p10/p50/p90 triplet used to be, admin-1's GeoJSON grew
+  85MB → 115MB for the same polygon count, and coalescing came straight back —
+  53% coverage at z3 and 80% at z4, against the 98% `test_tiles_content.py`
+  requires above the handover. The ceiling went to 6MB to stop the bleeding and
+  back to 2MB once the real cause was fixed: 264 of those 438 properties were
+  statistics nothing reads. **If a tile overflows, look at what is in the
+  features before raising this.**
+- **The tiles ship a whitelist, not everything computed.**
+  `widen_percentiles_for_polygon` emits every statistic each variable carries
+  because `score_props` reads the headline values back out of that dict; only
+  the prefixes in `SHIPPED_MONTHLY_PREFIXES` / `SHIPPED_FLAT_KEYS` reach the
+  archive. That is the headline aliases the map paints, `pref_<mm>`, and the two
+  named envelope edges per chart — 174 properties per feature rather than 438,
+  which put admin-1 at 78MB, below its pre-rebuild size. A new statistic must be
+  named there before it costs tile bytes, and `test_build_geojson.py` pins the
+  set against what `feature-climate.ts`, `display-modes.ts` and `scoring.ts`
+  read. Dropping one the web still asks for is a chart that renders as a bare
+  line or a mode that paints grey — neither fails anything at runtime.
+- A change that adds per-feature properties must re-check `test_tiles_content.py`
   and the `tile x/y/z size is N ... >MAX` lines tippecanoe prints, because
-  nothing else fails: the archive builds, grows, and passes the shrink guard.
-  Roughly 264 of the 438 properties per feature are stat-suffixed keys nothing
-  reads — the map paints the short `t_/r_/s_` aliases — so slimming the emitted
-  set is the way to bring this ceiling back down.
+  nothing else fails: the archive builds, *grows*, and passes the shrink guard.
 - Levels carry a per-feature `tippecanoe.minzoom` matching the web's layer
   `minzoom` (admin-1 → 3, admin-2 → **7**), because `-Z` is global and tiling a
   level below the zoom it renders at just crowds out the levels that do.

@@ -35,29 +35,22 @@ Tier = Literal["free", "premium"]
 # `--coalesce-smallest-as-needed` stays as the last-resort valve so a tile can
 # never grow without bound; it merges rather than drops.
 #
-# Raised 2MB → 6MB on 2026-09-23, because the daily rebuild made every feature
-# fatter and 2MB stopped being enough. The statistics per feature went from a
-# p10/p50/p90 triplet to mean/p5/p50/p95 across more variables — admin-1's
-# GeoJSON grew 85MB → 115MB for the same 4,596 polygons — and tippecanoe went
-# back to coalescing in exactly the band this ceiling exists to protect.
-# Measured on the first daily build: admin-1 coverage fell to 53% at z3 and
-# 80% at z4, against the 98% the tests require above the country handover.
-# Tippecanoe named the tiles it could not fit:
+# It went 2MB → 6MB on 2026-09-23 and back to 2MB the same day, and the round
+# trip is the useful part of the story. The daily rebuild put mean/p5/p50/p95 on
+# every feature where a p10/p50/p90 triplet used to be; admin-1's GeoJSON grew
+# 85MB → 115MB for the same 4,596 polygons, the z3/z4 tiles went over the
+# ceiling, and coalescing dropped admin-1 coverage to 53% at z3 and 80% at z4.
+# Raising the ceiling fixed the symptom. The cause was that 264 of those 438
+# properties per feature were statistics nothing reads — the map paints the short
+# `t_/r_/s_` aliases and the panel asks for two named envelope edges. Filtering
+# the emitted set to what the web actually looks up (`SHIPPED_MONTHLY_PREFIXES`
+# in build_geojson.py) took admin-1 to 78MB, *below* where it was before the
+# rebuild, so the original ceiling holds again with room to spare.
 #
-#     free     3/4/3 2.66MB   3/4/2 3.92MB   4/8/5 2.54MB
-#     premium  3/4/2 4.72MB   3/4/3 3.14MB   4/8/5 3.04MB   0/0/0 2.13MB
-#
-# 6MB clears the largest of those with headroom. It is a ceiling, not a target:
-# only a handful of low-zoom tiles come anywhere near it.
-#
-# The better fix is to stop shipping properties nothing reads — roughly 264 of
-# the 438 per feature are stat-suffixed keys (`t2m_max_p95_07` and friends) that
-# no paint expression or panel looks up, because the map reads the short
-# `t_/r_/s_` aliases and `readMonthlyBands` asks for a `_p10/_p50/_p90` triplet
-# under names the daily rebuild renamed. Slimming those would put tiles *below*
-# their pre-rebuild size and let this ceiling come back down. Deliberately not
-# done here: it changes what the map panel can chart, which is its own decision.
-_MAX_TILE_BYTES = "6000000"
+# Which is the order to keep: if a tile overflows, look at what is in the
+# features before raising this. The ceiling is measured against a property set,
+# so the two numbers only mean anything together.
+_MAX_TILE_BYTES = "2000000"
 
 FREE_FLAGS: tuple[str, ...] = (
     "-Z0",

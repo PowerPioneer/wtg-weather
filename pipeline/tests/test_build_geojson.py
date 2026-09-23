@@ -23,6 +23,9 @@ from wtg_pipeline.tiles.build_geojson import (
     WEB_PROP_ALIAS,
     widen_percentiles_for_polygon,
     score_props,
+    SHIPPED_FLAT_KEYS,
+    SHIPPED_MONTHLY_PREFIXES,
+    shipped_properties,
     source_variables_for_tier,
     variables_for_tier,
 )
@@ -403,3 +406,86 @@ def test_every_scored_variable_is_actually_emitted() -> None:
     emitted = set(variables_for_tier("free"))
     for variable in SCORED_VARIABLES:
         assert variable in emitted, f"{variable} is scored but never emitted"
+
+
+def test_shipped_properties_keeps_what_the_web_reads() -> None:
+    """The tiles carry the headline values, the envelope edges and `pref`."""
+    props: dict[str, object] = {
+        "id": "NLD",
+        "iso_a2": "NL",
+        "admin1_code": "",
+        "name": "Netherlands",
+        "level": "country",
+        "safety": 2,
+        "t_07": 22.1,
+        "tmin_07": 14.2,
+        "r_07": 83.2,
+        "s_07": 7.1,
+        "w_07": 4.0,
+        "pref_07": 90,
+        "t2m_min_p5_07": 10.6,
+        "t2m_max_p95_07": 29.1,
+        "tp_p5_07": 0.0,
+        "tp_p95_07": 9.4,
+        "sun_hours_p5_07": 1.1,
+        "sun_hours_p95_07": 12.0,
+        "si10_p10_07": 2.4,
+        "si10_p90_07": 6.1,
+    }
+    assert shipped_properties(props) == props
+
+
+def test_shipped_properties_drops_the_statistics_nothing_looks_up() -> None:
+    """The surplus that made the tiles overflow their byte budget.
+
+    `widen_percentiles_for_polygon` emits every statistic each variable carries
+    because `score_props` reads the headline ones back out. None of the rest is
+    ever looked up: the map paints the short aliases and the panel asks for the
+    two envelope edges by name. Shipping them anyway cost 264 of 438 properties
+    per feature, which is what forced `--maximum-tile-bytes` from 2MB to 6MB.
+    """
+    props: dict[str, object] = {
+        "id": "NLD",
+        "t_07": 22.1,
+        # Headline duplicates under the long name — `t_07` is the shipped one.
+        "t2m_max_mean_07": 22.1,
+        "t2m_max_p50_07": 22.0,
+        # The edges we do not shade: temperature's envelope is min_p5..max_p95.
+        "t2m_max_p5_07": 15.9,
+        "t2m_min_p95_07": 18.8,
+        # Day counts: computed, published to the country pages through the API
+        # bundle, and never read off a tile feature.
+        "wet_days_mean_07": 15.8,
+        "wet_days_p95_07": 24.0,
+        "sunny_days_mean_07": 4.5,
+        # The 0..3 bucket `pref_07` is rebased from.
+        "score_07": 3,
+    }
+    assert shipped_properties(props) == {"id": "NLD", "t_07": 22.1}
+
+
+def test_shipped_prefixes_match_the_web_contract() -> None:
+    """Pins the pipeline's shipped set against what the web actually reads.
+
+    The other half lives in `web/src/lib/feature-climate.ts` (identity and the
+    panel's band keys), `display-modes.ts` (`mode.prop`, what the map paints)
+    and `scoring.ts` (the scored aliases). A property dropped here that one of
+    those still asks for is a chart that renders as a bare line, or a display
+    mode that paints grey — neither of which fails anything at runtime.
+    """
+    # Every `mode.prop` in display-modes.ts except `safety`, which is month-less.
+    painted = {"t", "r", "s", "w", "snow", "sst", "hum", "heat", "pref"}
+    assert painted <= SHIPPED_MONTHLY_PREFIXES
+    # The scored aliases in scoring.ts.
+    assert {"t", "tmin", "r", "s"} <= SHIPPED_MONTHLY_PREFIXES
+    # The band keys named in climate-panel.tsx's CHART_SERIES.
+    bands = {
+        "t2m_min_p5", "t2m_max_p95",
+        "tp_p5", "tp_p95",
+        "sun_hours_p5", "sun_hours_p95",
+        "si10_p10", "si10_p90",
+        "sd_p10", "sd_p90",
+        "sst_p10", "sst_p90",
+    }
+    assert bands <= SHIPPED_MONTHLY_PREFIXES
+    assert "safety" in SHIPPED_FLAT_KEYS
