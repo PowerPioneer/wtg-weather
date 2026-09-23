@@ -260,6 +260,30 @@ It runs on the literature Ångström–Prescott coefficients and
 a working state, not a broken one — but grep for that tag before believing any
 claim that the sunshine figures are calibrated.
 
+**Calibrated since 2026-09-23**, and the coefficients are committed, so step 3
+is only needed when the site list or the ERA5 vintage changes. The 15 site-years
+are cached under `data/raw/era5/calibration/`, so a re-fit costs no CDS queue
+time — the expensive part is downstream, not the fit.
+
+The first attempt at it, the same day, had to be thrown away: the fit was clean
+and its RMSE looked healthy, but `wmo_sunshine_hours` — the target it fits
+against — overestimated by 27-68%, so the coefficients faithfully reproduced a
+broken target and made the published figures worse. **Never adopt a calibration
+on the strength of its own RMSE.** The check that catches this is comparing
+pipeline sunshine against published annual normals for a handful of countries,
+which takes minutes:
+
+```bash
+uv run --directory pipeline wtg process percentiles --level country --force
+# then compare sun_hours * 365 per country against known normals
+```
+
+A re-fit changes `sun_hours` everywhere, and **admin-2 bakes sunshine at
+aggregation time** rather than deriving it in the percentile stage — so it needs
+`wtg process aggregate --level admin2 --daily --force` too, or the map's
+sunshine jumps as you cross zoom 7. Country and admin-1 derive from raw
+`ssrd_sum` and only need `percentiles --force`.
+
 ## Cutover
 
 The v1 → v2 apex switch is documented step-by-step in `infra/CUTOVER.md`,

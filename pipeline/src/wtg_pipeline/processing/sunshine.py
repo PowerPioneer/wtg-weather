@@ -314,6 +314,52 @@ def sunshine_hours_from_ssrd(
 #: WMO threshold for "bright sunshine", W/m² of direct normal irradiance.
 WMO_SUNSHINE_THRESHOLD_W_M2 = 120.0
 
+#: Beam strength at which an hour counts as sunlit for its whole length.
+#:
+#: The WMO threshold is defined on *instantaneous* direct normal irradiance, and
+#: ERA5 gives an hourly mean. Treating the mean as if it were instantaneous — the
+#: hour scores 1.0 or 0.0 — is what this module did until 2026-09-23, and it
+#: overestimated sunshine by 27-68% against published normals. 120 W/m2 is a very
+#: low bar for an hour's *average*: clear-sky DNI is around 900, so eight sunlit
+#: minutes in an otherwise cloudy hour already clear it, and the whole hour was
+#: counted. The error therefore grew with cloudiness — Madrid +27%, Singapore
+#: +54%, Berlin +61%, London +68% — which is the signature that identified it.
+#:
+#: Scaling the whole way down to clear-sky DNI is wrong in the other direction.
+#: That treats every hour as a clear/overcast mixture, when a uniformly *hazy*
+#: hour keeps the beam above 120 W/m2 from start to finish and WMO counts all of
+#: it. Doing that undercounted the dusty subtropics by 17-23% (Phoenix, Cairo).
+#:
+#: So the fraction ramps linearly from the threshold up to this saturation point
+#: and is full above it: an hour averaging 650 W/m2 or more was sunlit
+#: throughout, whether clear or hazy, and below that the mean is best explained
+#: by the sun being interrupted.
+#:
+#: **Fitted against published annual normals for the 15 calibration sites**, not
+#: against anything this module produces — that independence is the whole point,
+#: given the model this replaced was validated by a test that divided out its own
+#: coefficient. The error curve is flat between 600 and 700 (mean |error| 6.9% at
+#: both, bias +3.0% and -4.5%), so the midpoint is taken. At 650 the 15 sites
+#: come in at roughly zero mean bias and 6.9% mean absolute error against normals
+#: that are themselves 30-year means being compared with a single year.
+WMO_SUNSHINE_SATURATION_W_M2 = 650.0
+
+
+def sunlit_fraction_of_hour(dni_w_m2: float) -> float:
+    """How much of an hour with this mean DNI was sunlit, in [0, 1].
+
+    Piecewise linear between :data:`WMO_SUNSHINE_THRESHOLD_W_M2` and
+    :data:`WMO_SUNSHINE_SATURATION_W_M2`. See the saturation constant for why
+    neither a step at the threshold nor a ramp to clear-sky is right.
+    """
+    if dni_w_m2 <= WMO_SUNSHINE_THRESHOLD_W_M2:
+        return 0.0
+    if dni_w_m2 >= WMO_SUNSHINE_SATURATION_W_M2:
+        return 1.0
+    return (dni_w_m2 - WMO_SUNSHINE_THRESHOLD_W_M2) / (
+        WMO_SUNSHINE_SATURATION_W_M2 - WMO_SUNSHINE_THRESHOLD_W_M2
+    )
+
 
 def cos_solar_zenith_at(
     latitude_deg: float, longitude_deg: float, day_of_year: int, hour_utc: float
@@ -372,6 +418,11 @@ def wmo_sunshine_hours(
     ``hour_offset`` places the solar position at the middle of each
     accumulation window rather than its edge, which matters near sunrise and
     sunset where cos(zenith) is small and changing fast.
+
+    Each hour contributes :func:`sunlit_fraction_of_hour` rather than a whole
+    hour or nothing. An hourly mean cannot resolve when within the hour the sun
+    was out, and pretending it can is what made this function overestimate by
+    27-68%.
     """
     hours = 0.0
     for index, joules in enumerate(fdir_hourly_j_m2):
@@ -383,9 +434,7 @@ def wmo_sunshine_hours(
         horizontal_w_m2 = joules / 3600.0
         if horizontal_w_m2 <= 0.0:
             continue
-        dni = horizontal_w_m2 / cos_z
-        if dni > WMO_SUNSHINE_THRESHOLD_W_M2:
-            hours += 1.0
+        hours += sunlit_fraction_of_hour(horizontal_w_m2 / cos_z)
     return hours
 
 

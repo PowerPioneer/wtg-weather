@@ -681,8 +681,10 @@ def validate_sunshine(
         ANGSTROM_PRESCOTT_B,
         DAYS_PER_MONTH_MID,
         clearness_index,
+        coefficients_for_latitude,
         day_length_hours,
         extraterrestrial_daily_j_m2,
+        is_calibrated,
         sunshine_hours_for_day,
     )
 
@@ -716,18 +718,25 @@ def validate_sunshine(
             if daylight <= 0:
                 continue
 
+            # Against the coefficients actually in force at this latitude, not
+            # the literature pair. A calibration moves the intercept per band,
+            # and testing the model against constants it is no longer using
+            # fails for every calibration, correct or not — which is exactly
+            # what happened when the first fitted set landed.
+            band_a, band_b = coefficients_for_latitude(latitude)
+
             overcast = sunshine_hours_for_day(
-                toa * ANGSTROM_PRESCOTT_A, latitude_deg=latitude, day_of_year=doy
+                toa * band_a, latitude_deg=latitude, day_of_year=doy
             )
             if overcast > 1e-9:
                 log.error(
                     "SUNSHINE_INVARIANT overcast sky (Kt=%.2f) yields %.2f h at "
                     "lat=%.0f doy=%d; the Angstrom-Prescott intercept is not "
-                    "being applied", ANGSTROM_PRESCOTT_A, overcast, latitude, doy,
+                    "being applied", band_a, overcast, latitude, doy,
                 )
                 ok = False
 
-            clear_kt = min(1.0, ANGSTROM_PRESCOTT_A + ANGSTROM_PRESCOTT_B)
+            clear_kt = min(1.0, band_a + band_b)
             clear = sunshine_hours_for_day(
                 toa * clear_kt, latitude_deg=latitude, day_of_year=doy
             )
@@ -744,13 +753,25 @@ def validate_sunshine(
 
     # ── Accuracy, only if there is something real to check against ───
     if observed_ssrd is None:
-        log.warning(
-            "SUNSHINE_UNCALIBRATED accuracy against %d reference cities was NOT "
-            "checked: no observed SSRD supplied. Angstrom-Prescott is running on "
-            "the literature defaults a=%.2f b=%.2f, which are known to fit poorly "
-            "at high latitudes. Run scripts/calibrate_sunshine.py to fit them.",
-            len(REFERENCE_CITIES), ANGSTROM_PRESCOTT_A, ANGSTROM_PRESCOTT_B,
-        )
+        # Two different claims, and conflating them is how "calibrated" got
+        # asserted once without anyone having fitted anything. `is_calibrated`
+        # says whether fitted coefficients are loaded; this branch only says
+        # that accuracy has not been re-checked against the reference cities.
+        if is_calibrated():
+            log.info(
+                "SUNSHINE_ACCURACY_UNCHECKED fitted coefficients are loaded, but "
+                "accuracy against the %d reference cities was not re-checked: no "
+                "observed SSRD supplied.",
+                len(REFERENCE_CITIES),
+            )
+        else:
+            log.warning(
+                "SUNSHINE_UNCALIBRATED accuracy against %d reference cities was NOT "
+                "checked: no observed SSRD supplied. Angstrom-Prescott is running on "
+                "the literature defaults a=%.2f b=%.2f, which are known to fit poorly "
+                "at high latitudes. Run scripts/calibrate_sunshine.py to fit them.",
+                len(REFERENCE_CITIES), ANGSTROM_PRESCOTT_A, ANGSTROM_PRESCOTT_B,
+            )
         return ok
 
     for city in REFERENCE_CITIES:

@@ -277,8 +277,10 @@ def main(argv: list[str] | None = None) -> int:
     result = report(by_band)
     result["year"] = args.year
     result["definition"] = (
-        "WMO sunshine duration: hours with direct normal irradiance > 120 W/m2, "
-        "from ERA5 hourly fdir divided by cos(solar zenith)."
+        "WMO sunshine duration from ERA5 hourly fdir: direct normal irradiance "
+        "via cos(solar zenith), then each hour contributes its sunlit fraction "
+        "(zero at 120 W/m2, full at 650 W/m2) rather than all-or-nothing. "
+        "Counting whole hours above the threshold overestimated by 27-68%."
     )
 
     print(json.dumps(result, indent=2))

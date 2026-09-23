@@ -17,13 +17,12 @@ import pytest
 
 from wtg_pipeline.pipeline_runner import validate_sunshine
 from wtg_pipeline.processing.sunshine import (
-    ANGSTROM_PRESCOTT_A,
-    ANGSTROM_PRESCOTT_B,
     DAYS_PER_MONTH_MID,
     REFERENCE_CITIES,
     SUNNY_DAY_FRACTION,
     clear_sky_daylight_irradiance,
     clearness_index,
+    coefficients_for_latitude,
     day_length_hours,
     extraterrestrial_daily_j_m2,
     is_sunny_day,
@@ -81,11 +80,18 @@ def test_overcast_sky_yields_no_sunshine() -> None:
     A fully overcast sky still passes ~25 % of top-of-atmosphere radiation as
     diffuse light. The previous no-intercept model reported that as roughly a
     third of a sunny day, flattering every dull maritime climate.
+
+    Checked at the intercept **actually in force** for each latitude. Using the
+    literature constant here instead made this fail for every calibration
+    regardless of whether it was any good, because a fitted band moves `a` — so
+    it was testing the constants against themselves rather than testing the
+    model.
     """
     for latitude in LATITUDES:
+        band_a, _band_b = coefficients_for_latitude(latitude)
         for doy in DOYS:
             hours = sunshine_hours_for_day(
-                _toa(latitude, doy) * ANGSTROM_PRESCOTT_A,
+                _toa(latitude, doy) * band_a,
                 latitude_deg=latitude,
                 day_of_year=doy,
             )
@@ -95,14 +101,34 @@ def test_overcast_sky_yields_no_sunshine() -> None:
 
 
 def test_clear_sky_yields_the_whole_day() -> None:
-    clear_kt = min(1.0, ANGSTROM_PRESCOTT_A + ANGSTROM_PRESCOTT_B)
     for latitude in LATITUDES:
+        band_a, band_b = coefficients_for_latitude(latitude)
+        clear_kt = min(1.0, band_a + band_b)
         for doy in DOYS:
             daylight = day_length_hours(latitude, doy)
             hours = sunshine_hours_for_day(
                 _toa(latitude, doy) * clear_kt, latitude_deg=latitude, day_of_year=doy
             )
             assert hours == pytest.approx(daylight, abs=1e-6)
+
+
+def test_the_shipped_intercept_is_not_below_a_dull_overcast_sky() -> None:
+    """A calibration may move `a`, but not so far that overcast reads as sun.
+
+    This is the product claim the intercept exists to protect, and it is the one
+    thing a fitted coefficient could quietly break: if `a` drops below the
+    clearness index of a genuinely overcast day, every dull maritime month gains
+    sunshine it never had. The first fitted set did exactly that — it came back
+    with `a` between 0.084 and 0.214 from a target that overestimated sunshine by
+    27-68%, and was rejected.
+    """
+    for latitude in LATITUDES:
+        band_a, band_b = coefficients_for_latitude(latitude)
+        assert 0.15 <= band_a <= 0.35, f"lat={latitude}: intercept {band_a}"
+        assert 0.3 <= band_b <= 0.8, f"lat={latitude}: slope {band_b}"
+        # A clear sky has to remain reachable: a + b beyond 1.0 would mean no
+        # attainable clearness index ever scores a full day of sunshine.
+        assert band_a + band_b <= 1.0
 
 
 def test_monotonic_and_bounded_by_daylight() -> None:
@@ -215,11 +241,33 @@ def test_validate_sunshine_checks_invariants_without_data() -> None:
     assert validate_sunshine() is True
 
 
-def test_validate_sunshine_reports_uncalibrated(caplog) -> None:
+def test_validate_sunshine_reports_uncalibrated(caplog, monkeypatch) -> None:
     """Absence of a calibration is stated, not silently treated as success."""
+    import wtg_pipeline.processing.sunshine as mod
+
+    monkeypatch.setattr(mod, "_CALIBRATION", {})
     with caplog.at_level(logging.WARNING):
         validate_sunshine()
     assert any("SUNSHINE_UNCALIBRATED" in r.message for r in caplog.records)
+
+
+def test_a_calibrated_run_does_not_claim_to_be_uncalibrated(caplog) -> None:
+    """Two distinct claims that used to share one warning.
+
+    `SUNSHINE_UNCALIBRATED` means the coefficients are the literature defaults.
+    Not re-checking accuracy against the reference cities on a given run is a
+    different thing, and emitting the first when only the second is true would
+    have the shipped coefficients permanently described as unfitted — which is
+    the tag `infra/CLAUDE.md` tells people to grep for before believing a
+    calibration claim.
+    """
+    from wtg_pipeline.processing.sunshine import is_calibrated
+
+    assert is_calibrated() is True, "the repo ships fitted coefficients"
+    with caplog.at_level(logging.INFO):
+        validate_sunshine()
+    assert not any("SUNSHINE_UNCALIBRATED" in r.message for r in caplog.records)
+    assert any("SUNSHINE_ACCURACY_UNCHECKED" in r.message for r in caplog.records)
 
 
 def test_validate_sunshine_can_check_real_observations() -> None:
@@ -228,9 +276,17 @@ def test_validate_sunshine_can_check_real_observations() -> None:
     Fed SSRD the model maps onto each city's published figure it passes; fed
     a fraction of that, it fails. That is the check the old version claimed to
     be performing and was not.
+
+    This exercises the *comparison*, not the model's accuracy — the input is
+    constructed by inverting the model, so passing says the check is wired up
+    and can fail, nothing more. Real accuracy is the end-to-end comparison
+    against published annual normals in `infra/CLAUDE.md`. The inversion has to
+    use the coefficients actually in force, or a calibration breaks the round
+    trip and this fails for reasons that have nothing to do with the check.
     """
 
     def ssrd_for(city, scale: float = 1.0) -> list[float]:
+        band_a, band_b = coefficients_for_latitude(city.latitude)
         out: list[float] = []
         for month in range(1, 13):
             doy = DAYS_PER_MONTH_MID[month - 1]
@@ -239,7 +295,7 @@ def test_validate_sunshine_can_check_real_observations() -> None:
                 out.append(0.0)
                 continue
             target = min(city.expected_annual_mean_hours_per_day * scale, daylight)
-            kt = ANGSTROM_PRESCOTT_A + (target / daylight) * ANGSTROM_PRESCOTT_B
+            kt = band_a + (target / daylight) * band_b
             out.append(extraterrestrial_daily_j_m2(city.latitude, doy) * kt)
         return out
 
@@ -434,3 +490,58 @@ def test_calibration_changes_the_derived_hours(monkeypatch) -> None:
     fitted = mod.sunshine_hours_for_day(ssrd, latitude_deg=51.5, day_of_year=172)
 
     assert fitted != pytest.approx(default)
+
+
+def test_sunlit_fraction_ramps_between_the_threshold_and_saturation() -> None:
+    """The hourly mean cannot say *when* the sun was out, so the hour is shared.
+
+    Counting a whole hour whenever the mean cleared 120 W/m² is what
+    overestimated sunshine by 27-68% against published normals: clear-sky DNI is
+    around 900, so a few sunlit minutes in an otherwise cloudy hour already
+    clear the bar.
+    """
+    from wtg_pipeline.processing.sunshine import (
+        WMO_SUNSHINE_SATURATION_W_M2,
+        WMO_SUNSHINE_THRESHOLD_W_M2,
+        sunlit_fraction_of_hour,
+    )
+
+    assert sunlit_fraction_of_hour(0.0) == 0.0
+    assert sunlit_fraction_of_hour(WMO_SUNSHINE_THRESHOLD_W_M2) == 0.0
+    # Bright or merely hazy, the beam held all hour.
+    assert sunlit_fraction_of_hour(WMO_SUNSHINE_SATURATION_W_M2) == 1.0
+    assert sunlit_fraction_of_hour(1000.0) == 1.0
+
+    midpoint = (WMO_SUNSHINE_THRESHOLD_W_M2 + WMO_SUNSHINE_SATURATION_W_M2) / 2.0
+    assert sunlit_fraction_of_hour(midpoint) == pytest.approx(0.5)
+
+    # Monotone, and strictly so inside the ramp.
+    rising = [sunlit_fraction_of_hour(d) for d in range(0, 1001, 50)]
+    assert rising == sorted(rising)
+
+
+def test_a_broken_hour_is_not_a_whole_hour_of_sunshine() -> None:
+    """The regression in one assertion.
+
+    An hour averaging just over the threshold used to score 1.0. It now scores
+    almost nothing, which is what a mean of 130 W/m² against a ~900 W/m² clear
+    sky actually implies.
+    """
+    from wtg_pipeline.processing.sunshine import (
+        cos_solar_zenith_at,
+        sunlit_fraction_of_hour,
+        wmo_sunshine_hours,
+    )
+
+    assert sunlit_fraction_of_hour(130.0) < 0.05
+
+    latitude, longitude, doy = 0.0, 0.0, 80  # equinox at the equator
+    dim = [
+        130.0 * cos_solar_zenith_at(latitude, longitude, doy, h + 0.5) * 3600.0
+        for h in range(24)
+    ]
+    hours = wmo_sunshine_hours(
+        dim, latitude_deg=latitude, longitude_deg=longitude, day_of_year=doy
+    )
+    # ~12 hours of daylight; the old step function returned all of them.
+    assert 0.0 < hours < 1.0

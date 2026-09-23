@@ -1,0 +1,36 @@
+{
+  "n_samples": 5415,
+  "bands": {
+    "tropical": {
+      "a": 0.2667,
+      "b": 0.5068,
+      "n": 1460,
+      "rmse": 0.041
+    },
+    "subtropical": {
+      "a": 0.2375,
+      "b": 0.6077,
+      "n": 1460,
+      "rmse": 0.0455
+    },
+    "temperate": {
+      "a": 0.2184,
+      "b": 0.6043,
+      "n": 1825,
+      "rmse": 0.0559
+    },
+    "polar": {
+      "a": 0.2782,
+      "b": 0.553,
+      "n": 670,
+      "rmse": 0.1042
+    }
+  },
+  "global": {
+    "a": 0.2429,
+    "b": 0.576,
+    "n": 5415
+  },
+  "year": 2023,
+  "definition": "WMO sunshine duration from ERA5 hourly fdir: direct normal irradiance via cos(solar zenith), then each hour contributes its sunlit fraction (zero at 120 W/m2, full at 650 W/m2) rather than all-or-nothing. Counting whole hours above the threshold overestimated by 27-68%."
+}
