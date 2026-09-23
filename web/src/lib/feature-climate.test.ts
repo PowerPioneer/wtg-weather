@@ -5,7 +5,7 @@ import {
   monthKey,
   readFeatureIdentity,
   readModeValue,
-  readMonthlyBands,
+  readMonthlyBand,
   readMonthlySeries,
   readNumber,
   readPreferenceScore,
@@ -28,9 +28,10 @@ const GEORGIA = {
   ...monthly("r", 1),
   ...monthly("s", 3),
   ...monthly("pref", 60),
-  ...monthly("t2m_p10", 2),
-  ...monthly("t2m_p50", 5),
-  ...monthly("t2m_p90", 9),
+  ...monthly("tmin", 1),
+  // The daily shape: the envelope's two edges come from different variables.
+  ...monthly("t2m_min_p5", 2),
+  ...monthly("t2m_max_p95", 9),
 };
 
 describe("readFeatureIdentity", () => {
@@ -84,12 +85,20 @@ describe("reading values", () => {
     expect(series?.[6]).toBeNull();
   });
 
-  it("reads the percentile triplet, and nothing when one leg is missing", () => {
-    const bands = readMonthlyBands(GEORGIA, "t2m");
-    expect(bands?.p10[0]).toBe(3);
-    expect(bands?.p90[0]).toBe(10);
-    // `tp` has only the short alias in this fixture, no percentile triplet.
-    expect(readMonthlyBands(GEORGIA, "tp")).toBeNull();
+  it("reads an envelope from two named keys, and nothing when one is missing", () => {
+    const band = readMonthlyBand(GEORGIA, "t2m_min_p5", "t2m_max_p95");
+    expect(band?.low[0]).toBe(3);
+    expect(band?.high[0]).toBe(10);
+    // `tp` has only the short alias in this fixture, so there is no envelope.
+    expect(readMonthlyBand(GEORGIA, "tp_p5", "tp_p95")).toBeNull();
+  });
+
+  it("refuses a half-present envelope rather than inventing the other edge", () => {
+    // The regression this whole helper exists to make loud: the pipeline
+    // renamed `t2m` to `t2m_max`/`t2m_min` and moved to p5/p95, the panel kept
+    // asking for `t2m_p10`/`t2m_p90`, and every band quietly vanished.
+    expect(readMonthlyBand(GEORGIA, "t2m_p10", "t2m_p90")).toBeNull();
+    expect(readMonthlyBand(GEORGIA, "t2m_min_p5", "t2m_p90")).toBeNull();
   });
 
   it("reads the baked preference score for a month", () => {

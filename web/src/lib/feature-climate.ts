@@ -8,10 +8,20 @@
  * (`pipeline/src/wtg_pipeline/tiles/build_geojson.py`):
  *
  *   id, iso_a2, admin1_code, name, level          — identity
- *   t_01…t_12, r_, s_, w_ (+ premium snow_/sst_/hum_/heat_)  — p50, display units
- *   t2m_p10_01 / t2m_p50_01 / t2m_p90_01, …       — full percentile triplet
+ *   t_01…t_12, tmin_, r_, s_, w_ (+ premium snow_/sst_/hum_/heat_)
+ *                                                 — headline value, display units
+ *   t2m_min_p5_01, t2m_max_p95_01, tp_p5_01, …    — envelope edges
+ *   si10_p10_01 / si10_p90_01, sd_, sst_          — ditto, for the variables
+ *                                                   still on the monthly shape
  *   pref_01…pref_12                               — baked default-preference score
  *   safety                                        — advisory level (WS-4)
+ *
+ * Two statistic vocabularies coexist here and it is not an inconsistency. A
+ * variable aggregated at day resolution carries mean/p5/p50/p95, where p5 and
+ * p95 are the *within-month* spread — how much one day differs from the next.
+ * One still on monthly means carries p10/p50/p90 across ten annual values,
+ * which is a far narrower thing. So a caller has to name the two keys it wants
+ * rather than pass a variable and a convention; see `readMonthlyBand`.
  *
  * Feature properties arrive as `unknown`, and a property that is missing from
  * the tier or the level is a normal case rather than an error — everything
@@ -44,10 +54,10 @@ export type FeatureIdentity = {
 /** 12 values, January first. `null` where the tier or level has no data. */
 export type MonthlySeries = readonly (number | null)[];
 
-export type MonthlyBands = {
-  p10: MonthlySeries;
-  p50: MonthlySeries;
-  p90: MonthlySeries;
+/** The two edges of a shaded envelope. Both or neither — see `readMonthlyBand`. */
+export type MonthlyBand = {
+  low: MonthlySeries;
+  high: MonthlySeries;
 };
 
 export type FeatureProperties = Record<string, unknown>;
@@ -112,15 +122,31 @@ export function readMonthlySeries(
  * Returns `null` unless all three are present for at least one month — a
  * partial band would draw a chart that lies about its own uncertainty.
  */
-export function readMonthlyBands(
+/**
+ * The envelope for one chart, read from two explicitly named property prefixes.
+ *
+ * It used to take a variable name and build `<var>_p10/_p50/_p90` itself, which
+ * stopped finding anything the moment the daily rebuild renamed `t2m` to
+ * `t2m_max`/`t2m_min` and moved the daily variables onto p5/p95. Nothing failed
+ * — the panel simply drew every chart without a band, because an absent
+ * envelope is a legitimate state (a free feature has no premium series, a
+ * monthly variable has no within-month spread). Naming both keys at the call
+ * site is what makes that rename a compile-time problem next time.
+ *
+ * Temperature is the reason `low` and `high` are not `${variable}_lo/_hi`: its
+ * edges come from two *different* variables — the 5th percentile of daily
+ * minima and the 95th of daily maxima, matching `tBandLow`/`tBandHigh` on the
+ * country page.
+ */
+export function readMonthlyBand(
   props: FeatureProperties,
-  variable: string,
-): MonthlyBands | null {
-  const p10 = readMonthlySeries(props, `${variable}_p10`);
-  const p50 = readMonthlySeries(props, `${variable}_p50`);
-  const p90 = readMonthlySeries(props, `${variable}_p90`);
-  if (!p10 || !p50 || !p90) return null;
-  return { p10, p50, p90 };
+  lowKey: string,
+  highKey: string,
+): MonthlyBand | null {
+  const low = readMonthlySeries(props, lowKey);
+  const high = readMonthlySeries(props, highKey);
+  if (!low || !high) return null;
+  return { low, high };
 }
 
 /**

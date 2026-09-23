@@ -27,7 +27,7 @@ import { cn } from "@/lib/cn";
 import type { CountryRef } from "@/lib/countries";
 import {
   readAdvisoryLevel,
-  readMonthlyBands,
+  readMonthlyBand,
   readMonthlySeries,
   readPreferenceScore,
   type FeatureIdentity,
@@ -68,23 +68,42 @@ export type ClimatePanelProps = {
 
 /**
  * Charts to attempt, in order. `alias` is the short per-month property the map
- * paints from; `variable` is the raw ERA5 code whose p10/p90 triplet becomes
- * the percentile band. Premium-only variables are listed too — they are simply
- * absent from a free feature, and absent charts are skipped.
+ * paints from and the chart's line. `lowAlias` adds a second line. `band` names
+ * the two property prefixes whose series shade the envelope behind them.
+ * Premium-only variables are listed too — they are simply absent from a free
+ * feature, and absent charts are skipped.
+ *
+ * The band keys are spelled out rather than derived from a variable name
+ * because the two halves of the temperature envelope come from different
+ * variables, and because the daily and monthly aggregates label their
+ * statistics differently (p5/p95 against p10/p90). Deriving them is what made
+ * every band here silently disappear across the daily rebuild.
  */
 const CHART_SERIES: readonly {
   kind: ClimateChartKind;
   alias: string;
-  variable: string;
+  lowAlias?: string;
+  band?: readonly [low: string, high: string];
 }[] = [
-  { kind: "temp", alias: "t", variable: "t2m" },
-  { kind: "rain", alias: "r", variable: "tp" },
-  { kind: "sun", alias: "s", variable: "sun_hours" },
-  { kind: "wind", alias: "w", variable: "si10" },
-  { kind: "snow", alias: "snow", variable: "sd" },
-  { kind: "sst", alias: "sst", variable: "sst" },
-  { kind: "humidity", alias: "hum", variable: "rh" },
-  { kind: "heat", alias: "heat", variable: "heat" },
+  // Two lines — mean daily maximum over mean daily minimum — with the
+  // within-month spread behind them, the same pair the country page draws.
+  {
+    kind: "temp",
+    alias: "t",
+    lowAlias: "tmin",
+    band: ["t2m_min_p5", "t2m_max_p95"],
+  },
+  { kind: "rain", alias: "r", band: ["tp_p5", "tp_p95"] },
+  { kind: "sun", alias: "s", band: ["sun_hours_p5", "sun_hours_p95"] },
+  // Still standing in from the monthly aggregate, hence p10/p90 and a band
+  // that is an interannual spread rather than a within-month one. It goes to
+  // p5/p95 when `si10_mean` lands at day resolution.
+  { kind: "wind", alias: "w", band: ["si10_p10", "si10_p90"] },
+  { kind: "snow", alias: "snow", band: ["sd_p10", "sd_p90"] },
+  { kind: "sst", alias: "sst", band: ["sst_p10", "sst_p90"] },
+  // Derived per-month from other variables, so there is no spread to show.
+  { kind: "humidity", alias: "hum" },
+  { kind: "heat", alias: "heat" },
 ];
 
 const LEVEL_NOUN: Record<FeatureIdentity["level"], string> = {
@@ -113,7 +132,7 @@ export function ClimatePanel({
     advisory != null && failsSafetyLimit(advisory, preferences ?? DEFAULT_PREFERENCES);
   const charts = CHART_SERIES.map((series) => ({
     kind: series.kind,
-    months: buildMonths(properties, series.alias, series.variable),
+    months: buildMonths(properties, series),
   })).filter((c): c is { kind: ClimateChartKind; months: MonthDatum[] } =>
     c.months !== null,
   );
@@ -375,25 +394,35 @@ function regionResolverHref(countrySlug: string, identity: FeatureIdentity): str
  */
 function buildMonths(
   properties: FeatureProperties,
-  alias: string,
-  variable: string,
+  series: (typeof CHART_SERIES)[number],
 ): MonthDatum[] | null {
-  const series = readMonthlySeries(properties, alias);
-  if (!series || series.some((v) => v == null)) return null;
+  const values = readMonthlySeries(properties, series.alias);
+  if (!values || values.some((v) => v == null)) return null;
 
-  const bands = readMonthlyBands(properties, variable);
-  const complete =
-    bands != null &&
-    bands.p10.every((v) => v != null) &&
-    bands.p90.every((v) => v != null);
+  const lows = series.lowAlias
+    ? readMonthlySeries(properties, series.lowAlias)
+    : null;
+  const hasLow = lows != null && lows.every((v) => v != null);
 
-  return series.map((value, index) => ({
+  // `p5`/`p95` are what `MonthDatum` calls the envelope edges; the band itself
+  // may be an interannual p10/p90 for a variable still on the monthly shape.
+  const band = series.band
+    ? readMonthlyBand(properties, series.band[0], series.band[1])
+    : null;
+  // Both edges, every month, or none: a half-drawn envelope reads as data.
+  const hasBand =
+    band != null &&
+    band.low.every((v) => v != null) &&
+    band.high.every((v) => v != null);
+
+  return values.map((value, index) => ({
     month: index,
     value: value as number,
-    ...(complete
+    ...(hasLow ? { low: lows[index] as number } : {}),
+    ...(hasBand
       ? {
-          p10: bands.p10[index] as number,
-          p90: bands.p90[index] as number,
+          p5: band.low[index] as number,
+          p95: band.high[index] as number,
         }
       : {}),
   }));
