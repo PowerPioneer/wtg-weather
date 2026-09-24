@@ -104,10 +104,14 @@ def derive_daily_mean(raw: Path, target: Path) -> Path:
     """Reduce a 6-hourly u/v file to one daily-mean wind speed per cell.
 
     Reads one day at a time, so peak memory is four timesteps of each
-    component plus the output year (~1.5 GB at 0.25°). Every day must carry
+    component plus the output year (~1.5 GB at 0.25°). A year takes about half
+    an hour on the box, nearly all of it decompressing the input, so progress
+    is logged every 30 seconds. Every day must carry
     exactly ``len(TIMES)`` samples: a short day is a truncated download, and a
     mean over fewer samples would be a biased day nothing downstream detects.
     """
+    import time
+
     import numpy as np
     import pandas as pd
     import xarray as xr
@@ -131,16 +135,24 @@ def derive_daily_mean(raw: Path, target: Path) -> Path:
         lon = ds["longitude"].values
 
         out = np.empty((len(days), len(lat), len(lon)), dtype=np.float32)
+        day_of = stamps.normalize()
+        last_log = time.monotonic()
         for i, day in enumerate(days):
-            idx = np.nonzero(stamps.normalize() == day)[0]
-            if len(idx) != len(TIMES):
+            idx = np.nonzero(day_of == day)[0]
+            if len(idx) != len(TIMES) or idx[-1] - idx[0] != len(idx) - 1:
                 raise ValueError(
                     f"{raw.name}: {day.date()} has {len(idx)} samples, "
-                    f"expected {len(TIMES)} — truncated download?"
+                    f"expected {len(TIMES)} consecutive — truncated download?"
                 )
-            uu = u.isel({time_name: idx}).values.astype(np.float64)
-            vv = v.isel({time_name: idx}).values.astype(np.float64)
+            # A contiguous slice, not an index array: the backend reads one
+            # hyperslab instead of gathering timesteps one by one.
+            span = slice(int(idx[0]), int(idx[-1]) + 1)
+            uu = u.isel({time_name: span}).values.astype(np.float64)
+            vv = v.isel({time_name: span}).values.astype(np.float64)
             out[i] = np.sqrt(uu * uu + vv * vv).mean(axis=0)
+            if time.monotonic() - last_log >= 30:
+                log.info("  %s: %d/%d days", raw.name, i + 1, len(days))
+                last_log = time.monotonic()
     finally:
         ds.close()
 
