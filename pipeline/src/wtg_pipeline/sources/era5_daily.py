@@ -74,6 +74,11 @@ class DailyVariable:
     variable: str
     daily_statistic: str
     note: str
+    #: False for a series the daily-statistics dataset cannot serve and that
+    #: :mod:`era5_wind` derives from hourly fields instead. It still belongs in
+    #: this table: aggregation, the watchdog and ``have_complete_year`` all key
+    #: off the stem, and the file lands in the same place in the same shape.
+    from_daily_dataset: bool = True
 
 
 #: The seven daily series the product needs.
@@ -101,9 +106,12 @@ ERA5_DAILY_VARIABLES: tuple[DailyVariable, ...] = (
         "tp_sum", "total_precipitation", "daily_sum",
         "rainfall and the wet-day count",
     ),
+    # Not from the daily dataset: ERA5 archives no hourly 10 m wind speed, so
+    # MARS rejects `10m_wind_speed` there. Derived from u10/v10 by era5_wind.
     DailyVariable(
         "si10_mean", "10m_wind_speed", "daily_mean",
         "wind, its Beaufort readout and its band",
+        from_daily_dataset=False,
     ),
     DailyVariable(
         "d2m_mean", "2m_dewpoint_temperature", "daily_mean",
@@ -249,6 +257,8 @@ def plan_requests(
                 f"Known: {', '.join(sorted(DAILY_BY_STEM))}"
             )
         daily = DAILY_BY_STEM[stem]
+        if not daily.from_daily_dataset:
+            continue
         for year in years:
             months: list[int | None] = (
                 [None] if chunk == "year" else list(range(1, 13))
@@ -326,7 +336,7 @@ def download(
         # complete purely because it exists and is non-empty — a half-written
         # file would poison every later resume.
         tmp = req.target.with_name(req.target.name + ".tmp")
-        _retrieve_with_retry(resolved_client, req, tmp)
+        retrieve_with_retry(resolved_client, DEFAULT_DATASET, req.to_cds_request(), tmp)
         tmp.replace(req.target)
         written.append(req.target)
 
@@ -334,6 +344,18 @@ def download(
         "daily download complete: %d chunk(s), %d already present, %d fetched",
         total, skipped, total - skipped,
     )
+
+    derived = [s for s in stems if not DAILY_BY_STEM[s].from_daily_dataset]
+    if derived:
+        from wtg_pipeline.sources import era5_wind
+
+        # Only si10_mean today; era5_wind knows no other stem.
+        assert derived == [era5_wind.STEM], derived
+        written.extend(
+            era5_wind.download(
+                years, client=client, base_dir=out_dir, force=force
+            )
+        )
     return written
 
 
@@ -346,7 +368,7 @@ RETRY_ATTEMPTS = 4
 RETRY_BACKOFF_SECONDS: tuple[int, ...] = (60, 300, 900)
 
 
-def _retrieve_with_retry(client: CDSClient, req: "ERA5DailyRequest", tmp: Path) -> None:
+def retrieve_with_retry(client: CDSClient, dataset: str, request: dict, tmp: Path) -> None:
     """Fetch one chunk, retrying a failed CDS job before giving up.
 
     The run used to abort on the first failure. That was the right instinct —
@@ -364,7 +386,7 @@ def _retrieve_with_retry(client: CDSClient, req: "ERA5DailyRequest", tmp: Path) 
     last: Exception | None = None
     for attempt in range(1, RETRY_ATTEMPTS + 1):
         try:
-            client.retrieve(DEFAULT_DATASET, req.to_cds_request(), str(tmp))
+            client.retrieve(dataset, request, str(tmp))
             return
         except Exception as exc:  # noqa: BLE001 — cdsapi raises bare HTTPError
             last = exc
@@ -376,12 +398,12 @@ def _retrieve_with_retry(client: CDSClient, req: "ERA5DailyRequest", tmp: Path) 
             wait = RETRY_BACKOFF_SECONDS[min(attempt - 1, len(RETRY_BACKOFF_SECONDS) - 1)]
             log.warning(
                 "chunk %s failed (attempt %d/%d): %s — retrying in %ds",
-                req.target.name, attempt, RETRY_ATTEMPTS, exc, wait,
+                tmp.name, attempt, RETRY_ATTEMPTS, exc, wait,
             )
             time.sleep(wait)
 
     raise RuntimeError(
-        f"{req.target.name} failed after {RETRY_ATTEMPTS} attempts: {last}"
+        f"{tmp.name} failed after {RETRY_ATTEMPTS} attempts: {last}"
     ) from last
 
 

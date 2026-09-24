@@ -88,14 +88,19 @@ def test_plans_one_request_per_year_by_default(tmp_path):
     assert all(r.target.parent == tmp_path for r in plan)
 
 
-def test_the_full_set_is_seventy_yearly_requests(tmp_path):
-    """The default. 70, not 840 — see `plan_requests` for why that matters."""
+def test_the_full_set_is_sixty_yearly_requests(tmp_path):
+    """The default. 60, not 720 — see `plan_requests` for why that matters.
+
+    Six of the seven series, because si10_mean is not in the daily dataset
+    (see `era5_wind`) and is planned there instead.
+    """
     plan = era5_daily.plan_requests(
         [v.stem for v in era5_daily.ERA5_DAILY_VARIABLES],
         list(range(2016, 2026)),
         base_dir=tmp_path,
     )
-    assert len(plan) == 7 * 10 == 70
+    assert len(plan) == 6 * 10 == 60
+    assert "si10_mean" not in {r.daily.stem for r in plan}
     assert all(r.month is None for r in plan)
     # One request, twelve months inside it.
     assert plan[0].to_cds_request()["month"] == list(era5_daily.MONTHS)
@@ -108,7 +113,7 @@ def test_month_chunking_is_still_available(tmp_path):
         base_dir=tmp_path,
         chunk="month",
     )
-    assert len(plan) == 7 * 10 * 12 == 840
+    assert len(plan) == 6 * 10 * 12 == 720
     assert plan[0].to_cds_request()["month"] == ["01"]
 
 
