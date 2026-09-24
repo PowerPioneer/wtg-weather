@@ -72,6 +72,13 @@ MAILTO=""
 # only thing that republishes data mid-year.
 0 4 * * 1 /opt/wtg-weather/infra/scripts/weekly-alerts.sh >> /var/log/wtg-alerts.log 2>&1
 
+# TEMPORARY, added 2026-09-24 — REMOVE when the download finishes. Every 15 min:
+# restart the Pass B daily download (t2m_mean, d2m_mean) if it has died. See
+# the header of era5-daily-watchdog.sh; left in after the last download, it
+# reported "nothing to restart" every quarter hour for days. si10_mean is not
+# in this list on purpose: the daily-statistics dataset cannot serve it.
+7-59/15 * * * * SERIES="t2m_mean d2m_mean" DOWNLOAD_LOG=/var/log/wtg-era5-passb.log /opt/wtg-weather/infra/scripts/era5-daily-watchdog.sh >> /var/log/wtg-era5-watchdog.log 2>&1
+
 # Yearly Jan 15 04:00 UTC: full ERA5 rebuild — download the new year,
 # re-aggregate, percentiles, both tile tiers + CDN purge, republish the SSR
 # bundle, and recreate `web` so the ISR cache lets the new numbers through.
