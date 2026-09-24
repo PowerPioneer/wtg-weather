@@ -429,8 +429,8 @@ def test_shipped_properties_keeps_what_the_web_reads() -> None:
         "tp_p95_07": 9.4,
         "sun_hours_p5_07": 1.1,
         "sun_hours_p95_07": 12.0,
-        "si10_p10_07": 2.4,
-        "si10_p90_07": 6.1,
+        "si10_p5_07": 1.9,
+        "si10_p95_07": 7.3,
     }
     assert shipped_properties(props) == props
 
@@ -483,7 +483,7 @@ def test_shipped_prefixes_match_the_web_contract() -> None:
         "t2m_min_p5", "t2m_max_p95",
         "tp_p5", "tp_p95",
         "sun_hours_p5", "sun_hours_p95",
-        "si10_p10", "si10_p90",
+        "si10_p5", "si10_p95",
         "sd_p10", "sd_p90",
         "sst_p10", "sst_p90",
     }

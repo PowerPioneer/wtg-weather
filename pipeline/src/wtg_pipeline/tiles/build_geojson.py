@@ -475,11 +475,13 @@ SHIPPED_MONTHLY_PREFIXES: frozenset[str] = frozenset(
         "tp_p95",
         "sun_hours_p5",
         "sun_hours_p95",
-        # Same role, p10/p90, for the variables still aggregated monthly — an
-        # interannual spread rather than a within-month one. These become p5/p95
-        # when `si10_mean` and friends land at day resolution.
-        "si10_p10",
-        "si10_p90",
+        "si10_p5",
+        "si10_p95",
+        # Same role, p10/p90, for the two variables still aggregated monthly —
+        # an interannual spread rather than a within-month one. Both are
+        # premium-only and neither has a daily series: snow depth and sea
+        # temperature barely move within a month, so a within-month band would
+        # be a sliver, and the monthly means serve them well.
         "sd_p10",
         "sd_p90",
         "sst_p10",

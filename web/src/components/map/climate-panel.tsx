@@ -95,10 +95,7 @@ const CHART_SERIES: readonly {
   },
   { kind: "rain", alias: "r", band: ["tp_p5", "tp_p95"] },
   { kind: "sun", alias: "s", band: ["sun_hours_p5", "sun_hours_p95"] },
-  // Still standing in from the monthly aggregate, hence p10/p90 and a band
-  // that is an interannual spread rather than a within-month one. It goes to
-  // p5/p95 when `si10_mean` lands at day resolution.
-  { kind: "wind", alias: "w", band: ["si10_p10", "si10_p90"] },
+  { kind: "wind", alias: "w", band: ["si10_p5", "si10_p95"] },
   { kind: "snow", alias: "snow", band: ["sd_p10", "sd_p90"] },
   { kind: "sst", alias: "sst", band: ["sst_p10", "sst_p90"] },
   // Derived per-month from other variables, so there is no spread to show.

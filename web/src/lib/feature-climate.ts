@@ -10,9 +10,10 @@
  *   id, iso_a2, admin1_code, name, level          — identity
  *   t_01…t_12, tmin_, r_, s_, w_ (+ premium snow_/sst_/hum_/heat_)
  *                                                 — headline value, display units
- *   t2m_min_p5_01, t2m_max_p95_01, tp_p5_01, …    — envelope edges
- *   si10_p10_01 / si10_p90_01, sd_, sst_          — ditto, for the variables
- *                                                   still on the monthly shape
+ *   t2m_min_p5_01, t2m_max_p95_01, tp_p5_01,
+ *   si10_p5_01, …                                 — envelope edges
+ *   sd_p10_01 / sd_p90_01, sst_                   — ditto, for the two premium
+ *                                                   variables on the monthly shape
  *   pref_01…pref_12                               — baked default-preference score
  *   safety                                        — advisory level (WS-4)
  *

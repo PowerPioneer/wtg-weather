@@ -332,12 +332,11 @@ def build_percentiles(
     the issue in a test. With several inputs it is detected for each in turn,
     which is the point: they are usually one of each.
 
-    ``aliases`` renames an emitted variable, and exists for one temporary
-    reason. ``build_geojson`` asks for ``si10_mean``, ``t2m_mean`` and
-    ``d2m_mean`` — daily series that have not been downloaded yet — so the
-    monthly ``si10``, ``t2m`` and ``d2m`` stand in for them. The stand-ins
-    carry ``p10``/``p90`` and no ``p5``/``p95``, so the wind chart draws a line
-    and no envelope, rather than drawing the wrong envelope.
+    ``aliases`` renames an emitted variable. The runner used it until
+    2026-09-24 to stand the monthly ``si10``, ``t2m`` and ``d2m`` in for daily
+    series that had not been downloaded; nothing passes it now. With a stand-in
+    and the real daily series both present it would emit the variable twice,
+    so do not reintroduce one without dropping the other.
     """
     pd = _require_pandas()
     out = percentiles_path(level, base_dir=base_dir)
