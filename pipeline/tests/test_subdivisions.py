@@ -108,3 +108,33 @@ def test_fold_preserves_word_boundaries() -> None:
 )
 def test_known_carve_outs_resolve(country: str, prose: str, expected: set[str]) -> None:
     assert expected <= set(resolve(country, prose))
+
+
+# ── A country's name is not its subdivision ───────────────────────────────
+#
+# Found live on 2026-09-24: the US Guatemala advisory's "Guatemala City"
+# painted the whole Guatemala department (GT-GU) "do not travel". Dutch prose
+# does the same to Guinea, Guinea-Bissau and Panama in a dry run of the NL feed.
+
+
+@pytest.mark.parametrize(
+    ("iso2", "prose"),
+    [
+        ("GT", "Zone 18 and the city of Villa Nueva in Guatemala City"),
+        ("GN", "de gebieden die grenzen aan Mali en Ivoorkust"),
+        ("GW", "het grensgebied tussen Guinee-Bissau en Senegal"),
+        ("PA", "het grensgebied tussen Panama en Colombia"),
+        ("NG", "the border with Niger"),
+    ],
+)
+def test_a_country_name_never_resolves_to_a_subdivision(iso2: str, prose: str) -> None:
+    assert resolve(iso2, prose) == []
+
+
+def test_a_longer_subdivision_name_containing_a_country_still_resolves() -> None:
+    """ "Niger State" is NG-NI; only the bare "Niger" is the country."""
+    assert resolve("NG", "Kaduna and Niger State") == ["NG-KD", "NG-NI"]
+
+
+def test_the_guard_leaves_ordinary_carve_outs_alone() -> None:
+    assert resolve("TR", "de provincies Şırnak en Hakkari") == ["TR-30", "TR-73"]
