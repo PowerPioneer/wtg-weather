@@ -128,7 +128,7 @@ function PremiumTeaser({
   );
 }
 
-function ChartFromMonthly({
+export function ChartFromMonthly({
   kind,
   values,
   low,

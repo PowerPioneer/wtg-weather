@@ -2,7 +2,7 @@ export { ActivitiesSection } from "./activities-section";
 export { CountryHero } from "./country-hero";
 export { BestMonths } from "./best-months";
 export { MonthAccordion } from "./month-accordion";
-export { ClimateGrid } from "./climate-grid";
+export { ChartFromMonthly, ClimateGrid } from "./climate-grid";
 export { RegionsGrid } from "./regions-grid";
 export { SafetySection } from "./safety-section";
 export { RegionAdvisoryNotice } from "./region-advisory-notice";

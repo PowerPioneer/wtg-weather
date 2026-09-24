@@ -203,6 +203,13 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
             monthName={monthName}
             preferences={DEFAULT_PREFERENCES}
           />
+          {/* A plain link, so it is in the static HTML; /compare does the gating. */}
+          <Link
+            href={`/compare?a=${country.slug}&month=${month}`}
+            className="rounded-md border border-border px-3 py-1.5 text-[13px] text-text hover:bg-surface-2"
+          >
+            Compare with another destination
+          </Link>
         </div>
         <ActivitiesSection country={country} monthIdx={idx} monthName={monthName} />
         <RegionsGrid country={country} currentMonthIdx={idx} />
