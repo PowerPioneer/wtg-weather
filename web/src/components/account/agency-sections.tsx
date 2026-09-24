@@ -294,7 +294,7 @@ export function AgencyBranding() {
     <>
       <SectionHead
         eyebrow="Branding"
-        title="White-label trip PDFs and share pages"
+        title="White-label share pages"
         sub="Upload your logo, set a trip-footer colour, map a custom domain. Currently in private beta."
       />
       <div className="relative overflow-hidden rounded-md border border-border bg-surface p-8">

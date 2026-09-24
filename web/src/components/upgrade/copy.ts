@@ -5,10 +5,11 @@
  * Mirrors `web/design/pricing/tierData.js`; diverges from it in two places,
  * both deliberate:
  *
- *   1. "Export match reports to PDF" is listed on Premium — this is a
- *      consumer-ask that we're committing to in Phase 5.3; the generator
- *      itself ships in Phase 5.7 but the tier gains the feature now so the
- *      price points don't have to change later.
+ *   1. No PDF export and no ads. Both were listed ("Export match reports to
+ *      PDF" on Premium, "Ad-supported" / "No ads" across the tiers) while
+ *      neither existed, so the page sold two things nobody could receive.
+ *      Cut 2026-09-24. Re-add a line here only in the same change that ships
+ *      the thing it describes.
  *   2. The agency tiers carry `hidden: true` until agency onboarding ships
  *      in Phase 6. `consumerTiers()` below is what the public pricing page
  *      reads; the full list is still exported for the /agency page.
@@ -115,7 +116,7 @@ export type PremiumFeatureId = keyof typeof PREMIUM_FEATURE_COPY;
 
 /** Footnote under the display-mode picker when the session is not entitled. */
 export const DISPLAY_MODE_UPSELL =
-  `Unlock all 10 variables, saved trips, percentile bands, and no ads for ${PREMIUM_PRICE_MONTHLY}.`;
+  `Unlock all 10 variables, saved trips, and percentile bands for ${PREMIUM_PRICE_MONTHLY}.`;
 
 /**
  * Copy for the two Paddle return pages. The success page polls `/api/me`
@@ -164,7 +165,6 @@ const TIERS: readonly TierEntry[] = [
       "Safety advisories from US, UK, Canada, Australia, Germany (combined view, most-cautious-wins)",
       "Display modes: My Preferences, Temperature, Rainfall, Sunshine, Wind, Safety",
       "10-year monthly climatology averages",
-      "Ad-supported",
     ],
   },
   {
@@ -182,17 +182,15 @@ const TIERS: readonly TierEntry[] = [
     featuredBullets: [
       "Admin-2 (district) deep zoom",
       "Per-government advisory breakdown",
-      "Export match reports to PDF",
+      "Email alerts when a destination starts matching",
     ],
     features: [
       "Admin-2 (district / county) deep zoom",
       "Additional variables: Snow depth, Sea surface temperature, Heat index, Humidity",
       "10 / 50 / 90 percentile bands on charts (see how variable the weather actually is, not just the average)",
-      "Export match reports to PDF (full country or per-month, with sources)",
       "Save unlimited trips",
       "Save favourite destinations",
       "Email alerts when a destination starts matching your preferences",
-      "No ads",
       "Per-government advisory breakdown view (see how each country rates a destination, not just the combined view)",
     ],
   },
@@ -300,7 +298,7 @@ export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [
 export const PRICING_FAQ: readonly { q: string; a: string }[] = [
   {
     q: `What does the ${PREMIUM_PRICE_MONTHLY} actually unlock?`,
-    a: "Deeper zoom (admin-2 districts, not just countries), four extra variables (snow, sea-surface temperature, heat index, humidity), percentile bands on every chart so you can see variability not just averages, the per-government breakdown of travel advisories, PDF export of your match reports, saved trips, email alerts, and no ads.",
+    a: "Deeper zoom (admin-2 districts, not just countries), four extra variables (snow, sea-surface temperature, heat index, humidity), percentile bands on every chart so you can see variability not just averages, the per-government breakdown of travel advisories, saved trips, and email alerts.",
   },
   {
     q: "What is ERA5 and why should I trust it?",
