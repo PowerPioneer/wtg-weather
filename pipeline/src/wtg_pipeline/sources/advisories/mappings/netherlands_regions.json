@@ -1,0 +1,76 @@
+{
+  "AO": {
+    "de provincie cabinda": [
+      "AO-CAB"
+    ]
+  },
+  "CM": {
+    "de regio nord de regio adamaoua en het oosten en zuiden van de regio sud ouest": [
+      "CM-AD",
+      "CM-NO"
+    ]
+  },
+  "EG": {
+    "noord sinai de grenzen met libie en sudan de hala ib driehoek en bir tawil": [
+      "EG-SIN"
+    ]
+  },
+  "GE": {
+    "de regio s abchazie en zuid ossetie": [
+      "GE-AB"
+    ]
+  },
+  "ID": {
+    "de provincies papoea papoea hooglanden centraal en zuid papoea": [
+      "ID-PA"
+    ]
+  },
+  "IN": {
+    "de regio s jammu en kasjmir aksai chin voor de deelstaat manipur en voor de grensstrook tussen india en pakistan": [
+      "IN-MN"
+    ],
+    "het grensgebied tussen india en myanmar bangladesh en china voor de deelstaten mizoram en nagaland en voor gebieden in centraal india": [
+      "IN-MZ",
+      "IN-NL"
+    ]
+  },
+  "MD": {
+    "de regio transnistrie": [
+      "MD-SN"
+    ]
+  },
+  "MZ": {
+    "de rest van de provincie cabo delgado en voor de districten erati en memba in de provincie nampula": [
+      "MZ-P"
+    ]
+  },
+  "OM": {
+    "de provincie musandam en het grensgebied van oman met jemen": [
+      "OM-MU"
+    ]
+  },
+  "PG": {
+    "de provincies enga hela zuidelijke hooglanden mount hagen westelijke hooglanden en het eiland bougainville": [
+      "PG-EPW",
+      "PG-NSB",
+      "PG-SHM",
+      "PG-WHM"
+    ]
+  },
+  "PH": {
+    "het westelijke deel van het eiland mindanao en de sulu eilanden": [
+      "PH-SLU"
+    ]
+  },
+  "PK": {
+    "de provincies sindh delen van punjab de regio jammu en kasjmir aan de pakistaanse kant van de bestandslijn en delen van gilgit balistan": [
+      "PK-SD"
+    ]
+  },
+  "TR": {
+    "de provincies s rnak en hakkari en de grensovergang bij habur grens met irak": [
+      "TR-30",
+      "TR-73"
+    ]
+  }
+}

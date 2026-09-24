@@ -58,9 +58,18 @@ Phrasing                                     Subject
 
 A subject naming the whole country ("Duitsland", "de rest van Japan", "het
 hele land") gives the country-wide level; anything else is a regional
-carve-out, emitted as the ``regional-L<n>`` sentinel the other scrapers use,
-because the API names areas in prose that we cannot resolve to an ISO-3166-2
-polygon.
+carve-out, emitted as the ``regional-L<n>`` sentinel the other scrapers use.
+
+A carve-out whose exact subject phrase is in ``mappings/netherlands_regions.json``
+*also* paints the subdivisions listed there. That table is hand-curated, not
+the gazetteer matched over prose: a dry run of the gazetteer on this feed
+resolved 31 of 102 subjects and several were false — "grenzen aan Mali" is
+Guinea's Mali prefecture, "Guinee-Bissau" contains the capital sector Bissau —
+and others overclaimed (all of Fukushima prefecture for "het zuidoosten van
+Fukushima"). The table lists only subdivisions a sentence names **whole**. A
+subject that also covers other areas contributes just the ones it names, and
+one worded differently next week simply misses the table and falls back to
+the sentinel, which is the safe direction.
 
 **When no sentence names the whole country, this scraper emits no
 country-wide row at all.** Iraq and the Palestinian Territories are described
@@ -300,17 +309,18 @@ def classify_introduction(intro: str, location: str = "") -> int | None:
     return country
 
 
-def classify_introduction_detailed(
+def classify_regions(
     intro: str, location: str = ""
-) -> tuple[int | None, list[int]]:
-    """``(country_level, regional_levels)`` for one record.
+) -> tuple[int | None, list[tuple[str, int]]]:
+    """``(country_level, [(subject, level), ...])`` for one record.
 
-    ``regional_levels`` are the distinct levels of carve-outs that are worse
-    than the country-wide code — the ones a traveller needs warning about.
+    The regional pairs are the carve-outs worse than the country-wide code —
+    the ones a traveller needs warning about — with the subject phrase kept so
+    it can be looked up in ``netherlands_regions.json``.
     """
     names = _country_names(location)
     country_level: int | None = None
-    regional: list[int] = []
+    regional: list[tuple[str, int]] = []
     for sentence in statements(intro):
         parsed = _subject_and_colour(sentence)
         if parsed is None:
@@ -321,9 +331,32 @@ def classify_introduction_detailed(
             # Several sentences can restate the national code; keep the worst.
             country_level = level if country_level is None else max(country_level, level)
         else:
-            regional.append(level)
-    worse = sorted({lv for lv in regional if country_level is None or lv > country_level})
+            regional.append((subject or "", level))
+    worse = [
+        (subject, lv)
+        for subject, lv in regional
+        if country_level is None or lv > country_level
+    ]
     return country_level, worse
+
+
+def classify_introduction_detailed(
+    intro: str, location: str = ""
+) -> tuple[int | None, list[int]]:
+    """``(country_level, regional_levels)``: the distinct carve-out levels only."""
+    country_level, regional = classify_regions(intro, location)
+    return country_level, sorted({lv for _, lv in regional})
+
+
+def region_codes(iso2: str, subject: str) -> list[str]:
+    """The curated subdivisions an exact subject phrase names, or ``[]``."""
+    from wtg_pipeline.processing.subdivisions import fold
+
+    table = load_mapping("netherlands_regions")
+    entry = table.get(iso2, {}) if isinstance(table, dict) else {}
+    codes = entry.get(fold(subject), []) if isinstance(entry, dict) else []
+    # A code for another country would paint the wrong map; refuse it.
+    return [c for c in codes if isinstance(c, str) and c.startswith(f"{iso2}-")]
 
 
 class NetherlandsScraper(AdvisoryScraper):
@@ -355,6 +388,7 @@ class NetherlandsScraper(AdvisoryScraper):
         out: list[Advisory] = []
         seen: set[str] = set()
         unresolved: list[str] = []
+        resolved = 0
         for entry in payload:
             if not isinstance(entry, dict):
                 continue
@@ -369,7 +403,8 @@ class NetherlandsScraper(AdvisoryScraper):
                 continue
             introduction = entry.get("introduction") or ""
             name = entry.get("location") or iso3
-            level, regional = classify_introduction_detailed(introduction, name)
+            level, regions = classify_regions(introduction, name)
+            regional = sorted({lv for _, lv in regions})
             url = entry.get("canonical") or INDEX_URL
 
             if level is None:
@@ -407,6 +442,27 @@ class NetherlandsScraper(AdvisoryScraper):
                         fetched_at=when,
                     )
                 )
+            # In addition to the sentinel, never instead of it: the sentinel is
+            # what `regional_max` is built from, and a subject can name more
+            # than the subdivisions the table lists for it.
+            painted: dict[str, tuple[int, str]] = {}
+            for subject, region_level in regions:
+                for code in region_codes(iso2, subject):
+                    if region_level > painted.get(code, (0, ""))[0]:
+                        painted[code] = (region_level, subject)
+            for code, (region_level, subject) in sorted(painted.items()):
+                region_colour = next(c for c, lv in _COLOUR_LEVEL.items() if lv == region_level)
+                out.append(
+                    Advisory(
+                        country_iso2=iso2,
+                        region_code=code,
+                        level=region_level,
+                        summary=f"{name}: kleurcode {region_colour} voor {subject}"[:500],
+                        source_url=url,
+                        fetched_at=when,
+                    )
+                )
+            resolved += len(painted)
 
         if unresolved:
             # Not an error — Iraq and the Palestinian Territories genuinely
@@ -418,6 +474,7 @@ class NetherlandsScraper(AdvisoryScraper):
                 len(unresolved),
                 ", ".join(sorted(unresolved)),
             )
+        log.info("netherlands: %d curated subdivision carve-out(s)", resolved)
         return out
 
 

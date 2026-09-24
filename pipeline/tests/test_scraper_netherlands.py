@@ -15,8 +15,10 @@ from wtg_pipeline.sources.advisories.netherlands import (
     NetherlandsScraper,
     classify_introduction,
     classify_introduction_detailed,
+    region_codes,
     statements,
 )
+from wtg_pipeline.sources.advisories.base import load_mapping
 
 # The shape the feed actually uses: carve-out bullet first, country-wide last.
 JAPAN_INTRO = (
@@ -186,10 +188,44 @@ def test_carve_outs_reach_the_output_as_sentinels(advisory_fixture) -> None:
         (1, None),
         (4, "regional-L4"),
     ]
-    # The feed names areas in prose, so no carve-out may claim an ISO-3166-2
-    # code — `processing.advisories` would paint that polygon directly.
+    # The feed names areas in prose. A carve-out may claim an ISO-3166-2 code
+    # only through the curated phrase table — `processing.advisories` paints
+    # that polygon directly, so a gazetteer guess here would be a false claim.
+    curated = {
+        code
+        for entries in load_mapping("netherlands_regions").values()
+        for codes in entries.values()
+        for code in codes
+    }
     for advisory in out:
-        assert advisory.region_code is None or advisory.region_code.startswith("regional-L")
+        code = advisory.region_code
+        assert code is None or code.startswith("regional-L") or code in curated
+
+
+def test_curated_phrases_paint_whole_subdivisions(advisory_fixture) -> None:
+    """India's two carve-out sentences name three states whole among areas
+    that are not subdivisions; only the three are painted, the sentinels stay."""
+    raw = advisory_fixture("netherlands.json")
+    out = NetherlandsScraper(client=object()).parse(raw)
+    india = sorted((a.region_code, a.level) for a in out if a.country_iso2 == "IN" and a.region_code)
+    assert india == [
+        ("IN-MN", 4),
+        ("IN-MZ", 3),
+        ("IN-NL", 3),
+        ("regional-L3", 3),
+        ("regional-L4", 4),
+    ]
+
+
+def test_an_uncurated_phrasing_falls_back_to_the_sentinel() -> None:
+    """Fukushima is deliberately not in the table: the sentence names part of
+    a prefecture, and painting all of it would overclaim."""
+    assert region_codes("JP", "het zuidoosten van Fukushima") == []
+
+
+def test_a_curated_code_for_another_country_is_refused() -> None:
+    assert region_codes("TR", "de provincie Cabinda") == []
+    assert region_codes("AO", "de provincie Cabinda") == ["AO-CAB"]
 
 
 def test_carve_outs_are_only_reported_when_worse_than_the_country(
