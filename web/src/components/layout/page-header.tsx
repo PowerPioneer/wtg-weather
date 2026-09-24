@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
+import { CountryDatalist, CountrySearchForm } from "./country-search-form";
 import { HeaderAccountLink } from "./header-account-link";
 
 type NavItem = { href: string; label: string };
@@ -63,6 +64,7 @@ export function PageHeader({ activePath }: { activePath?: string } = {}) {
         </Link>
 
         <nav className="hidden items-center gap-6 text-[13px] text-text-muted md:flex">
+          <CountrySearchForm className="w-44 lg:w-52" />
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -108,6 +110,7 @@ export function PageHeader({ activePath }: { activePath?: string } = {}) {
             aria-label="Main"
             className="absolute right-0 top-[calc(100%+0.5rem)] z-50 flex w-56 flex-col rounded-md border border-border bg-surface p-1.5 shadow-lg"
           >
+            <CountrySearchForm className="mb-1 p-1.5" />
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -124,6 +127,7 @@ export function PageHeader({ activePath }: { activePath?: string } = {}) {
           </nav>
         </details>
       </div>
+      <CountryDatalist />
     </header>
   );
 }
