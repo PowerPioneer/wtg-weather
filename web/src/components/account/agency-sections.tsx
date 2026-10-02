@@ -295,7 +295,7 @@ export function AgencyBranding() {
       <SectionHead
         eyebrow="Branding"
         title="White-label share pages"
-        sub="Upload your logo, set a trip-footer colour, map a custom domain. Currently in private beta."
+        sub="Upload your logo, set a trip-footer colour, map a custom domain."
       />
       <div className="relative overflow-hidden rounded-md border border-border bg-surface p-8">
         <div className="absolute right-5 top-5 rounded-sm bg-primary px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#E0C98A]">

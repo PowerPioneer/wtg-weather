@@ -224,7 +224,7 @@ const TIERS: readonly TierEntry[] = [
     seats: "10 seats included",
     cta: { label: "Start 14-day trial", kind: "outline" },
     subline: "Everything in Starter, plus:",
-    features: ["10 seats", "Priority support", "Advanced filters and export options"],
+    features: ["10 seats", "Priority support"],
   },
   {
     id: "enterprise",
