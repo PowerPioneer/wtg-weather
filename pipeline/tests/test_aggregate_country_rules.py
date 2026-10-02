@@ -116,6 +116,23 @@ def test_missing_admin1_falls_back_to_the_naive_aggregate() -> None:
     assert portugal.iloc[0]["value"] == pytest.approx(17.0)
 
 
+def test_a_variable_admin1_lacks_keeps_its_naive_country_rows() -> None:
+    """A stale admin-1 aggregate must not delete a variable from a whitelisted
+    country. On 2026-09-28 it did: the country level was aggregated before
+    admin-1 had the new wind series, and seven countries lost their wind."""
+    admin1 = _admin1_rows("FR", {"FR-75": 12.0})  # t2m only
+    wind = _country_row("FRA", "FR", 4.2).assign(variable="si10_mean")
+    country = pd.concat([_country_row("FRA", "FR", 16.0), wind], ignore_index=True)
+
+    result = apply_country_rules(admin1, country)
+
+    france = result[result["iso_a2"] == "FR"].set_index("variable")
+    assert set(france.index) == {"t2m", "si10_mean"}
+    assert france.loc["t2m", "value"] == pytest.approx(12.0)  # recomputed from admin-1
+    assert france.loc["si10_mean", "value"] == pytest.approx(4.2)  # kept, not dropped
+    assert france.loc["si10_mean", "polygon_id"] == "FRA"
+
+
 # ── Daily frames ─────────────────────────────────────────────────────
 #
 # The rules were written when there was one aggregate and it was monthly.

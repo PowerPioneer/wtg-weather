@@ -664,6 +664,29 @@ def apply_country_rules(admin1_df: "object", country_df: "object") -> "object":
         grouped["admin1_code"] = ""
         recomputed.append(grouped)
 
+        # A variable the country aggregate has and admin-1 does not would
+        # otherwise vanish for exactly the seven whitelisted countries. It did
+        # on 2026-09-28: `aggregate --level country` ran before admin-1 had
+        # been re-aggregated with three new daily series, and Spain, France,
+        # the Netherlands and four others lost their wind chart and humidity
+        # while every other country kept them. Keep the naive rows for those
+        # variables instead, and say so: it means admin-1 is stale.
+        missing = set(country_df.loc[country_df["iso_a2"] == iso, "variable"]) - set(
+            filtered["variable"]
+        )
+        if missing:
+            log.warning(
+                "admin-1 has no %s for %s; keeping the naive country rows for "
+                "them — re-aggregate admin-1, then re-run the country level",
+                ", ".join(sorted(missing)),
+                iso,
+            )
+            recomputed.append(
+                country_df[
+                    (country_df["iso_a2"] == iso) & country_df["variable"].isin(missing)
+                ].copy()
+            )
+
     if fallback_isos:
         # Re-introduce the naive country rows for these ISOs.
         fallback = country_df[country_df["iso_a2"].isin(fallback_isos)].copy()
