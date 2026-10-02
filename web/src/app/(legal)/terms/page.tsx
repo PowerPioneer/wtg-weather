@@ -84,9 +84,9 @@ export default function TermsPage() {
         </P>
         <P>
           The free tier covers country-level climate and the combined advisory
-          view. The paid tier adds deeper zoom, further climate variables,
-          percentile bands, the per-government advisory breakdown, saved trips,
-          email alerts and export. What each tier includes is described on the{" "}
+          view. The paid tier adds deeper zoom, further climate variables, the
+          per-government advisory breakdown, saved trips and email alerts. What
+          each tier includes is described on the{" "}
           <Link href="/pricing" className="text-text-link underline underline-offset-2">
             pricing page
           </Link>{" "}

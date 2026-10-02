@@ -52,7 +52,7 @@ export default async function HomePage() {
               </h1>
               <p className="max-w-[640px] text-[17px] leading-[1.6] text-text-muted">
                 Ten years of ERA5 climate data and six-government travel advisories in one map.
-                Free to explore; Premium for district-level depth and percentile bands.
+                Free to explore; Premium for district-level depth and four more variables.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
@@ -81,7 +81,7 @@ export default async function HomePage() {
                 }}
               />
               <div className="absolute bottom-6 left-6 right-6 font-mono text-[11px] uppercase tracking-[0.18em] text-[#E0C98A]">
-                10 yrs · ERA5 · 5 governments
+                10 yrs · ERA5 · 6 governments
               </div>
             </div>
           </div>

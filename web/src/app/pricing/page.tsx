@@ -16,7 +16,7 @@ import { canonical } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Pricing · Atlas Weather",
   description:
-    `Free forever for country-level climate and combined safety advisories. Consumer Premium at ${PREMIUM_PRICE_MONTHLY} unlocks district-level zoom, percentile bands, and four extra variables.`,
+    `Free forever for country-level climate and combined safety advisories. Consumer Premium at ${PREMIUM_PRICE_MONTHLY} unlocks district-level zoom, four extra variables and the per-government advisory breakdown.`,
   alternates: { canonical: canonical("/pricing") },
 };
 

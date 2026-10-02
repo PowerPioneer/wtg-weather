@@ -299,7 +299,7 @@ export function AgencyBranding() {
       />
       <div className="relative overflow-hidden rounded-md border border-border bg-surface p-8">
         <div className="absolute right-5 top-5 rounded-sm bg-primary px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[#E0C98A]">
-          Coming · 2026 Q3
+          Planned
         </div>
         <fieldset disabled className="pointer-events-none opacity-60">
           <div className="grid gap-4 md:grid-cols-2">

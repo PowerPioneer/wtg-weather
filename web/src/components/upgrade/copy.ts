@@ -50,7 +50,6 @@ export const PREMIUM_COPY = {
   bullets: [
     "Zoom past admin-1 into district-level climate — compare Cusco vs. Lima, not just Peru.",
     "See how each of the six governments actually rates your destination, not the most-cautious consensus.",
-    "10 / 50 / 90 percentile bands on every chart — April is 18°C, but how often is it 11 or 26?",
     "Four extra variables: snow depth, sea-surface temperature, heat index, humidity.",
     "Save unlimited trips, get an email the moment a destination starts matching your preferences.",
   ],
@@ -116,7 +115,7 @@ export type PremiumFeatureId = keyof typeof PREMIUM_FEATURE_COPY;
 
 /** Footnote under the display-mode picker when the session is not entitled. */
 export const DISPLAY_MODE_UPSELL =
-  `Unlock all 10 variables, saved trips, and percentile bands for ${PREMIUM_PRICE_MONTHLY}.`;
+  `Unlock all 10 variables, district-level zoom and saved trips for ${PREMIUM_PRICE_MONTHLY}.`;
 
 /**
  * Copy for the two Paddle return pages. The success page polls `/api/me`
@@ -133,7 +132,7 @@ export const CHECKOUT_RETURN_COPY = {
       "Paddle has taken the payment and is telling us about it now. This usually takes a few seconds — you don't need to refresh, and nothing is lost if you navigate away.",
     doneTitle: "Premium is active.",
     doneBody:
-      "District-level zoom, the four extra variables, percentile bands and alerts are unlocked on this account.",
+      "District-level zoom, the four extra variables and alerts are unlocked on this account.",
     slowTitle: "Still waiting on the payment provider.",
     slowBody:
       "The payment went through — Paddle just hasn't reached us yet. It will land on its own; your receipt is already in your inbox. If Premium still isn't showing in a few minutes, get in touch and we'll sort it out.",
@@ -162,9 +161,9 @@ const TIERS: readonly TierEntry[] = [
     features: [
       "Country and admin-1 (state / region) zoom",
       "Climate variables: Temperature, Rainfall, Sunshine, Wind speed",
-      "Safety advisories from US, UK, Canada, Australia, Germany (combined view, most-cautious-wins)",
+      "Safety advisories from the US, UK, Canada, Australia, Germany and the Netherlands (combined view, most-cautious-wins)",
       "Display modes: My Preferences, Temperature, Rainfall, Sunshine, Wind, Safety",
-      "10-year monthly climatology averages",
+      "10-year climatology with the typical range on every chart — how warm a warm day gets, not just the average",
     ],
   },
   {
@@ -187,7 +186,6 @@ const TIERS: readonly TierEntry[] = [
     features: [
       "Admin-2 (district / county) deep zoom",
       "Additional variables: Snow depth, Sea surface temperature, Heat index, Humidity",
-      "10 / 50 / 90 percentile bands on charts (see how variable the weather actually is, not just the average)",
       "Save unlimited trips",
       "Save favourite destinations",
       "Email alerts when a destination starts matching your preferences",
@@ -288,7 +286,7 @@ export function planForTier(id: Tier["id"]): PaddlePlan | null {
 
 export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [
   { title: "10-year ERA5 climatology", sub: "ECMWF Reanalysis v5 — the reference climate dataset. Updated monthly." },
-  { title: "5 government advisories", sub: "US, UK, Canada, Australia, Germany — refreshed daily, source & timestamp on every record." },
+  { title: "6 government advisories", sub: "US, UK, Canada, Australia, Germany, the Netherlands — refreshed weekly, source & timestamp on every record." },
   { title: "EU VAT handled by Paddle", sub: "Paddle is our Merchant of Record. Invoices in your country, local currency, legally compliant." },
   { title: "No card details stored", sub: "We never see your card. PCI-DSS handled end-to-end by Paddle." },
   { title: "Cancel anytime", sub: "One-click cancellation from your Paddle customer portal. Refunds within 14 days, no questions." },
@@ -298,7 +296,7 @@ export const TRUST_SIGNALS: readonly { title: string; sub: string }[] = [
 export const PRICING_FAQ: readonly { q: string; a: string }[] = [
   {
     q: `What does the ${PREMIUM_PRICE_MONTHLY} actually unlock?`,
-    a: "Deeper zoom (admin-2 districts, not just countries), four extra variables (snow, sea-surface temperature, heat index, humidity), percentile bands on every chart so you can see variability not just averages, the per-government breakdown of travel advisories, saved trips, and email alerts.",
+    a: "Deeper zoom (admin-2 districts, not just countries), four extra variables (snow, sea-surface temperature, heat index, humidity), the per-government breakdown of travel advisories, saved trips, and email alerts.",
   },
   {
     q: "What is ERA5 and why should I trust it?",

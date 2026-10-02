@@ -16,8 +16,8 @@ export function TripFooter({ monthName }: { monthName: string | null }) {
             : "Scored against the latest published climate data"}
         </div>
         <div>
-          Climate · ERA5 10-year monthly means · Safety · highest of 5 government
-          advisories
+          Climate · ERA5 10-year daily climatology · Safety · highest of 6
+          government advisories
         </div>
         <div>Atlas Weather</div>
       </div>
