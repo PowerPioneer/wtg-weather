@@ -33,7 +33,7 @@ export function LegalPage({
 }: {
   title: string;
   intro: string;
-  /** Human-readable "last reviewed" line. Not a legal effective date — see {@link DraftNotice}. */
+  /** The date this version took effect, as printed under the title. Change it whenever the text changes materially. */
   updated: string;
   toc: readonly TocEntry[];
   children: ReactNode;
@@ -51,15 +51,14 @@ export function LegalPage({
             </h1>
             <p className="mt-5 text-[17px] leading-[1.6] text-text-muted">{intro}</p>
             <p className="mt-4 font-mono text-[11.5px] text-text-subtle">
-              Last reviewed {updated}
+              Effective {updated}
             </p>
           </div>
         </div>
       </section>
 
       <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
-        <DraftNotice />
-        <div className="mt-10 gap-12 md:flex md:items-start">
+        <div className="gap-12 md:flex md:items-start">
           <nav
             aria-label="On this page"
             className="mb-10 shrink-0 md:sticky md:top-20 md:mb-0 md:w-[220px]"
@@ -187,57 +186,3 @@ export function LegalTable({
   );
 }
 
-/**
- * A fact the repository cannot supply.
- *
- * Registered entity, address, governing law and the contact addresses are
- * decisions, not code — inventing one and setting it in a page that Paddle
- * links to from checkout would be asserting something untrue about who the
- * counterparty is. Each one renders visibly, in the flow of the sentence it
- * belongs to, so the gaps are impossible to miss on the rendered page rather
- * than only in the source.
- *
- * Grep for `OwnerPlaceholder` — or for the literal `[OWNER:` in the rendered
- * HTML — to enumerate what is still outstanding before cutover.
- */
-export function OwnerPlaceholder({ children }: { children: string }) {
-  return (
-    <mark className="rounded-sm bg-accent-subtle px-1 py-0.5 font-mono text-[12.5px] font-medium text-text">
-      [OWNER: {children}]
-    </mark>
-  );
-}
-
-/**
- * Ships on every page in the set until the owner signs them off.
- *
- * These drafts are grounded in what the software actually does — every
- * processor, cookie and data flow named in them was read out of this
- * repository — but "accurate about the system" is not the same as "reviewed
- * as a binding contract", and only one of those is the owner's to assert.
- * `robots.txt` disallows everything until cutover (WS-G), so nothing here is
- * indexed while the notice stands.
- *
- * Removing it is a deliberate act: delete this component and its four call
- * sites, fill every {@link OwnerPlaceholder}, and set real effective dates.
- */
-export function DraftNotice() {
-  return (
-    <aside
-      role="note"
-      className="rounded-md border border-border-strong bg-accent-subtle px-5 py-4"
-    >
-      <div className="text-[13px] font-semibold text-text">
-        Draft — pending owner review. Not yet in force.
-      </div>
-      <p className="mt-1.5 max-w-[760px] text-[13px] leading-[1.55] text-text-muted">
-        This document describes what the service actually does, but it has not
-        been reviewed or approved as a binding legal document. Highlighted{" "}
-        <span className="font-mono text-[12px]">[OWNER: …]</span> items are
-        facts only the operator can supply. Do not rely on it, and do not take
-        the site live for paid customers, until it has been completed and
-        approved.
-      </p>
-    </aside>
-  );
-}

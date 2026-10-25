@@ -501,8 +501,7 @@ export default function PrivacyPage() {
         <P>
           If this policy changes materially we will say so on the site before
           the change takes effect, and where the law requires it we will ask
-          again for your consent. The date at the top of this page is when it
-          was last reviewed.
+          again for your consent. The date at the top of this page is when this version took effect.
         </P>
       </LegalSection>
     </LegalPage>
