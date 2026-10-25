@@ -193,4 +193,18 @@ describe("refund policy", () => {
     expect(text).toMatch(/14 days, no questions asked/);
     expect(text).toMatch(/Paddle is the merchant of record/i);
   });
+
+  // Paddle has no seller-configurable refund window: its own buyer-facing
+  // policy refunds only what the law requires or what it grants at its
+  // discretion. The unconditional 14 days is our promise, kept by refunding
+  // from the dashboard ourselves — so the page must route requests to us and
+  // must not say a request to Paddle is guaranteed the same outcome.
+  it("routes refunds through us and says Paddle applies its own policy", () => {
+    const { container } = render(<RefundsPage />);
+    const text = container.textContent ?? "";
+    expect(text).toMatch(/Ask us/);
+    expect(text).toMatch(/its own refund policy/);
+    expect(text).toMatch(/If Paddle declines a request/);
+    expect(text).not.toMatch(/it ends up in the same place/);
+  });
 });

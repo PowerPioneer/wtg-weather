@@ -206,9 +206,9 @@ export default function TermsPage() {
           <Link href="/refunds" className="text-text-link underline underline-offset-2">
             Refund Policy
           </Link>
-          , which forms part of these terms. In short: a refund within 14 days
-          of a charge, no questions asked, requested from us or from Paddle
-          directly.
+          , which forms part of these terms. In short: ask us within 14 days
+          of a charge and we refund it, no questions asked. Requests made to
+          Paddle directly are decided under Paddle&rsquo;s own refund policy.
         </P>
       </LegalSection>
 
