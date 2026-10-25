@@ -13,11 +13,11 @@ import TermsPage, { metadata as termsMeta } from "./terms/page";
  * The legal set: `/privacy`, `/terms`, `/refunds`, `/contact`.
  *
  * Two things are being protected here. One is that these pages exist at all,
- * which is the footer regression. The other is that they ship as *drafts*
- * until the owner signs them off — the draft notice says so on the page, and
- * any fact the repository cannot supply is a visible placeholder rather than
- * an invented one. The placeholders were all filled with proposed text on
- * 2026-10-25; the notice stays until the owner has reviewed that text.
+ * which is the footer regression. The other is that they are in force: the
+ * owner signed them off on 2026-10-25, the draft notice and every [OWNER: …]
+ * placeholder are gone, and each page prints the date it took effect. A
+ * placeholder or draft wording creeping back in would publish a page Paddle
+ * links to from checkout that disclaims itself.
  */
 
 const PAGES = [
@@ -49,21 +49,13 @@ describe.each(PAGES)("$name page", ({ name, dir, Page, metadata }) => {
     expect(metadata.description).toBeTruthy();
   });
 
-  it("carries the draft notice until the owner signs it off", () => {
-    render(<Page />);
-    expect(
-      screen.getByText(/Draft — pending owner review\. Not yet in force\./),
-    ).toBeInTheDocument();
-  });
-
-  it("shows any unsupplied fact as a visible [OWNER: …] placeholder", () => {
+  it("is in force: no draft notice, no placeholders, an effective date", () => {
     const { container } = render(<Page />);
-    const placeholders = [...container.querySelectorAll("mark")].map(
-      (m) => m.textContent ?? "",
-    );
-    for (const text of placeholders) {
-      expect(text).toMatch(/^\[OWNER: .+\]$/);
-    }
+    const text = container.textContent ?? "";
+    expect(text).not.toMatch(/Draft|pending owner review|Not yet in force/);
+    expect(text).not.toMatch(/\[OWNER:/);
+    expect(container.querySelectorAll("mark")).toHaveLength(0);
+    expect(text).toMatch(/Effective \d{1,2} [A-Z][a-z]+ \d{4}/);
   });
 
   it("has a table of contents whose anchors all exist", () => {
