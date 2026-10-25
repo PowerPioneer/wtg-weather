@@ -316,6 +316,17 @@ Not scheduled; listed so decisions get made deliberately.
   `pref_<mm>` keeps the default map stable). Widening scoring is a
   pipeline+web change and a tile rebuild — treat as its own workstream if
   wanted, never a side-effect.
+- **Self-service account deletion** (backlog, later version — owner's call
+  2026-10-25): a "Delete my account" button in `/account` that marks the
+  account closed and cancels any Paddle subscription, plus a nightly job that
+  hard-deletes accounts closed more than 30 days ago (trips, favourites,
+  alerts, preferences, memberships). That turns `/privacy`'s "30 days after
+  you close it" from a manual promise into an enforced one, and lets the
+  privacy page drop its "no self-service delete button" caveat. Needs an
+  additive migration (`closed_at`, nullable), an auth-touching endpoint with
+  failure-path tests (expired session, other user's account), the cron entry
+  in `infra/cron/crontab`, and an agency rule for owners of an organisation
+  with other members. Until then, erasure is handled by email.
 - **Parked per HANDOFF**: dark mode (Q3 2026), i18n via next-intl, agency
   co-branding, native wrappers.
 
