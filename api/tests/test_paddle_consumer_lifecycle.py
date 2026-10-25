@@ -36,24 +36,24 @@ def _consumer_event(
     plan: str | None = "consumer_premium",
     subscription_id: str = "sub_consumer_1",
     custom_as_string: bool = False,
+    status: str | None = None,
 ) -> dict:
     custom: dict[str, str] = {"user_id": str(user_id)}
     if plan is not None:
         custom["plan"] = plan
-    return {
-        "event_id": event_id,
-        "event_type": event_type,
-        "data": {
-            "id": subscription_id,
-            "customer_id": "ctm_test_1",
-            "custom_data": (
-                ",".join(f"{k}={v}" for k, v in custom.items())
-                if custom_as_string
-                else custom
-            ),
-            "items": [],
-        },
+    data: dict = {
+        "id": subscription_id,
+        "customer_id": "ctm_test_1",
+        "custom_data": (
+            ",".join(f"{k}={v}" for k, v in custom.items())
+            if custom_as_string
+            else custom
+        ),
+        "items": [],
     }
+    if status is not None:
+        data["status"] = status
+    return {"event_id": event_id, "event_type": event_type, "data": data}
 
 
 async def _deliver(client: AsyncClient, payload: dict) -> int:
@@ -247,3 +247,155 @@ async def test_replayed_cancellation_cannot_undo_a_resubscribe(
     assert await _deliver(client, cancel) == 200
     assert (await client.get("/api/me")).json()["plan"] == "consumer_premium"
     assert (await client.get("/api/tiles/url?tier=premium")).status_code == 200
+
+
+# --- Subscription status and identity ------------------------------------
+#
+# Paddle sends `subscription.updated` next to `subscription.canceled`, carrying
+# `status: "canceled"`, and does not guarantee delivery order. And a customer
+# can hold an old subscription that ends after they have bought a new one.
+# Each test below is a way the handler used to change access on the wrong
+# evidence: the event type instead of the status, or any subscription instead
+# of the org's current one.
+
+
+@pytest.mark.asyncio
+async def test_canceled_status_update_after_cancellation_does_not_reactivate(
+    client: AsyncClient, user: User
+) -> None:
+    """The out-of-order pair: `canceled`, then its `updated` sibling."""
+    login(client, user)
+    await _deliver(client, _consumer_event("evt_o_1", "subscription.created", user.id, status="active"))
+    await _deliver(
+        client,
+        _consumer_event("evt_o_2", "subscription.canceled", user.id, plan=None, status="canceled"),
+    )
+    await _deliver(
+        client,
+        _consumer_event("evt_o_3", "subscription.updated", user.id, status="canceled"),
+    )
+    assert (await client.get("/api/me")).json()["plan"] == "free"
+    assert (await client.get("/api/tiles/url?tier=premium")).status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_canceled_status_update_alone_lapses(
+    client: AsyncClient, user: User
+) -> None:
+    """The other order: the `updated` arrives first and must already lapse."""
+    login(client, user)
+    await _deliver(client, _consumer_event("evt_u_1", "subscription.created", user.id, status="active"))
+    await _deliver(
+        client,
+        _consumer_event("evt_u_2", "subscription.updated", user.id, status="canceled"),
+    )
+    assert (await client.get("/api/me")).json()["plan"] == "free"
+
+
+@pytest.mark.asyncio
+async def test_old_subscription_ending_does_not_downgrade_a_resubscriber(
+    client: AsyncClient, sessionmaker, user: User
+) -> None:
+    """Cancel at period end, resubscribe before it, then the old one ends.
+
+    The old subscription's cancellation is genuine and correctly signed — it is
+    simply about a subscription the org no longer depends on.
+    """
+    login(client, user)
+    await _deliver(
+        client,
+        _consumer_event("evt_r_1", "subscription.created", user.id, subscription_id="sub_old", status="active"),
+    )
+    await _deliver(
+        client,
+        _consumer_event("evt_r_2", "subscription.created", user.id, subscription_id="sub_new", status="active"),
+    )
+    await _deliver(
+        client,
+        _consumer_event(
+            "evt_r_3", "subscription.canceled", user.id, plan=None,
+            subscription_id="sub_old", status="canceled",
+        ),
+    )
+    await _deliver(
+        client,
+        _consumer_event(
+            "evt_r_4", "subscription.updated", user.id,
+            subscription_id="sub_old", status="canceled",
+        ),
+    )
+
+    assert (await client.get("/api/me")).json()["plan"] == "consumer_premium"
+    assert (await client.get("/api/tiles/url?tier=premium")).status_code == 200
+    async with sessionmaker() as session:
+        org = await find_personal_organization(session, user.id)
+        assert org is not None
+        assert org.paddle_subscription_id == "sub_new"
+
+    # And the new one ending does downgrade — the guard is not a blanket no-op.
+    await _deliver(
+        client,
+        _consumer_event(
+            "evt_r_5", "subscription.canceled", user.id, plan=None,
+            subscription_id="sub_new", status="canceled",
+        ),
+    )
+    assert (await client.get("/api/me")).json()["plan"] == "free"
+
+
+@pytest.mark.asyncio
+async def test_late_update_to_a_replaced_subscription_does_not_repoint_the_org(
+    client: AsyncClient, sessionmaker, user: User
+) -> None:
+    """An `active` update about the old subscription must not re-link it.
+
+    Re-linking would arm the stale cancellation the previous test guards
+    against: the org would point at `sub_old` again, and its end would match.
+    """
+    await _deliver(
+        client,
+        _consumer_event("evt_l_1", "subscription.created", user.id, subscription_id="sub_old", status="active"),
+    )
+    await _deliver(
+        client,
+        _consumer_event("evt_l_2", "subscription.created", user.id, subscription_id="sub_new", status="active"),
+    )
+    await _deliver(
+        client,
+        _consumer_event("evt_l_3", "subscription.updated", user.id, subscription_id="sub_old", status="active"),
+    )
+    async with sessionmaker() as session:
+        org = await find_personal_organization(session, user.id)
+        assert org is not None
+        assert org.paddle_subscription_id == "sub_new"
+
+
+@pytest.mark.asyncio
+async def test_past_due_keeps_access(client: AsyncClient, user: User) -> None:
+    """A failed renewal Paddle is still retrying is not a cancellation."""
+    login(client, user)
+    await _deliver(client, _consumer_event("evt_p_1", "subscription.created", user.id, status="active"))
+    await _deliver(client, _consumer_event("evt_p_2", "subscription.updated", user.id, status="past_due"))
+    assert (await client.get("/api/me")).json()["plan"] == "consumer_premium"
+
+
+@pytest.mark.asyncio
+async def test_unknown_status_changes_nothing(client: AsyncClient, user: User) -> None:
+    """A status this code does not know is not a guess at access either way."""
+    login(client, user)
+    await _deliver(client, _consumer_event("evt_x_1", "subscription.created", user.id, status="active"))
+    await _deliver(client, _consumer_event("evt_x_2", "subscription.updated", user.id, status="mystery"))
+    assert (await client.get("/api/me")).json()["plan"] == "consumer_premium"
+
+
+@pytest.mark.asyncio
+async def test_canceled_status_update_for_unknown_user_creates_nothing(
+    client: AsyncClient, sessionmaker, user: User
+) -> None:
+    """Only an activation may create a personal org — judged by status too."""
+    await _deliver(
+        client,
+        _consumer_event("evt_g_1", "subscription.updated", user.id, status="canceled"),
+    )
+    async with sessionmaker() as session:
+        assert await find_personal_organization(session, user.id) is None

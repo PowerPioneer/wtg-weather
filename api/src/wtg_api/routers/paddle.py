@@ -2,9 +2,15 @@
 
 Events we care about:
 - `subscription.created` / `subscription.updated` / `subscription.activated`
-  → set org plan + seat_cap, store paddle_subscription_id.
+  → set org plan + seat_cap, store paddle_subscription_id — when the
+  subscription's `status` grants access. An `updated` whose status is
+  `canceled`/`paused` is a lapse (see `_effect`).
 - `subscription.canceled` / `subscription.expired`
   → revert org to Plan.free, clear paddle_subscription_id.
+
+Only events about the org's *current* subscription apply; `subscription.created`
+is the one exception, because a new purchase replaces whatever was there. A
+late event about a replaced subscription is recorded and ignored (`_is_stale`).
 
 Which organization the event applies to comes from the `custom_data` we attach
 at checkout creation (`routers/paddle_checkout.py`):
@@ -55,6 +61,15 @@ _ACTIVATING_EVENTS = frozenset(
     {"subscription.created", "subscription.updated", "subscription.activated"}
 )
 _LAPSING_EVENTS = frozenset({"subscription.canceled", "subscription.expired"})
+
+# A subscription's `status` is the truth about access; the event type is only
+# what happened to it. Paddle sends `subscription.updated` alongside
+# `subscription.canceled` with `status: "canceled"`, and does not promise to
+# deliver them in order — so an `updated` read as "activate" regardless of
+# status could arrive second and hand a cancelled subscription its premium back.
+# `past_due` keeps access: Paddle is still retrying the payment.
+_ENTITLED_STATUSES = frozenset({"active", "trialing", "past_due"})
+_ENDED_STATUSES = frozenset({"canceled", "paused"})
 
 
 _PLAN_BY_PRICE: dict[str, Plan] = {
@@ -130,7 +145,7 @@ def _extract_user_id(payload: dict[str, Any]) -> uuid.UUID | None:
 
 
 async def _subject_organization(
-    session: AsyncSession, payload: dict[str, Any], event_type: str
+    session: AsyncSession, payload: dict[str, Any], may_create: bool
 ) -> Organization | None:
     """Which organization this event mutates, or None to ignore the event."""
     org_id = _extract_org_id(payload)
@@ -147,9 +162,50 @@ async def _subject_organization(
     # A cancellation for a user who never had a personal org is a no-op, and
     # creating one to immediately set it free would be pure noise. Only an
     # activation is allowed to bring the org into existence.
-    if event_type in _ACTIVATING_EVENTS:
+    if may_create:
         return await ensure_personal_organization(session, user)
     return await find_personal_organization(session, user_id)
+
+
+def _effect(event_type: str, sub_status: object) -> str | None:
+    """What an event does to its org: "activate", "lapse", or nothing.
+
+    A lapsing event type always lapses. An activating one follows the
+    subscription's `status` when it carries one — an `updated` reporting
+    `canceled` is a lapse, not an activation. With no status (older payload
+    shapes) it keeps the event-type meaning; an unrecognised status does
+    nothing rather than guess at access.
+    """
+    if event_type in _LAPSING_EVENTS:
+        return "lapse"
+    if event_type not in _ACTIVATING_EVENTS:
+        return None
+    if sub_status is None:
+        return "activate"
+    if sub_status in _ENTITLED_STATUSES:
+        return "activate"
+    if sub_status in _ENDED_STATUSES:
+        return "lapse"
+    return None
+
+
+def _is_stale(
+    org: Organization, event_type: str, effect: str, subscription_id: object
+) -> bool:
+    """Whether the event concerns a subscription other than the org's current one.
+
+    `subscription.created` is a new purchase and always becomes current. Every
+    other event only applies to the subscription the org is linked to, or to
+    an org linked to none. Without this, a customer who cancelled at period
+    end and resubscribed before it would be downgraded when the *old*
+    subscription's cancellation finally arrived — while paying for the new one.
+    """
+    current = org.paddle_subscription_id
+    if not isinstance(subscription_id, str) or current is None:
+        return False
+    if effect == "activate" and event_type == "subscription.created":
+        return False
+    return subscription_id != current
 
 
 @router.post("/paddle", status_code=status.HTTP_200_OK)
@@ -186,7 +242,13 @@ async def paddle_webhook(
         await session.rollback()
         return Response(status_code=status.HTTP_200_OK)
 
-    org = await _subject_organization(session, payload, event_type)
+    data = payload.get("data") or {}
+    subscription_id = data.get("id") if isinstance(data, dict) else None
+    customer_id = data.get("customer_id") if isinstance(data, dict) else None
+    sub_status = data.get("status") if isinstance(data, dict) else None
+    effect = _effect(event_type, sub_status)
+
+    org = await _subject_organization(session, payload, may_create=effect == "activate")
     if org is None:
         # A verified event we cannot attribute to anybody. For an activating
         # event that is the worst outcome in this file — somebody has paid and
@@ -206,11 +268,22 @@ async def paddle_webhook(
         await session.commit()
         return Response(status_code=status.HTTP_200_OK)
 
-    data = payload.get("data") or {}
-    subscription_id = data.get("id") if isinstance(data, dict) else None
-    customer_id = data.get("customer_id") if isinstance(data, dict) else None
+    if effect is not None and _is_stale(org, event_type, effect, subscription_id):
+        # An event about a subscription this org has since replaced — the old
+        # one ending after its owner resubscribed, or an update to it arriving
+        # late. Applying it would downgrade (or re-point) an org that is paying
+        # for a different subscription. Ids only, no PII.
+        logger.info(
+            "paddle.webhook.stale_subscription event_type=%s event_id=%s "
+            "organization_id=%s",
+            event_type,
+            event_id,
+            org.id,
+        )
+        await session.commit()
+        return Response(status_code=status.HTTP_200_OK)
 
-    if event_type in _ACTIVATING_EVENTS:
+    if effect == "activate":
         plan = _extract_plan(payload)
         if plan is not None:
             org.plan = plan
@@ -221,7 +294,7 @@ async def paddle_webhook(
         # without a lookup round-trip to Paddle.
         if isinstance(customer_id, str):
             org.paddle_customer_id = customer_id
-    elif event_type in _LAPSING_EVENTS:
+    elif effect == "lapse":
         org.plan = Plan.free
         org.seat_cap = DEFAULT_SEAT_CAP[Plan.free]
         org.paddle_subscription_id = None
