@@ -138,7 +138,7 @@ Free, web-loadable, institutional coverage (IBM Plex ships Latin Extended, Cyril
  * and import in app/layout.tsx — avoids the FOUT and the Google Fonts network dependency.
  */
 
---font-display: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;
+--font-display: 'IBM Plex Serif', 'IBM Plex Serif Fallback Georgia', 'IBM Plex Serif Fallback Times', ui-serif, Georgia, 'Times New Roman', serif;
 --font-body:    'IBM Plex Sans',  ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 --font-mono:    'IBM Plex Mono',  ui-monospace, 'SFMono-Regular', Menlo, monospace;
 ```
