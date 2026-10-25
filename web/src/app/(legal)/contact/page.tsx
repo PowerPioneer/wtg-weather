@@ -5,7 +5,6 @@ import {
   LegalPage,
   LegalSection,
   LegalTable,
-  OwnerPlaceholder,
   P,
   UL,
   type TocEntry,
@@ -13,7 +12,7 @@ import {
 import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Contact & Support · Atlas Weather",
+  title: "Contact & Support",
   description:
     "How to reach us: support, billing through Paddle, privacy requests, security reports, and how to tell us a country's climate or advisory data looks wrong.",
   alternates: { canonical: canonical("/contact") },
@@ -34,7 +33,7 @@ export default function ContactPage() {
     <LegalPage
       title="Contact & Support"
       intro="One inbox for everything, and a short list of the things that reach an answer faster somewhere else. There is no phone line and no chat widget — email is read by the person who builds the thing."
-      updated="16 August 2026"
+      updated="25 October 2026"
       toc={TOC}
     >
       <LegalSection id="support" heading="Support">
@@ -46,11 +45,7 @@ export default function ContactPage() {
         <P>
           We aim to reply within{" "}
           two working days
-          . Support is in English:{" "}
-          <OwnerPlaceholder>
-            list any other supported languages, or delete
-          </OwnerPlaceholder>
-          .
+          . Write in English or Dutch.
         </P>
       </LegalSection>
 

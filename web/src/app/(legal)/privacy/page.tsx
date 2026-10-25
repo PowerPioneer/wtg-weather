@@ -6,15 +6,15 @@ import {
   LegalPage,
   LegalSection,
   LegalTable,
-  OwnerPlaceholder,
   P,
   UL,
   type TocEntry,
 } from "@/components/legal";
+import { POSTHOG_KEY } from "@/lib/env";
 import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy · Atlas Weather",
+  title: "Privacy Policy",
   description:
     "What Where to Go for Great Weather collects, why, who processes it, and the cookies the site sets. Analytics before sign-in are cookieless.",
   alternates: { canonical: canonical("/privacy") },
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Privacy Policy"
       intro="What this service collects about you, why it collects it, and every third party that sees any of it. Written from the code rather than from a template — each cookie and processor named below is one the software actually uses."
-      updated="16 August 2026"
+      updated="25 October 2026"
       toc={TOC}
     >
       <LegalSection id="who-we-are" heading="Who we are">
@@ -205,21 +205,23 @@ export default function PrivacyPage() {
         </P>
         <P>
           One third party may set storage of its own:{" "}
-          <strong className="text-text">Paddle</strong>, on Paddle&rsquo;s own
-          checkout pages, governed by Paddle&rsquo;s policies rather than this
-          one. Plausible, our analytics, sets none.
+          <strong className="text-text">Paddle</strong>, inside the checkout
+          window it opens when you choose to buy. Paddle&rsquo;s script is
+          loaded only on the checkout pages, the window itself is served from
+          Paddle&rsquo;s domain, and what it stores is governed by
+          Paddle&rsquo;s policies rather than this one. Plausible, our
+          analytics, sets none
+          {POSTHOG_KEY ? ", and neither does PostHog — see below" : ""}.
         </P>
       </LegalSection>
 
       {/*
-        PostHog is deliberately absent from this section and from the
-        sub-processor table below. It is not configured — no project key exists —
-        so no post-login product analytics runs, and a privacy policy must
-        describe the processing that happens rather than the processing that was
-        once planned. The integration code is still present but inert.
-        If PostHog is ever switched on, three things have to come back together:
-        the "after you sign in" disclosure here, the sub-processor row, and the
-        cookie sentence in the section above.
+        PostHog is disclosed only when the build carries a project key.
+        `POSTHOG_KEY` is a NEXT_PUBLIC build argument, so this static page and
+        the client bundle that would load PostHog are built from the same value
+        and cannot disagree: no key, no PostHog, no disclosure. If PostHog's
+        configuration in `posthog-provider.tsx` changes — persistence, replay,
+        the EU host — this section and the sub-processor row change with it.
       */}
       <LegalSection id="analytics" heading="Analytics & error reporting">
         <H3>Analytics: Plausible, cookieless</H3>
@@ -238,12 +240,43 @@ export default function PrivacyPage() {
           anything on your device and processes no personal data, it needs no
           consent — this is the reason the site has no cookie banner.
         </P>
-        <P>
-          There is no separate product analytics for signed-in users. Your
-          behaviour inside the app — which trips you save, which countries you
-          look at — is not sent to any analytics provider, and no session
-          recording of any kind takes place.
-        </P>
+        {POSTHOG_KEY ? (
+          <>
+            <H3>After you sign in: PostHog, EU-hosted</H3>
+            <P>
+              Once you are signed in, we measure how the product is used with{" "}
+              <a
+                href="https://posthog.com/privacy"
+                className="text-text-link underline underline-offset-2"
+                rel="noreferrer"
+              >
+                PostHog
+              </a>
+              , on its EU cloud. It records the pages you open and the actions
+              you take in the app, linked to your internal account id, your plan
+              and, for agency accounts, your role and organisation id. It is not
+              sent your email address or your name. It is never loaded for
+              visitors who are not signed in.
+            </P>
+            <P>
+              PostHog is configured to keep its identifiers in memory only: it
+              sets no cookies and writes nothing to your device, so nothing
+              survives once you close the tab. Session recording is switched
+              off in the code itself, not merely in a dashboard setting — no
+              recording of your screen takes place. We rely on our legitimate
+              interest (Art. 6(1)(f)) in understanding which features are used,
+              and you can object at any time by writing to us; a content blocker
+              also stops it, and the site works identically without it.
+            </P>
+          </>
+        ) : (
+          <P>
+            There is no separate product analytics for signed-in users. Your
+            behaviour inside the app — which trips you save, which countries
+            you look at — is not sent to any analytics provider, and no session
+            recording of any kind takes place.
+          </P>
+        )}
         <P>
           If you would rather not be counted at all, most content blockers stop
           Plausible, and the site is built to work identically when it is
@@ -262,10 +295,10 @@ export default function PrivacyPage() {
       <LegalSection id="processors" heading="Who else processes it">
         <P>
           These are every third party that sees any part of your data, and what
-          they see. A data processing agreement must be on file with each one
-          before launch:{" "}
-          <OwnerPlaceholder>confirm DPAs signed with each processor</OwnerPlaceholder>
-          .
+          they see. Each processes it under a data processing agreement with
+          us, as Article 28 of the GDPR requires — except Paddle for the sale
+          itself, which it makes as merchant of record and therefore as a
+          controller in its own right.
         </P>
         <LegalTable
           caption="Sub-processors"
@@ -274,7 +307,7 @@ export default function PrivacyPage() {
             [
               "Paddle",
               "Merchant of record for every purchase: checkout, card data, VAT, invoices, refunds and the customer portal. We receive the fact of a subscription, not your card.",
-              <OwnerPlaceholder key="paddle">confirm Paddle entity &amp; region</OwnerPlaceholder>,
+              "Paddle.com Market Ltd, United Kingdom",
             ],
             [
               "Google",
@@ -282,9 +315,9 @@ export default function PrivacyPage() {
               "Global",
             ],
             [
-              "SendGrid",
-              "Transactional email: magic links, invitations, alert mail, receipts. Sees the recipient address and the message.",
-              <OwnerPlaceholder key="sg">confirm sending region / EU data residency</OwnerPlaceholder>,
+              "Scaleway Transactional Email",
+              "Transactional email: magic links, invitations and alert mail. Sees the recipient address and the message. (Receipts come from Paddle.)",
+              "Scaleway SAS, Paris, France",
             ],
             [
               "Backblaze B2",
@@ -294,8 +327,17 @@ export default function PrivacyPage() {
             [
               "bunny.net",
               "Content delivery for map tiles and static assets. Sees request metadata, including IP addresses, as any CDN does.",
-              "Global edge",
+              "BunnyWay d.o.o., Slovenia; global edge",
             ],
+            ...(POSTHOG_KEY
+              ? [
+                  [
+                    "PostHog",
+                    "Product analytics for signed-in users only: pages and actions, linked to an internal account id, plan and role. No email address, no name, no session recording.",
+                    "PostHog EU cloud (Frankfurt, Germany)",
+                  ],
+                ]
+              : []),
             [
               "Hosting provider",
               "The server the application and its database run on.",
@@ -309,12 +351,15 @@ export default function PrivacyPage() {
           never leaves it.
         </P>
         <P>
-          Where a processor is outside the EU/EEA, transfers rely on the
-          European Commission&rsquo;s standard contractual clauses or an
-          adequacy decision.{" "}
-          <OwnerPlaceholder>
-            confirm the transfer mechanism for each non-EEA processor
-          </OwnerPlaceholder>
+          Where data leaves the EU/EEA, this is the basis for it. Paddle is in
+          the United Kingdom, which the European Commission has found to
+          provide adequate protection. Google LLC is certified under the
+          EU&ndash;U.S. Data Privacy Framework. Backblaze
+          {POSTHOG_KEY ? " and PostHog store" : " stores"} our data in the EU
+          but {POSTHOG_KEY ? "are U.S. companies" : "is a U.S. company"}, and
+          bunny.net serves from edge locations worldwide; for those, transfers
+          rest on the Commission&rsquo;s standard contractual clauses in each
+          provider&rsquo;s data processing agreement.
         </P>
       </LegalSection>
 
@@ -328,20 +373,23 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-text">Purchase and tax records</strong> —
-            for the period the applicable tax law requires, which Paddle also
-            retains as merchant of record.{" "}
-            seven years, as Dutch tax law requires
+            seven years, as Dutch tax law requires. Paddle keeps its own
+            records of the sale for as long as the law requires of it as
+            merchant of record.
           </li>
           <li>
             <strong className="text-text">Backups</strong> — database backups
-            are taken nightly, encrypted, and kept on a rolling schedule of 30
-            daily, 8 weekly and 12 monthly copies. Deleted data survives in
-            backups until those copies age out; it is not restored into the
-            live service.
+            are taken nightly, encrypted, and each copy is deleted after at
+            most 42 days. Deleted data survives in backups until those copies
+            age out; it is not restored into the live service.
           </li>
           <li>
-            <strong className="text-text">Error reports and server logs</strong>{" "}
-            — 30 days.
+            <strong className="text-text">Error reports</strong> — 90 days.
+          </li>
+          <li>
+            <strong className="text-text">Server logs</strong> — rotated
+            automatically by size and typically gone within a few weeks; they
+            never hold your email address or IP address in readable form.
           </li>
         </UL>
       </LegalSection>
@@ -390,10 +438,10 @@ export default function PrivacyPage() {
           Email powerpioneer@pm.me{" "}
           and we will answer within one month. There is currently no
           self-service delete button in the account area — closure and erasure
-          are handled by that address.{" "}
-          <OwnerPlaceholder>
-            confirm the erasure workflow, or ship self-service deletion
-          </OwnerPlaceholder>
+          are handled by that address. Write from the email address on the
+          account; we close it, erase its trips, favourites, alerts and saved
+          preferences, cancel any running subscription, and confirm by reply.
+          Records Paddle must keep as the seller are Paddle&rsquo;s to keep.
         </P>
         <P>
           Alert emails carry a one-click unsubscribe, which takes effect

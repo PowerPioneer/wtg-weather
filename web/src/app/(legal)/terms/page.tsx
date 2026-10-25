@@ -5,7 +5,6 @@ import {
   H3,
   LegalPage,
   LegalSection,
-  OwnerPlaceholder,
   P,
   UL,
   type TocEntry,
@@ -13,7 +12,7 @@ import {
 import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Terms of Service · Atlas Weather",
+  title: "Terms of Service",
   description:
     "The terms you agree to when you use Where to Go for Great Weather: accounts, subscriptions sold through Paddle, acceptable use, data attribution, and the limits of what climate averages can tell you.",
   alternates: { canonical: canonical("/terms") },
@@ -44,7 +43,7 @@ export default function TermsPage() {
     <LegalPage
       title="Terms of Service"
       intro="The agreement between you and the operator of Where to Go for Great Weather. It covers what the service does, what it deliberately does not do, and how subscriptions are sold, cancelled and refunded."
-      updated="16 August 2026"
+      updated="25 October 2026"
       toc={TOC}
     >
       <LegalSection id="agreement" heading="This agreement">
@@ -85,7 +84,8 @@ export default function TermsPage() {
         <P>
           The free tier covers country-level climate and the combined advisory
           view. The paid tier adds deeper zoom, further climate variables, the
-          per-government advisory breakdown, saved trips and email alerts. What
+          per-government advisory breakdown, unlimited saved trips (the free
+          tier keeps three) and email alerts. What
           each tier includes is described on the{" "}
           <Link href="/pricing" className="text-text-link underline underline-offset-2">
             pricing page
@@ -323,10 +323,15 @@ export default function TermsPage() {
           </li>
         </UL>
         <P>
-          <OwnerPlaceholder>
-            confirm each source licence permits commercial redistribution in
-            this form
-          </OwnerPlaceholder>
+          Each source is used on its own published terms. ERA5 is provided
+          under the Copernicus licence, which allows commercial use with
+          attribution; Natural Earth is in the public domain; geoBoundaries
+          is used from its open release under CC BY 4.0. United States
+          advisories are works of the U.S. Government and in the public
+          domain; the United Kingdom&rsquo;s are published under the Open
+          Government Licence v3.0, Australia&rsquo;s under CC BY 4.0, and the
+          Netherlands&rsquo; under CC0. Every advisory shown links to the
+          government page it came from.
         </P>
       </LegalSection>
 
@@ -351,10 +356,7 @@ export default function TermsPage() {
           profits, lost bookings, wasted travel expenditure, or any decision to
           travel or not to travel made on the strength of what this service
           showed you. Our total liability to you in any twelve-month period is
-          limited to the amount you paid us in that period.{" "}
-          <OwnerPlaceholder>
-            confirm liability cap and exclusions with counsel
-          </OwnerPlaceholder>
+          limited to the amount you paid us in that period.
         </P>
         <P>
           Nothing here limits liability that cannot lawfully be limited —
@@ -380,11 +382,8 @@ export default function TermsPage() {
 
       <LegalSection id="law" heading="Governing law">
         <P>
-          These terms are governed by the law of{" "}
-          the laws of the Netherlands, and
-          the courts of{" "}
-          the courts of The Hague, Netherlands have
-          jurisdiction. If you are a consumer resident in the EU, this does not
+          These terms are governed by the laws of the Netherlands, and the
+          courts of The Hague have jurisdiction. If you are a consumer resident in the EU, this does not
           deprive you of the protection of the mandatory law of your own
           country, and you may bring proceedings there.
         </P>

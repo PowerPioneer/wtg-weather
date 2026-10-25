@@ -5,7 +5,6 @@ import {
   H3,
   LegalPage,
   LegalSection,
-  OwnerPlaceholder,
   P,
   UL,
   type TocEntry,
@@ -13,7 +12,7 @@ import {
 import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Refund Policy · Atlas Weather",
+  title: "Refund Policy",
   description:
     "Refunds within 14 days of a charge, no questions asked. How to ask, who processes it, and what happens to your access afterwards.",
   alternates: { canonical: canonical("/refunds") },
@@ -36,7 +35,7 @@ export default function RefundsPage() {
     <LegalPage
       title="Refund Policy"
       intro="A refund within 14 days of any charge, without having to justify it. Purchases are sold and refunded through Paddle, our merchant of record, which is why the mechanics below involve them as well as us."
-      updated="16 August 2026"
+      updated="25 October 2026"
       toc={TOC}
     >
       <LegalSection id="short" heading="The short version">
@@ -125,11 +124,10 @@ export default function RefundsPage() {
       <LegalSection id="agency" heading="Agency plans">
         <P>
           The same 14 days applies to agency subscriptions, refunded to the
-          organisation&rsquo;s payer. Where seats were added mid-period,{" "}
-          <OwnerPlaceholder>
-            confirm the proration rule Paddle is configured with
-          </OwnerPlaceholder>
-          .
+          organisation&rsquo;s payer. If you move to a different agency plan
+          part-way through a period, Paddle calculates any charge or credit
+          for the change and shows it before you confirm; that charge is
+          covered by the same 14 days as any other.
         </P>
       </LegalSection>
 
@@ -147,12 +145,6 @@ export default function RefundsPage() {
           Whether or not the statutory right technically survives immediate
           access, this policy gives you the same window, and nothing in it
           reduces any right your local consumer law gives you.
-        </P>
-        <P>
-          <OwnerPlaceholder>
-            confirm this policy matches the refund terms configured in the
-            Paddle dashboard, which is what buyers see at checkout
-          </OwnerPlaceholder>
         </P>
       </LegalSection>
 
