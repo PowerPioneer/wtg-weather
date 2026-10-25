@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { internalHrefsInSource, routeExists } from "@/lib/app-routes";
 import ContactPage, { metadata as contactMeta } from "./contact/page";
@@ -13,11 +13,11 @@ import TermsPage, { metadata as termsMeta } from "./terms/page";
  * The legal set: `/privacy`, `/terms`, `/refunds`, `/contact`.
  *
  * Two things are being protected here. One is that these pages exist at all,
- * which is the footer regression. The other is that they ship as *drafts* —
- * every fact the repository cannot supply is a visible placeholder rather than
- * an invented company name, and the draft notice says so on the page. Filling
- * them in is the owner's job; losing track of which ones are still open is the
- * failure mode.
+ * which is the footer regression. The other is that they ship as *drafts*
+ * until the owner signs them off — the draft notice says so on the page, and
+ * any fact the repository cannot supply is a visible placeholder rather than
+ * an invented one. The placeholders were all filled with proposed text on
+ * 2026-10-25; the notice stays until the owner has reviewed that text.
  */
 
 const PAGES = [
@@ -56,12 +56,11 @@ describe.each(PAGES)("$name page", ({ name, dir, Page, metadata }) => {
     ).toBeInTheDocument();
   });
 
-  it("shows every unsupplied fact as a visible [OWNER: …] placeholder", () => {
+  it("shows any unsupplied fact as a visible [OWNER: …] placeholder", () => {
     const { container } = render(<Page />);
     const placeholders = [...container.querySelectorAll("mark")].map(
       (m) => m.textContent ?? "",
     );
-    expect(placeholders.length).toBeGreaterThan(0);
     for (const text of placeholders) {
       expect(text).toMatch(/^\[OWNER: .+\]$/);
     }
@@ -99,10 +98,9 @@ describe("privacy page — cookie and consent posture", () => {
     }
   });
 
-  // PostHog is not configured, so the page must not disclose post-login
-  // product analytics or a processor that never sees any data. If it is ever
-  // enabled, this test is where the disclosure requirement comes back.
-  it("discloses cookieless analytics and denies any post-login tracking", () => {
+  // With no PostHog key in the build, nothing loads PostHog, so the page must
+  // not disclose post-login analytics or a processor that never sees any data.
+  it("without a PostHog key: discloses cookieless analytics only", () => {
     const { container } = render(<PrivacyPage />);
     const text = container.textContent ?? "";
     expect(text).toMatch(/Plausible/);
@@ -121,12 +119,35 @@ describe("privacy page — cookie and consent posture", () => {
     render(<PrivacyPage />);
     for (const processor of [
       "Paddle",
-      "SendGrid",
+      "Scaleway Transactional Email",
       "Backblaze B2",
       "bunny.net",
     ]) {
       expect(screen.getAllByText(processor).length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("privacy page — with a PostHog key in the build", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  // The key is a build argument, so the page that discloses PostHog and the
+  // bundle that loads it are built from the same value. This is the half of
+  // that pairing the test above cannot see.
+  it("discloses PostHog, its EU hosting, and that it stores nothing", async () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    vi.resetModules();
+    const { default: Page } = await import("./privacy/page");
+    const { container } = render(<Page />);
+    const text = container.textContent ?? "";
+    expect(text).toMatch(/PostHog EU cloud/);
+    expect(text).toMatch(/never loaded for\s+visitors who are not signed in/);
+    expect(text).toMatch(/sets no cookies and writes nothing to your device/);
+    expect(text).toMatch(/no\s+recording of your screen/);
+    expect(text).not.toMatch(/no separate product analytics/);
   });
 });
 
