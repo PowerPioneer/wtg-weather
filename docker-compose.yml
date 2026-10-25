@@ -85,6 +85,11 @@ services:
       PADDLE_PRICE_AGENCY_PRO: ${PADDLE_PRICE_AGENCY_PRO}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      # Never passed through before 2026-10-25, so the API fell back to its
+      # dev default and sent every Google sign-in back to localhost:8000.
+      # Must match an authorised redirect URI in the Google Cloud console
+      # exactly; at cutover it moves to the apex with PUBLIC_WEB_ORIGIN.
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-https://v2.wheretogoforgreatweather.com/api/auth/google/callback}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       POSTMARK_TOKEN: ${POSTMARK_TOKEN}
