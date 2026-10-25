@@ -82,7 +82,7 @@
   --color-advisory-caution-text: #89592E;
 
   /* ─── Typography ───────────────────────────────────────────────── */
-  --font-display: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-display: 'IBM Plex Serif', 'IBM Plex Serif Fallback Georgia', 'IBM Plex Serif Fallback Times', ui-serif, Georgia, 'Times New Roman', serif;
   --font-sans:    'IBM Plex Sans',  ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'IBM Plex Mono',  ui-monospace, 'SFMono-Regular', Menlo, monospace;
 

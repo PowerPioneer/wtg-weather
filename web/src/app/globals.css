@@ -9,6 +9,84 @@
 
 @import "tailwindcss";
 
+/*
+ * Metric-matched fallbacks for the display serif — layout-shift insurance.
+ *
+ * @fontsource serves IBM Plex Serif with `font-display: swap`, so a cold load
+ * paints headings in Georgia/Times first and swaps when the woff2 arrives. Plex
+ * Serif is 7-20% wider than either, which is exactly enough to re-wrap the
+ * 80px hero heading from three lines to four and push the whole page down
+ * 85px: CLS 0.038-0.051 on `/` against a 0.05 budget, measured 2026-10-25.
+ * These faces scale the fallback to Plex's average glyph width and pin its
+ * ascent/descent, so the swap changes glyph shapes but not line breaks.
+ *
+ * Values are computed with next/font's own algorithm (size-adjust from the
+ * letter-frequency-weighted average advance width; ascent/descent divided by
+ * it) from the shipped @fontsource latin woff2 files against the system
+ * Georgia and Times New Roman. Liberation Serif and Tinos are metric-
+ * compatible with Times, so the same numbers hold on Linux — including the CI
+ * runner Lighthouse measures on. `globals-css.test.ts` recomputes them from
+ * the font files and fails if a font upgrade moves them.
+ *
+ * Kept as fallbacks rather than moving to next/font/local because next/font
+ * takes one file per weight, and @fontsource's latin-ext subset (unicode-range,
+ * fetched only on demand) is what renders region names like Łódzkie in Plex.
+ */
+@font-face {
+  font-family: "IBM Plex Serif Fallback Georgia";
+  src: local("Georgia");
+  font-weight: 400;
+  size-adjust: 107.19%;
+  ascent-override: 95.63%;
+  descent-override: 25.66%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Serif Fallback Georgia";
+  src: local("Georgia");
+  font-weight: 500;
+  size-adjust: 109.35%;
+  ascent-override: 93.73%;
+  descent-override: 25.15%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Serif Fallback Georgia";
+  src: local("Georgia");
+  font-weight: 600;
+  size-adjust: 110.81%;
+  ascent-override: 92.50%;
+  descent-override: 24.82%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Serif Fallback Times";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Tinos");
+  font-weight: 400;
+  size-adjust: 116.47%;
+  ascent-override: 88.00%;
+  descent-override: 23.61%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Serif Fallback Times";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Tinos");
+  font-weight: 500;
+  size-adjust: 118.83%;
+  ascent-override: 86.26%;
+  descent-override: 23.14%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Serif Fallback Times";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Tinos");
+  font-weight: 600;
+  size-adjust: 120.41%;
+  ascent-override: 85.13%;
+  descent-override: 22.84%;
+  line-gap-override: 0%;
+}
+
 @theme {
   /* ─── Surfaces ─────────────────────────────────────────────────── */
   --color-background:       #F7F6F2;
@@ -79,7 +157,7 @@
   --color-advisory-caution-text: #89592E;
 
   /* ─── Typography ───────────────────────────────────────────────── */
-  --font-display: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-display: 'IBM Plex Serif', 'IBM Plex Serif Fallback Georgia', 'IBM Plex Serif Fallback Times', ui-serif, Georgia, 'Times New Roman', serif;
   --font-sans:    'IBM Plex Sans Variable', 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
