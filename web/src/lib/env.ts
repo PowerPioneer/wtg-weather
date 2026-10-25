@@ -70,4 +70,4 @@ export const PADDLE_ENV = set(process.env.NEXT_PUBLIC_PADDLE_ENV) ?? "";
 // PostHog — cloud, post-login. Loaded only when the user is signed in.
 export const POSTHOG_KEY = set(process.env.NEXT_PUBLIC_POSTHOG_KEY) ?? "";
 export const POSTHOG_HOST =
-  set(process.env.NEXT_PUBLIC_POSTHOG_HOST) ?? "https://us.i.posthog.com";
+  set(process.env.NEXT_PUBLIC_POSTHOG_HOST) ?? "https://eu.i.posthog.com";

@@ -32,6 +32,12 @@ export function PostHogProvider({ user }: { user: PostHogUser }) {
           capture_pageview: true,
           capture_pageleave: true,
           person_profiles: "identified_only",
+          // Nothing on the device: no `ph_*` cookie, no localStorage. The
+          // distinct id is re-established by `identify()` on every mount, so
+          // memory is all PostHog needs here — and it is what lets `/privacy`
+          // say the site writes no analytics storage, and so needs no consent
+          // banner. Switching to a persistent mode is a `/privacy` change too.
+          persistence: "memory",
           // Off here, not just off in the PostHog project settings.
           //
           // Session replay is remotely configurable: posthog-js asks the
