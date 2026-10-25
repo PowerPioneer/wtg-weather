@@ -42,6 +42,11 @@ describe("PostHogProvider", () => {
     expect(options.disable_session_recording).toBe(true);
   });
 
+  it("records client-side navigations as pageviews, not only full loads", async () => {
+    const [, options] = await renderWithKey();
+    expect(options.capture_pageview).toBe("history_change");
+  });
+
   it("defaults to the EU cloud", async () => {
     const [, options] = await renderWithKey();
     expect(options.api_host).toBe("https://eu.i.posthog.com");

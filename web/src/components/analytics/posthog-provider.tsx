@@ -29,7 +29,11 @@ export function PostHogProvider({ user }: { user: PostHogUser }) {
         loadedPosthog = posthog;
         posthog.init(POSTHOG_KEY, {
           api_host: POSTHOG_HOST,
-          capture_pageview: true,
+          // Not `true`: that fires one $pageview per full page load, and in an
+          // App Router app almost every navigation after the first is a
+          // client-side route change — so paths and funnels saw one page per
+          // visit. "history_change" also captures pushState/popstate.
+          capture_pageview: "history_change",
           capture_pageleave: true,
           person_profiles: "identified_only",
           // Nothing on the device: no `ph_*` cookie, no localStorage. The
