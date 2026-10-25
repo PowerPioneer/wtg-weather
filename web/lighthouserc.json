@@ -7,7 +7,7 @@
         "http://localhost:3000/peru",
         "http://localhost:3000/peru/april"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "startServerCommand": "pnpm start -p 3000",
       "startServerReadyPattern": "Ready",
       "startServerReadyTimeout": 60000,
