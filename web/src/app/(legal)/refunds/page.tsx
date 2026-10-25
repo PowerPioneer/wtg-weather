@@ -34,7 +34,7 @@ export default function RefundsPage() {
   return (
     <LegalPage
       title="Refund Policy"
-      intro="A refund within 14 days of any charge, without having to justify it. Purchases are sold and refunded through Paddle, our merchant of record, which is why the mechanics below involve them as well as us."
+      intro="A refund within 14 days of any charge, without having to justify it — ask us and we issue it. Purchases are sold through Paddle, our merchant of record, which is why the money itself moves through them."
       updated="25 October 2026"
       toc={TOC}
     >
@@ -44,8 +44,8 @@ export default function RefundsPage() {
             <strong className="text-text">
               14 days, no questions asked.
             </strong>{" "}
-            Ask for a refund within 14 days of a charge — a first purchase or a
-            renewal — and you get it back in full.
+            Ask us for a refund within 14 days of a charge — a first purchase
+            or a renewal — and you get it back in full.
           </li>
           <li>
             <strong className="text-text">Cancel any time.</strong> Cancelling
@@ -56,23 +56,24 @@ export default function RefundsPage() {
             <strong className="text-text">
               Paddle is the merchant of record.
             </strong>{" "}
-            Paddle took the payment, issued your invoice and handles the
-            return. You can ask either of us; it ends up in the same place.
+            Paddle took the payment and issued your invoice, and the refund
+            goes back through them. The 14-day promise is ours, so the
+            reliable route is to ask us.
           </li>
         </UL>
       </LegalSection>
 
       <LegalSection id="how" heading="How to request one">
-        <P>Two routes, both fine:</P>
         <UL>
           <li>
             <strong className="text-text">Ask us</strong> at{" "}
             powerpioneer@pm.me — include the
-            email address on the account. We do not ask why.
+            email address on the account. We do not ask why, and within 14 days
+            of the charge we refund it in full.
           </li>
           <li>
-            <strong className="text-text">Ask Paddle</strong> directly, using
-            the receipt they emailed you, or via{" "}
+            <strong className="text-text">Or ask Paddle</strong> directly, from
+            the receipt they emailed you or via{" "}
             <a
               href="https://paddle.net"
               className="text-text-link underline underline-offset-2"
@@ -80,7 +81,16 @@ export default function RefundsPage() {
             >
               paddle.net
             </a>
-            , where you can look up your purchase and manage your subscription.
+            . Paddle then decides under{" "}
+            <a
+              href="https://www.paddle.com/legal/refund-policy"
+              className="text-text-link underline underline-offset-2"
+              rel="noreferrer"
+            >
+              its own refund policy
+            </a>
+            , which is narrower than this one. If Paddle declines a request
+            made within our 14 days, write to us and we will refund it.
           </li>
         </UL>
         <P>
@@ -92,7 +102,8 @@ export default function RefundsPage() {
       <LegalSection id="what-happens" heading="What happens next">
         <UL>
           <li>
-            Paddle returns the money to the payment method you used. How long
+            We issue the refund through Paddle, which returns the money to
+            the payment method you used. How long
             it takes to appear is your bank&rsquo;s business, typically a few
             working days.
           </li>

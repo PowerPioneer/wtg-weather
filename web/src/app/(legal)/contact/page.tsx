@@ -59,13 +59,21 @@ export default function ContactPage() {
               "powerpioneer@pm.me",
             ],
             [
-              "Refunds, invoices, VAT, cancellation",
+              "Refunds",
               <>
-                Paddle handles these as merchant of record — see{" "}
+                powerpioneer@pm.me — within 14 days of a charge, no questions
+                asked. See the{" "}
                 <Link href="/refunds" className="text-text-link underline underline-offset-2">
                   Refund Policy
                 </Link>
-                . We can help too.
+                .
+              </>,
+            ],
+            [
+              "Invoices, VAT, cancellation",
+              <>
+                Paddle handles these as merchant of record, at paddle.net or
+                from your account page. We can help too.
               </>,
             ],
             [
@@ -91,7 +99,7 @@ export default function ContactPage() {
       <LegalSection id="billing" heading="Billing & invoices">
         <P>
           Every purchase is sold through Paddle, which means Paddle issued your
-          invoice and can reissue it, add a VAT number to it, or refund it. The
+          invoice and can reissue it or add a VAT number to it (refunds: ask us, above). The
           fastest route is{" "}
           <a
             href="https://paddle.net"
