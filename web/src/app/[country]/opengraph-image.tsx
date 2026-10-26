@@ -1,7 +1,11 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
 import { ImageResponse } from "next/og";
 
 import { OgBrandMark } from "@/components/og/brand-mark";
 import { getCountry } from "@/lib/api-client";
+import { placePhoto, placePhotoPath } from "@/lib/place-photos";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
@@ -23,26 +27,52 @@ export default async function OG({
     .join(" · ");
   const tempMean = data.climate.t.reduce((s, v) => s + v, 0) / data.climate.t.length;
 
+  const photo = await photoDataUrl(data.iso2);
+
   return new ImageResponse(
     (
-      <div style={frame}>
-        <div style={eyebrow}>
-          <span style={chip}>Country</span>
-          <span>{[data.region, data.tz].filter(Boolean).join(" · ")}</span>
+      <div style={{ display: "flex", width: "100%", height: "100%", background: "#F7F6F2" }}>
+        <div style={photo ? { ...frame, width: 720, padding: "56px 56px 48px 64px" } : frame}>
+          <div style={eyebrow}>
+            <span style={chip}>Country</span>
+            <span>{[data.region, data.tz].filter(Boolean).join(" · ")}</span>
+          </div>
+          <div style={photo ? { ...headline, fontSize: 84 } : headline}>{data.name}</div>
+          <div style={tagline}>weather, regions, safety</div>
+          <div style={{ flex: 1 }} />
+          <div style={photo ? { ...stats, gap: 40 } : stats}>
+            <Stat label="Best months" value={best || "—"} />
+            <Stat label="Mean temp" value={`${tempMean.toFixed(1)}°C`} />
+            <Stat label="Regions" value={`${data.regions.length}`} />
+          </div>
+          <Footer compact={Boolean(photo)} />
         </div>
-        <div style={headline}>{data.name}</div>
-        <div style={tagline}>weather, regions, safety</div>
-        <div style={{ flex: 1 }} />
-        <div style={stats}>
-          <Stat label="Best months" value={best || "—"} />
-          <Stat label="Mean temp" value={`${tempMean.toFixed(1)}°C`} />
-          <Stat label="Regions" value={`${data.regions.length}`} />
-        </div>
-        <Footer />
+        {photo ? (
+          // eslint-disable-next-line @next/next/no-img-element -- Satori renders plain <img>; next/image does not exist here
+          <img src={photo} alt="" width={480} height={630} style={{ width: 480, height: 630, objectFit: "cover" }} />
+        ) : null}
       </div>
     ),
     size,
   );
+}
+
+/**
+ * The country's hero photo as a data URL, or `null`.
+ *
+ * Read off disk rather than fetched: this renders at build time, before the
+ * server that would serve `/places/*` exists. The credit is on the page the
+ * preview links to, which is where CC BY asks for it; a 1200×630 card has no
+ * room for a legible one.
+ */
+async function photoDataUrl(iso2: string): Promise<string | null> {
+  if (!placePhoto(iso2)) return null;
+  try {
+    const bytes = await readFile(path.join(process.cwd(), "public", placePhotoPath(iso2)));
+    return `data:image/jpeg;base64,${bytes.toString("base64")}`;
+  } catch {
+    return null;
+  }
 }
 
 function notFoundImage(message: string) {
@@ -83,7 +113,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Footer() {
+function Footer({ compact = false }: { compact?: boolean }) {
   return (
     <div
       style={{
@@ -113,7 +143,7 @@ function Footer() {
         </div>
         <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Where to Go for Great Weather</span>
       </div>
-      <span>ERA5 climate · government safety advisories</span>
+      {compact ? null : <span>ERA5 climate · government safety advisories</span>}
     </div>
   );
 }

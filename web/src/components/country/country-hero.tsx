@@ -1,4 +1,7 @@
+import Image from "next/image";
+
 import { FavouriteButton } from "@/components/favourite/favourite-button";
+import { isPublicDomain, placePhoto, placePhotoPath, type PlacePhoto } from "@/lib/place-photos";
 import type { CountryData } from "@/lib/types";
 import { UnitText } from "@/components/units";
 
@@ -21,6 +24,7 @@ export function CountryHero({ country }: { country: CountryData }) {
   if (country.capital) facts.unshift({ label: "Capital", value: country.capital });
   if (country.tz) facts.push({ label: "TZ", value: country.tz });
   if (country.area) facts.push({ label: "Area", value: country.area });
+  const photo = placePhoto(country.iso2);
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-surface">
@@ -56,22 +60,84 @@ export function CountryHero({ country }: { country: CountryData }) {
             className="self-start"
           />
         </div>
-        <div
-          className="relative hidden min-h-[380px] overflow-hidden rounded-md border border-border md:block"
-          aria-hidden="true"
-        >
+        {photo ? (
+          <HeroPhoto photo={photo} iso2={country.iso2} />
+        ) : (
           <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(120% 90% at 30% 20%, rgba(224,201,138,0.45), transparent 60%), radial-gradient(120% 90% at 80% 80%, rgba(15,27,45,0.85), rgba(15,27,45,0.6) 55%, rgba(15,27,45,0.95)), linear-gradient(180deg, #0F1B2D 0%, #1C2A44 100%)",
-            }}
-          />
-          <div className="absolute bottom-6 left-6 right-6 font-mono text-[11px] uppercase tracking-[0.18em] text-[#E0C98A]">
-            {country.iso2} · {country.region}
+            className="relative hidden min-h-[380px] overflow-hidden rounded-md border border-border md:block"
+            aria-hidden="true"
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(120% 90% at 30% 20%, rgba(224,201,138,0.45), transparent 60%), radial-gradient(120% 90% at 80% 80%, rgba(15,27,45,0.85), rgba(15,27,45,0.6) 55%, rgba(15,27,45,0.95)), linear-gradient(180deg, #0F1B2D 0%, #1C2A44 100%)",
+              }}
+            />
+            <div className="absolute bottom-6 left-6 right-6 font-mono text-[11px] uppercase tracking-[0.18em] text-[#E0C98A]">
+              {country.iso2} · {country.region}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
+  );
+}
+
+/**
+ * The country's photo, with its place and credit printed over it.
+ *
+ * Shown on a phone too, above the title: the gradient it replaces was hidden
+ * there because it said nothing, and a photo of the place is the one thing in
+ * this hero a phone reader most wants. It is the page's largest image, so it
+ * is preloaded — the LCP budget in `web/CLAUDE.md` is measured on it.
+ *
+ * The credit is not decoration. CC BY and CC BY-SA require the author, the
+ * licence and a link to the source wherever the photo appears, and this is
+ * where it appears.
+ */
+function HeroPhoto({ photo, iso2 }: { photo: PlacePhoto; iso2: string }) {
+  return (
+    <figure className="relative order-first aspect-[16/10] overflow-hidden rounded-md border border-border bg-[#0F1B2D] md:order-none md:aspect-auto md:min-h-[380px]">
+      <Image
+        src={placePhotoPath(iso2)}
+        alt={photo.alt}
+        fill
+        preload
+        sizes="(min-width: 1280px) 540px, (min-width: 768px) 45vw, 100vw"
+        className="object-cover"
+      />
+      {/* A scrim, so the credit stays legible over a bright sky or snow. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0F1B2D]/80 to-transparent"
+        aria-hidden="true"
+      />
+      <figcaption className="absolute bottom-4 left-5 right-5 flex flex-col gap-1">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#E0C98A]">
+          {photo.place}
+        </span>
+        <span className="text-[11px] leading-snug text-white/85">
+          Photo:{" "}
+          <a href={photo.sourceUrl} className="underline underline-offset-2 hover:text-white" rel="noopener">
+            {photo.author}
+          </a>
+          {isPublicDomain(photo) ? (
+            <> · {photo.license}</>
+          ) : (
+            <>
+              {" · "}
+              {photo.licenseUrl ? (
+                <a href={photo.licenseUrl} className="underline underline-offset-2 hover:text-white" rel="license noopener">
+                  {photo.license}
+                </a>
+              ) : (
+                photo.license
+              )}
+            </>
+          )}
+          {" · Wikimedia Commons"}
+        </span>
+      </figcaption>
+    </figure>
   );
 }

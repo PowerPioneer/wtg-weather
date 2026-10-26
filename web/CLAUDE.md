@@ -96,6 +96,17 @@ pnpm dev
 - SSR pages must be renderable with ZERO client JS for SEO — progressive
   enhancement only. Test with JS disabled.
 - Use `next/image` for everything non-map. Never `<img>` in RSC.
+- **Country hero photos** are curated like the activities dataset: one
+  Wikimedia Commons photo per country in `lib/place-photos.json` (file,
+  place, alt, author, licence, source), the sized JPEG committed under
+  `public/places/<iso2>.jpg`. `place-photos.test.ts` refuses NC/ND/GFDL-only
+  licences and orphans. The hero prints place, author, licence and a link to
+  the Commons page — CC BY/BY-SA require it — and is preloaded, since it is the
+  page's LCP element (it shows on phones too, above the title). To add or swap
+  one, edit the JSON and run
+  `uv run --no-project --with pillow python web/scripts/fetch_place_photos.py`
+  (`--force` to refetch). A country without an entry keeps the gradient panel;
+  never substitute a photo of somewhere else.
 - No `localStorage` for preferences — use an HttpOnly cookie set via API,
   or URL search params for shareable states. The one exception is `wtg_unit`
   (see Units above): it must be readable by client JS on a static page, it
