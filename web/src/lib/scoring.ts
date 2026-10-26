@@ -104,7 +104,8 @@ export const DEFAULT_PREFERENCES: WeatherPreferences = {
   dayMin: 22,
   dayMax: 30,
   nightMin: 12,
-  nightMax: 22,
+  // 24, not 22 — see the pipeline's table for why. Moves with it or not at all.
+  nightMax: 24,
   rainMax: 2.7,
   sunMin: 6,
   safetyMax: DEFAULT_SAFETY_MAX,

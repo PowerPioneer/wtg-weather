@@ -219,7 +219,7 @@ describe("getOwnTrip", () => {
       dayMin: 22,
       dayMax: 30,
       nightMin: 12,
-      nightMax: 22,
+      nightMax: 24,
       rainMax: 2.7,
       sunMin: 6,
     });

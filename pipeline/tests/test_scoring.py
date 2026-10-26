@@ -98,10 +98,13 @@ def test_missing_on_both_halves_still_counts_once() -> None:
 def test_a_hot_day_with_a_sticky_night_is_penalised() -> None:
     """The case the split exists for: tropical nights that never cool.
 
-    A 30 °C day is inside the range; a 27 °C night is a hard miss, and the old
-    single-mean rule (28.5 °C mean) called the whole thing perfect.
+    A 30 °C day is inside the range; a 28 °C night is a hard miss, and the old
+    single-mean rule (29 °C mean) called the whole thing perfect. A 26 °C
+    Caribbean night sits in the buffer since the ceiling moved to 24 °C: a
+    good option, not perfect, and not the "acceptable" it was at 22.
     """
-    assert polygon_score(_with(t2m_max=30.0, t2m_min=27.0)) == 1
+    assert polygon_score(_with(t2m_max=30.0, t2m_min=28.0)) == 1
+    assert polygon_score(_with(t2m_max=30.0, t2m_min=26.0)) == 2
     assert polygon_score(_with(t2m_max=30.0, t2m_min=17.0)) == 3
 
 
@@ -152,8 +155,9 @@ def test_partial_values_score_on_what_is_present() -> None:
     [
         ({"t2m_max": 26.0, "t2m_min": 17.0}, 3),   # both in range
         ({"t2m_max": 32.0, "t2m_min": 17.0}, 2),   # day in buffer
-        ({"t2m_max": 26.0, "t2m_min": 24.0}, 2),   # night in buffer
-        ({"t2m_max": 32.0, "t2m_min": 24.0}, 2),   # both in buffer, still one concern
+        ({"t2m_max": 26.0, "t2m_min": 24.0}, 3),   # night on the 24 °C ceiling, inclusive
+        ({"t2m_max": 26.0, "t2m_min": 26.0}, 2),   # night in buffer
+        ({"t2m_max": 32.0, "t2m_min": 26.0}, 2),   # both in buffer, still one concern
         ({"t2m_max": 42.0, "t2m_min": 17.0}, 1),   # day a hard miss
     ],
 )

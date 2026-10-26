@@ -61,9 +61,11 @@ DEFAULT_TEMP_MAX = 30.0
 DEFAULT_RAIN_MAX = 2.7
 DEFAULT_SUN_MIN = 6.0
 
-# The overnight band's defaults — the pipeline's `t2m_min` bounds, and the
-# web's `nightMin`/`nightMax` slider defaults. Used when an alert stores no
-# night of its own, which is every alert saved before temperature split.
+# The overnight band for an alert that stores no night of its own — every
+# alert saved before temperature split. Deliberately *not* the current web
+# default (24 °C since 2026-10-27): those alerts were created when the ceiling
+# was 22, and moving it under them would flip their matches and mail every
+# owner a "now matches" they never asked for.
 DEFAULT_NIGHT_MIN = 12.0
 DEFAULT_NIGHT_MAX = 22.0
 

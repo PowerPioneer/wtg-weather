@@ -85,7 +85,11 @@ class VariablePreference:
 # rule would have become more forgiving for no reason the data supports.
 DEFAULT_PREFERENCES: tuple[VariablePreference, ...] = (
     VariablePreference("t2m_max", lo=22.0, hi=30.0, buffer=3.0, concern="temperature"),  # °C, daytime high
-    VariablePreference("t2m_min", lo=12.0, hi=22.0, buffer=3.0, concern="temperature"),  # °C, overnight low
+    # Nights up to 24 °C, not 22: at 22 no Caribbean island had a single perfect
+    # month (Aruba, Barbados, the Bahamas — 26 °C nights are a hard miss past the
+    # buffer), which is not what "warm, dry, sunny" means to anyone booking one.
+    # At 24 their 25–27 °C nights fall in the buffer: a good option, not perfect.
+    VariablePreference("t2m_min", lo=12.0, hi=24.0, buffer=3.0, concern="temperature"),  # °C, overnight low
     VariablePreference("tp", lo=0.0, hi=2.7, buffer=1.3, concern="rain"),  # mm / day (≈ 80 mm/month)
     VariablePreference("sun_hours", lo=6.0, hi=13.0, buffer=1.5, concern="sun"),  # h / day
 )

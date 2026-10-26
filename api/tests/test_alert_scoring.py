@@ -73,7 +73,12 @@ def test_default_ranges_and_buffers_match_the_pipeline() -> None:
     # the two files order it differently on purpose (see `preference_ranges`).
     day, rain, sun, night = preference_ranges(DEFAULT_PREFERENCES)
     assert (day.lo, day.hi, day.buffer) == python["t2m_max"]
-    assert (night.lo, night.hi, night.buffer) == python["t2m_min"]
+    # The night ceiling is the one deliberate difference: an alert with no
+    # night of its own was saved when the default was 22 °C, and keeps it, so
+    # moving the site default to 24 °C does not flip its matches and mail its
+    # owner. The floor and buffer still follow the pipeline.
+    assert (night.lo, night.buffer) == (python["t2m_min"][0], python["t2m_min"][2])
+    assert night.hi == 22.0 and python["t2m_min"][1] == 24.0
     assert (rain.lo, rain.hi, rain.buffer) == python["tp"]
     assert (sun.lo, sun.hi, sun.buffer) == python["sun_hours"]
 
