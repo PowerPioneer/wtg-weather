@@ -1,6 +1,6 @@
 {
   "iso2": "FJ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season",
@@ -73,7 +73,47 @@
       "sources": [
         {
           "url": "https://fijipocketguide.com/the-best-seasons-for-seeing-wildlife-in-fiji/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ],
+      "regions": [
+        "FJ-N",
+        "FJ-E"
+      ]
+    },
+    {
+      "id": "manta-rays-fj",
+      "name": "Swimming with manta rays (Yasawas, Kadavu, Vanua Levu)",
+      "kind": "wildlife",
+      "regions": [
+        "FJ-W",
+        "FJ-E",
+        "FJ-N"
+      ],
+      "status": "not-on",
+      "note": "Kadavu's season is shorter and usually over by the end of September",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "manta rays feed in the channels almost daily and resort boats run swims out to them"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://mantarayisland.com/swimming-with-manta-rays/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://fijipocketguide.com/the-best-seasons-for-seeing-wildlife-in-fiji/",
+          "checked": "2026-10-26"
         }
       ]
     }

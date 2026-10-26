@@ -1,6 +1,6 @@
 {
   "iso2": "PF",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season",
@@ -70,19 +70,101 @@
         {
           "status": "open",
           "months": [
+            7
+          ],
+          "reason": "the first whales arrive in July, though sightings are still few"
+        },
+        {
+          "status": "open",
+          "months": [
             11
           ],
-          "reason": "the tail of the season, which spans August to November"
+          "reason": "the tail of the season, which ends in November"
         }
       ],
       "sources": [
         {
+          "url": "https://www.tahititourisme.com/activities/diving/maritime-species/",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://www.tahititourisme.com/activities/diving/maritime-species/whales/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.mylittlepolynesia.com/en/best-time-visit-french-polynesia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "heiva-i-tahiti",
+      "name": "Heiva i Tahiti",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "several weeks of traditional dance, song and music competitions at To'ata in Papeete, held every July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.heiva.org/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tahititourisme.com/event/heiva-i-tahiti/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tahiti-pro-teahupoo",
+      "name": "Tahiti Pro surf contest, Teahupo'o",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the World Surf League's championship-tour stop on the Teahupo'o reef pass, held each August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tahititourisme.com/event/tahiti-pro-teahupoo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hawaiki-nui-vaa",
+      "name": "Hawaiki Nui Va'a canoe race",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "a three-stage outrigger canoe race from Huahine via Raiatea and Taha'a to Bora Bora, in the October school holidays"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tahititourisme.com/event/hawaiki-nui-vaa/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tahititourisme.com/discover/festivals-and-events/",
+          "checked": "2026-10-26"
         }
       ]
     }

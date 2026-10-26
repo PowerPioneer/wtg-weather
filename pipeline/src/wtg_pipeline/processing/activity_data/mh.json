@@ -1,0 +1,102 @@
+{
+  "iso2": "MH",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bikini-atoll-diving",
+      "name": "Bikini Atoll wreck diving",
+      "kind": "dive",
+      "regions": [
+        "MH-L"
+      ],
+      "status": "closed",
+      "note": "land-based diving stopped in 2008; liveaboard trips run only in the May to October season",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dive season, when liveaboards visit the fleet sunk by the nuclear tests"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bikini_Atoll",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.masterliveaboards.com/bikini-atoll/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Marshall_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dry-season-mh",
+      "name": "Island and lagoon travel",
+      "kind": "season",
+      "status": "open",
+      "note": "May to November is the wet season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the relatively dry season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Marshall_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Marshall_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "manit-day",
+      "name": "Manit Day and Manit Week",
+      "kind": "festival",
+      "regions": [
+        "MH-T"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "a week of Marshallese crafts, dance and food ends on Manit Day, the last Friday of September, with an Alele Museum ceremony in Majuro"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://chikinmelele.com/m̧anit-day-more-than-a-day-about-culture/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_the_Marshall_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

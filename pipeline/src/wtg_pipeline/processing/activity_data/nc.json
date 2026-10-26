@@ -1,0 +1,115 @@
+{
+  "iso2": "NC",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "island-season-nc",
+      "name": "Island and beach travel",
+      "kind": "season",
+      "status": "open",
+      "note": "enjoyable all year; cyclones strike at random rather than every season",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "the cyclone season, when most storms occur, with heavy rain and strong winds"
+        },
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the dry Caledonian spring: sunny, little rain and warm without excessive heat"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.newcaledonia.travel/travel-guide/weather-and-seasons/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-nc",
+      "name": "Humpback whale watching, Great South lagoon",
+      "kind": "wildlife",
+      "status": "not-on",
+      "note": "boat trips leave from Noumea and the Great South; whales are also watched from the cliffs of Lifou and Mare",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "humpbacks gather in the sheltered southern bays to calve"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the edges of the season, which runs from mid-June or July to mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.newcaledonia.travel/activities/heavenly-lagoon/whale-watching/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.newcaledonia.travel/travel-guide/weather-and-seasons/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bourail-fair",
+      "name": "Bourail Fair",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the territory's best-known agricultural fair, held around 15 August with rodeo and farm produce"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.newcaledonia.travel/activities/authentic-cultures/not-to-be-missed-events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mare-avocado-festival",
+      "name": "Avocado Festival, Mare",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "a three-day celebration on Mare marking the end of the avocado harvest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.newcaledonia.travel/activities/authentic-cultures/not-to-be-missed-events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

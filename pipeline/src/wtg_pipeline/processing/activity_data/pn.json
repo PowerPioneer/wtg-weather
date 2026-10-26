@@ -1,0 +1,102 @@
+{
+  "iso2": "PN",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bounty-day",
+      "name": "Bounty Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "23 January, when islanders burn a model of the Bounty to mark the mutineers burning the ship in 1790"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bounty_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "supply-ship",
+      "name": "Passenger-supply ship to Pitcairn",
+      "kind": "transport",
+      "status": "open",
+      "note": "the MV Silver Supporter sails from Mangareva in every month, for stays of 4, 11 or 18 days",
+      "sources": [
+        {
+          "url": "https://www.visitpitcairn.pn/shipping-schedule",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitpitcairn.pn/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cruise-calls",
+      "name": "Cruise-ship calls",
+      "kind": "tour",
+      "status": "not-on",
+      "note": "no cruise calls are scheduled in May or June",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "most cruise calls fall between October and April, for a few hours if the sea allows a landing"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "an occasional cruise call"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitpitcairn.pn/pitcairn-island-cruise-ship-schedule",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pitcairn-marathon",
+      "name": "Pitcairn Island Marathon",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a sunrise marathon held in mid-July, first run in 2026"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitpitcairn.pn/events",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "TO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season",
@@ -79,6 +79,70 @@
         {
           "url": "https://farandawayadventures.com/tongas-humpback-whale-season-when-to-watch/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "heilala-festival",
+      "name": "Heilala Festival",
+      "kind": "festival",
+      "regions": [
+        "TO-04"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Tonga's largest festival, built around the King's birthday holiday on 4 July, with the Miss Heilala pageant"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the programme usually opens in the last days of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tongapocketguide.com/10-biggest-events-in-tonga/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://southpacificislands.travel/heilala-festival-2017-in-tonga/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vavau-sailing",
+      "name": "Sailing the Vava'u islands",
+      "kind": "tour",
+      "regions": [
+        "TO-05"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "May to October is Vava'u's official sailing season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.sea-seek.com/en/Tonga",
+          "checked": "2026-10-26"
         }
       ]
     }

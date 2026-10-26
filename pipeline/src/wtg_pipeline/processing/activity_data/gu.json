@@ -1,0 +1,80 @@
+{
+  "iso2": "GU",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "liberation-day-gu",
+      "name": "Liberation Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "21 July: a mile-long parade on Marine Corps Drive in Hagatna"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the Liberation Day carnival at Paseo de Susana typically runs from late May to early August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Liberation_Day_(Guam)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_the_Northern_Mariana_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "crab-festival",
+      "name": "Merizo Crab Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "held every March in Merizo, Guam's southernmost village"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitguam.com/events/festivals/crab-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mango-festival",
+      "name": "Agat Mango Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "held annually in Agat, typically on the last weekend of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitguam.com/events/festivals/mango-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 {
   "iso2": "PG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "kokoda-track",
       "name": "The Kokoda Track",
       "kind": "trek",
-      "status": "closed",
-      "note": "the operators, not a gate, are what close it — but with them shut the track is not a trip you can book",
+      "status": "open",
+      "note": "walked all year, but the dry season is when it is normally done; every trekker needs a Kokoda Track Authority permit",
       "windows": [
         {
           "status": "best",
@@ -19,28 +19,144 @@
             9,
             10
           ],
-          "reason": "the trekking season; the early months bring cooler conditions and fewer walkers on the trail"
+          "reason": "the dry season, which gives the best trekking conditions"
         },
         {
-          "status": "closed",
+          "status": "limited",
           "months": [
-            11,
             12,
             1,
             2,
             3
           ],
-          "reason": "most operators close for the heavy rains"
+          "reason": "the wet season: heavy rain makes the steep, muddy track harder and riskier"
         }
       ],
       "sources": [
         {
           "url": "https://www.steppestravel.com/best-time-to-visit/papua-new-guinea/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://en.wikipedia.org/wiki/Kokoda_Track",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.kokodatrackauthority.org/",
+          "checked": "2026-10-26"
+        }
+      ],
+      "regions": [
+        "PG-CPM",
+        "PG-NPP"
+      ]
+    },
+    {
+      "id": "mount-hagen-show",
+      "name": "Mount Hagen Cultural Show",
+      "kind": "festival",
+      "regions": [
+        "PG-WHM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "Highlands groups gather for mass sing-sings at Queen's Park in Mount Hagen each August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://papuanewguinea.travel/events/hagen-show/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.steppestravel.com/best-time-to-visit/papua-new-guinea/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "goroka-show",
+      "name": "Goroka Show",
+      "kind": "festival",
+      "regions": [
+        "PG-EHG"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "held in Goroka during Independence week each September, one of the country's largest cultural gatherings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://papuanewguinea.travel/events/goroka-show/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Goroka_Show",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mask-festival",
+      "name": "National Mask and Warwagira Festival, Kokopo",
+      "kind": "festival",
+      "regions": [
+        "PG-EBR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "masked dances at the Takubar showground in Kokopo, held in July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://papuanewguinea.travel/events/national-mask-warwagira-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kenu-kundu-festival",
+      "name": "National Kenu and Kundu Festival, Alotau",
+      "kind": "festival",
+      "regions": [
+        "PG-MBA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "traditional canoe races and kundu drumming in Alotau; dates vary between October and early November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://papuanewguinea.travel/events/national-kenu-and-kundu-festival/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.steppestravel.com/best-time-to-visit/papua-new-guinea/",
+          "checked": "2026-10-26"
         }
       ]
     }

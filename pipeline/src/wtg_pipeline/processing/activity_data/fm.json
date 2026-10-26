@@ -1,0 +1,99 @@
+{
+  "iso2": "FM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "yap-mantas",
+      "name": "Diving with Yap's manta rays",
+      "kind": "dive",
+      "regions": [
+        "FM-YAP"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the manta mating season; the resident mantas can be dived any day of the year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://mantaray.com/experiences/manta-diving/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visityap.com/dive_yap.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yap-day",
+      "name": "Yap Day",
+      "kind": "festival",
+      "regions": [
+        "FM-YAP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "Yap's cultural festival, held over about two days around 1 March, with dances, stone money and village contests"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visityap.com/events_in_yap.php",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://mantaray.com/yap-day/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Yap_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mantafest",
+      "name": "MantaFest",
+      "kind": "festival",
+      "regions": [
+        "FM-YAP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "a two-week dive photography festival, usually late August into September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visityap.com/events_in_yap.php",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.mantaray.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "iso2": "SB",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "dry-season-sb",
+      "name": "Island and beach travel",
+      "kind": "season",
+      "status": "open",
+      "note": "hot and humid all year; the seasons change the rain, not access",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when rainfall, humidity and temperature are at their lowest"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the wet season; cyclones are uncommon but can occur"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitsolomons.com.sb/about-the-solomon/weather/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitsolomons.com.sb/plan-your-adventure/travel-tips/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "wwii-sites-guadalcanal",
+      "name": "Second World War sites, Guadalcanal",
+      "kind": "site",
+      "regions": [
+        "SB-GU",
+        "SB-CT"
+      ],
+      "status": "open",
+      "note": "local guides lead tours to the war museum and battle sites such as the American memorial on Skyline Ridge",
+      "sources": [
+        {
+          "url": "https://www.visitsolomons.com.sb/things-to-do/wwii-history/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "diving-sb",
+      "name": "Diving: Marovo and Roviana lagoons, Iron Bottom Sound",
+      "kind": "dive",
+      "regions": [
+        "SB-CH",
+        "SB-GU",
+        "SB-CT"
+      ],
+      "status": "open",
+      "note": "reef dives in the Western Province lagoons and Second World War wrecks in the waters off Honiara",
+      "sources": [
+        {
+          "url": "https://www.visitsolomons.com.sb/about-the-solomon/under-the-water/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitsolomons.com.sb/things-to-do/scuba-diving/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

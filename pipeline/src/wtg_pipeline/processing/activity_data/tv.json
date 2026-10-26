@@ -1,0 +1,82 @@
+{
+  "iso2": "TV",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "tuvalu-day",
+      "name": "Tuvalu Day (Independence)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "independence on 1 October, a two-day holiday with dancing, canoe races and sports"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Tuvalu",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Tuvalu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "funafuti-conservation-area",
+      "name": "Funafuti Conservation Area",
+      "kind": "swim",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season: clearer skies and calmer seas for the boat trip and snorkelling"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Funafuti_Conservation_Area",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Tuvalu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "te-aso-fiafia",
+      "name": "Te Aso Fiafia (Vaitupu)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "Vaitupu's 'Happy Day' holiday, 25 November, marking the final repayment of a debt in 1887"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Tuvalu",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

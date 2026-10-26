@@ -1,0 +1,94 @@
+{
+  "iso2": "NU",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales-nu",
+      "name": "Humpback whales",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "peak humpback activity off Niue's coast"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10
+          ],
+          "reason": "the wider whale season, which runs July to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.niueisland.com/see-and-do/whale-experiences",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.niueisland.com/see-and-do/diving-and-snorkeling",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "spinner-dolphins-nu",
+      "name": "Swimming with spinner dolphins",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "the season for snorkelling and swimming with spinner dolphins runs April to December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Niue",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "constitution-celebrations-nu",
+      "name": "Constitution Day celebrations",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "Constitution Day, 19 October, brings many Niueans home, so flights fill early"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Niue",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Niue",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "iso2": "KI",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "kiritimati-birds",
+      "name": "Seabird colonies of Kiritimati",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "seabirds breed all year; visits to protected areas need a ranger, arranged through your accommodation",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            12
+          ],
+          "reason": "the most active seabird breeding months; frigatebirds are best seen at Ngaon Te Taake"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kiribatitourism.gov.ki/birdwatch-with-us",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tarawa-battlefield",
+      "name": "Tarawa WWII battlefield (Betio)",
+      "kind": "site",
+      "status": "open",
+      "note": "guided tours visit the coastal guns, bunkers, tank wrecks and assault beaches",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "the annual Battle of Tarawa commemoration at the USMC Memorial on Betio, 20 November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kiribatitourism.gov.ki/remember-with-us",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "national-day-ki",
+      "name": "National Day (Independence)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "independence day, 12 July, heads a three-day national holiday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Kiribati",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
