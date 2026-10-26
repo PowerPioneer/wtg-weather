@@ -1,4 +1,4 @@
-# Production reverse proxy for v2 (and the apex post-cutover).
+# Production reverse proxy for the apex (served by the v2 box since the cutover).
 #
 # This file is the real running configuration. It was reconstructed from the v2
 # box on 2026-08-17, where it had diverged from the repo and lived only on that
@@ -40,9 +40,15 @@
     email powerpioneer@pm.me
 }
 
-v2.wheretogoforgreatweather.com {
-    encode zstd gzip
-
+# The signed-tile route, shared by the apex and by `v2.` — see below for why
+# `v2.` still serves it after the cutover.
+#
+# `Access-Control-Allow-Origin` names the apex and only the apex: after the
+# cutover the apex is the one public web origin, so a single value is correct
+# and there is nothing for bunny to mix up (it does not reliably honour
+# `Vary: Origin`). Changing this value is what blanks the map if the CDN is not
+# purged afterwards — the edge keeps the old header for a year.
+(tiles) {
     route /_tiles/* {
         # HMAC verification — API returns 204 if exp+sig is valid for
         # X-Original-URI, 403 otherwise. file_server only runs on 204.
@@ -59,7 +65,7 @@ v2.wheretogoforgreatweather.com {
         # preserved, so listing header directives here puts them on the
         # response header map before file_server uses it.
         header Cache-Control "public, max-age=31536000, immutable"
-        header Access-Control-Allow-Origin "https://v2.wheretogoforgreatweather.com"
+        header Access-Control-Allow-Origin "https://wheretogoforgreatweather.com"
         header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
         header Access-Control-Expose-Headers "Content-Length, Content-Range, ETag"
         header Access-Control-Max-Age "86400"
@@ -68,6 +74,12 @@ v2.wheretogoforgreatweather.com {
         root * /var/tiles
         file_server
     }
+}
+
+wheretogoforgreatweather.com {
+    encode zstd gzip
+
+    import tiles
 
     route /api/* {
         reverse_proxy api:8000
@@ -75,6 +87,26 @@ v2.wheretogoforgreatweather.com {
 
     route /* {
         reverse_proxy web:3000
+    }
+}
+
+# `www` exists only to send people to the apex.
+www.wheretogoforgreatweather.com {
+    redir https://wheretogoforgreatweather.com{uri} permanent
+}
+
+# The former staging host. Everything redirects to the apex except the tiles:
+# bunny.net's pull zone fetches `/_tiles/*` from this hostname, so that route
+# stays here verbatim (same HMAC forward_auth) rather than moving the CDN origin
+# as part of the cutover. The tiles route comes first; `route` blocks keep their
+# written order, and file_server ends the request before the redirect is seen.
+v2.wheretogoforgreatweather.com {
+    encode zstd gzip
+
+    import tiles
+
+    route /* {
+        redir https://wheretogoforgreatweather.com{uri} permanent
     }
 }
 

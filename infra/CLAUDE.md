@@ -476,10 +476,15 @@ no event reached the instance for months.
 Caddyfile provisions SSL via Let's Encrypt for the apex stack and for the
 two ops subdomains. Site blocks:
 
-- `v2.wheretogoforgreatweather.com` (and post-cutover the apex) — public:
+- `wheretogoforgreatweather.com` — public, since the cutover:
   - `/_tiles/*` — HMAC-verified static tile serving from `/var/tiles`
+    (the `(tiles)` snippet, `Access-Control-Allow-Origin` = the apex)
   - `/api/*` — reverse proxy to `api:8000`
   - `/*` — reverse proxy to `web:3000`
+- `www.wheretogoforgreatweather.com` — 301 to the apex.
+- `v2.wheretogoforgreatweather.com` — 301 to the apex, **except** `/_tiles/*`,
+  which it still serves via the same snippet: bunny.net's pull zone fetches
+  tiles from this hostname. Moving the CDN origin is a separate change.
 - `glitchtip.v2.wheretogoforgreatweather.com` — basic-auth, reverse proxy
   to `glitchtip-web:8000`. Subdomain (not subpath) because GlitchTip emits
   absolute URLs for its static assets and breaks under path stripping.
