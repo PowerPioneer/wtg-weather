@@ -7,6 +7,7 @@
  */
 
 import type { Metadata } from "next";
+import { brandedTitle, SITE_NAME } from "./brand";
 import { SITE_URL } from "./env";
 import { regionHref } from "./regions";
 import type { CountryData, MonthDetail, RegionRow } from "./types";
@@ -41,11 +42,11 @@ function jsonLd(payload: unknown): string {
  */
 
 export function countryMetadata(country: CountryData): Metadata {
-  const title = `${country.name} — weather, regions, safety · Atlas Weather`;
+  const title = brandedTitle(`${country.name} — weather, regions, safety`);
   const description = `A month-by-month climate guide for ${country.name}: temperature, rainfall, sunshine, wind, and travel-advisory levels from six governments, based on 10 years of ERA5 data.`;
   const url = canonical(`/${country.slug}`);
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -53,7 +54,7 @@ export function countryMetadata(country: CountryData): Metadata {
       url,
       title,
       description,
-      siteName: "Atlas Weather",
+      siteName: SITE_NAME,
     },
     twitter: {
       card: "summary_large_image",
@@ -65,12 +66,12 @@ export function countryMetadata(country: CountryData): Metadata {
 
 export function monthMetadata(detail: MonthDetail): Metadata {
   const { country, monthName } = detail;
-  const title = `${country.name} in ${monthName} — weather & safety · Atlas Weather`;
+  const title = brandedTitle(`${country.name} in ${monthName} — weather & safety`);
   const description = `${country.name} in ${monthName}: temperature, rainfall, sunshine, and regional climate scores, with the latest travel-advisory levels from six governments.`;
   const path = `/${country.slug}/${detail.month}`;
   const url = canonical(path);
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -78,7 +79,7 @@ export function monthMetadata(detail: MonthDetail): Metadata {
       url,
       title,
       description,
-      siteName: "Atlas Weather",
+      siteName: SITE_NAME,
     },
     twitter: {
       card: "summary_large_image",
@@ -101,18 +102,18 @@ export function countryJsonLd(country: CountryData): string {
     url: canonical(`/${country.slug}`),
     touristType: ["Trekking", "Cultural", "Photography", "Beach", "Urban"],
     address: { "@type": "PostalAddress", addressCountry: country.name },
-    provider: { "@type": "Organization", name: "Atlas Weather" },
+    provider: { "@type": "Organization", name: SITE_NAME },
   });
 }
 
 export function regionMetadata(country: CountryData, region: RegionRow): Metadata {
   const slug = regionHref(region);
-  const title = `${region.name}, ${country.name} — weather by month · Atlas Weather`;
+  const title = brandedTitle(`${region.name}, ${country.name} — weather by month`);
   const description = `Month-by-month climate for ${region.name} (${country.name}): temperature trend across the year, best-months ranking, and the latest travel-advisory levels for ${country.name}.`;
   const path = `/${country.slug}/${slug}`;
   const url = canonical(path);
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -120,7 +121,7 @@ export function regionMetadata(country: CountryData, region: RegionRow): Metadat
       url,
       title,
       description,
-      siteName: "Atlas Weather",
+      siteName: SITE_NAME,
     },
     twitter: {
       card: "summary_large_image",
@@ -137,12 +138,12 @@ export function regionMonthMetadata(
   monthName: string,
 ): Metadata {
   const slug = regionHref(region);
-  const title = `${region.name} in ${monthName} — weather & safety · Atlas Weather`;
+  const title = brandedTitle(`${region.name} in ${monthName} — weather & safety`);
   const description = `${region.name}, ${country.name} in ${monthName}: regional temperature, match score vs. the country average, and the latest travel-advisory levels from six governments.`;
   const path = `/${country.slug}/${slug}/${monthSlug}`;
   const url = canonical(path);
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -150,7 +151,7 @@ export function regionMonthMetadata(
       url,
       title,
       description,
-      siteName: "Atlas Weather",
+      siteName: SITE_NAME,
     },
     twitter: {
       card: "summary_large_image",
@@ -175,7 +176,7 @@ export function regionJsonLd(country: CountryData, region: RegionRow): string {
       url: canonical(`/${country.slug}`),
     },
     touristType: ["Trekking", "Cultural", "Photography"],
-    provider: { "@type": "Organization", name: "Atlas Weather" },
+    provider: { "@type": "Organization", name: SITE_NAME },
   });
 }
 
@@ -193,7 +194,7 @@ export function regionMonthJsonLd(
     description: `Weather and safety information for visiting ${region.name}, ${country.name} in ${monthName}.`,
     touristType: ["Trekking", "Cultural", "Photography"],
     url: canonical(`/${country.slug}/${slug}/${monthSlug}`),
-    provider: { "@type": "Organization", name: "Atlas Weather" },
+    provider: { "@type": "Organization", name: SITE_NAME },
   });
 }
 
@@ -210,11 +211,11 @@ export function monthLandingMetadata(
   monthName: string,
   count: number,
 ): Metadata {
-  const title = `Best weather in ${monthName} — top destinations · Atlas Weather`;
+  const title = brandedTitle(`Best weather in ${monthName} — top destinations`);
   const description = `The ${count} countries with the best weather in ${monthName}, ranked from ten years of ERA5 data: temperature, rainfall and sunshine against a comfortable-travel profile, with travel-advisory levels from six governments.`;
   const url = canonical(`/best-weather-in/${monthSlug}`);
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -222,7 +223,7 @@ export function monthLandingMetadata(
       url,
       title,
       description,
-      siteName: "Atlas Weather",
+      siteName: SITE_NAME,
     },
     twitter: {
       card: "summary_large_image",
@@ -264,7 +265,7 @@ export function monthLandingJsonLd(
         url: canonical(`/${entry.slug}`),
       },
     })),
-    provider: { "@type": "Organization", name: "Atlas Weather" },
+    provider: { "@type": "Organization", name: SITE_NAME },
   });
 }
 
@@ -278,6 +279,6 @@ export function monthJsonLd(detail: MonthDetail): string {
     description: `Weather, regional scores, and safety information for visiting ${country.name} in ${monthName}.`,
     touristType: ["Trekking", "Cultural", "Photography"],
     url: canonical(`/${country.slug}/${detail.month}`),
-    provider: { "@type": "Organization", name: "Atlas Weather" },
+    provider: { "@type": "Organization", name: SITE_NAME },
   });
 }

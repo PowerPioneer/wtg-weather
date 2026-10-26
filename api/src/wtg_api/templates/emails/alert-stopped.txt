@@ -1,4 +1,4 @@
-Atlas Weather
+Where to Go for Great Weather
 
 Weather alert
 
@@ -18,6 +18,6 @@ Scores come from ten years of ERA5 reanalysis, recomputed against the preference
 
 ----------------------------------------
 
-You are receiving this because you set a weather alert on Atlas Weather. Manage your alerts {{manage_url}} or unsubscribe from alert email {{unsubscribe_url}}.
+You are receiving this because you set a weather alert on Where to Go for Great Weather. Manage your alerts {{manage_url}} or unsubscribe from alert email {{unsubscribe_url}}.
 
-Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San Francisco, CA 94114
+Where to Go for Great Weather · wheretogoforgreatweather.com · Van Diemenstraat 138, 2518 VG Den Haag, Netherlands

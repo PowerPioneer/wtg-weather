@@ -39,6 +39,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { POSTAL_ADDRESS, SITE_NAME } from "../lib/brand";
+
 export type AlertEmailProps = {
   /** True for "now matches", false for "stopped matching". Fixed per artifact. */
   matched: boolean;
@@ -89,7 +91,7 @@ export default function AlertEmail({
               plain-text pass, which turned the header into one unreadable word;
               the eyebrow moved below, where it reads correctly in both parts. */}
           <Section style={masthead}>
-            <Text style={brandName}>Atlas Weather</Text>
+            <Text style={brandName}>{SITE_NAME}</Text>
           </Section>
 
           <Section style={headingSection}>
@@ -131,7 +133,7 @@ export default function AlertEmail({
 
           <Section style={footer}>
             <Text style={footerText}>
-              You are receiving this because you set a weather alert on Atlas Weather.{" "}
+              You are receiving this because you set a weather alert on {SITE_NAME}.{" "}
               <Link href={manageUrl} style={footerLinkStrong}>
                 Manage your alerts
               </Link>{" "}
@@ -142,8 +144,7 @@ export default function AlertEmail({
               .
             </Text>
             <Text style={footerText}>
-              Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San
-              Francisco, CA 94114
+              {SITE_NAME} · wheretogoforgreatweather.com · {POSTAL_ADDRESS}
             </Text>
           </Section>
         </Container>

@@ -29,7 +29,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display text-[15px] font-medium tracking-[-0.005em]">
-              Atlas Weather
+              Where to Go for Great Weather
             </span>
             <span className="mt-0.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-text-subtle">
               wheretogoforgreatweather
@@ -43,7 +43,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
       </main>
 
       <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-surface px-6 py-5 font-mono text-[11px] text-text-subtle md:px-8">
-        <div>© 2026 Atlas Weather · v2.0</div>
+        <div>© 2026 Where to Go for Great Weather</div>
         <nav className="flex gap-5">
           <Link href="/privacy" className="text-text-muted underline underline-offset-2 hover:text-text">
             Privacy

@@ -5,7 +5,7 @@ import { getCountry } from "@/lib/api-client";
 export const runtime = "nodejs";
 export const contentType = "image/png";
 export const size = { width: 1200, height: 630 };
-export const alt = "Atlas Weather — country climate guide";
+export const alt = "Where to Go for Great Weather — country climate guide";
 
 export default async function OG({
   params,
@@ -112,7 +112,7 @@ function Footer() {
         >
           ☀
         </div>
-        <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Atlas Weather</span>
+        <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Where to Go for Great Weather</span>
       </div>
       <span>ERA5 climate · government safety advisories</span>
     </div>

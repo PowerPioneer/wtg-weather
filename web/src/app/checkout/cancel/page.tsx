@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CHECKOUT_RETURN_COPY } from "@/components/upgrade";
 
 export const metadata: Metadata = {
-  title: "Checkout cancelled · Atlas Weather",
+  title: "Checkout cancelled",
   robots: { index: false, follow: false },
 };
 

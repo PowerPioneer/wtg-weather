@@ -8,7 +8,7 @@ import { getEntitlement, getSessionServer } from "@/lib/session";
 import { MapExperience } from "./map-experience";
 
 export const metadata: Metadata = {
-  title: "Map · Where to Go for Great Weather",
+  title: "Map",
   description:
     "Explore ten years of climate data and six-government safety advisories on an interactive world map.",
 };

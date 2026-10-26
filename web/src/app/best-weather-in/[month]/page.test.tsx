@@ -229,7 +229,7 @@ describe("/best-weather-in/[month] — metadata", () => {
     expect(meta.alternates?.canonical).toBe(
       "https://v2.wheretogoforgreatweather.com/best-weather-in/september",
     );
-    expect(meta.title).toContain("September");
+    expect(meta.title).toEqual({ absolute: expect.stringContaining("September") });
     expect(meta.openGraph?.url).toBe(
       "https://v2.wheretogoforgreatweather.com/best-weather-in/september",
     );

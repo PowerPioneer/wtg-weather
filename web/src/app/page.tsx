@@ -44,7 +44,7 @@ export default async function HomePage() {
           <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-6 py-16 md:grid-cols-[1.2fr_1fr] md:px-12 md:py-24">
             <div className="flex flex-col justify-center gap-6">
               <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
-                Travel-climate map · Atlas Weather
+                Travel-climate map
               </div>
               <h1 className="font-display text-[56px] font-medium leading-[1.06] tracking-[-0.01em] text-text md:text-[80px]">
                 Plan trips around the weather{" "}

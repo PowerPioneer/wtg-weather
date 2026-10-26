@@ -8,7 +8,7 @@ import { getSessionServer } from "@/lib/session";
 export const metadata: Metadata = {
   title: "Sign in",
   description:
-    "Sign in to Atlas Weather with a one-time email link. No passwords, no cards on file.",
+    "Sign in to Where to Go for Great Weather with a one-time email link. No passwords, no cards on file.",
   robots: { index: false, follow: false },
 };
 

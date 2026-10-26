@@ -20,6 +20,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { POSTAL_ADDRESS, SITE_NAME } from "../lib/brand";
+
 export type MagicLinkEmailProps = {
   /** The fully-signed URL the recipient should click to finish sign-in. */
   verifyUrl: string;
@@ -49,7 +51,7 @@ export default function MagicLinkEmail({
               <tbody>
                 <tr>
                   <td style={brand}>
-                    <span style={brandName}>Atlas Weather</span>
+                    <span style={brandName}>{SITE_NAME}</span>
                     <span style={brandWordmark}>WHERETOGOFORGREATWEATHER</span>
                   </td>
                   <td align="right" style={eyebrow}>
@@ -61,7 +63,7 @@ export default function MagicLinkEmail({
           </Section>
 
           <Section style={headingSection}>
-            <Text style={h1}>Sign in to Atlas Weather</Text>
+            <Text style={h1}>Sign in to {SITE_NAME}</Text>
             <Text style={lede}>
               Click the button below to finish signing in. This link is good for{" "}
               <strong style={emphasis}>one sign-in</strong> and expires in{" "}
@@ -71,7 +73,7 @@ export default function MagicLinkEmail({
 
           <Section style={ctaWrap}>
             <Button href={verifyUrl} style={cta}>
-              Sign in to Atlas Weather →
+              Sign in to {SITE_NAME} →
             </Button>
             <Text style={fallback}>
               Or paste this URL into your browser:
@@ -134,8 +136,7 @@ export default function MagicLinkEmail({
 
           <Section style={footer}>
             <Text style={footerText}>
-              Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San
-              Francisco, CA 94114
+              {SITE_NAME} · wheretogoforgreatweather.com · {POSTAL_ADDRESS}
               <br />
               <Link href="https://wheretogoforgreatweather.com/help" style={footerLink}>
                 Help centre

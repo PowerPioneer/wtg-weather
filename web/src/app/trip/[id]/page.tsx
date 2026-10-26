@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const trip = await getOwnTrip(id);
   if (!trip) return { title: "Trip not found", robots: { index: false } };
   return {
-    title: `${trip.title} · Atlas Weather`,
+    title: trip.title,
     description: describeTrip(trip),
     // Never indexed. This is one user's private page, and the shared view has
     // its own route with its own (also unindexed) metadata.

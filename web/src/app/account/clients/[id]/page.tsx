@@ -40,7 +40,7 @@ export const dynamic = "force-dynamic";
  * 404s without a session anyway.
  */
 export const metadata: Metadata = {
-  title: "Client · Atlas Weather",
+  title: "Client",
   robots: { index: false },
 };
 

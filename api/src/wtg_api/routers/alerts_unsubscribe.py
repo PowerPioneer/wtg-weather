@@ -51,11 +51,11 @@ def _page(title: str, body: str, *, status_code: int = 200) -> Response:
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>{escape(title)} · Atlas Weather</title>
+<title>{escape(title)} · Where to Go for Great Weather</title>
 </head>
 <body style="margin:0;background:#ECEAE3;font-family:Helvetica,Arial,sans-serif;color:#0F1B2D">
 <div style="max-width:520px;margin:64px auto;padding:32px 36px;background:#fff;border:1px solid #E6E0D4;border-radius:6px">
-<p style="margin:0 0 18px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6B7280">Atlas Weather</p>
+<p style="margin:0 0 18px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6B7280">Where to Go for Great Weather</p>
 <h1 style="margin:0 0 12px;font-family:Georgia,serif;font-size:24px;font-weight:500">{escape(title)}</h1>
 {body}
 <p style="margin:24px 0 0;font-size:12px;color:#6B7280">

@@ -18,14 +18,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Where to Go for Great Weather",
-    template: "%s · Atlas Weather",
+    template: "%s · Where to Go for Great Weather",
   },
   description:
     "A travel-climate map. Ten years of ERA5 data and six-government safety advisories for every country, for every month.",
   applicationName: "Where to Go for Great Weather",
   openGraph: {
     type: "website",
-    siteName: "Atlas Weather",
+    siteName: "Where to Go for Great Weather",
     locale: "en_US",
   },
   twitter: {
