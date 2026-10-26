@@ -1,6 +1,6 @@
 {
   "iso2": "SI",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "vintgar-gorge",
@@ -35,6 +35,58 @@
         {
           "url": "https://routinelynomadic.com/vintgar-gorge-slovenia/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "postojna-cave",
+      "name": "Postojna Cave",
+      "kind": "site",
+      "regions": [
+        "SI-094"
+      ],
+      "status": "open",
+      "note": "open every day of the year, in all weathers",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Living Nativity is staged inside the cave between 25 and 30 December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.postojnska-jama.eu/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vrsic-pass",
+      "name": "Vršič Pass road",
+      "kind": "drive",
+      "regions": [
+        "SI-053",
+        "SI-006"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "heavy snowfall makes the upper road impassable for much of the winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Vršič_Pass",
+          "checked": "2026-10-26"
         }
       ]
     }

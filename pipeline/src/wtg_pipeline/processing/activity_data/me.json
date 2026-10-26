@@ -1,6 +1,6 @@
 {
   "iso2": "ME",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "bay-of-kotor",
@@ -42,6 +42,61 @@
         {
           "url": "https://www.sunshineseeker.com/destinations/kotor/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "fasinada",
+      "name": "Fašinada, Perast",
+      "kind": "festival",
+      "regions": [
+        "ME-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "at sunset on 22 July, local boats drop stones around Our Lady of the Rocks to widen the islet"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Our_Lady_of_the_Rocks",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "durmitor-hiking",
+      "name": "Hiking in Durmitor (Bobotov Kuk)",
+      "kind": "hike",
+      "regions": [
+        "ME-21"
+      ],
+      "status": "limited",
+      "note": "outside summer the trails can be under snow; in winter Durmitor is for skiing",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer, when activity on the massif shifts to hiking and mountaineering"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Durmitor_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Žabljak",
+          "checked": "2026-10-26"
         }
       ]
     }

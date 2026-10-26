@@ -1,6 +1,6 @@
 {
   "iso2": "BG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "seven-rila-lakes",
@@ -70,6 +70,37 @@
         {
           "url": "https://traventuria.com/bulgaria/seven-rila-lakes-rila-monastery-tour-from-sofia/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "kazanlak-rose-festival",
+      "name": "Rose Festival, Kazanlak",
+      "kind": "festival",
+      "regions": [
+        "BG-24"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the Rose Festival is held over the first weekend of June, as the Kazanlak rose comes into bloom"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "the rose fields of the valley blossom from mid-May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kazanlak",
+          "checked": "2026-10-26"
         }
       ]
     }

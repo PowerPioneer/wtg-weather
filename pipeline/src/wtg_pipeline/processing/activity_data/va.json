@@ -1,0 +1,68 @@
+{
+  "iso2": "VA",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "vatican-museums",
+      "name": "Vatican Museums and Sistine Chapel",
+      "kind": "site",
+      "status": "open",
+      "note": "open Monday to Saturday all year; closed on Sundays except the last Sunday of the month, which is free, and on about a dozen holy days",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.museivaticani.va/content/museivaticani/en/info/orari-musei-vaticani.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "easter-urbi-et-orbi",
+      "name": "Easter at St Peter's",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "the pope gives the Urbi et Orbi blessing from the loggia of St Peter's at noon on Easter Sunday, which falls in March or April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Urbi_et_Orbi",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "christmas-urbi-et-orbi",
+      "name": "Christmas at St Peter's",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the Vatican Museums close on 8, 25 and 26 December",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Urbi et Orbi blessing from the loggia of St Peter's at noon on Christmas Day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Urbi_et_Orbi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.museivaticani.va/content/museivaticani/en/info/orari-musei-vaticani.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

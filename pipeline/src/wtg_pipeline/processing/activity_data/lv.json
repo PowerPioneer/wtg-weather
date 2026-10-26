@@ -1,0 +1,89 @@
+{
+  "iso2": "LV",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "jani",
+      "name": "Jani midsummer",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "23-24 June are public holidays; people head to the countryside for bonfires that burn till morning, oak-leaf wreaths, beer and cheese"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jāņi",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rundale-palace",
+      "name": "Rundale Palace and its rose garden",
+      "kind": "site",
+      "regions": [
+        "LV-083"
+      ],
+      "status": "open",
+      "note": "the palace and French garden open all year, with shorter hours from November to April",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "the historical roses bloom once, from late May to mid-July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rundale.net/en/the-park/rose-garden/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rundale.net/en/visiting-hours/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "riga-christmas-market",
+      "name": "Riga Christmas market",
+      "kind": "festival",
+      "regions": [
+        "LV-RIX"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the market runs in the UNESCO-listed Old Town from late November to early January"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "the market opens in late November and closes in early January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

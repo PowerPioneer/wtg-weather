@@ -1,0 +1,119 @@
+{
+  "iso2": "BA",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sarajevo-film-festival",
+      "name": "Sarajevo Film Festival",
+      "kind": "festival",
+      "regions": [
+        "BA-BIH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the festival is held every August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sarajevo_Film_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mostar-bridge-diving",
+      "name": "Stari Most diving competition, Mostar",
+      "kind": "festival",
+      "regions": [
+        "BA-BIH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the annual competition is held in midsummer, at the end of July, with divers leaping from the bridge into the Neretva"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Stari_Most",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jahorina-ski",
+      "name": "Skiing at Jahorina",
+      "kind": "ski",
+      "regions": [
+        "BA-SRP"
+      ],
+      "status": "closed",
+      "note": "outside winter the lifts are not running for skiing; a separate summer season runs from mid-June",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter season, most recently 139 days from 2 December to 19 April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the tail of the season, which most recently closed on 19 April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.oc-jahorina.com/en/zimska-sezona-na-jahorini-zvnicno-zavrsena-nakon-139-dana-rada/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.oc-jahorina.com/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kravice",
+      "name": "Kravica waterfall",
+      "kind": "swim",
+      "regions": [
+        "BA-BIH"
+      ],
+      "status": "open",
+      "note": "a popular swimming and picnic spot south of Ljubuški, busiest with visitors in summer",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "spring, when the falls are at their fullest and the landscape is green"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kravice",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

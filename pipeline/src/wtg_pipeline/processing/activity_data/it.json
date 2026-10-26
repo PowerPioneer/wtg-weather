@@ -1,6 +1,6 @@
 {
   "iso2": "IT",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "stelvio-pass",
@@ -90,6 +90,263 @@
         {
           "url": "https://www.mondoneve.it/en/passo-stelvio/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "venice-carnival",
+      "name": "Carnival of Venice",
+      "kind": "festival",
+      "regions": [
+        "IT-VE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the masked carnival ends on Shrove Tuesday, which usually falls in February"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            3
+          ],
+          "reason": "Shrove Tuesday moves with Easter, so the carnival can start in late January or run into early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival_of_Venice",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.carnevale.venezia.it/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "palio-di-siena",
+      "name": "Palio di Siena",
+      "kind": "festival",
+      "regions": [
+        "IT-SI"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the bareback horse race around the Piazza del Campo is run on 2 July and 16 August, after several days of trial runs"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visittuscany.com/en/topevents/palio-di-siena-tuscany/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Palio_di_Siena",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dolomites-alta-via-1",
+      "name": "Alta Via 1 hut-to-hut trek, Dolomites",
+      "kind": "trek",
+      "regions": [
+        "IT-BZ",
+        "IT-BL"
+      ],
+      "status": "closed",
+      "note": "there is no accommodation on the route outside the summer hut season",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "the huts open around the third week of June, and light snow is possible early in the season"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "every hut is open and the weather is at its most settled"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "the huts close around the third week of September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mountainiq.com/alta-via-1/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Alta_Via_1",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dolomiti-superski",
+      "name": "Skiing the Dolomites (Dolomiti Superski)",
+      "kind": "ski",
+      "regions": [
+        "IT-BZ",
+        "IT-TN",
+        "IT-BL"
+      ],
+      "status": "closed",
+      "note": "the lifts close for skiing from April to December",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the middle of the ski season"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the season opens in early December"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the lifts close in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dolomiti_Superski",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.skiresort.com/en/snow-reports/seasonstart/val-gardena-groeden/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "arena-di-verona-opera",
+      "name": "Opera at the Arena di Verona",
+      "kind": "festival",
+      "regions": [
+        "IT-VR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the heart of the summer opera festival in the Roman amphitheatre"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the festival opens in mid-June and closes in early to mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.arena.it/en/magazine/news/aperte-le-vendite-per-il-103-arena-di-verona-opera-festival-2026/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://iicdublino.esteri.it/en/gli_eventi/calendario/arena-di-verona-opera-festival-2025/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "amalfi-coast-ferries",
+      "name": "Amalfi Coast ferries",
+      "kind": "transport",
+      "regions": [
+        "IT-SA"
+      ],
+      "status": "closed",
+      "note": "in winter there is no Amalfi Coast ferry from Sorrento and none between Positano and Capri; only the Naples and island routes run",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "ferries to Positano and Amalfi run in the tourist season, from the beginning of April through October; rough seas can still cancel sailings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://positano.com/en/ferry-schedule",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "alba-truffle-fair",
+      "name": "Alba White Truffle Fair",
+      "kind": "festival",
+      "regions": [
+        "IT-CN"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the international white truffle fair runs from early October"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the fair closes in early December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.fieradeltartufo.org/en/",
+          "checked": "2026-10-26"
         }
       ]
     }

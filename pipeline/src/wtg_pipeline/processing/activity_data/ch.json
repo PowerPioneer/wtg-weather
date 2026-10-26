@@ -1,6 +1,6 @@
 {
   "iso2": "CH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "alpine-passes",
@@ -69,6 +69,154 @@
         {
           "url": "https://www.jungfrau.ch/en-gb/winter-hiking/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "glacier-express",
+      "name": "Glacier Express (Zermatt to St. Moritz)",
+      "kind": "transport",
+      "regions": [
+        "CH-VS",
+        "CH-GR"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11
+          ],
+          "reason": "the train does not run during its annual break from mid-October to early December"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            12
+          ],
+          "reason": "the annual break starts in mid-October and service resumes in early December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.glacierexpress.ch/en/timetable",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pilatus-cogwheel",
+      "name": "Pilatus cogwheel railway",
+      "kind": "transport",
+      "regions": [
+        "CH-OW",
+        "CH-LU"
+      ],
+      "status": "open",
+      "note": "the summit itself stays reachable in winter by gondola and cable car from Kriens",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the cogwheel railway from Alpnachstad runs only from May to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://pilatus.ch/en/railway-cableways/cogwheel-railway",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://pilatus.ch/en/railway-cableways/timetable",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "trummelbach-falls",
+      "name": "Trümmelbach Falls (Lauterbrunnen)",
+      "kind": "site",
+      "regions": [
+        "CH-BE"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the falls are open daily only from early April to early November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.truemmelbachfaelle.ch/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "basel-fasnacht",
+      "name": "Basel Fasnacht",
+      "kind": "festival",
+      "regions": [
+        "CH-BS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "exactly 72 hours from 4am on the Monday after Ash Wednesday, which falls in February or March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival_of_Basel",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "montreux-jazz",
+      "name": "Montreux Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "CH-VD"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "about two weeks of concerts in Montreux, starting in early July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Montreux_Jazz_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.montreuxjazzfestival.com/en/",
+          "checked": "2026-10-26"
         }
       ]
     }

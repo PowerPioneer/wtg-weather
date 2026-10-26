@@ -1,6 +1,6 @@
 {
   "iso2": "DE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "oktoberfest",
@@ -107,6 +107,162 @@
         {
           "url": "https://travelerbibles.com/zugspitze-best-time-to-visit/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "nuremberg-christkindlesmarkt",
+      "name": "Nuremberg Christkindlesmarkt",
+      "kind": "festival",
+      "regions": [
+        "DE-BY"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the market on Nuremberg's main square runs through Advent until Christmas Eve, 24 December"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "it opens in late November with the Christkind's opening ceremony on the market square"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tourismus.nuernberg.de/en/food-drink/culinary-experiences/festivals-and-markets/the-nuremberg-christkindlesmarkt-1/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.christkindlesmarkt.de/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cologne-carnival",
+      "name": "Cologne Carnival",
+      "kind": "festival",
+      "regions": [
+        "DE-NW"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the street carnival runs from Weiberfastnacht to Shrove Tuesday, with the Rose Monday parade; it follows Easter, so in late-Easter years it reaches early March"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the carnival season is declared open at 11 minutes past 11 on 11 November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cologne-tourism.com/carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.koeln.de/karneval/wann-ist-karneval/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Cologne_Carnival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "middle-rhine-boats",
+      "name": "Middle Rhine boat trips (Loreley valley)",
+      "kind": "tour",
+      "regions": [
+        "DE-RP",
+        "DE-HE"
+      ],
+      "status": "open",
+      "note": "the full timetables run from April to October; check the operator's calendar before planning around a winter sailing",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the scheduled boats largely stop for winter; winter sailings run only on days with enough bookings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tripbase.com/routes/rhine-valley-grand-tour/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.european-traveler.com/germany/winter-day-trip-pleasure-boat-cruises-on-the-rhine-river-in-germany/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kiel-week",
+      "name": "Kiel Week (Kieler Woche)",
+      "kind": "festival",
+      "regions": [
+        "DE-SH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the sailing regatta and city festival is held every year in the last week of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kiel_Week",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "berlinale",
+      "name": "Berlinale film festival",
+      "kind": "festival",
+      "regions": [
+        "DE-BE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the Berlin International Film Festival is held every February, with hundreds of thousands of tickets sold to the public"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Berlin_International_Film_Festival",
+          "checked": "2026-10-26"
         }
       ]
     }

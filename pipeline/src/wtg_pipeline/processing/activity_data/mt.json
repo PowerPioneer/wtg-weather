@@ -1,6 +1,6 @@
 {
   "iso2": "MT",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "blue-lagoon",
@@ -73,6 +73,30 @@
         {
           "url": "https://en.wikipedia.org/wiki/Climate_of_Malta",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "mnarja",
+      "name": "L-Imnarja, Rabat",
+      "kind": "festival",
+      "regions": [
+        "MT-46"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the feast of Saints Peter and Paul, with horse races in Rabat on 29 June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_Malta",
+          "checked": "2026-10-26"
         }
       ]
     }

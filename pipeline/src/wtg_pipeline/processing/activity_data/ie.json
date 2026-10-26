@@ -1,6 +1,6 @@
 {
   "iso2": "IE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "skellig-michael",
@@ -80,6 +80,134 @@
         {
           "url": "https://www.ireland.com/en-us/magazine/water-activities/boat-trips-wild-atlantic-way/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "st-patricks-festival",
+      "name": "St Patrick's Festival, Dublin",
+      "kind": "festival",
+      "regions": [
+        "IE-D"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "a festival of several days culminating on St Patrick's Day, 17 March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://stpatricksfestival.ie/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "galway-arts-festival",
+      "name": "Galway International Arts Festival",
+      "kind": "festival",
+      "regions": [
+        "IE-G"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a two-week arts festival in late July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Galway_International_Arts_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.giaf.ie/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "puck-fair",
+      "name": "Puck Fair, Killorglin",
+      "kind": "festival",
+      "regions": [
+        "IE-KY"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held every year from 10 to 12 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Puck_Fair",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cork-jazz-festival",
+      "name": "Cork Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "IE-CO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "held in late October, running to the October bank holiday Monday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cork_Jazz_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bru-na-boinne",
+      "name": "Brú na Bóinne: Newgrange and Knowth",
+      "kind": "site",
+      "regions": [
+        "IE-MH"
+      ],
+      "status": "open",
+      "note": "the visitor centre and Newgrange are open all year except 24 to 27 December and 1 January",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the Knowth tour runs only from 1 March to 1 November; in winter only Newgrange is toured"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://heritageireland.ie/places-to-visit/bru-na-boinne-visitor-centre-newgrange-and-knowth/",
+          "checked": "2026-10-26"
         }
       ]
     }

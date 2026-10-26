@@ -1,0 +1,86 @@
+{
+  "iso2": "IM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "isle-of-man-tt",
+      "name": "Isle of Man TT races",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "race week, on the public roads of the Mountain Course, which are closed to traffic during sessions"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "practice week begins on the Spring Bank Holiday at the end of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Isle_of_Man_TT",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "snaefell-mountain-railway",
+      "name": "Snaefell Mountain Railway",
+      "kind": "transport",
+      "status": "open",
+      "note": "runs from March to early November",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "closed for the winter; the overhead wires on the exposed upper section are taken down to avoid icing damage"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season ends in early November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Snaefell_Mountain_Railway",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tynwald-day",
+      "name": "Tynwald Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the open-air sitting of the Manx parliament on Tynwald Hill at St John's, on 5 July or the following Monday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tynwald_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

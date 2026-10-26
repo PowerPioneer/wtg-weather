@@ -1,0 +1,91 @@
+{
+  "iso2": "LU",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "schueberfouer",
+      "name": "Schueberfouer funfair",
+      "kind": "festival",
+      "regions": [
+        "LU-L"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the funfair on the Glacis in Luxembourg City runs for about 20 days from the days before 24 August into early September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Schueberfouer",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/luxembourg/schueberfouer",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "echternach-procession",
+      "name": "Hopping procession of Echternach",
+      "kind": "festival",
+      "regions": [
+        "LU-G"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "held every Whit Tuesday, so in May or June depending on Easter; on UNESCO's intangible heritage list since 2010"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dancing_procession_of_Echternach",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "luxembourg-winterlights",
+      "name": "Winterlights and Christmas markets, Luxembourg City",
+      "kind": "festival",
+      "regions": [
+        "LU-L"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Christmas markets run through December until 1 January"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "Winterlights opens in mid- to late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rove.me/to/luxembourg/luxembourg-christmas-market",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

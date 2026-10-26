@@ -1,0 +1,122 @@
+{
+  "iso2": "UA",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bukovel-ski",
+      "name": "Skiing at Bukovel",
+      "kind": "ski",
+      "regions": [
+        "UA-26"
+      ],
+      "status": "closed",
+      "note": "outside the ski season the resort switches to summer activities around its lake and bike park",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the heart of the Carpathian ski season, which usually runs from early December to mid-April"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            4
+          ],
+          "reason": "the edges of the season; opening and closing depend on the snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bukovel",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://bukovel.com/en",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hoverla",
+      "name": "Hoverla, Ukraine's highest peak",
+      "kind": "hike",
+      "regions": [
+        "UA-26",
+        "UA-21"
+      ],
+      "status": "limited",
+      "note": "winter on the summit lasts from mid-October through April; climbs then go privately, in much harsher weather",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the summer season of daily guided climbs from Zaroslyak; blueberries ripen in July and August"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "guided tours still run, though winter sets in on the summit from mid-October"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "snow and cold are still common on the mountain in May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://outdoorukraine.com/en/1655",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://vidviday.ua/blog/en/hiking-hoverla-mountain-carpathian-mountains-in-ukraine/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "faine-misto",
+      "name": "Faine Misto festival, Lviv",
+      "kind": "festival",
+      "regions": [
+        "UA-46"
+      ],
+      "status": "not-on",
+      "note": "the rock festival moved from Ternopil to Lviv after the full-scale invasion and raises money for the military",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "three days at the turn of July and August; held in Lviv since 2023"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Faine_Misto",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.kyivpost.com/amp/post/59447",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

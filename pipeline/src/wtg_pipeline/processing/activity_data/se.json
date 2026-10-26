@@ -1,6 +1,6 @@
 {
   "iso2": "SE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "northern-lights",
@@ -52,6 +52,113 @@
         {
           "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "midsummer",
+      "name": "Midsummer",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "Midsummer Eve falls on the Friday between 19 and 26 June, marking the summer solstice around the maypole"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Midsummer",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitsweden.com/about-sweden/summer/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "icehotel",
+      "name": "ICEHOTEL (Jukkasjärvi)",
+      "kind": "site",
+      "regions": [
+        "SE-BD"
+      ],
+      "status": "open",
+      "note": "the year-round ICEHOTEL 365 rooms stay open all year; the hotel built of river ice melts away each spring",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the seasonal hotel, rebuilt each winter from Torne River ice, is open from December to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.icehotel.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Icehotel_(Jukkasj%C3%A4rvi)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kungsleden",
+      "name": "Kungsleden (King's Trail)",
+      "kind": "trek",
+      "regions": [
+        "SE-BD"
+      ],
+      "status": "closed",
+      "note": "the huts open for the summer season, mid-June to the end of September, and the route is skied from mid-February through April",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the summer hiking season, when the huts along the trail are open"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the huts open in mid-June"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "the winter season, when the route is followed on skis"
+        },
+        {
+          "status": "limited",
+          "months": [
+            2
+          ],
+          "reason": "the winter ski season starts in mid-February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kungsleden",
+          "checked": "2026-10-26"
         }
       ]
     }

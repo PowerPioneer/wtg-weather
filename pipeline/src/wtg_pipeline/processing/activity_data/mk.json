@@ -1,0 +1,79 @@
+{
+  "iso2": "MK",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "ohrid-summer-festival",
+      "name": "Ohrid Summer Festival",
+      "kind": "festival",
+      "regions": [
+        "MK-58"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "held every year between 12 July and 20 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ohrid_Summer_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "galicnik-wedding",
+      "name": "Galičnik Wedding Festival",
+      "kind": "festival",
+      "regions": [
+        "MK-50"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a two-day traditional wedding on the weekend nearest 12 July, St Peter's Day (Petrovden)"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Galičnik_Wedding_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vevcani-carnival",
+      "name": "Vevčani Carnival",
+      "kind": "festival",
+      "regions": [
+        "MK-12"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held each January for the New Year of the Julian calendar, a village carnival claimed to be over 1,400 years old"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Vevčani",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

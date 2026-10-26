@@ -1,6 +1,6 @@
 {
   "iso2": "SK",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "high-tatras",
@@ -48,6 +48,70 @@
         {
           "url": "https://hiking-trails.com/trail/high-tatra-hut-to-hut/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "tatra-high-trails",
+      "name": "High Tatras saddles and summits",
+      "kind": "hike",
+      "regions": [
+        "SK-PV"
+      ],
+      "status": "open",
+      "note": "the closure applies to the high-alpine trails; lower trails with natural snow cover stay open for winter hiking",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the national park's seven-month seasonal closure shuts the high-alpine saddles and peaks, lifting at the start of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tanap.sk/koniec-sezonnej-uzavery",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tanap.sk/zimna-turistika/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dobsinska-ice-cave",
+      "name": "Dobšinská Ice Cave",
+      "kind": "site",
+      "regions": [
+        "SK-KI"
+      ],
+      "status": "closed",
+      "note": "outside its visiting season the cave is shut",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the show cave is open to visitors from May to September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dobšinská_Ice_Cave",
+          "checked": "2026-10-26"
         }
       ]
     }

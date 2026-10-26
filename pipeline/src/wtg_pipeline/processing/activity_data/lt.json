@@ -1,0 +1,91 @@
+{
+  "iso2": "LT",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "kaziukas-fair",
+      "name": "Kaziukas Fair, Vilnius",
+      "kind": "festival",
+      "regions": [
+        "LT-VL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the crafts fair fills the Old Town on the Sunday nearest 4 March, St Casimir's day, to welcome the spring"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kaziukas_Fair",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://lithuania.travel/en/where-to-visit/seasonal-highlights/spring/kaziuko-muge-st-casimirs-fair",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jonines",
+      "name": "Jonines (Rasos) midsummer",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "celebrated on 24 June, a national holiday, with bonfires, flower wreaths and the hunt for the fern flower"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Joninės",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://lithuania.travel/en/where-to-visit/seasonal-highlights/summer/midsummer-in-lithuania",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vilnius-christmas-market",
+      "name": "Vilnius Christmas market",
+      "kind": "festival",
+      "regions": [
+        "LT-VL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the market is held around Cathedral Square from late November to early January"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "the market opens in late November and closes in early January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

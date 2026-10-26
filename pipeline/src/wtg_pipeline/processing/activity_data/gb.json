@@ -1,6 +1,6 @@
 {
   "iso2": "GB",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "edinburgh-fringe",
@@ -69,6 +69,174 @@
         {
           "url": "https://outdoorscot.co.uk/blog/midge-season-scotland",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "snowdon-mountain-railway",
+      "name": "Snowdon Mountain Railway",
+      "kind": "transport",
+      "regions": [
+        "GB-GWN"
+      ],
+      "status": "open",
+      "note": "trains turn back at Rocky Valley rather than reaching the summit when the weather is too bad",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the railway closes for the winter, from November to mid-March"
+        },
+        {
+          "status": "limited",
+          "months": [
+            3
+          ],
+          "reason": "the season starts in mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Snowdon_Mountain_Railway",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://snowdonrailway.co.uk/plan-your-visit/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "skomer-puffins",
+      "name": "Skomer Island and its puffins",
+      "kind": "wildlife",
+      "regions": [
+        "GB-PEM"
+      ],
+      "status": "closed",
+      "note": "the landing boat sails April to September only, daily except Mondays, with 250 visitors a day",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "the puffins are ashore nesting in their burrows"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            7
+          ],
+          "reason": "the puffins arrive in mid-April and the last leave by the third week of July"
+        },
+        {
+          "status": "open",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the boat still lands visitors, but the puffins have gone back to sea"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Skomer",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "notting-hill-carnival",
+      "name": "Notting Hill Carnival",
+      "kind": "festival",
+      "regions": [
+        "GB-KEC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held over the August bank holiday weekend in the streets of Notting Hill"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Notting_Hill_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://nhcarnival.org/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "edinburgh-hogmanay",
+      "name": "Edinburgh's Hogmanay",
+      "kind": "festival",
+      "regions": [
+        "GB-EDH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "a torchlight procession on 29 December and the street party on 31 December, running into New Year's Day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://edwinterfest.com/hogmanay",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Edinburgh%27s_Hogmanay",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "wimbledon",
+      "name": "Wimbledon Championships",
+      "kind": "festival",
+      "regions": [
+        "GB-MRT"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "two weeks of tennis in late June and early July; show-court seats go by ballot or by queueing on the day"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the tournament starts on the last Monday in June or the first Monday in July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/The_Championships,_Wimbledon",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,13 +1,14 @@
 {
   "iso2": "IS",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "highland-f-roads",
       "name": "Highland F-roads (Landmannalaugar, Askja)",
       "kind": "drive",
       "regions": [
-        "IS-8"
+        "IS-8",
+        "IS-6"
       ],
       "status": "open",
       "windows": [
@@ -85,6 +86,10 @@
         {
           "url": "https://guidetoiceland.is/nature-info/ice-caves-in-iceland",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.visiticeland.com/article/iceland-in-november/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -152,6 +157,70 @@
         {
           "url": "https://mapoficeland.is/guides/f-roads-opening-dates-iceland/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "northern-lights",
+      "name": "Northern lights",
+      "kind": "season",
+      "status": "not-on",
+      "note": "from May to August the sky does not get dark enough to see them",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the longest nights give the widest viewing window"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            2,
+            3,
+            4
+          ],
+          "reason": "from September through April the sky gets dark enough for aurora viewing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visiticeland.com/article/astrotourism-iceland/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visiticeland.com/article/iceland-in-november/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thjodhatid",
+      "name": "Þjóðhátíð (Westman Islands festival)",
+      "kind": "festival",
+      "regions": [
+        "IS-8"
+      ],
+      "status": "not-on",
+      "note": "in some years the weekend begins in the last days of July",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held in Herjólfsdalur on Heimaey over the weekend before the first Monday in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/%C3%9Ej%C3%B3%C3%B0h%C3%A1t%C3%AD%C3%B0",
+          "checked": "2026-10-26"
         }
       ]
     }

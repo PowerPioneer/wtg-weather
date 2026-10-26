@@ -1,0 +1,102 @@
+{
+  "iso2": "RS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "guca-trumpet-festival",
+      "name": "Guča Trumpet Festival",
+      "kind": "festival",
+      "regions": [
+        "RS-17"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "brass bands play from Friday to Sunday on a weekend in early August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Guča_Trumpet_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Guča",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nisville",
+      "name": "Nišville Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "RS-20"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held each August on the open-air stages of Niš Fortress"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nišville",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nisville.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kopaonik-ski",
+      "name": "Skiing at Kopaonik",
+      "kind": "ski",
+      "regions": [
+        "RS-18"
+      ],
+      "status": "closed",
+      "note": "outside winter the lifts are not running for skiing; the summer season, with lifts for sightseeing, starts in late June",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter ski season; the snow season runs from November to April and snowmaking covers 97% of the pistes"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            4
+          ],
+          "reason": "the season's edges, set by snow cover; in 2026 an extended schedule ran to 13 April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kopaonik",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.skijalistasrbije.rs/sr/o-centru-kopaonik",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

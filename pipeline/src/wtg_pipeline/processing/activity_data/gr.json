@@ -1,6 +1,6 @@
 {
   "iso2": "GR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "samaria-gorge",
@@ -115,6 +115,180 @@
         {
           "url": "https://www.davestravelpages.com/winter-in-santorini/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "meteora",
+      "name": "Meteora monasteries",
+      "kind": "site",
+      "regions": [
+        "GR-E"
+      ],
+      "status": "open",
+      "note": "six working monasteries, each closing on its own weekday, so a weekday visit always finds at least one shut; all six open at weekends",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the winter timetable, 1 November to 31 March, brings shorter hours, with several monasteries closing by 14:00"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitmeteora.travel/monasteries-opening-hours-and-days/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.maptrotting.com/meteora-monasteries-opening-hours/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-olympus",
+      "name": "Climbing Mount Olympus",
+      "kind": "trek",
+      "regions": [
+        "GR-B"
+      ],
+      "status": "limited",
+      "note": "above 2,000 m the mountain is snow-capped for around nine months of the year, and the high refuges are shut in winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the trails are free of snow and the mountain huts are open"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the edges of the refuge season: Refuge A opens in May and closes in the last week of October, with snow on the high ridges"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://mountolympus.gr/?p=614",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.muchbetteradventures.com/magazine/best-time-of-year-to-hike-mount-olympus/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "epidaurus-festival",
+      "name": "Athens & Epidaurus Festival",
+      "kind": "festival",
+      "regions": [
+        "GR-J",
+        "GR-A1"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "performances in the ancient theatre of Epidaurus on Friday and Saturday nights through July and August"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "the wider festival runs from May to October, mostly at venues in Athens"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Athens_Epidaurus_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.greeka.com/peloponnese/epidaurus/festivals/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "orthodox-easter",
+      "name": "Greek Orthodox Easter (Pascha)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "Easter moves each year between 4 April and 8 May; Holy Week builds to Good Friday's Epitaphios processions and the midnight Resurrection service"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_dates_for_Easter",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.travel.gr/en/experiences-ee/greek-easter-traditions-food-and-destinations/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "parnassos-ski",
+      "name": "Skiing on Mount Parnassos",
+      "kind": "ski",
+      "regions": [
+        "GR-H"
+      ],
+      "status": "closed",
+      "note": "outside winter the lifts are not running for skiing",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the heart of the ski season, which runs from mid-December to early April depending on snow"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            4
+          ],
+          "reason": "the season's edges: it usually opens in mid-December and closes in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skiresort.com/en/ski-resort/mount-parnassos-fterolakka-kellaria/",
+          "checked": "2026-10-26"
         }
       ]
     }

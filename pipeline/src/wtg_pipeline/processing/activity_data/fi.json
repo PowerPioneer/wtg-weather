@@ -1,6 +1,6 @@
 {
   "iso2": "FI",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "northern-lights",
@@ -51,6 +51,79 @@
         {
           "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "ruska",
+      "name": "Ruska autumn colours in Lapland",
+      "kind": "season",
+      "regions": [
+        "FI-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "the colours start in early September in Lapland and peak around the second week, lasting about ten days"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitfinland.com/en/articles/best-ways-to-experience-fall-foliage-in-finland/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "savonlinna-opera",
+      "name": "Savonlinna Opera Festival",
+      "kind": "festival",
+      "regions": [
+        "FI-04"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a month of opera in the medieval Olavinlinna castle, running through July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Savonlinna_Opera_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://operafestival.fi/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "midsummer",
+      "name": "Midsummer (Juhannus)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the holiday falls on the Saturday between 20 and 26 June, with celebrations starting on Midsummer Eve"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Midsummer",
+          "checked": "2026-10-26"
         }
       ]
     }

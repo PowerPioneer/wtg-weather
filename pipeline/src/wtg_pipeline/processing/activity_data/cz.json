@@ -1,6 +1,6 @@
 {
   "iso2": "CZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "prague-old-town",
@@ -35,6 +35,162 @@
         {
           "url": "https://www.ricksteves.com/europe/czech-republic/best-time-to-go-to-prague-czech-republic",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "prague-christmas-markets",
+      "name": "Prague's Christmas markets",
+      "kind": "festival",
+      "regions": [
+        "CZ-PR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Old Town Square and Wenceslas Square markets run through Advent and Christmas"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "the markets open in late November and stay until 6 January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "http://trhypraha.cz/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://prague.eu/en/akce/old-town-square-christmas-market/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "prague-spring",
+      "name": "Prague Spring music festival",
+      "kind": "festival",
+      "regions": [
+        "CZ-PR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the classical music festival opens every year on 12 May, the anniversary of Smetana's death"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://festival.cz/en/about-us/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Prague_Spring_International_Music_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "karlstejn",
+      "name": "Karlštejn Castle",
+      "kind": "site",
+      "regions": [
+        "CZ-ST"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the chapels tour is closed from November to April, and the basic tour runs mainly at weekends in late autumn and winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.hrad-karlstejn.cz/en/plan-your-visit/opening-hours",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ride-of-the-kings",
+      "name": "Ride of the Kings (Vlčnov)",
+      "kind": "festival",
+      "regions": [
+        "CZ-ZL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "the UNESCO-listed horseback procession is held at Pentecost, so it falls in May or June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ich.unesco.org/en/RL/ride-of-the-kings-in-the-south-east-of-the-czech-republic-00564",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Ride_of_the_Kings",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lednice-chateau",
+      "name": "Lednice Chateau",
+      "kind": "site",
+      "regions": [
+        "CZ-JM"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            1
+          ],
+          "reason": "every chateau tour is shut in January"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            2,
+            3
+          ],
+          "reason": "most tours and the minaret close from early November until spring; only the state rooms and greenhouse stay open into mid-December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.zamek-lednice.com/en/plan-your-visit/opening-hours",
+          "checked": "2026-10-26"
         }
       ]
     }

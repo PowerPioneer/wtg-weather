@@ -1,0 +1,75 @@
+{
+  "iso2": "MD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "national-wine-day",
+      "name": "National Wine Day",
+      "kind": "festival",
+      "regions": [
+        "MD-CU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "held on the first weekend of October, on Chișinău's Great National Assembly Square and at wineries across the country"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://wineofmoldova.com/en/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://moldovalive.md/anticipating-over-100000-visitors-at-the-22nd-national-wine-day-celebration/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "martisor",
+      "name": "Mărțișor",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "from 1 March people give and wear the red-and-white mărțișor through the first part of the month to welcome spring"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mărțișor",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cricova-cellars",
+      "name": "Cricova wine cellars",
+      "kind": "tour",
+      "regions": [
+        "MD-CU"
+      ],
+      "status": "open",
+      "note": "tours run every day of the week, and underground it is +10 to +12 °C all year, so the visit is the same in any season",
+      "sources": [
+        {
+          "url": "https://cricova.md/en/excursii/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Cricova_(winery)",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

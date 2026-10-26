@@ -1,6 +1,6 @@
 {
   "iso2": "DK",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "tivoli-christmas",
@@ -40,6 +40,86 @@
         {
           "url": "https://www.forbes.com/sites/davidnikel/2025/12/03/copenhagens-tivoli-gardens-lights-up-for-the-holiday-season/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "roskilde-festival",
+      "name": "Roskilde Festival",
+      "kind": "festival",
+      "regions": [
+        "DK-85"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the festival runs from late June into the first days of July"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "it opens in the last days of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Roskilde_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "copenhagen-jazz",
+      "name": "Copenhagen Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "DK-84"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "held every July, starting on the first Friday of the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Copenhagen_Jazz_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "legoland-billund",
+      "name": "LEGOLAND Billund",
+      "kind": "site",
+      "regions": [
+        "DK-83"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the park's season runs from March to December, so it is shut in January and February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Legoland_Billund_Resort",
+          "checked": "2026-10-26"
         }
       ]
     }
