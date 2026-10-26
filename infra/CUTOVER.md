@@ -78,8 +78,11 @@ starts from its own database.
    `RESTORE_TARGET_DB=wtg_restore_drill ./infra/scripts/restore-postgres.sh wtg latest`.
 3. Trigger `GET /api/debug/error` and `/debug/client-error`; both must appear in
    GlitchTip.
-4. Write the T-0 `.env` changes below into a copy (`.env.cutover`) so the day
-   is a file move, not typing secrets under pressure.
+4. Write the T-0 `.env` changes into a copy (`.env.cutover`), using the
+   checklist in `infra/CUTOVER-ENV.md`, so the day is a file move, not typing
+   secrets under pressure.
+5. Make sure the box is on the latest `main` **minus** the Caddyfile PR — i.e.
+   pull now, before that PR is merged — so T-0 needs no pull until step 6.
 
 ---
 
@@ -94,6 +97,9 @@ forms that would silently stop working; otherwise skip.
 
 ### 2. `.env` on v2
 
+The full list, with what to check for each value, is `infra/CUTOVER-ENV.md`.
+Back up first: `cp .env /root/.env.pre-cutover.$(date -u +%FT%TZ)`.
+
 Paddle → live:
 
 ```
@@ -103,14 +109,17 @@ PADDLE_WEBHOOK_SECRET=<live notification secret>
 PADDLE_PRICE_CONSUMER_PREMIUM=<live pri_>
 PADDLE_PRICE_AGENCY_STARTER=<live pri_>
 PADDLE_PRICE_AGENCY_PRO=<live pri_>
+NEXT_PUBLIC_PADDLE_ENV=production
 NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=live_…
 ```
 
 There is no checkout-URL variable: Paddle Billing opens the overlay by
 transaction id, and the payment link defaults to `PUBLIC_WEB_ORIGIN` +
 `/checkout/pay`. A `PADDLE_CHECKOUT_BASE_URL` left over in `.env` is dead
-Paddle Classic configuration — delete it. The environment (sandbox/live) is
-derived from the client token's prefix, not a second setting.
+Paddle Classic configuration — delete it. `NEXT_PUBLIC_PADDLE_ENV` has no
+default on purpose, and `lib/paddle.ts` refuses to open a checkout when it
+disagrees with the token's prefix (`test_` / `live_`) — set both, or checkout
+is blocked on the day.
 
 Origins → apex:
 
@@ -137,48 +146,50 @@ PostHog disclosure is rendered from the same build argument as the code that
 loads PostHog — the key and the disclosure arrive in the same build, or neither
 does.
 
-### 3. Caddyfile: commit it, do not edit it on the box
+### Why this order
 
-Make this change in the repo, commit, push, then `git pull --ff-only` on v2 —
-the box and the repo must not diverge again (see `infra/CLAUDE.md` § Caddy).
+Two constraints decide it, and they pull in opposite directions:
 
-- Rename the site block `v2.wheretogoforgreatweather.com` to
-  `wheretogoforgreatweather.com`, keeping its contents.
-- In its `/_tiles/*` route change
-  `Access-Control-Allow-Origin` to `https://wheretogoforgreatweather.com`.
-  **This is the line that blanks the map if forgotten**: the browser fetches
-  tiles from the CDN with the page's origin, and a tile response allowing only
-  `v2.` is refused for a page on the apex.
-- Add the two redirect hosts:
+- **Caddy can only get the apex certificate once DNS points here.** It uses the
+  HTTP-01 challenge: Let's Encrypt connects to whatever the apex resolves to.
+  Load the new Caddyfile while the apex still points at v1 and every issuance
+  attempt is validated against v1's nginx and fails — and Let's Encrypt allows
+  only five failed validations per hostname per hour before it locks you out.
+- **Visitors whose resolver has switched hit v2 before Caddy knows the apex**,
+  and get a TLS error until it does.
 
-```
-www.wheretogoforgreatweather.com {
-    redir https://wheretogoforgreatweather.com{uri} permanent
-}
+So: everything that does not depend on the hostname first (`.env`, api, web),
+then DNS, then Caddy the moment public resolvers see the new address. The TLS
+error window is the few minutes between the DNS change and step 6, for the
+fraction of visitors whose resolver has already switched. With the TTL at 300 s
+that is small, and it is the price of not burning the rate limit.
 
-v2.wheretogoforgreatweather.com {
-    # Still the CDN's origin: bunny pulls tiles from this hostname, so the
-    # tile route stays here verbatim (forward_auth, headers, file_server).
-    route /_tiles/* {
-        ...same block as the apex...
-    }
-    redir https://wheretogoforgreatweather.com{uri} permanent
-}
-```
+`v2.` stays fully working until step 6, so nothing breaks during steps 2–5.
 
-One public web origin, not two: a single `Access-Control-Allow-Origin` value is
-then correct, and bunny — which does not reliably honour `Vary: Origin` — can
-never serve one origin's cached header to the other.
+### 3. Merge the Caddyfile PR — do not deploy it yet
 
-The ops subdomains (`glitchtip.v2.…`, `plausible.v2.…`) stay as they are.
+The cutover Caddyfile is prepared as its own PR ("infra: serve the apex,
+redirect www and v2"). Merge it now so the change is reviewed and in the repo,
+but **do not `git pull` on the box until step 6**. It:
 
-### 4. Rebuild and recreate
+- serves the full site on `wheretogoforgreatweather.com`;
+- redirects `www.` and `v2.` to the apex (301), except `/_tiles/*` on `v2.`,
+  which bunny.net still pulls from;
+- sets the tile route's `Access-Control-Allow-Origin` to the apex. **This is
+  the line that blanks the map if the CDN is not purged afterwards** (step 7).
+
+The ops subdomains (`glitchtip.v2.…`, `plausible.v2.…`) are unchanged.
+
+### 4. Rebuild api and web with the new `.env`
 
 ```bash
 docker compose up -d --force-recreate api
 NO_CACHE=1 ./infra/scripts/build-web.sh && docker compose up -d --force-recreate web
-docker compose up -d --force-recreate caddy
 ```
+
+**No `git pull` here.** The box was brought up to date at T-1, before the
+Caddyfile PR merged; pulling now would put the new Caddyfile on disk, and any
+caddy restart before step 6 would load it while the apex still points at v1.
 
 - `api` reads `.env` at container create, so `--force-recreate` is required.
 - `build-web.sh`, never `docker compose up --build web`: only the script can
@@ -188,12 +199,47 @@ docker compose up -d --force-recreate caddy
 - Check the image is the one running:
   `docker image inspect --format '{{.Created}}' wtg-weather-web` against
   `docker inspect wtg-weather-web-1 --format '{{.State.StartedAt}}'`.
-- Caddy is recreated rather than reloaded so it cannot be holding the old file.
-  Its certificate for the apex is issued on the first HTTPS request *after*
-  DNS points here (HTTP-01 challenge), so expect a few seconds of TLS errors
-  right after step 6, not before.
 
-### 5. Purge the CDN
+From here until DNS moves, `v2.` serves pages whose canonicals, sitemap and
+magic links name the apex, which still resolves to v1. That is harmless for the
+minutes it lasts: `v2.` is not indexed and has no audience.
+
+### 5. DNS flip
+
+At TransIP: apex `A` → `51.15.37.62`; replace v1's `AAAA` with v2's IPv6 or
+**delete it** — a stale `AAAA` sends IPv6 clients to v1 indefinitely. `www`:
+`CNAME` to `@` (or an `A` to the same IP). TransIP's *Naam* field is relative.
+
+Wait until the big public resolvers return the new address — that is roughly
+what Let's Encrypt will see:
+
+```bash
+for r in 1.1.1.1 8.8.8.8 9.9.9.9; do echo "$r: $(dig +short wheretogoforgreatweather.com A @$r) $(dig +short wheretogoforgreatweather.com AAAA @$r)"; done
+```
+
+All three must show `51.15.37.62` and no v1 IPv6 address. With the TTL at
+300 s this takes up to five minutes.
+
+### 6. Load the new Caddyfile
+
+```bash
+git pull --ff-only
+docker compose up -d --force-recreate caddy
+docker compose logs -f caddy      # watch for "certificate obtained successfully" for the apex and www
+```
+
+Recreated rather than reloaded so it cannot be holding the old file. The apex
+and `www` certificates are requested at startup and should arrive within a
+minute. If the log shows a failed challenge, DNS had not finished propagating:
+wait a minute — Caddy retries on its own — rather than restarting it again,
+which spends another attempt against the rate limit.
+
+```bash
+curl -sI https://wheretogoforgreatweather.com/ | head -1
+echo | openssl s_client -connect wheretogoforgreatweather.com:443 -servername wheretogoforgreatweather.com 2>/dev/null | openssl x509 -noout -issuer -enddate
+```
+
+### 7. Purge the CDN
 
 ```bash
 # rebuild-tiles.sh purges the whole zone at the end; the purge alone is:
@@ -203,29 +249,26 @@ curl -X POST -H "AccessKey: $BUNNY_API_KEY" \
 
 The tile responses cached at the edge carry the old `Access-Control-Allow-Origin`
 with a year's `max-age`. Without a purge the apex map stays blank for anyone
-who hits a warm edge.
+who hits a warm edge. `BUNNY_API_KEY` and `BUNNY_PULL_ZONE_ID` live in `.env`,
+which the shell does not load — the bunny.net dashboard's *Purge cache* button
+on the pull zone does the same.
 
-### 6. DNS flip
+### 8. Paddle
 
-At TransIP: apex `A` → `51.15.37.62`; replace v1's `AAAA` with v2's IPv6 or
-**delete it** — a stale `AAAA` sends IPv6 clients to v1 indefinitely. `www`:
-`CNAME → wheretogoforgreatweather.com.` (or an `A` to the same IP).
+The live notification destination already points at the apex (gates). Send a
+test notification from the dashboard; the API log must show it verified, not
+`paddle.webhook.bad_signature`.
 
-```bash
-while true; do dig +short wheretogoforgreatweather.com A @1.1.1.1; dig +short wheretogoforgreatweather.com AAAA @1.1.1.1; sleep 5; done
-```
+Sandbox notifications to `v2.…/api/webhooks/paddle` stop working from step 6
+(the host now redirects). That is expected; sandbox is finished.
 
-### 7. Paddle
-
-Live notification destination already points at the apex (gates). Send a
-test notification from the dashboard; the API log must show it verified.
-
-### 8. Smoke test on the real apex
+### 9. Smoke test on the real apex
 
 - `curl -sI https://wheretogoforgreatweather.com/` → 200, issuer Let's Encrypt.
 - `curl -s https://wheretogoforgreatweather.com/api/health` → 200.
 - `curl -sI https://www.wheretogoforgreatweather.com/peru` and
-  `https://v2.wheretogoforgreatweather.com/peru` → 308 to the apex.
+  `https://v2.wheretogoforgreatweather.com/peru` → 301 to the apex (Caddy's
+  `permanent`); a signed `/_tiles/free.pmtiles` on `v2.` still answers.
 - `curl -sI https://wheretogoforgreatweather.com/about` → 308 to `/`;
   `/cookies` → 308 to `/privacy#cookies` (v1's two URLs v2 has no page for).
 - `curl -s https://wheretogoforgreatweather.com/robots.txt` → `Allow`, sitemap on the apex.
@@ -237,7 +280,7 @@ test notification from the dashboard; the API log must show it verified.
   unlocks → refund it from the Paddle dashboard → access drops back.
 - Submit `https://wheretogoforgreatweather.com/sitemap.xml` in Search Console.
 
-### 9. Re-raise the TTL
+### 10. Re-raise the TTL
 
 After 24 h without rollback, apex and `www` back to 3600 s or higher.
 
@@ -248,10 +291,11 @@ After 24 h without rollback, apex and `www` back to 3600 s or higher.
 If a smoke-test step fails and is not obviously fixable in five minutes:
 
 1. **DNS back to v1** (51.159.164.178, and its `AAAA`). TTL is 300 s.
-2. **Revert the Caddyfile commit** and `git pull` + recreate caddy, so
-   `v2.` serves again instead of redirecting to an apex that now points at v1.
-3. **`.env`**: restore the pre-cutover copy, then recreate `api` and rebuild
-   `web` (`NO_CACHE=1 ./infra/scripts/build-web.sh`). Until the rebuild, v2
+2. **Revert the Caddyfile**: `git revert` the cutover Caddyfile commit, push,
+   `git pull` on v2 and recreate caddy, so `v2.` serves again instead of
+   redirecting to an apex that now points at v1.
+3. **`.env`**: restore `/root/.env.pre-cutover.*`, then recreate `api` and
+   rebuild `web` (`NO_CACHE=1 ./infra/scripts/build-web.sh`). Until the rebuild, v2
    pages carry apex canonicals — harmless for the minutes it takes.
 4. **Paddle**: switch nothing back in live mode — v1 sells nothing — but refund
    any purchase made during the window by hand.
