@@ -18,6 +18,7 @@ export const ANALYTICS_EVENTS = {
   mapFeatureSelect: "map_feature_select",
   upgradeClick: "upgrade_click",
   tripSaved: "trip_saved",
+  mapTour: "map_tour",
 } as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];

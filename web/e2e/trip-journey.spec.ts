@@ -205,6 +205,11 @@ async function openClimatePanelFromMap(page: Page): Promise<string> {
     }
   });
 
+  // Arrive as someone who has seen the first-visit guide; it would otherwise
+  // dim the map and swallow the click this journey depends on.
+  await page.context().addCookies([
+    { name: "wtg_tour", value: "1", url: new URL(page.url()).origin },
+  ]);
   await page.goto("/map?month=4");
 
   const map = page.getByRole("application", { name: /climate map/i });

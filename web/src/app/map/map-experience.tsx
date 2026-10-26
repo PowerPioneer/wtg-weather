@@ -14,6 +14,7 @@
  *   - host the premium-zoom upgrade popover (403 / max-zoom triggers)
  *   - own hover / selection: the hover card and the climate panel
  *   - render the legend and top-level controls
+ *   - run the first-visit guide, opening each panel as the guide reaches it
  */
 
 import dynamic from "next/dynamic";
@@ -25,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { ClimatePanel } from "@/components/map/climate-panel";
 import { MapHoverCard } from "@/components/map/map-hover-card";
 import { MapLegend } from "@/components/map/map-legend";
+import { MapTourLayer } from "@/components/map/map-tour";
 import { DisplayModeModal } from "@/components/map/display-mode-modal";
 import { DisplayModeSheet } from "@/components/map/display-mode-sheet";
 import { PreferencesPanel } from "@/components/map/preferences-panel";
@@ -37,6 +39,7 @@ import type { MapFeatureHover } from "@/components/map/map-canvas";
 import { useCheckout } from "@/hooks/use-checkout";
 import { useTileUrls } from "@/hooks/use-tile-urls";
 import { useMapState } from "@/hooks/use-map-state";
+import { useMapTour } from "@/hooks/use-map-tour";
 import { useStoredPreferences } from "@/hooks/use-stored-preferences";
 import { useUnit } from "@/components/units";
 import { PREMIUM_FEATURE_COPY } from "@/components/upgrade";
@@ -124,6 +127,18 @@ export function MapExperience({
   const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature | null>(null);
   const [selected, setSelected] = useState<FeatureSelection | null>(null);
   const [hovered, setHovered] = useState<HoverSelection | null>(null);
+  const [mapReady, setMapReady] = useState(false);
+  const handleMapReady = useCallback(() => setMapReady(true), []);
+  const tour = useMapTour({ ready: mapReady });
+  const tourStepId = tour.step?.id ?? null;
+
+  // The guide opens the panel it is describing, so the bubble can point at the
+  // real controls rather than at a button. Desktop only: on a phone both are
+  // bottom sheets tall enough to leave no room for a bubble beside them, so
+  // the guide points at the button there instead. Derived rather than set, so
+  // leaving the step closes the panel without anyone having to remember to.
+  const prefsShown = prefsOpen || (tourStepId === "prefs" && !isMobile);
+  const pickerShown = pickerOpen || (tourStepId === "display" && !isMobile);
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 768px)");
@@ -212,6 +227,8 @@ export function MapExperience({
 
   const handleModeChange = useCallback(
     (next: DisplayModeId) => {
+      // Picking a layer is the display step's lesson learnt.
+      if (tourStepId === "display") tour.next();
       if (next === mode) return;
       setMode(next);
       trackEvent(ANALYTICS_EVENTS.mapLayerChange, {
@@ -219,7 +236,7 @@ export function MapExperience({
         tier: DISPLAY_MODES[next].tier,
       });
     },
-    [mode, setMode],
+    [mode, setMode, tour, tourStepId],
   );
 
   // Tuning preferences while another variable is painted would look like the
@@ -273,7 +290,10 @@ export function MapExperience({
   const prefsAreDefault = isDefaultPreferenceSet(preferences);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-surface-sunken">
+    <div
+      data-tour="map"
+      className="relative h-full w-full overflow-hidden bg-surface-sunken"
+    >
       {tiles.error ? (
         <MapError message={tiles.error} />
       ) : (
@@ -287,6 +307,7 @@ export function MapExperience({
           onPremiumZoomBlocked={handlePremiumZoomBlocked}
           onFeatureSelect={handleFeatureSelect}
           onFeatureHover={handleFeatureHover}
+          onReady={handleMapReady}
         />
       )}
 
@@ -326,15 +347,19 @@ export function MapExperience({
           className="pointer-events-auto h-10 shadow-sm md:h-8"
           onClick={() => setPickerOpen(true)}
           aria-haspopup="dialog"
-          aria-expanded={pickerOpen}
+          aria-expanded={pickerShown}
           data-testid="open-display-mode"
+          data-tour="display"
         >
           <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
             Display
           </span>
           <span className="ml-2 text-[13px] font-medium">{activeMode.label}</span>
         </Button>
-        <div className="pointer-events-auto flex items-center gap-1 rounded-md border border-border bg-surface px-1 py-1 shadow-sm">
+        <div
+          data-tour="month"
+          className="pointer-events-auto flex items-center gap-1 rounded-md border border-border bg-surface px-1 py-1 shadow-sm"
+        >
           <MonthNudge
             direction="prev"
             onClick={() => setMonth(((month + 10) % 12) + 1)}
@@ -353,8 +378,9 @@ export function MapExperience({
           className="pointer-events-auto h-10 shadow-sm md:h-8"
           onClick={() => setPrefsOpen((open) => !open)}
           aria-haspopup="dialog"
-          aria-expanded={prefsOpen}
+          aria-expanded={prefsShown}
           data-testid="open-preferences"
+          data-tour="prefs"
         >
           <span className="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
             Prefs
@@ -369,13 +395,25 @@ export function MapExperience({
             />
           )}
         </Button>
+        <button
+          type="button"
+          onClick={tour.restart}
+          aria-label="How to use this map"
+          title="How to use this map"
+          data-testid="start-map-tour"
+          // Same height as the pills beside it: 40px below `md`, 32px above.
+          className="pointer-events-auto inline-flex size-10 items-center justify-center rounded-md border border-border bg-surface font-mono text-[13px] font-medium text-text-muted shadow-sm outline-none transition hover:bg-surface-2 hover:text-text md:size-8 focus-visible:ring-2 focus-visible:ring-[color:var(--color-focus-ring)]"
+        >
+          ?
+        </button>
       </div>
 
       {/* Preferences — popout card on desktop, anchored under the pills. */}
-      {prefsOpen && !isMobile ? (
+      {prefsShown && !isMobile ? (
         <div
           role="dialog"
           aria-label="Weather preferences"
+          data-tour="prefs-panel"
           // Capped and scrollable: the panel grew two controls (the advisory
           // limit and the unit switch) and at 320px wide it is taller than a
           // 13" laptop viewport, so without this the Reset button and the
@@ -397,7 +435,7 @@ export function MapExperience({
 
       {/* Bottom-left: legend */}
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 max-w-[calc(100%-2rem)]">
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto" data-tour="legend">
           <MapLegend mode={mode} month={month} />
         </div>
       </div>
@@ -445,14 +483,17 @@ export function MapExperience({
         />
       ) : (
         <DisplayModeModal
-          open={pickerOpen}
+          open={pickerShown}
           onOpenChange={setPickerOpen}
+          inTour={tourStepId === "display"}
           activeId={mode}
           onChange={handleModeChange}
           isPremium={isPremium}
           onUpgradeClick={handleUpgradeFromMap}
         />
       )}
+
+      {tour.step ? <MapTourLayer tour={tour} /> : null}
     </div>
   );
 }

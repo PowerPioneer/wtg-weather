@@ -42,7 +42,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Privacy Policy"
       intro="What this service collects about you, why it collects it, and every third party that sees any of it. Written from the code rather than from a template — each cookie and processor named below is one the software actually uses."
-      updated="25 October 2026"
+      updated="26 October 2026"
       toc={TOC}
     >
       <LegalSection id="who-we-are" heading="Who we are">
@@ -156,11 +156,12 @@ export default function PrivacyPage() {
 
       <LegalSection id="cookies" heading="Cookies & local storage">
         <P>
-          The site sets four cookies of its own. All four are strictly
+          The site sets five cookies of its own. All five are strictly
           necessary — they exist to sign you in, to keep sign-in safe, to
           remember that you pressed &ldquo;upgrade&rdquo; before you had an
-          account, and to remember whether you read temperatures in Celsius or
-          Fahrenheit. None of them is used to profile you or to advertise, and
+          account, to remember whether you read temperatures in Celsius or
+          Fahrenheit, and to remember that you have already seen the short
+          guide on the map. None of them is used to profile you or to advertise, and
           there is nothing here for a consent banner to switch off, which is
           why the site does not show one.
         </P>
@@ -188,7 +189,13 @@ export default function PrivacyPage() {
             ],
             [
               "wtg_unit",
-              "Whether you chose Celsius or Fahrenheit. Holds one of two words and nothing else. It is the one cookie here the page's own JavaScript can read, because the country pages are pre-built files that are identical for everyone and have no other way to know which unit to show you.",
+              "Whether you chose Celsius or Fahrenheit. Holds one of two words and nothing else. It is one of two cookies here the page's own JavaScript can read, because the country pages are pre-built files that are identical for everyone and have no other way to know which unit to show you.",
+              "1 year",
+              "Secure · SameSite=Lax · readable by the page",
+            ],
+            [
+              "wtg_tour",
+              "That you have seen or skipped the short guide on the map, so it does not open on every visit. Holds a version number and nothing else. Readable by the page because the guide runs in your browser; if you are signed in, the same fact is saved to your account so another device does not show it again.",
               "1 year",
               "Secure · SameSite=Lax · readable by the page",
             ],
@@ -199,9 +206,10 @@ export default function PrivacyPage() {
           Your weather preferences are held in the URL precisely so that they
           are shareable and so that nothing has to be written to your device;
           if you are signed in they are also saved to your account, so they
-          follow you to another device. The unit cookie above is the one
-          exception, and it is there because a preference that has to survive
-          on a pre-built page cannot live in a URL you did not type.
+          follow you to another device. The two readable cookies above are the
+          only exceptions: a preference that has to survive on a pre-built page
+          cannot live in a URL you did not type, and neither can the fact that
+          you have already seen the map&rsquo;s guide.
         </P>
         <P>
           One third party may set storage of its own:{" "}

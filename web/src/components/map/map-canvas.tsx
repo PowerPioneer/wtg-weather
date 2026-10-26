@@ -54,6 +54,8 @@ export type MapCanvasProps = {
   onFeatureSelect?: (feature: maplibregl.MapGeoJSONFeature) => void;
   /** Fires on pointer move over a polygon, and with `null` on leave. */
   onFeatureHover?: (hover: MapFeatureHover | null) => void;
+  /** Fires once: on the first complete render, or the first source failure. */
+  onReady?: () => void;
 };
 
 const FREE_MAX_ZOOM = 5.5;
@@ -72,6 +74,7 @@ function MapCanvasImpl({
   onPremiumZoomBlocked,
   onFeatureSelect,
   onFeatureHover,
+  onReady,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -82,6 +85,12 @@ function MapCanvasImpl({
   const [styleReady, setStyleReady] = useState(false);
   const [hasPremiumLayer, setHasPremiumLayer] = useState(false);
   const [hoverId, setHoverId] = useState<string | number | null>(null);
+  // Read through a ref: the construction effect below runs once per mount and
+  // must not be restarted by a caller passing an inline callback.
+  const onReadyRef = useRef(onReady);
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  });
 
   // Signed tile URLs are re-issued shortly before their 15-minute expiry, so
   // the URL string changes roughly every 14 minutes for as long as the page is
@@ -123,6 +132,17 @@ function MapCanvasImpl({
       setStyleReady(true);
       setHasPremiumLayer(map.getLayer(ADMIN2_FILL_LAYER) != null);
     });
+    // "load" waits for every source, and a source that fails never loads — so
+    // the first error counts too: the map is then as ready as it will get, and
+    // a guide that waits for it would wait forever.
+    let announced = false;
+    const announceReady = () => {
+      if (announced) return;
+      announced = true;
+      onReadyRef.current?.();
+    };
+    map.on("load", announceReady);
+    map.on("error", announceReady);
     mapRef.current = map;
 
     return () => {

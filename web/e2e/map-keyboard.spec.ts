@@ -14,7 +14,7 @@ import { expect, test } from "@playwright/test";
  * We intercept `/api/tiles/url` so the test runs without the real API.
  */
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page, baseURL }) => {
   await page.route("**/api/tiles/url**", async (route) => {
     await route.fulfill({
       status: 200,
@@ -28,6 +28,12 @@ test.beforeEach(async ({ page }) => {
   // Stop MapLibre from making network requests by failing any cross-origin
   // GETs quickly — keeps the test fast and deterministic.
   await page.route(/example\.invalid/, (route) => route.abort());
+  // The first-visit guide dims and blocks the map; these tests are about the
+  // map, so they arrive as someone who has seen it. The guide has its own
+  // test below.
+  await page.context().addCookies([
+    { name: "wtg_tour", value: "1", url: baseURL ?? "http://localhost:3000" },
+  ]);
 });
 
 test("/map — keyboard: Tab lands on the map application region", async ({ page }) => {
@@ -79,4 +85,24 @@ test("/map — axe: no serious or critical a11y violations on first paint", asyn
     ["serious", "critical"].includes(v.impact ?? ""),
   );
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+});
+
+test("/map — first visit: the guide opens on the climate intro and passes axe", async ({ page }) => {
+  await page.context().clearCookies({ name: "wtg_tour" });
+  await page.goto("/map");
+  const bubble = page.getByTestId("map-tour");
+  await expect(bubble).toBeVisible({ timeout: 30_000 });
+  await expect(bubble).toContainText("not a forecast");
+
+  const results = await new AxeBuilder({ page }).include("[data-testid=map-tour]").analyze();
+  const serious = results.violations.filter(
+    (v) => v.impact === "serious" || v.impact === "critical",
+  );
+  expect(serious).toEqual([]);
+
+  await page.keyboard.press("Escape");
+  await expect(bubble).toBeHidden();
+  await page.reload();
+  await expect(page.getByRole("application", { name: /climate map/i })).toBeVisible();
+  await expect(page.getByTestId("map-tour")).toBeHidden();
 });
