@@ -10,7 +10,12 @@
  * a visible approximation rather than a different rule.
  */
 
-import { DEFAULT_PREFERENCES, preferenceScore, type WeatherPreferences } from "./scoring";
+import {
+  DEFAULT_PREFERENCES,
+  isDefaultPreferences,
+  preferenceScore,
+  type WeatherPreferences,
+} from "./scoring";
 import type { CountryData, Monthly, RegionRow } from "./types";
 
 /**
@@ -73,6 +78,14 @@ export function regionTempRange(region: RegionRow): { low: number; high: number 
  * Per-month score for a region, 0–100, or `null` when nothing is known.
  * Rainfall and sunshine fall back to the country mean for a region the
  * pipeline has no per-region series for.
+ *
+ * Days *and* nights, as the pipeline scores them. This used to pass the
+ * daytime high only, so the region page rated Bonaire — 26 °C nights — a
+ * perfect match in eleven months while the region table and the map, both
+ * built from the full rule, rated it acceptable. A bundle published before
+ * `tn` existed has no nights to judge; with default preferences the
+ * pipeline's own `scores` are then the honest answer, and otherwise the
+ * days-only score is all there is.
  */
 export function regionMonthScore(
   country: CountryData,
@@ -80,9 +93,13 @@ export function regionMonthScore(
   monthIdx: number,
   prefs: WeatherPreferences = DEFAULT_PREFERENCES,
 ): number | null {
+  if (!region.tn && region.scores && isDefaultPreferences(prefs)) {
+    return region.scores[monthIdx] ?? null;
+  }
   return preferenceScore(
     {
       t: region.tl[monthIdx],
+      tmin: region.tn?.[monthIdx] ?? null,
       r: region.rl?.[monthIdx] ?? country.climate.rDay[monthIdx],
       s: region.sl?.[monthIdx] ?? country.climate.s[monthIdx],
     },

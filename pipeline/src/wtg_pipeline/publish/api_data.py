@@ -867,6 +867,11 @@ def build_payloads(
                         country_level=country_advisory_level,
                     ),
                     "tl": region_climate.t,
+                    # The overnight low beside the daytime high. Without it the
+                    # region page scored on days alone and called Bonaire, with
+                    # 26 °C nights, a perfect match the map and the region
+                    # table (which read `scores`, built from both) did not.
+                    "tn": region_climate.t_min,
                     "rl": region_climate.rain_day,
                     "sl": region_climate.sun,
                 }
