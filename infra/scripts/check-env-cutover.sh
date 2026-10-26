@@ -78,8 +78,11 @@ if grep -qi "variable is not set" /tmp/cutover-compose.err; then
   grep -io '"[A-Za-z0-9_]*" variable is not set' /tmp/cutover-compose.err | sort -u | sed 's/^/     /'
 fi
 rm -f /tmp/cutover-compose.err
+# `compose config` re-escapes each `$` as `$$` in its output (so the output is
+# itself valid compose), so a correctly doubled hash renders as 63 characters.
+# Undo that before measuring: what Caddy receives is the 60-character hash.
 len=$(docker compose --env-file "$F" config --format json 2>/dev/null \
-  | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["services"]["caddy"]["environment"].get("CADDY_BASICAUTH_HASH") or ""))' 2>/dev/null)
+  | python3 -c 'import json,sys; print(len((json.load(sys.stdin)["services"]["caddy"]["environment"].get("CADDY_BASICAUTH_HASH") or "").replace("$$", "$")))' 2>/dev/null)
 if [ "$len" = "60" ]; then ok "CADDY_BASICAUTH_HASH arrives intact (60)"; else bad "CADDY_BASICAUTH_HASH arrives as ${len:-?} characters, not 60 — double every \$"; fi
 
 echo
