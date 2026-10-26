@@ -1,0 +1,107 @@
+{
+  "iso2": "GD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "spicemas",
+      "name": "Spicemas (Grenada carnival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            7
+          ],
+          "reason": "the carnival season builds through late July"
+        },
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "Grenada's carnival climaxes in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.puregrenada.com/experiences/festivals-culture/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carriacou-regatta",
+      "name": "Carriacou Regatta Festival",
+      "kind": "festival",
+      "regions": [
+        "GD-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the regatta festival is held in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.puregrenada.com/experiences/festivals-culture/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "maroon-string-band-festival",
+      "name": "Carriacou Maroon & String Band Music Festival",
+      "kind": "festival",
+      "regions": [
+        "GD-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the music festival is held in April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.puregrenada.com/experiences/festivals-culture/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chocolate-fest",
+      "name": "Grenada Chocolate Fest",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the chocolate festival is held in May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.puregrenada.com/experiences/festivals-culture/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

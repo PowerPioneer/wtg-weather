@@ -1,0 +1,69 @@
+{
+  "iso2": "PM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "fete-des-marins",
+      "name": "Fete des marins (sailors' festival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "mid to late June: sailors lost at sea are honoured and the boats blessed, in Miquelon and then Saint-Pierre"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.spm-tourisme.fr/profiter/les-grands-evenements/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dunefest",
+      "name": "Dunefest, Langlade",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a late-July weekend of local music, a mechoui and a giant campfire on the Langlade dune"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.spm-tourisme.fr/profiter/les-grands-evenements/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fete-basque",
+      "name": "Fete basque, Saint-Pierre",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "a week in mid-August of evening Basque ball games, music, food and dancing in Saint-Pierre"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.spm-tourisme.fr/profiter/les-grands-evenements/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

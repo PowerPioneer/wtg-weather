@@ -1,0 +1,117 @@
+{
+  "iso2": "MF",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "carnival",
+      "name": "Saint-Martin Carnival, Marigot",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "parades in Marigot in the weeks before Lent, ending with a night parade on Ash Wednesday"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "in years with an early Lent the parades start in late January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Carnaval_de_Saint-Martin",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vacationstmaarten.com/events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "abolition-day",
+      "name": "Abolition of Slavery Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "Saint-Martin commemorates the 1848 abolition of slavery on 28 May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Saint-Martin_(Antilles_fran%C3%A7aises)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gastronomy-festival",
+      "name": "Festival de la gastronomie, Marigot",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "Marigot's food festival, held every November since 2021"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Saint-Martin_(Antilles_fran%C3%A7aises)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the island is regularly threatened by hurricanes in late summer and early autumn; Irma struck in September 2017"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            11
+          ],
+          "reason": "inside the official season, which runs 1 June to 30 November, but outside its historical peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Martin_(island)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

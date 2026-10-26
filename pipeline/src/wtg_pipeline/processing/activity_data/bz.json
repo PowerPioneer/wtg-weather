@@ -1,6 +1,6 @@
 {
   "iso2": "BZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "hurricane-season",
@@ -48,6 +48,100 @@
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "gladden-whale-sharks",
+      "name": "Whale sharks, Gladden Spit",
+      "kind": "dive",
+      "regions": [
+        "BZ-SC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6
+          ],
+          "reason": "whale sharks gather to feed on spawning snapper around the full moons, most reliably April to June"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            7
+          ],
+          "reason": "the edges of the spawning season; sightings cluster around each full moon"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Gladden_Spit_and_Silk_Cayes_Marine_Reserve",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Placencia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lobster-season",
+      "name": "Spiny lobster season",
+      "kind": "season",
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "the closed season, 1 March to 30 June, when spiny lobster may not be fished"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fisheries.gov.bz/regulations/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.travelbelize.org/blog/how-to-make-belizean-ceviche-for-the-start-of-queen-conch-season/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "garifuna-settlement-day",
+      "name": "Garifuna Settlement Day, Dangriga",
+      "kind": "festival",
+      "regions": [
+        "BZ-SC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "19 November, with a week of parades, street music and dancing in Dangriga leading up to it"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Garifuna_Settlement_Day",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dangriga",
+          "checked": "2026-10-26"
         }
       ]
     }

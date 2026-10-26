@@ -1,6 +1,6 @@
 {
   "iso2": "PA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "dry-season-pa",
@@ -40,6 +40,159 @@
         {
           "url": "https://www.celebritycruises.com/blog/best-time-to-visit-central-america",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "pacific-whales",
+      "name": "Humpback whale watching (Pacific coast)",
+      "kind": "wildlife",
+      "regions": [
+        "PA-8",
+        "PA-7",
+        "PA-4"
+      ],
+      "status": "not-on",
+      "note": "tours leave from Panama City for the Pearl Islands, from Pedasí and in the Gulf of Chiriquí",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "september is the best month for sightings"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            10
+          ],
+          "reason": "humpbacks migrate along the Pacific coast to calve from July to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tourismpanama.com/outdoors-and-nature/wildlife/whale-watching/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tourismpanama.com/places-to-visit/pedasi-and-tonosi/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "isla-canas-turtles",
+      "name": "Sea turtle nesting, Isla Cañas",
+      "kind": "wildlife",
+      "regions": [
+        "PA-7"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "olive ridley, green and hawksbill turtles come ashore in their thousands, from July to November"
+        },
+        {
+          "status": "open",
+          "months": [
+            7
+          ],
+          "reason": "nesting begins in mid-July"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "nesting on Panama's beaches tails off but continues into January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tourismpanama.com/places-to-visit/pedasi-and-tonosi/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tourismpanama.com/outdoors-and-nature/wildlife/sea-turtles/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "las-tablas-carnival",
+      "name": "Carnival, Las Tablas",
+      "kind": "festival",
+      "regions": [
+        "PA-7"
+      ],
+      "status": "not-on",
+      "note": "the town splits into two rival factions, Calle Arriba and Calle Abajo, each with its own queen and parade",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "carnival runs from the Friday to the Tuesday before Ash Wednesday"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in years when Easter is late, Ash Wednesday falls as late as 10 March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Las_Tablas,_Los_Santos",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Ash_Wednesday",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "boquete-coffee",
+      "name": "Coffee farm tours, Boquete",
+      "kind": "tour",
+      "regions": [
+        "PA-4"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the harvest months, when the coffee cherries ripen red on the bushes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tourismpanama.com/culture-cuisine/tastes-of-panama/coffee-farms/",
+          "checked": "2026-10-26"
         }
       ]
     }

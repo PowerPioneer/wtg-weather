@@ -1,6 +1,6 @@
 {
   "iso2": "HN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "dry-season-hn",
@@ -29,6 +29,95 @@
         {
           "url": "https://www.responsibletravel.com/holidays/central-america/travel-guide/best-time-to-visit-central-america",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "la-ceiba-carnival",
+      "name": "La Ceiba Carnival",
+      "kind": "festival",
+      "regions": [
+        "HN-AT"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "held on a Saturday late in May to close the city's San Isidro fair, with neighbourhood parties the week before"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/La_Ceiba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://es.wikipedia.org/wiki/Carnaval_de_La_Ceiba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "http://www.xplorhonduras.com/el-gran-carnaval-de-la-ceiba/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "feria-juniana",
+      "name": "Feria Juniana, San Pedro Sula",
+      "kind": "festival",
+      "regions": [
+        "HN-CR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "San Pedro Sula's fair runs through most of June, ending on 4 July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://es.wikipedia.org/wiki/San_Pedro_Sula",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "comayagua-semana-santa",
+      "name": "Semana Santa, Comayagua",
+      "kind": "festival",
+      "regions": [
+        "HN-CM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "Holy Week, in March or April, when the city lays dyed-sawdust carpets for its processions"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://es.wikipedia.org/wiki/Comayagua",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.elheraldo.hn/pais/1272626-466/comayagua-espera-30-mil-turistas-en-semana-santa",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Holy_Week",
+          "checked": "2026-10-26"
         }
       ]
     }

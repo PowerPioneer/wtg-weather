@@ -1,6 +1,6 @@
 {
   "iso2": "JM",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "hurricane-season",
@@ -48,6 +48,97 @@
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "reggae-sumfest",
+      "name": "Reggae Sumfest",
+      "kind": "festival",
+      "regions": [
+        "JM-08"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a week of shows in Montego Bay in mid-July, ending in the two main festival nights"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Reggae_Sumfest",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://jamaica-tourist-board.prezly.com/jamaicas-biggest-music-festival-returns-with-a-week-of-activities",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "accompong-maroon-festival",
+      "name": "Accompong Maroon Festival",
+      "kind": "festival",
+      "regions": [
+        "JM-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held every 6 January in Accompong to mark the Maroons' peace treaty with the British and Cudjoe's birthday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://jis.gov.jm/maroon-festival-held-in-accompong-town/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://jis.gov.jm/accompong-maroons-continue-traditional-celebrations/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jamaica-carnival",
+      "name": "Jamaica Carnival road march",
+      "kind": "festival",
+      "regions": [
+        "JM-01"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the Kingston road march falls about a week after Easter, closing a fete season that starts in January"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "an early Easter can pull the road march into late March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jamaica_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/jamaica/jamaica-carnival",
+          "checked": "2026-10-26"
         }
       ]
     }

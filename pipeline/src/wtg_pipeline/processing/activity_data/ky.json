@@ -1,0 +1,99 @@
+{
+  "iso2": "KY",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "pirates-week",
+      "name": "Pirates Week Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "an annual November festival since 1977, moving between Cayman Brac, Grand Cayman and Little Cayman"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cayman_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.piratesweekfestival.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "turtle-nesting",
+      "name": "Sea turtle nesting",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "turtles nest on Cayman beaches from May to November; hatchlings emerge 50-60 days after laying"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://doe.ky/marine/turtles/turtle-nesting/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://doe.ky/marine/turtles/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak of the hurricane season: most Atlantic activity falls between mid-August and mid-October"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            11
+          ],
+          "reason": "inside the official season, which runs June to November, but outside its historical peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cayman_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

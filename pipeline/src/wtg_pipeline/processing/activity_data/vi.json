@@ -1,0 +1,92 @@
+{
+  "iso2": "VI",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sandy-point-refuge",
+      "name": "Sandy Point National Wildlife Refuge beach, St Croix",
+      "kind": "beach",
+      "status": "open",
+      "note": "outside nesting season the refuge opens to the public for limited hours on Saturdays and Sundays",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the beach closes to the public from roughly mid-April for leatherback nesting"
+        },
+        {
+          "status": "closed",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "closed to the public from mid-April to August while leatherbacks nest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.fws.gov/refuge/sandy-point/visit-us",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sandy_Point_National_Wildlife_Refuge",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "st-thomas-carnival",
+      "name": "St Thomas Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a month-long carnival on St Thomas, typically held in April"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "carnival sometimes runs into the first week of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Thomas,_U.S._Virgin_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "crucian-christmas-festival",
+      "name": "Crucian Christmas Festival, St Croix",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "St Croix's biggest festival runs through late December and early January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Croix,_U.S._Virgin_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

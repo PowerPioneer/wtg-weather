@@ -1,0 +1,101 @@
+{
+  "iso2": "VC",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "vincy-mas",
+      "name": "Vincy Mas (carnival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "two months of shows and competitions lead up to the parades"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "the carnival culminates in the last weeks of June and early July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://discoversvg.com/events/vincy-mas/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bequia-easter-regatta",
+      "name": "Bequia Easter Regatta",
+      "kind": "festival",
+      "regions": [
+        "VC-06"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "held over the Easter weekend, so it falls in March or April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://discoversvg.com/events/bequia-easter-regatta/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nine-mornings",
+      "name": "Nine Mornings Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "on the nine mornings before Christmas, people are up at 4am for concerts, performances and games"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://discoversvg.com/events/nine-mornings-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tobago-cays-turtles",
+      "name": "Green turtles, Tobago Cays Marine Park",
+      "kind": "wildlife",
+      "regions": [
+        "VC-06"
+      ],
+      "status": "open",
+      "note": "green turtles live in the lagoons; a buoyed turtle-watching reserve lies off Baradal, and park fees are paid on Mayreau, Union or to wardens",
+      "sources": [
+        {
+          "url": "https://discoversvg.com/island/tobago-cays/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

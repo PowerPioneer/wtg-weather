@@ -1,0 +1,105 @@
+{
+  "iso2": "PR",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "san-sebastian-street-festival",
+      "name": "Fiestas de la Calle San Sebastián",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "Old San Juan's street festival, Wednesday to Sunday over the third weekend of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/San_Sebasti%C3%A1n_Street_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://es.wikipedia.org/wiki/Fiestas_de_la_Calle_San_Sebasti%C3%A1n",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ponce-carnival",
+      "name": "Ponce Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "a week of carnival events in the week before Ash Wednesday, ending on Fat Tuesday"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "when Lent starts late, carnival week runs into early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ponce_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.puertoricodaytrips.com/ponce-carnival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "leatherback-nesting",
+      "name": "Leatherback turtle nesting",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "leatherbacks nest on the northeast coast from late winter into summer; the season gets going around April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.puertoricodaytrips.com/wildlife-in-pr/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Northeast_Ecological_Corridor",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bioluminescent-bays",
+      "name": "Bioluminescent bay tours",
+      "kind": "tour",
+      "status": "open",
+      "note": "runs all year, but moonlight drowns the glow: Vieques and La Parguera bays close the night before, of and after a full moon, so book near a new moon",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.puertoricodaytrips.com/biobay-and-moon/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

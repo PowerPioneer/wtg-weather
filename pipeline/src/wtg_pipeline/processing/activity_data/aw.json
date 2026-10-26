@@ -1,0 +1,112 @@
+{
+  "iso2": "AW",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "carnival",
+      "name": "Aruba Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the carnival season opens in early January"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the grand parade on the final Sunday and the close on Fat Tuesday, in February or early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Aruba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sea-turtle-nesting",
+      "name": "Sea turtle nesting",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "sea turtle season runs from March through December, as females return to nest on the beaches"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.turtugaruba.org/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hi-winds",
+      "name": "Aruba Hi-Winds",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "five days of windsurfing and kitesurfing at Fisherman's Huts in late June or early July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.aruba.com/us/things-to-do/on-the-water/kite-windsurfing",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "soul-beach",
+      "name": "Soul Beach Music Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "held over the US Memorial Day weekend at the end of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Festivals_in_Aruba",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

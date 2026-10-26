@@ -1,0 +1,97 @@
+{
+  "iso2": "AG",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sailing-week",
+      "name": "Antigua Sailing Week",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a week of point-to-point sailing and racing around Antigua's coast in late April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://sailingweek.com/about-asw-2026/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.sailingscuttlebutt.com/?p=135292",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "Antigua Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "runs from late July and ends on Carnival Tuesday, the first Tuesday in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Antigua_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.caribjournal.com/2026/06/27/antigua-carnival-summer/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "frigate-bird-sanctuary",
+      "name": "Frigate Bird Sanctuary, Codrington Lagoon",
+      "kind": "wildlife",
+      "regions": [
+        "AG-10"
+      ],
+      "status": "open",
+      "note": "one of the world's largest frigatebird colonies, on Man of War Island in the lagoon",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "mating season: males inflate scarlet throat pouches to court females, and pairs nest in the mangroves"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Codrington_Lagoon",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.afar.com/places/frigate-bird-sanctuary-barbuda",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "DO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "hurricane-season",
@@ -48,6 +48,214 @@
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "samana-whales",
+      "name": "Humpback whales, Samaná Bay",
+      "kind": "wildlife",
+      "regions": [
+        "DO-20"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "thousands of North Atlantic humpbacks come to Samaná's breeding grounds from January to March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.godominicanrepublic.com/destinations/samana",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Samaná_Province",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Samaná_Bay",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "la-vega-carnival",
+      "name": "La Vega Carnival",
+      "kind": "festival",
+      "regions": [
+        "DO-13"
+      ],
+      "status": "not-on",
+      "note": "carnival runs nationwide through February; La Vega's is one of the biggest",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "comparsas of diablos cojuelos parade every Sunday in February, with the country most festive on 27 February, Independence Day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.godominicanrepublic.com/destinations/la-vega",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.diariolibre.com/especiales/carnaval/la-vega-se-viste-de-carnaval-el-diablo-cojuelo-es-el-rey-de-la-fiesta-HO17081565",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dominican_Carnival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "winter-baseball",
+      "name": "Winter baseball (LIDOM)",
+      "kind": "season",
+      "status": "not-on",
+      "note": "six professional teams in Santo Domingo, Santiago, San Pedro de Macorís, San Francisco de Macorís and La Romana",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "the fifty-game regular season runs from mid-October to the end of December"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the top four teams play a round-robin through January, followed by the final"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dominican_Professional_Baseball_League",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pico-duarte",
+      "name": "Pico Duarte trek",
+      "kind": "trek",
+      "regions": [
+        "DO-25",
+        "DO-13"
+      ],
+      "status": "open",
+      "note": "the Caribbean's highest peak; guided hikes start at La Ciénaga, an hour from Jarabacoa",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the busiest climbing months, around the driest time on the mountain; winter nights at the top can drop below freezing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Pico_Duarte",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://es.wikipedia.org/wiki/Pico_Duarte",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://guiasdealturas.com/2021/05/19/hiking-pico-duarte/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cabarete-kitesurfing",
+      "name": "Kitesurfing at Cabarete",
+      "kind": "season",
+      "regions": [
+        "DO-18"
+      ],
+      "status": "open",
+      "note": "good wind from December to April too, though lighter; bring a bigger kite in winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the strongest, most reliable onshore trade winds of the year on Cabarete Bay"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cabarete_Bay",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://57hours.com/review/kitesurfing-in-cabarete/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Cabarete",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "saona-turtles",
+      "name": "Sea turtle nesting, Saona Island",
+      "kind": "wildlife",
+      "regions": [
+        "DO-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the nesting season on the country's most important turtle beach, mostly hawksbills with some greens and leatherbacks"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.moontravelguides.com/travel/outdoors/visiting-parque-nacional-del-este-dominican-republic",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://casadecampoliving.com/its-turtle-nesting-season-in-the-dominican-republic-and-casa-de-campo/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Saona_Island",
+          "checked": "2026-10-26"
         }
       ]
     }

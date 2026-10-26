@@ -1,0 +1,86 @@
+{
+  "iso2": "SV",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "fiestas-agostinas",
+      "name": "Fiestas Agostinas, San Salvador",
+      "kind": "festival",
+      "regions": [
+        "SV-SS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the capital's patron-saint festivities run 1 to 6 August, with the Bajada procession on 5 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://es.wikipedia.org/wiki/Fiestas_patronales_de_San_Salvador",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bolas-de-fuego",
+      "name": "Bolas de fuego, Nejapa",
+      "kind": "festival",
+      "regions": [
+        "SV-SS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "Nejapa's fireball festival is held every year on 31 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nejapa",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "http://www.tourism.com.sv/destinations/nejapa.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "san-miguel-carnival",
+      "name": "Carnaval de San Miguel",
+      "kind": "festival",
+      "regions": [
+        "SV-SM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "held on the last Saturday of November, at the close of the city's fiestas for the Virgen de la Paz"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://es.wikipedia.org/wiki/Carnaval_de_San_Miguel",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://elsalvador.travel/esp/agenda/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "iso2": "MS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "st-patricks-festival",
+      "name": "St Patrick's Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "a ten-day festival around 17 March, a national holiday honouring Irish heritage and the enslaved people who rose up in 1768"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nationalgeographic.com/travel/article/montserrat-st-patricks-day-irish-african-heritage",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitmontserrat.com/?p=2941",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.irishecho.com/2012/3/meanwhile-in-montserrat",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "Montserrat Carnival (year-end festival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the main carnival season opens around 20 December and runs through Christmas"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the festival closes on New Year's Day with the street parade"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitmontserrat.com/?p=2941",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://discovermni.com/2025/10/23/montserrat-carnival-63-celebrating-mas-rhythm-family-and-culture/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "calabash-festival",
+      "name": "Calabash Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "a week-long festival held in mid-July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitmontserrat.com/?p=2941",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

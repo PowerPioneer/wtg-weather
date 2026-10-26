@@ -1,0 +1,150 @@
+{
+  "iso2": "TT",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "carnival",
+      "name": "Trinidad Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "fetes and pre-carnival events build from January"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the street parade falls on the Monday and Tuesday before Ash Wednesday, in February or early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Trinidad_and_Tobago_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visittrinbago.tt/things-to-do/trinidad-carnival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "leatherback-turtles",
+      "name": "Leatherback turtle nesting, Matura Beach",
+      "kind": "wildlife",
+      "regions": [
+        "TT-SGE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "turtles nest between 1 March and 31 August; night visits to the beach need a permit"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://natureseekers.org/tours/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tobago-heritage-festival",
+      "name": "Tobago Heritage Festival",
+      "kind": "festival",
+      "regions": [
+        "TT-ETO",
+        "TT-WTO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "two weeks of Tobago's folk traditions from mid-July"
+        },
+        {
+          "status": "open",
+          "months": [
+            8
+          ],
+          "reason": "the festival ends with the Emancipation Day parade on 1 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tobagobeyond.com/festivals-events",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "buccoo-goat-race",
+      "name": "Buccoo Goat & Crab Race Festival",
+      "kind": "festival",
+      "regions": [
+        "TT-WTO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "goats race tethered to their jockeys, and crabs race more slowly, in April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tobagobeyond.com/festivals-events",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tobago-carnival",
+      "name": "Tobago Carnival",
+      "kind": "festival",
+      "regions": [
+        "TT-ETO",
+        "TT-WTO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "Tobago's own carnival at the end of October, running into the first days of November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://tobagobeyond.com/festivals-events",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

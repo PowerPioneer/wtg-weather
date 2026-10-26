@@ -1,0 +1,83 @@
+{
+  "iso2": "DM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "world-creole-music-festival",
+      "name": "World Creole Music Festival",
+      "kind": "festival",
+      "regions": [
+        "DM-04"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "three nights of creole music at Windsor Park, Roseau, on the last weekend of October, ahead of Independence on 3 November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/World_Creole_Music_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://discoverdominica.com/festivals-and-events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "Mas Domnik (Dominica carnival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the carnival season opens in January"
+        },
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the pre-Lenten climax of street masquerade, usually in February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://discoverdominica.com/festivals-and-events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "whale-watching",
+      "name": "Sperm whale watching",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "a group of sperm whales lives in Dominica's waters year-round, and the deep offshore trenches draw breeding whales",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dominica",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Whale_watching",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

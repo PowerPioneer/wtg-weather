@@ -1,0 +1,69 @@
+{
+  "iso2": "CW",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "carnival",
+      "name": "Curaçao Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "carnival starts just days after the new year"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the main parades fill the last ten days before Ash Wednesday, in February or early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.curacao.com/en/questions/culture/when-are-curacao-carnival-curacao-north-sea-jazz-festival-and-other",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "diving-snorkelling",
+      "name": "Diving and snorkelling",
+      "kind": "dive",
+      "status": "open",
+      "note": "warm water and excellent visibility year-round",
+      "sources": [
+        {
+          "url": "https://www.curacao.com/en/category/scuba-diving-and-snorkeling",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "beach-boat-trips",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "Curaçao lies outside the hurricane belt, so storms rarely threaten; the June to November season usually brings lighter winds instead",
+      "sources": [
+        {
+          "url": "https://www.curacao.com/en/questions/weather/when-is-hurricane-season-in-curacao",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Cura%C3%A7ao",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
