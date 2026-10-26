@@ -20,27 +20,28 @@ import { cookies } from "next/headers";
 import { CHECKOUT_INTENT_COOKIE, parseIntent } from "@/lib/checkout-intent";
 import { INTERNAL_API_URL } from "@/lib/env";
 import { checkoutPath } from "@/lib/paddle";
+import { siteUrl } from "@/lib/site-url";
 
 /** Where a successful sign-in lands when nothing else was asked for. */
 const LANDING = "/account";
 
 export async function GET(request: Request): Promise<Response> {
   const token = new URL(request.url).searchParams.get("token");
-  if (!token) return fail(request, "missing");
+  if (!token) return fail("missing");
 
   const verified = await fetch(
     `${INTERNAL_API_URL}/api/auth/verify?token=${encodeURIComponent(token)}`,
     { cache: "no-store" },
   ).catch(() => null);
 
-  if (!verified) return fail(request, "unavailable");
+  if (!verified) return fail("unavailable");
   // The API answers 400 for a token that is invalid, already used, or past its
   // 15 minutes. It does not distinguish them, and neither should we: telling a
   // visitor which one it was tells an attacker the same thing.
-  if (!verified.ok) return fail(request, "expired");
+  if (!verified.ok) return fail("expired");
 
   const setCookie = verified.headers.get("set-cookie");
-  if (!setCookie) return fail(request, "unavailable");
+  if (!setCookie) return fail("unavailable");
 
   // Someone who clicked Upgrade before signing in gets taken to checkout
   // rather than to their account, having been sent away mid-purchase. The
@@ -51,14 +52,14 @@ export async function GET(request: Request): Promise<Response> {
     ? checkoutPath(intent.plan, intent.organizationId)
     : LANDING;
 
-  const response = NextResponse.redirect(new URL(landing, request.url), 303);
+  const response = NextResponse.redirect(siteUrl(landing), 303);
   response.headers.append("set-cookie", setCookie);
   if (intent) response.cookies.delete(CHECKOUT_INTENT_COOKIE);
   return response;
 }
 
-function fail(request: Request, reason: string): Response {
-  const url = new URL("/login", request.url);
+function fail(reason: string): Response {
+  const url = siteUrl("/login");
   url.searchParams.set("error", reason);
   return NextResponse.redirect(url, 303);
 }

@@ -29,24 +29,12 @@ import {
   serialiseIntent,
 } from "@/lib/checkout-intent";
 import { INTERNAL_API_URL, SITE_URL } from "@/lib/env";
+import { siteUrl } from "@/lib/site-url";
 
 const SESSION_COOKIE = "wtg_session";
 
-/**
- * Redirect targets are built from `SITE_URL`, never from `request.url`.
- *
- * Behind Caddy, `request.url` inside the container is the internal bind
- * address, so `new URL("/pricing", request.url)` produced an absolute
- * `https://0.0.0.0:3000/pricing` — a Location header no browser can follow.
- * Every redirect this route makes was broken in production: the no-JS upgrade
- * path, the `/login?next=` bounce, and the checkout-failure return. It stayed
- * invisible because the hydrated click handler normally takes over before the
- * anchor is followed, so only visitors who clicked early, browsed with JS off,
- * or arrived from Paddle's payment link ever saw it.
- */
-function siteUrl(path: string): URL {
-  return new URL(path, SITE_URL);
-}
+// Redirect targets come from `siteUrl` (SITE_URL), never `request.url` — see
+// `lib/site-url.ts` for the 0.0.0.0 bug this route shipped with first.
 
 /**
  * Whether the intent cookie may be marked `Secure`.
