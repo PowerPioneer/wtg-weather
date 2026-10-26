@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 
+import { OgBrandMark } from "@/components/og/brand-mark";
 import { getSharedTrip } from "@/lib/trip-server";
 import { scoreLabel } from "@/lib/scoring";
 
@@ -148,11 +149,9 @@ export default async function OG({ params }: { params: Promise<{ token: string }
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#E0C98A",
-                fontWeight: 700,
               }}
             >
-              ☀
+              <OgBrandMark />
             </div>
             <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Where to Go for Great Weather</span>
           </div>
