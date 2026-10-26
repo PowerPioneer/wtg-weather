@@ -60,6 +60,16 @@ def country_path(slug: str) -> Path:
     return data_dir() / "countries" / f"{slug}.json"
 
 
+def premium_path(slug: str) -> Path:
+    """The premium four for one country — a sibling of ``countries/``.
+
+    Never inside it: the static pages are built from ``countries/`` and are
+    public HTML, so the tier boundary is a directory boundary. Only
+    ``routers/country_premium.py`` reads this, behind an entitlement check.
+    """
+    return data_dir() / "premium" / f"{slug}.json"
+
+
 def reset_cache() -> None:
     """Drop the in-process cache. Used by tests that swap the data directory."""
     with _LOCK:
@@ -120,6 +130,19 @@ def load_country(slug: str) -> dict[str, Any] | None:
     if not SLUG_RE.match(normalised):
         return None
     payload = _load(country_path(normalised))
+    return payload if isinstance(payload, dict) else None
+
+
+def load_premium(slug: str) -> dict[str, Any] | None:
+    """One country's premium series, or ``None`` when it has none published.
+
+    Same slug validation as :func:`load_country`, for the same reason: the slug
+    becomes part of a filesystem path.
+    """
+    normalised = slug.strip().lower()
+    if not SLUG_RE.match(normalised):
+        return None
+    payload = _load(premium_path(normalised))
     return payload if isinstance(payload, dict) else None
 
 

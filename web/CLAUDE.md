@@ -71,7 +71,15 @@ pnpm dev
 
 - Never fetch climate data from the browser; it's baked into PMTiles.
   Browser only fetches: signed tile URL, user's own trips/favourites,
-  `/api/me`, Paddle transaction ids, and Paddle.js itself.
+  `/api/me`, Paddle transaction ids, Paddle.js itself, and — for a premium
+  session only — `/api/countries/{slug}/premium`.
+- **The country page's premium charts are fetched, not baked.** The page is
+  static and public, so the premium four cannot be in its HTML.
+  `PremiumClimateBlock` server-renders the teasers and, after hydration and
+  only when `/api/me` says premium, swaps in charts from the entitled endpoint.
+  Signed-out, free and no-JS readers — and every crawler — get the teaser, so
+  SEO and the static build are untouched. Each teaser sits on an invisible
+  flat chart of its own kind, so the swap cannot shift the layout at any width.
 - **Checkout is an overlay, opened by transaction id.** The API creates the
   transaction after checking session and membership (`api/CLAUDE.md`), and
   `lib/paddle.ts` opens it — the browser never names a price and never composes

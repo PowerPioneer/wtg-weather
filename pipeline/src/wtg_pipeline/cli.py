@@ -332,7 +332,7 @@ def publish_api_data(
     result = run_publish_api_data()
     typer.echo(
         f"countries={result.published} changed={result.changed} "
-        f"pruned={result.pruned} skipped={len(result.skipped)}"
+        f"pruned={result.pruned} skipped={len(result.skipped)} premium={result.premium}"
     )
     typer.echo(f"wrote {result.index}")
     if result.skipped:

@@ -53,6 +53,31 @@ export type Monthly = readonly [
 ];
 
 /**
+ * The four Premium variables for one country, from
+ * `GET /api/countries/{slug}/premium` — fetched in the browser, after
+ * hydration, and only for a premium session. Never part of {@link CountryData}:
+ * that is baked into public static HTML.
+ *
+ * Every series is optional. A landlocked country has no sea temperature, and
+ * the pipeline drops any series with a hole rather than publishing it.
+ */
+export type PremiumClimate = {
+  slug: string;
+  /** cm */
+  snow?: Monthly | null;
+  snowBandLow?: Monthly | null;
+  snowBandHigh?: Monthly | null;
+  /** °C */
+  sst?: Monthly | null;
+  sstBandLow?: Monthly | null;
+  sstBandHigh?: Monthly | null;
+  /** % */
+  humidity?: Monthly | null;
+  /** °C feels-like */
+  heat?: Monthly | null;
+};
+
+/**
  * The free-tier climatology, as the API publishes it.
  *
  * The four premium variables (snow, sea-surface temperature, heat index,
@@ -60,8 +85,9 @@ export type Monthly = readonly [
  * generated, so one HTML document serves every visitor and anything in this
  * type is in public view-source. The pipeline already treats the tier boundary
  * as a file boundary (`FREE_VARIABLES` in `build_geojson.py`); this is the
- * same boundary. The premium charts on the country page render as locked
- * placeholders, and the real series live on the map, behind a signed tile URL.
+ * same boundary. The premium charts on the country page render as teasers in
+ * the static HTML; a premium visitor's browser then fetches the real series —
+ * see {@link PremiumClimate}.
  */
 export type ClimateSeries = {
   months: readonly string[];

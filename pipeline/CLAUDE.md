@@ -58,6 +58,9 @@ uv run wtg --help
   statically generated, so one HTML document serves every visitor — a premium
   series in the payload is a premium series in public view-source. Same tier
   boundary the tiles draw, same reason. `test_publish_api_data.py` pins it.
+  The premium four go to `data/final/api/premium/<slug>.json` instead
+  (`publish/premium_data.py`), read only by the API's entitlement-gated
+  `/api/countries/{slug}/premium`. Same series the premium tiles carry.
 - The ten `SUPPRESSED_COUNTRIES` have no country-level percentile row (
   `apply_country_rules` drops them, because a single national colour for Russia
   or Argentina is a claim the data does not support). `publish api-data` builds
