@@ -314,7 +314,7 @@ export function ClimatePanel({
         )}
       </div>
 
-      <footer className="border-t border-border px-6 py-4">
+      <footer data-tour="panel-footer" className="border-t border-border px-6 py-4">
         {country && hasCountryPage ? (
           <div className="flex flex-col gap-2">
             {/* An admin-1 click leads to that region's own page. The href goes

@@ -82,9 +82,11 @@ vi.mock("@/components/map/map-canvas", () => ({
     selectedFeatureId,
     preferences,
     freeTilesUrl,
+    onReady,
   }: {
     onFeatureSelect?: (feature: unknown) => void;
     onFeatureHover?: (hover: unknown) => void;
+    onReady?: () => void;
     selectedFeatureId?: string | null;
     preferences?: unknown;
     freeTilesUrl?: string | null;
@@ -111,6 +113,11 @@ vi.mock("@/components/map/map-canvas", () => ({
       </button>
       <button type="button" onClick={() => onFeatureHover?.(null)}>
         hover out
+      </button>
+      {/* MapLibre's first "load". Never fired unless a test asks, so the
+          first-visit guide stays out of every test that is not about it. */}
+      <button type="button" onClick={() => onReady?.()}>
+        map ready
       </button>
     </div>
   ),
@@ -328,5 +335,83 @@ describe("MapExperience preferences", () => {
     chooseCoolWeather();
     await vi.waitFor(() => expect(fetchOnboarding).toHaveBeenCalled());
     expect(patchOnboarding).not.toHaveBeenCalled();
+  });
+});
+
+describe("MapExperience first-visit guide", () => {
+  afterEach(() => {
+    document.cookie = "wtg_tour=; Path=/; Max-Age=0";
+  });
+
+  async function startTour() {
+    render(<MapExperience isPremium={false} publishedCountrySlugs={["georgia"]} />);
+    expect(screen.queryByTestId("map-tour")).not.toBeInTheDocument();
+    await userEvent.click(await screen.findByRole("button", { name: "map ready" }));
+    return screen.findByTestId("map-tour");
+  }
+
+  async function advanceTo(step: string) {
+    while (screen.getByTestId("map-tour").dataset.step !== step) {
+      await userEvent.click(screen.getByTestId("map-tour-next"));
+    }
+  }
+
+  it("waits for the map, then opens on climate rather than forecast", async () => {
+    const bubble = await startTour();
+    expect(bubble).toHaveAttribute("data-step", "intro");
+    expect(bubble).toHaveTextContent(/not a forecast/);
+    expect(within(bubble).getByTestId("map-tour-next")).toHaveTextContent("Show me around");
+  });
+
+  it("opens the preferences card on its step and closes it on the next", async () => {
+    await startTour();
+    await advanceTo("prefs");
+    expect(screen.getByRole("dialog", { name: "Weather preferences" })).toBeInTheDocument();
+    expect(screen.getByTestId("open-preferences")).toHaveAttribute("aria-expanded", "true");
+
+    await advanceTo("legend");
+    expect(
+      screen.queryByRole("dialog", { name: "Weather preferences" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("opens the display picker on its step without trapping focus away from the bubble", async () => {
+    await startTour();
+    await advanceTo("display");
+    expect(await screen.findByRole("dialog", { name: "Display mode" })).toBeInTheDocument();
+    // Non-modal: the bubble is not hidden from assistive tech behind the dialog.
+    expect(screen.getByTestId("map-tour")).not.toHaveAttribute("aria-hidden");
+    expect(screen.getByTestId("map-tour-next")).toHaveFocus();
+
+    await advanceTo("place");
+    await vi.waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Display mode" })).not.toBeInTheDocument(),
+    );
+  });
+
+  it("lets a place be picked on the last step, and records the tour as seen", async () => {
+    await startTour();
+    await advanceTo("place");
+    expect(screen.getByTestId("map-tour")).toHaveTextContent(/country or region page/);
+
+    await userEvent.click(screen.getByRole("button", { name: "click georgia" }));
+    expect(await screen.findByTestId("climate-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("map-tour")).toHaveAttribute("data-step", "place");
+
+    await userEvent.click(screen.getByRole("button", { name: "Start exploring" }));
+    expect(screen.queryByTestId("map-tour")).not.toBeInTheDocument();
+    expect(document.cookie).toContain("wtg_tour=1");
+    // The panel the tour led to stays open.
+    expect(screen.getByTestId("climate-panel")).toBeInTheDocument();
+  });
+
+  it("closes on Escape, and the ? button brings it back", async () => {
+    await startTour();
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByTestId("map-tour")).not.toBeInTheDocument();
+    expect(document.cookie).toContain("wtg_tour=1");
+
+    await userEvent.click(screen.getByTestId("start-map-tour"));
+    expect(screen.getByTestId("map-tour")).toHaveAttribute("data-step", "intro");
   });
 });

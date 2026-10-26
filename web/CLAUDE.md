@@ -92,6 +92,17 @@ pnpm dev
   or URL search params for shareable states. The one exception is `wtg_unit`
   (see Units above): it must be readable by client JS on a static page, it
   carries one of two words, and it is mirrored into the account record.
+  `wtg_tour` is the second readable cookie, and it is not a preference: it
+  records that the map's first-visit guide (`lib/map-tour.ts`) was seen or
+  skipped, holds `TOUR_VERSION`, and is mirrored into the onboarding blob as
+  `mapTour`. Both are listed on `/privacy`, which promises local storage is
+  not used — so a "seen" flag never goes there either.
+- **The map guide opens the panel it describes** (preferences card, display
+  dialog) on desktop only — on a phone both are sheets that leave no room for
+  a bubble. The display dialog goes non-modal for that step (`inTour`), since
+  a modal one traps focus away from the bubble and hides it from screen
+  readers. Steps point at controls by `data-tour` attribute; renaming one
+  silently turns its bubble into an unanchored one.
 - Lighthouse budget: LCP < 2.0s, CLS < 0.05, TBT < 100ms. Regressions
   block merge. `ClimateChart` is a Client Component *only* so it can convert
   to °F/inches; it still server-renders its SVG, so a no-JS reader gets the
