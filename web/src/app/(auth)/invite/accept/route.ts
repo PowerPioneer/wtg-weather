@@ -17,6 +17,7 @@
 import { NextResponse } from "next/server";
 
 import { INTERNAL_API_URL } from "@/lib/env";
+import { siteUrl } from "@/lib/site-url";
 
 /** Where a newly-joined agent lands: their organisation's account surface. */
 const LANDING = "/account";
@@ -27,7 +28,7 @@ export async function POST(request: Request): Promise<Response> {
   const form = await request.formData().catch(() => null);
   const token = form?.get("token");
   if (typeof token !== "string" || token.length === 0) {
-    return refuse(request, null, "unknown");
+    return refuse(null, "unknown");
   }
 
   const accepted = await fetch(`${INTERNAL_API_URL}/api/invites/accept`, {
@@ -37,15 +38,15 @@ export async function POST(request: Request): Promise<Response> {
     cache: "no-store",
   }).catch(() => null);
 
-  if (!accepted) return refuse(request, token, "unavailable");
-  if (!accepted.ok) return refuse(request, token, await reasonFor(accepted));
+  if (!accepted) return refuse(token, "unavailable");
+  if (!accepted.ok) return refuse(token, await reasonFor(accepted));
 
   const setCookie = accepted.headers.get("set-cookie");
   // No cookie means no session, and sending them onward would land them at a
   // sign-in wall having just spent their one-time link.
-  if (!setCookie) return refuse(request, token, "unavailable");
+  if (!setCookie) return refuse(token, "unavailable");
 
-  const response = NextResponse.redirect(new URL(LANDING, request.url), 303);
+  const response = NextResponse.redirect(siteUrl(LANDING), 303);
   response.headers.append("set-cookie", setCookie);
   return response;
 }
@@ -64,8 +65,8 @@ async function reasonFor(res: Response): Promise<string> {
   return body?.detail === "seat cap reached" ? "full" : "used";
 }
 
-function refuse(request: Request, token: string | null, reason: string): Response {
-  const url = new URL("/invite", request.url);
+function refuse(token: string | null, reason: string): Response {
+  const url = siteUrl("/invite");
   if (token) url.searchParams.set("token", token);
   url.searchParams.set("error", reason);
   return NextResponse.redirect(url, 303);

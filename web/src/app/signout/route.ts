@@ -18,6 +18,7 @@
 import { NextResponse } from "next/server";
 
 import { INTERNAL_API_URL } from "@/lib/env";
+import { siteUrl } from "@/lib/site-url";
 
 const SESSION_COOKIE = "wtg_session";
 
@@ -28,7 +29,7 @@ export async function POST(request: Request): Promise<Response> {
     .map((c) => c.trim())
     .find((c) => c.startsWith(`${SESSION_COOKIE}=`));
 
-  const home = new URL("/", request.url);
+  const home = siteUrl("/");
   // 303 so the browser follows with GET rather than re-POSTing.
   const response = NextResponse.redirect(home, 303);
 
