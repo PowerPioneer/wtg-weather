@@ -1,6 +1,6 @@
 {
   "iso2": "PH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "donsol-whale-sharks",
@@ -71,6 +71,187 @@
         {
           "url": "https://www.dive-the-world.com/faqs-diving-philippines.php",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "tubbataha",
+      "name": "Tubbataha Reefs liveaboards",
+      "kind": "dive",
+      "regions": [
+        "PH-PLW"
+      ],
+      "status": "closed",
+      "note": "a remote reef with nowhere to stay, reached only by liveaboard, so trips run only in the calm-sea window",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the heart of the short dive season, when seas are calmest"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            6
+          ],
+          "reason": "liveaboards run only from about mid-March to mid-June; outside that the seas are too rough for the crossing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tubbataha_Reef",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.dive-the-world.com/faqs-diving-philippines.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sinulog",
+      "name": "Sinulog festival",
+      "kind": "festival",
+      "regions": [
+        "PH-CEB"
+      ],
+      "status": "not-on",
+      "note": "street dancing and parties centred on Cebu City",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held on the third Sunday of January, with street parties the night before"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sinulog",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ati-atihan",
+      "name": "Ati-Atihan festival",
+      "kind": "festival",
+      "regions": [
+        "PH-AKL"
+      ],
+      "status": "not-on",
+      "note": "the biggest celebration is in Kalibo, Aklan",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held on the third Sunday of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ati-Atihan_festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "panagbenga",
+      "name": "Panagbenga flower festival",
+      "kind": "festival",
+      "regions": [
+        "PH-BEN"
+      ],
+      "status": "not-on",
+      "note": "Baguio's month-long flower festival",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "runs through February, with the street dancing and float parades in the last week"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Panagbenga_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "boracay",
+      "name": "Boracay's White Beach",
+      "kind": "beach",
+      "regions": [
+        "PH-AKL"
+      ],
+      "status": "open",
+      "note": "Bulabog Beach on the other side of the island is the kiteboarding spot, in season November to April",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the amihan northeast monsoon leaves White Beach calm and good for swimming"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the habagat southwest monsoon brings wind and waves that can make White Beach unsuitable for swimming, plus typhoon risk"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Boracay",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "siargao-surf",
+      "name": "Surfing Cloud 9 on Siargao",
+      "kind": "season",
+      "regions": [
+        "PH-SUN"
+      ],
+      "status": "open",
+      "note": "Cloud 9's hollow right-hander hosts the annual Siargao Cup",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "the habagat monsoon blows offshore from August to December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Siargao",
+          "checked": "2026-10-26"
         }
       ]
     }

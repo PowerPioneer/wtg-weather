@@ -1,0 +1,109 @@
+{
+  "iso2": "KZ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "shymbulak-ski",
+      "name": "Skiing at Shymbulak, above Almaty",
+      "kind": "ski",
+      "regions": [
+        "KZ-ALA"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the core of the Almaty ski season, from December to February"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3,
+            4
+          ],
+          "reason": "the full season runs from November to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Shymbulak",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/?p=5044",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "wild-tulips-kz",
+      "name": "Wild tulips in bloom",
+      "kind": "season",
+      "regions": [
+        "KZ-ALA",
+        "KZ-ZHA",
+        "KZ-YUZ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "most wild tulip species flower from early April to mid-May across the southern steppes and foothills"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            6
+          ],
+          "reason": "the first species open in late March, and some mountain tulips flower until late June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kazakhstan.travel/en/publications/when-and-where-to-enjoy-the-blossoming-of-tulips-in-kazakhstan",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/?p=5044",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nauryz-kz",
+      "name": "Nauryz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the spring new year around 21 March is a four-day public holiday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

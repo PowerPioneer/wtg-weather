@@ -1,6 +1,6 @@
 {
   "iso2": "AE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "desert-trips",
@@ -46,6 +46,208 @@
         {
           "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "miracle-garden",
+      "name": "Dubai Miracle Garden",
+      "kind": "site",
+      "regions": [
+        "AE-DU"
+      ],
+      "status": "closed",
+      "note": "the outdoor flower garden shuts for the summer months",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the season runs from early October to the end of May; opening day moves a little each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://gulfnews.com/uae/dubai-miracle-garden-season-15-2026-2027-whats-new-1.500703604",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://gulfnews.com/living-in-uae/ask-us/dubai-outdoor-attractions-reopening-dates-2026-1.500563282",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "global-village",
+      "name": "Global Village",
+      "kind": "site",
+      "regions": [
+        "AE-DU"
+      ],
+      "status": "closed",
+      "note": "a seasonal park that closes through the hottest months",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the open-air park's season, open from late afternoon until midnight"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the season opens in mid-October"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "the season closes in early or mid May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.khaleejtimes.com/uae/dubai-global-village-season-31-opening-key-rules-timings-guide",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://gulfnews.com/living-in-uae/ask-us/dubai-outdoor-attractions-reopening-dates-2026-1.500563282",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dubai-shopping-festival",
+      "name": "Dubai Shopping Festival",
+      "kind": "festival",
+      "regions": [
+        "AE-DU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "about six weeks from early December to mid-January: city-wide sales, free fireworks, drone shows and concerts"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.aletihad.ae/news/uae/4515978/dubai-shopping-festival-reveals-30th-edition-dates--promisin",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.khaleejtimes.com/uae/dubai-shopping-festival-announces-dates-for-30th-season",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "abu-dhabi-grand-prix",
+      "name": "Abu Dhabi Grand Prix",
+      "kind": "festival",
+      "regions": [
+        "AE-AZ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Formula One season finale at Yas Marina Circuit, held in early or mid December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.outlooktraveller.com/News/abu-dhabi-grand-prix-2026-f1-confirms-december-race-dates",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2027_Formula_One_World_Championship",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "liwa-date-festival",
+      "name": "Liwa Date Festival",
+      "kind": "festival",
+      "regions": [
+        "AE-AZ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "two weeks in mid-to-late July marking the date harvest in the Liwa oasis, with date competitions and a market"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mediaoffice.abudhabi/en/abu-dhabi-events/liwa-date-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jebel-jais",
+      "name": "Jebel Jais",
+      "kind": "hike",
+      "regions": [
+        "AE-RK"
+      ],
+      "status": "open",
+      "note": "open all year and often 10 °C cooler than Dubai in summer, when early morning and sunset are the times to be out",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "winter on the UAE's highest mountain: days of 10-25 °C, nights near freezing in December and January"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            4
+          ],
+          "reason": "the edges of the October-April season, still pleasant for outdoor activity"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitjebeljais.com/blog/best-time-to-visit-jebel-jais-weather-events-and-travel-tips",
+          "checked": "2026-10-26"
         }
       ]
     }

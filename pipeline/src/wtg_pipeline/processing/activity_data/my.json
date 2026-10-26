@@ -1,6 +1,6 @@
 {
   "iso2": "MY",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "sipadan",
@@ -9,8 +9,8 @@
       "regions": [
         "MY-12"
       ],
-      "status": "closed",
-      "note": "permit-limited as well as seasonal — the number of divers allowed on the island each day is capped",
+      "status": "open",
+      "note": "permit-limited: Sabah Parks issues a fixed number of dive permits each day, shared between the resorts and dive centres, so book well ahead",
       "windows": [
         {
           "status": "best",
@@ -31,7 +31,223 @@
       "sources": [
         {
           "url": "https://indochinatravel.com/tours/diving-in-asia",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sipadan",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "perhentian-islands",
+      "name": "Perhentian Islands",
+      "kind": "beach",
+      "regions": [
+        "MY-11"
+      ],
+      "status": "open",
+      "note": "the diving and snorkelling season runs March to October",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the northeast monsoon: most resorts, ferry services and dive shops shut until the season restarts"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Perhentian_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Perhentian_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tioman",
+      "name": "Tioman Island",
+      "kind": "dive",
+      "regions": [
+        "MY-06"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the northeast monsoon: ferries run much less often, many places to stay close and most dive shops shut"
+        },
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the diving season, March to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Tioman",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-kinabalu",
+      "name": "Climbing Mount Kinabalu",
+      "kind": "trek",
+      "regions": [
+        "MY-12"
+      ],
+      "status": "open",
+      "note": "every summit climber needs a permit and a licensed local guide, and the mountain huts can book out months ahead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "climbing weather is at its best around April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the rainy months; rain and mist make the summit trail more dangerous"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Mount_Kinabalu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thaipusam-batu-caves",
+      "name": "Thaipusam at Batu Caves",
+      "kind": "festival",
+      "regions": [
+        "MY-10"
+      ],
+      "status": "not-on",
+      "note": "the Hindu cave temple outside Kuala Lumpur draws thousands of devotees and onlookers",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "held on the full moon of the Tamil month of Thai, which falls in January or February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Thaipusam",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Thai_(month)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kaamatan",
+      "name": "Kaamatan harvest festival",
+      "kind": "festival",
+      "regions": [
+        "MY-12"
+      ],
+      "status": "not-on",
+      "note": "Sabah's harvest festival, with the Unduk Ngadau pageant, Sumazau dance and folk sports",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "celebrated through May and culminating in the public holiday on 30 and 31 May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kaamatan",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gawai-dayak",
+      "name": "Gawai Dayak",
+      "kind": "festival",
+      "regions": [
+        "MY-13"
+      ],
+      "status": "not-on",
+      "note": "Sarawak's Dayak harvest festival, with longhouse open houses",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the 1–2 June public holiday marks the end of the rice harvest; celebrations often run through the rest of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Gawai_Dayak",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rainforest-world-music-festival",
+      "name": "Rainforest World Music Festival",
+      "kind": "festival",
+      "regions": [
+        "MY-13"
+      ],
+      "status": "not-on",
+      "note": "held at the Sarawak Cultural Village at the foot of Mount Santubong, outside Kuching",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "an annual three-day festival, usually in late June or July; the dates shift each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Rainforest_World_Music_Festival",
+          "checked": "2026-10-26"
         }
       ]
     }

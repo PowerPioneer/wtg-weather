@@ -1,6 +1,6 @@
 {
   "iso2": "LA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "kuang-si",
@@ -30,6 +30,54 @@
         {
           "url": "https://www.travellocal.com/en/articles/the-best-time-to-visit-laos-and-cambodia",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "pi-mai",
+      "name": "Lao New Year (Pi Mai)",
+      "kind": "festival",
+      "regions": [
+        "LA-LP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "officially 14 to 16 April, though in Luang Prabang the celebrations can run for more than a week"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lao_New_Year",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "that-luang-festival",
+      "name": "That Luang Festival",
+      "kind": "festival",
+      "regions": [
+        "LA-VI"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "Vientiane's most important Buddhist festival: three days of ceremony at the twelfth-month full moon, then a week of festivities"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Boun_That_Luang",
+          "checked": "2026-10-26"
         }
       ]
     }

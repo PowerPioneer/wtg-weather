@@ -1,6 +1,6 @@
 {
   "iso2": "KR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "autumn-foliage",
@@ -82,6 +82,119 @@
         {
           "url": "https://geographyworlds.com/blog/seasons-in-south-korea/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "boryeong-mud-festival",
+      "name": "Boryeong Mud Festival",
+      "kind": "festival",
+      "regions": [
+        "KR-44"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "about two weeks of mud games on Daecheon Beach in July, with the final weekend usually the second in July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Boryeong_Mud_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jinhae-cherry-festival",
+      "name": "Jinhae Gunhangje cherry-blossom festival",
+      "kind": "festival",
+      "regions": [
+        "KR-48"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a cherry-blossom festival of about ten days in early April, in Changwon's Jinhae district"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jinhae_Gunhangje_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lotus-lantern-festival",
+      "name": "Lotus Lantern Festival (Yeondeunghoe)",
+      "kind": "festival",
+      "regions": [
+        "KR-11"
+      ],
+      "status": "not-on",
+      "note": "UNESCO-listed intangible heritage, centred on Jogyesa temple in Jongno",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "lanterns fill Seoul for Buddha's Birthday, the eighth day of the fourth lunar month, which falls in April or May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Yeondeunghoe",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Buddha%27s_Birthday",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yongpyong-ski",
+      "name": "Skiing at Yongpyong, Pyeongchang",
+      "kind": "ski",
+      "regions": [
+        "KR-42"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the ski season runs from November into early April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the season ends in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Yongpyong_Resort",
+          "checked": "2026-10-26"
         }
       ]
     }

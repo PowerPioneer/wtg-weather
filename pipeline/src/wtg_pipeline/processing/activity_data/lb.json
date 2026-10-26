@@ -1,0 +1,95 @@
+{
+  "iso2": "LB",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "jeita-grotto",
+      "name": "Jeita Grotto",
+      "kind": "site",
+      "regions": [
+        "LB-JL"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "in winter the lower grotto, toured by boat, closes when the water level is too high"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeita_Grotto",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mzaar-ski",
+      "name": "Skiing at Mzaar Kfardebian",
+      "kind": "ski",
+      "regions": [
+        "LB-JL"
+      ],
+      "status": "closed",
+      "note": "the lifts run only in the snow season",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the ski season usually runs from early December"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the season usually ends in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mzaar_Kfardebian",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "byblos-festival",
+      "name": "Byblos International Festival",
+      "kind": "festival",
+      "regions": [
+        "LB-JL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "an open-air music festival held every July since 2003"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Byblos_International_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://byblosfestival.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

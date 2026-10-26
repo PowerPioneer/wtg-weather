@@ -1,0 +1,44 @@
+{
+  "iso2": "YE",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "socotra",
+      "name": "Socotra",
+      "kind": "tour",
+      "status": "open",
+      "note": "reached by a few weekly flights; in early 2026 a state of emergency closed the ports and stranded hundreds of visitors",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the ideal time to visit, outside the southwest monsoon"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the southwest monsoon brings strong winds and high seas"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Socotra",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

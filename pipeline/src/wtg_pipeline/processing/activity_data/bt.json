@@ -1,6 +1,6 @@
 {
   "iso2": "BT",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "paro-tsechu",
@@ -59,6 +59,75 @@
         {
           "url": "https://www.drukasia.com/bhutan/bhutan-festivals-calendar-2026/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "phobjikha-cranes",
+      "name": "Black-necked cranes in the Phobjikha Valley",
+      "kind": "wildlife",
+      "regions": [
+        "BT-24"
+      ],
+      "status": "not-on",
+      "note": "the cranes spend the summer breeding on the Tibetan Plateau",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "the cranes winter in the valley, and the Black-necked Crane Festival is held on 12 November to welcome them"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            2
+          ],
+          "reason": "they arrive in late October and leave by mid-February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Phobjikha_Valley",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.pettitts.co.uk/guides/bhutan-festivals",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "punakha-tshechu",
+      "name": "Punakha Drubchen and Tshechu",
+      "kind": "festival",
+      "regions": [
+        "BT-23"
+      ],
+      "status": "not-on",
+      "note": "the festival starts on the ninth day of the first Bhutanese month, so its dates move each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "held at Punakha Dzong in February or March, with the Drubchen in the days just before the Tshechu"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Punakha_Dzong",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://undiscovered-destinations.com/blog/bhutan-festivals-guide/",
+          "checked": "2026-10-26"
         }
       ]
     }

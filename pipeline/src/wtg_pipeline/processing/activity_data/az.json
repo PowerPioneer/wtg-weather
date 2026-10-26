@@ -1,6 +1,6 @@
 {
   "iso2": "AZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "sightseeing-hiking-az",
@@ -31,6 +31,94 @@
         {
           "url": "https://araratour.com/articles/seasons-in-armenia-an-overview-for-tourists",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "shahdag-ski",
+      "name": "Skiing at Shahdag",
+      "kind": "ski",
+      "regions": [
+        "AZ-QUS"
+      ],
+      "status": "closed",
+      "note": "in summer the resort turns to lake swimming, paragliding and mountain biking",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the middle of a ski season that typically runs from the second half of December to early April"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            4
+          ],
+          "reason": "the season opens in late December and closes in early April, depending on the snow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Shahdag_Mountain_Resort",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://shahdag.az/en",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "novruz-az",
+      "name": "Novruz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the spring new year around 21 March is a five-day public holiday, with bonfires on the Tuesdays before it and street festivities"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Novruz_in_Azerbaijan",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "baku-grand-prix",
+      "name": "Azerbaijan Grand Prix, Baku",
+      "kind": "festival",
+      "regions": [
+        "AZ-BA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "the Formula 1 street race in Baku has been held in September since 2024"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Azerbaijan_Grand_Prix",
+          "checked": "2026-10-26"
         }
       ]
     }

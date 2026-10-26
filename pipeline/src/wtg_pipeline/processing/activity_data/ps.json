@@ -1,0 +1,111 @@
+{
+  "iso2": "PS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bethlehem-christmas",
+      "name": "Christmas in Bethlehem",
+      "kind": "festival",
+      "regions": [
+        "PS-WBK"
+      ],
+      "status": "not-on",
+      "note": "public celebrations were cancelled in 2023 and 2024 during the Gaza war and resumed in 2025",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "kept three times: 25 December (Catholic and Protestant), 6 January (Orthodox) and 19 January (Armenian)"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bethlehem",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Church_of_the_Nativity",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "masar-ibrahim",
+      "name": "Masar Ibrahim al-Khalil",
+      "kind": "trek",
+      "regions": [
+        "PS-WBK"
+      ],
+      "status": "open",
+      "note": "a 330 km walking route from near Jenin to south of Hebron",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "the best time of year for walking, with green grass and wildflowers"
+        },
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "late autumn is the other good walking season"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "usually very hot; hiking can be unpleasant or even dangerous"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "winter rain brings muddy trails"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.masaribrahim.ps/plan/when-to-go/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.masaribrahim.ps/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hishams-palace",
+      "name": "Hisham's Palace, Jericho",
+      "kind": "site",
+      "regions": [
+        "PS-WBK"
+      ],
+      "status": "open",
+      "note": "open daily all year, closing an hour earlier in summer; its vast bath-hall mosaic has been on show under a shelter since 2021. Shut on the two Eids and New Year's Day",
+      "sources": [
+        {
+          "url": "https://assets.destinationpalestine.io/node/18",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Hisham%27s_Palace",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

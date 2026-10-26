@@ -1,6 +1,6 @@
 {
   "iso2": "KH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "angkor",
@@ -41,6 +41,53 @@
         {
           "url": "https://www.indochinatour.com/best-time-to-visit-angkor-wat.html",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "bon-om-touk",
+      "name": "Water Festival (Bon Om Touk)",
+      "kind": "festival",
+      "regions": [
+        "KH-12"
+      ],
+      "status": "not-on",
+      "note": "the races have been called off in several years, for a crowd disaster, a royal death, low water and COVID, so check it is going ahead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "three days of dragon-boat races on Phnom Penh's riverfront at the full moon that ends the monsoon, in late October or November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bon_Om_Touk",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "khmer-new-year",
+      "name": "Khmer New Year",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a three-day national holiday in mid-April, usually 14 to 16 April, with temple visits and blessings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cambodian_New_Year",
+          "checked": "2026-10-26"
         }
       ]
     }

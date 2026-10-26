@@ -1,6 +1,6 @@
 {
   "iso2": "VN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "rice-terraces",
@@ -121,6 +121,139 @@
         {
           "url": "https://www.asiatouradvisor.com/get-inspired/typhoon-season-vietnam/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "son-doong",
+      "name": "Son Doong Cave expedition",
+      "kind": "trek",
+      "regions": [
+        "VN-24"
+      ],
+      "status": "closed",
+      "note": "departures sell out years ahead: the 2027 and 2028 seasons are already fully booked",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the expedition runs from January to the end of August, then closes for the weather from September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://oxalisadventure.com/tour/son-doong-cave-expedition-4d3n/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "phu-quoc-beaches",
+      "name": "Phu Quoc beaches",
+      "kind": "beach",
+      "regions": [
+        "VN-47"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the dry season: calm seas, clear skies and the best beach weather"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the rainy season brings heavy showers and rough seas, worst on the west coast; the east coast is more sheltered"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://vietnam.travel/places-to-go/southern-vietnam/phu-quoc",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vietnamtourism.com/en/the-best-and-worst-months-to-visit-vietnam-a-region-by-region-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tet",
+      "name": "Tet (lunar new year)",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the country goes home to family, so it is a holiday to plan around as much as a festival to see",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "Tet falls between late January and about 20 February; family restaurants, museums and small shops close for roughly a week"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/T%E1%BA%BFt",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vietnamtourism.com/en/the-best-and-worst-months-to-visit-vietnam-a-region-by-region-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ha-giang-buckwheat",
+      "name": "Buckwheat flowers on the Ha Giang loop",
+      "kind": "drive",
+      "regions": [
+        "VN-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the buckwheat flowers bloom across Ha Giang's hillsides from October to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://vietnam.travel/places-to-go/northern-vietnam/ha-giang",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vietnamtourism.com/en/the-best-and-worst-months-to-visit-vietnam-a-region-by-region-guide",
+          "checked": "2026-10-26"
         }
       ]
     }

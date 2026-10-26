@@ -1,6 +1,6 @@
 {
   "iso2": "IL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "masada",
@@ -41,6 +41,71 @@
         {
           "url": "https://deadsea.com/dead-sea-weather/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "eilat-diving",
+      "name": "Eilat reef diving",
+      "kind": "dive",
+      "regions": [
+        "IL-D"
+      ],
+      "status": "open",
+      "note": "water conditions are good for diving all year, at about 21-25 °C",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "air temperatures often exceed 40 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Eilat",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hula-cranes",
+      "name": "Common cranes, Hula Valley",
+      "kind": "wildlife",
+      "regions": [
+        "IL-Z"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "tens of thousands of common cranes winter in the valley on the flyway between Finland and Ethiopia"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            3
+          ],
+          "reason": "the cranes arrive from late October and leave between February and early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Hula_Valley",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Common_crane",
+          "checked": "2026-10-26"
         }
       ]
     }

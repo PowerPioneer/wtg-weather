@@ -1,6 +1,6 @@
 {
   "iso2": "IR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "persepolis",
@@ -33,6 +33,89 @@
         {
           "url": "https://surfiran.com/mag/best-time-to-visit-iran-tour/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "golabgiri",
+      "name": "Rosewater festival (Golabgiri), Kashan",
+      "kind": "festival",
+      "regions": [
+        "IR-04"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "rose harvest from mid-May to mid-June: petals picked at dawn and distilled into rosewater in Ghamsar and Niasar"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Golabgiri",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dizin",
+      "name": "Skiing at Dizin",
+      "kind": "ski",
+      "regions": [
+        "IR-07"
+      ],
+      "status": "closed",
+      "note": "the lifts run only in the snow season",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the ski season runs from December to May, on slopes between about 2,650 and 3,600 m"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dizin",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nowruz",
+      "name": "Nowruz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the Persian new year at the March equinox, usually 21 March, opens a two-week celebration"
+        },
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "Sizdah Bedar, the 13th day, sends families outdoors to picnic in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
         }
       ]
     }

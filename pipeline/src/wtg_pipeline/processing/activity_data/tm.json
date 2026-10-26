@@ -1,0 +1,103 @@
+{
+  "iso2": "TM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "darvaza-crater",
+      "name": "Darvaza gas crater",
+      "kind": "site",
+      "regions": [
+        "TM-A"
+      ],
+      "status": "open",
+      "note": "still burning, though the flames have shrunk since 2022 as wells nearby began capturing the gas",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            9
+          ],
+          "reason": "access is usually restricted in the last ten days of September, around National Day"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            10
+          ],
+          "reason": "spring and autumn, when nights at the crater are mild and the desert heat has gone"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "Karakum summer heat, often over 40 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Darvaza_gas_crater",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "turkmen-horse-day",
+      "name": "Turkmen Horse Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a national holiday on the last Sunday of April celebrating the Akhal-Teke horse"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Akhal-Teke",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Turkmenistan",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nowruz-tm",
+      "name": "Nowruz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the spring new year on 21-22 March is a two-day public holiday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Turkmenistan",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "TW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "taroko-gorge",
@@ -9,8 +9,8 @@
       "regions": [
         "TW-HUA"
       ],
-      "status": "open",
-      "note": "the gorge sometimes closes for inspection after heavy rain even without a direct typhoon hit — leave a flexible day in a summer itinerary",
+      "status": "limited",
+      "note": "since the 2024 earthquake the signature trails, including Shakadang, Swallow Grotto and the Tunnel of Nine Turns, remain closed; Highway 8 opens in timed windows and the gorge bus is suspended",
       "windows": [
         {
           "status": "limited",
@@ -28,17 +28,6 @@
             6
           ],
           "reason": "the mei-yu plum rain season, from late May into mid-June, which hits the mountains hardest"
-        },
-        {
-          "status": "best",
-          "months": [
-            10,
-            11,
-            12,
-            3,
-            4
-          ],
-          "reason": "outside both wet patterns, with settled weather in the gorge"
         }
       ],
       "sources": [
@@ -49,6 +38,72 @@
         {
           "url": "https://voyageblogger.com/2026/03/30/taiwan-year-round-travel-guide-2026-every-season-has-its-magic/",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.taiwanobsessed.com/is-taroko-gorge-open/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://discoverdiscomfort.com/your-ultimate-guide-to-taroko-national-park/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pingxi-sky-lanterns",
+      "name": "Pingxi Sky Lantern Festival",
+      "kind": "festival",
+      "regions": [
+        "TW-TPQ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "sky lanterns are released at Pingxi around the Lantern Festival, the fifteenth day of the lunar year, in February or early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://eng.taiwan.net.tw/m1.aspx?sNo=0002019&lid=081737",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Lantern_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "keelung-ghost-festival",
+      "name": "Keelung Mid-Summer Ghost Festival",
+      "kind": "festival",
+      "regions": [
+        "TW-KEE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "Taiwan's largest ghost festival lasts about a month through the seventh lunar month, with water lanterns released"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://eng.taiwan.net.tw/m1.aspx?sNo=0002019&lid=081753",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://eng.taiwan.net.tw/m1.aspx?sNo=0002020",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,0 +1,87 @@
+{
+  "iso2": "MO",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "macau-grand-prix",
+      "name": "Macau Grand Prix",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "four days of street racing on the Guia Circuit, Thursday to Sunday in the second or third week of November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Macau_Grand_Prix",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.macaotourism.gov.mo/en/events/calendar",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "macao-fireworks-contest",
+      "name": "Macao International Fireworks Display Contest",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "five evenings of displays over the sea in front of Macau Tower, spread across September and early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fireworks.macaotourism.gov.mo/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.macaotourism.gov.mo/en/events/calendar",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "macao-dragon-boat-races",
+      "name": "Macao International Dragon Boat Races",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "races on Nam Van Lake around the Dragon Boat Festival, which falls in late May or June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "http://www.macaodragonboat.com/en/sites/dragonboat_sp",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.macaotourism.gov.mo/en/events/calendar",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Tuen_Ng_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

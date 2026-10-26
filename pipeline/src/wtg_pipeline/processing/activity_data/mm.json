@@ -1,6 +1,6 @@
 {
   "iso2": "MM",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "bagan-balloons",
@@ -28,7 +28,7 @@
             10,
             3
           ],
-          "reason": "the ballooning season opens in October and runs into the spring"
+          "reason": "Balloons Over Bagan flies from mid-October into March; other operators keep a shorter November-to-February season"
         }
       ],
       "sources": [
@@ -39,6 +39,65 @@
         {
           "url": "https://vinwonders.com/en/wonderpedia/news/southeast-asia-in-november/",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://balloonsoverbagan.com/services/balloons-over-bagan/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.goldeneagleballooning.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.ad-hoc-news.de/unterhaltung/reisen/bagan-archaeological-zone-resumed-balloon-flights-on-15-october/70352030",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thingyan",
+      "name": "Thingyan water festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "four or five days of the water festival in mid-April, ending on the Burmese New Year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Thingyan",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thadingyut",
+      "name": "Thadingyut festival of lights",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "three nights of lights around the Thadingyut full moon, which ends Buddhist Lent, in October or November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Thadingyut_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Burmese_calendar",
+          "checked": "2026-10-26"
         }
       ]
     }

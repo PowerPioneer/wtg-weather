@@ -1,6 +1,6 @@
 {
   "iso2": "JO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "petra",
@@ -84,6 +84,138 @@
         {
           "url": "https://www.responsibletravel.com/holidays/petra-and-wadi-rum/travel-guide/best-time-to-visit-petra-and-wadi-rum",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "jerash-festival",
+      "name": "Jerash Festival for Culture and Arts",
+      "kind": "festival",
+      "regions": [
+        "JO-JA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "performances in the Roman city's colonnaded streets and theatres, from late July into early August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jerash_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://international.visitjordan.com/wheretogo/jerash/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jordan-trail",
+      "name": "Jordan Trail",
+      "kind": "trek",
+      "status": "open",
+      "note": "a 675 km route the length of the country, walked in sections or in about 35 days",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "spring: March and April in the north bring green meadows and flowing streams; February and March are best in the south"
+        },
+        {
+          "status": "best",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "September to mid-November offers similarly pleasant walking weather"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.jordantrail.org/planning-your-trip/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dead-sea",
+      "name": "Floating in the Dead Sea",
+      "kind": "swim",
+      "regions": [
+        "JO-BA"
+      ],
+      "status": "open",
+      "note": "sunny skies all year and under 50 mm of rain",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "winter averages 20-23 °C at the lowest point on land"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer averages 32-39 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dead_Sea",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://international.visitjordan.com/wheretogo/the-dead-sea/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "aqaba-diving",
+      "name": "Aqaba reef diving",
+      "kind": "dive",
+      "regions": [
+        "JO-AQ"
+      ],
+      "status": "open",
+      "note": "more than thirty dive sites on the Red Sea reefs, dived all year; winters are mild",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "on land, average highs reach about 41 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Aqaba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://international.visitjordan.com/wheretogo/aqaba/",
+          "checked": "2026-10-26"
         }
       ]
     }

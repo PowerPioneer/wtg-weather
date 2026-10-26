@@ -1,6 +1,6 @@
 {
   "iso2": "LK",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "whales-south",
@@ -79,6 +79,156 @@
         {
           "url": "https://wwhandbook.iwc.int/en/country-profiles/sri-lanka",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "adams-peak",
+      "name": "Climbing Adam's Peak (Sri Pada)",
+      "kind": "hike",
+      "regions": [
+        "LK-91",
+        "LK-23"
+      ],
+      "status": "limited",
+      "note": "outside the pilgrimage season the mountain is deserted, the trail's seasonal stalls are shut, and rain and wind make the steps hazardous",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the pilgrimage season: the path is lit and busy with pilgrims, and the stalls along it are open"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            5
+          ],
+          "reason": "the season opens on the December full moon (Unduvap) and closes on the Vesak full moon in May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://sdgs.scout.org/project/sripada-adams-peak-hiking-season-begins",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://adaderana.lk/news/33414/sri-pada-season-begins-on-dec24",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://pickyourtrail.com/attractions/sri-lanka/adams-peak",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "esala-perahera",
+      "name": "Kandy Esala Perahera",
+      "kind": "festival",
+      "regions": [
+        "LK-21"
+      ],
+      "status": "not-on",
+      "note": "the nights of processions end on the Nikini full moon, so the dates move each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "about two weeks of night processions in Kandy, held in July and August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Esala_Perahera",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "minneriya-gathering",
+      "name": "The elephant gathering at Minneriya",
+      "kind": "wildlife",
+      "regions": [
+        "LK-72"
+      ],
+      "status": "not-on",
+      "note": "the gathering is driven by the dry season, when the man-made Minneriya tank is the area's reliable water",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the peak, when the dry season draws herds of up to 300 elephants to graze the receding shore of the Minneriya tank"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10
+          ],
+          "reason": "the gathering builds from July and lasts into October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.naturalworldsafaris.com/experiences/natures-great-events/elephant-gathering-in-minneriya",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.hidmc.com/blog-posts/the-elephant-gatherings-of-minneriya-a-must-see-wildlife-event",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "arugam-bay-surf",
+      "name": "Surfing at Arugam Bay",
+      "kind": "season",
+      "regions": [
+        "LK-52"
+      ],
+      "status": "not-on",
+      "note": "the east coast's surf comes with the southwest monsoon; outside it, schools teach beginners only when conditions allow",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the main season, when the southwest monsoon brings the best waves to the east coast"
+        },
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "the season's start, with less consistent waves but thinner crowds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.perfectwavetravel.com/surf-trips/sri-lanka/the-spice-trails-arugam-bay/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://goasia.cc/en/article/arugam-bay-surfing",
+          "checked": "2026-10-26"
         }
       ]
     }

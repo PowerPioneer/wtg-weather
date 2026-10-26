@@ -1,6 +1,6 @@
 {
   "iso2": "TH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "similan-islands",
@@ -50,6 +50,287 @@
         {
           "url": "https://www.thainationalparks.com/mu-ko-similan-national-park",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://www.tatnews.org/thailands-national-park-system-starts-annual-seasonal-closure-of-attractions/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "adang-rawi",
+      "name": "Adang and Rawi islands (Tarutao)",
+      "kind": "beach",
+      "regions": [
+        "TH-91"
+      ],
+      "status": "open",
+      "note": "the Tarutao National Park islands reached by boat from Ko Lipe; Lipe and Tarutao themselves stay open all year",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the park closes the Adang-Rawi archipelago from 16 May to 14 October because of strong winds and high waves"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the seasonal closure begins on 16 May and lifts after 14 October, so half the month is shut"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.pattayamail.com/thailandnews/dnp-announces-closure-of-southern-islands-during-rainy-season-254688",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tatnews.org/thailands-national-park-system-starts-annual-seasonal-closure-of-attractions/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ang-thong",
+      "name": "Ang Thong Marine National Park",
+      "kind": "tour",
+      "regions": [
+        "TH-84"
+      ],
+      "status": "open",
+      "note": "the marine park in the Gulf of Thailand off Koh Samui, visited on day trips",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11
+          ],
+          "reason": "the park's annual rest period runs from 1 November to 15 December"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12
+          ],
+          "reason": "still shut for the annual rest period until 15 December; trips resume in the second half of the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.asiantrails.travel/?p=1048308",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tatnews.org/thailands-national-park-system-starts-annual-seasonal-closure-of-attractions/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "koh-tao-diving",
+      "name": "Diving off Koh Tao",
+      "kind": "dive",
+      "regions": [
+        "TH-84"
+      ],
+      "status": "open",
+      "note": "the Gulf of Thailand runs on a different calendar from the Andaman coast, and Koh Tao can be dived all year",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the Gulf's short monsoon brings heavy rain, wind and reduced visibility at the dive sites"
+        },
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "calm seas and good visibility after the monsoon has passed"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bigbluediving.com/blog/scuba-dive-on-koh-tao/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bigbluediving.com/blog/which-month-is-best-for-scuba-diving-in-thailand/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "phu-kradueng",
+      "name": "Phu Kradueng summit hike",
+      "kind": "hike",
+      "regions": [
+        "TH-42"
+      ],
+      "status": "open",
+      "note": "a mountain national park in Loei, booked through the park's queue app",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the park closes for four months every rainy season to let the forest recover and reduce accidents; reopens 1 October"
+        },
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the cool season, when visitor numbers peak; days average around 15°C and nights can drop to zero"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.pattayamail.com/thailandnews/phu-kradueng-in-loei-reopens-on-october-1-441288",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thaipbsworld.com/around-thailand/phu-kradueng-national-park-to-reopen-next-month",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tatnews.org/2020/12/loeis-natural-attractions-are-a-popular-drawcard-during-cooler-months/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "songkran",
+      "name": "Songkran water festival",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "Thai New Year, a national holiday",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the three-day Thai New Year holiday on 13–15 April, when streets close for water fights"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Songkran_(Thailand)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tatnews.org/2024/04/maha-songkran-world-water-festival-2024-officially-launched/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yi-peng",
+      "name": "Yi Peng and Loy Krathong in Chiang Mai",
+      "kind": "festival",
+      "regions": [
+        "TH-50"
+      ],
+      "status": "not-on",
+      "note": "sky lanterns may not be released in the city itself; the mass releases are ticketed events outside it",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "held over the full moon of the second Lanna lunar month, usually in November; the exact nights shift each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Yi_Peng",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://all.accor.com/a/en/limitless/thematics/top-things-to-do/chiang-mai-lantern-festival-guide.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "phuket-vegetarian-festival",
+      "name": "Phuket Vegetarian Festival",
+      "kind": "festival",
+      "regions": [
+        "TH-83"
+      ],
+      "status": "not-on",
+      "note": "processions, firecrackers and meat-free food centred on the Chinese shrines of Phuket Town",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "nine days at the start of the ninth Chinese lunar month, usually late September or early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.insightguides.com/inspire-me/blog/phukets-vegetarian-festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Nine_Emperor_Gods_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "phi-ta-khon",
+      "name": "Phi Ta Khon ghost festival",
+      "kind": "festival",
+      "regions": [
+        "TH-42"
+      ],
+      "status": "not-on",
+      "note": "a masked three-day festival in Dan Sai, Loei",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "three days usually in late June or early July; the dates follow the lunar calendar and are chosen by local mediums each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tatnews.org/2020/12/loeis-natural-attractions-are-a-popular-drawcard-during-cooler-months/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Phi_Ta_Khon",
+          "checked": "2026-10-26"
         }
       ]
     }

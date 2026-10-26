@@ -1,6 +1,6 @@
 {
   "iso2": "CY",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "sightseeing-swimming-cy",
@@ -36,6 +36,62 @@
         {
           "url": "https://seatemperature.net/seas/mediterranean-sea",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "troodos-ski",
+      "name": "Skiing on Mount Olympus, Troodos",
+      "kind": "ski",
+      "regions": [
+        "CY-02"
+      ],
+      "status": "closed",
+      "note": "outside winter the lifts are not running for skiing",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the ski season usually runs from the beginning of January to the end of March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://cyprusski.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "limassol-carnival",
+      "name": "Limassol Carnival",
+      "kind": "festival",
+      "regions": [
+        "CY-02"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "ten days of festivities ending in the Grand Parade on the Sunday before Clean Monday, which moves with Orthodox Easter into February or March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Limassol_Carnival_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/List_of_dates_for_Easter",
+          "checked": "2026-10-26"
         }
       ]
     }

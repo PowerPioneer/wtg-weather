@@ -1,0 +1,235 @@
+{
+  "iso2": "SG",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "chinese-new-year",
+      "name": "Chinese New Year in Chinatown",
+      "kind": "festival",
+      "regions": [
+        "SG-01"
+      ],
+      "status": "not-on",
+      "note": "Chinatown's street light-up and festive bazaar, with the Chingay street parade around the same time",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the lunar new year falls between 21 January and 20 February; its first two days are public holidays"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Chinese_New_Year",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Chinatown,_Singapore",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Chingay_Parade",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thaipusam",
+      "name": "Thaipusam procession",
+      "kind": "festival",
+      "regions": [
+        "SG-01"
+      ],
+      "status": "not-on",
+      "note": "devotees carry milk pots and kavadis from Sri Srinivasa Perumal Temple to Sri Thendayuthapani Temple",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "held on the full moon of the Tamil month of Thai, which falls in January or February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Thaipusam",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Thai_(month)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "deepavali",
+      "name": "Deepavali in Little India",
+      "kind": "festival",
+      "regions": [
+        "SG-01"
+      ],
+      "status": "not-on",
+      "note": "the festival Little India is best known for; the main day is a public holiday",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the festival of lights falls between the second half of October and the first half of November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Diwali",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Little_India,_Singapore",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mid-autumn-festival",
+      "name": "Mid-Autumn Festival lanterns",
+      "kind": "festival",
+      "regions": [
+        "SG-01"
+      ],
+      "status": "not-on",
+      "note": "Chinatown's lanterns and celebrations are among its major annual attractions; not a public holiday",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the 15th day of the eighth lunar month, between early September and early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mid-Autumn_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Chinatown,_Singapore",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hungry-ghost-festival",
+      "name": "Hungry Ghost Festival getai",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "temporary song stages in residential estates, with the front row left empty for the ghosts",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the seventh lunar month, which falls in August or September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ghost_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "singapore-grand-prix",
+      "name": "Singapore Grand Prix",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "a Formula One night race on the Marina Bay street circuit",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "race weekend falls in late September or early October; recent editions have moved into October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.formula1.com/en/racing/2026",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2024_Singapore_Grand_Prix",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2025_Singapore_Grand_Prix",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sungei-buloh-migratory-birds",
+      "name": "Migratory waders at Sungei Buloh",
+      "kind": "wildlife",
+      "regions": [
+        "SG-03"
+      ],
+      "status": "not-on",
+      "note": "the wetland reserve in the north-west is a stop-over on the shorebird flyway and is open all year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the migratory season, August to April, when waders stop over on their way south from the northern winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nparks.gov.sg/visit/parks/park-detail/sungei-buloh-wetland-reserve",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sungei_Buloh_Wetland_Reserve",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "botanic-gardens",
+      "name": "Singapore Botanic Gardens",
+      "kind": "site",
+      "status": "open",
+      "note": "a UNESCO World Heritage Site open 5 a.m. to midnight every day; entry is free except for the National Orchid Garden",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Singapore_Botanic_Gardens",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

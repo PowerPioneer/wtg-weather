@@ -1,6 +1,6 @@
 {
   "iso2": "KG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "song-kul-yurts",
@@ -37,6 +37,117 @@
         {
           "url": "https://kyrgyzstanplanner.com/best-time-to-visit-kyrgyzstan/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "karakol-ski",
+      "name": "Skiing at Karakol",
+      "kind": "ski",
+      "regions": [
+        "KG-Y"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the ski base is in full operation with the best snow of the season"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            3
+          ],
+          "reason": "the season opens in mid-December, and March brings its last weeks"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitkyrgyzstan.org/when-to-visit/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ala-kul-trek",
+      "name": "Ala-Kul and the Tian Shan treks",
+      "kind": "trek",
+      "regions": [
+        "KG-Y"
+      ],
+      "status": "closed",
+      "note": "the high passes close in October and are still unreliable in May",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "all mountain passes are open and every trek and route is accessible"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the trekking season begins, with Ala-Kul and most routes accessible"
+        },
+        {
+          "status": "limited",
+          "months": [
+            9
+          ],
+          "reason": "most routes stay open until late in the month, but the high passes begin closing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitkyrgyzstan.org/when-to-visit/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "issyk-kul-beach",
+      "name": "Swimming at Issyk-Kul",
+      "kind": "beach",
+      "regions": [
+        "KG-Y"
+      ],
+      "status": "limited",
+      "note": "outside the summer the lakeside is beautiful but too cold for swimming",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the lake is at its warmest, 22-25 °C, and the resort season peaks"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the beach season starts in June with water around 18-20 °C, and the lake stays swimmable into early September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitkyrgyzstan.org/when-to-visit/",
+          "checked": "2026-10-26"
         }
       ]
     }

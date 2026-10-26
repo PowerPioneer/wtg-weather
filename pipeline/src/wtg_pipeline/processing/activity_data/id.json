@@ -1,6 +1,6 @@
 {
   "iso2": "ID",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "komodo",
@@ -117,6 +117,135 @@
         {
           "url": "https://www.selectiveasia.com/indonesia-holidays/weather/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "rinjani",
+      "name": "Mount Rinjani trek",
+      "kind": "trek",
+      "regions": [
+        "ID-NB"
+      ],
+      "status": "open",
+      "note": "park rules require a certified guide on the climb, on Lombok",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the national park closes every January to March for an annual conservation break"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the April to November dry season, the preferred time to climb"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Mount_Rinjani",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nyepi",
+      "name": "Nyepi, Bali's day of silence",
+      "kind": "festival",
+      "regions": [
+        "ID-BA"
+      ],
+      "status": "not-on",
+      "note": "for 24 hours the airport and ferry harbours shut and visitors must stay inside their hotels",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the Balinese Saka new year, usually in March, with ogoh-ogoh demon effigies paraded the night before; the date moves each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nyepi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Bali",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "raja-ampat",
+      "name": "Raja Ampat diving",
+      "kind": "dive",
+      "regions": [
+        "ID-PB"
+      ],
+      "status": "open",
+      "note": "liveaboard schedules are limited and often booked months to a year ahead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the drier October to April period; outside it the weather is more of a gamble"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Raja_Ampat_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nusa-penida-mola-mola",
+      "name": "Mola mola off Nusa Penida",
+      "kind": "dive",
+      "regions": [
+        "ID-BA"
+      ],
+      "status": "open",
+      "note": "manta rays are seen year round; the ocean sunfish are the seasonal draw",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "ocean sunfish are most likely from July to October, though sightings are reported all year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Nusa_Penida",
+          "checked": "2026-10-26"
         }
       ]
     }

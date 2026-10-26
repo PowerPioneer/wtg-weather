@@ -1,0 +1,80 @@
+{
+  "iso2": "HK",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "hk-beaches",
+      "name": "Swimming at Hong Kong's beaches",
+      "kind": "beach",
+      "status": "open",
+      "note": "lifeguards are on duty at the gazetted beaches from April to October",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the off-season: only a handful of beaches keep lifeguards, fewest from December to February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.lcsd.gov.hk/en/beach/index/beach-life.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cheung-chau-bun-festival",
+      "name": "Cheung Chau Bun Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the island's bun towers and floating parade on the eighth day of the fourth lunar month, in April or May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cheung_Chau_Bun_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tai-hang-fire-dragon",
+      "name": "Tai Hang Fire Dragon Dance",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "three nights straddling the Mid-Autumn Festival, which falls between 7 September and 8 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tai_Hang_Fire_Dragon_Dance",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Mid-Autumn_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

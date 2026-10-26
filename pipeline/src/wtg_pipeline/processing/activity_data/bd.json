@@ -1,0 +1,104 @@
+{
+  "iso2": "BD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "st-martins-island",
+      "name": "St Martin's Island",
+      "kind": "beach",
+      "regions": [
+        "BD-B"
+      ],
+      "status": "closed",
+      "note": "a government directive bans tourist visits from February to October to restore the island's ecology",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "tourist visits are allowed, with overnight stays capped at 2,000 people a night"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season reopens, but for day trips only: overnight stays are banned in November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thedailystar.net/news/bangladesh/news/travel-ban-st-martins-feb-businesses-seek-extension-3811336",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitstmaarten.com/clarification-on-bangladesh-st-martin-travel-ban-not-caribbean-st-martin-st-maarten/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pohela-boishakh",
+      "name": "Pohela Boishakh and the Mangal Shobhajatra",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "Bengali New Year, always 14 April in Bangladesh, opening with the dawn Mangal Shobhajatra procession in Dhaka"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Pohela_Boishakh",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/mangal-shobhajatra-on-pahela-baishakh-01091",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ratargul-swamp-forest",
+      "name": "Ratargul Swamp Forest by boat",
+      "kind": "tour",
+      "regions": [
+        "BD-G"
+      ],
+      "status": "limited",
+      "note": "the boat trip needs the monsoon flood; in the dry season the water drains and the forest stands clear of it",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the monsoon flood submerges the trees by about three metres, and local boats glide between them"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the flood rises from May and drains by early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ratargul_Swamp_Forest",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
