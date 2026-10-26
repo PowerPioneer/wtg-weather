@@ -1,0 +1,92 @@
+{
+  "iso2": "SZ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "umhlanga-reed-dance",
+      "name": "Umhlanga Reed Dance",
+      "kind": "festival",
+      "regions": [
+        "SZ-HH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the eight-day Reed Dance at Ludzidzini Royal Village, at the end of August or start of September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Umhlanga_(ceremony)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thekingdomofeswatini.com/when-to-go/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "incwala",
+      "name": "Incwala",
+      "kind": "festival",
+      "regions": [
+        "SZ-HH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the kingdom's most sacred ceremony, held around the summer solstice and lasting about a month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Incwala",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thekingdomofeswatini.com/when-to-go/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mtn-bushfire",
+      "name": "MTN Bushfire festival",
+      "kind": "festival",
+      "regions": [
+        "SZ-MA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "a three-day performing arts festival in the Malkerns Valley, held in late May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thekingdomofeswatini.com/eswatini-experiences/events/mtn-bushfire/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thekingdomofeswatini.com/when-to-go/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "iso2": "GW",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bijagos",
+      "name": "Bijagós islands by boat",
+      "kind": "transport",
+      "regions": [
+        "GW-BL"
+      ],
+      "status": "open",
+      "note": "ferry schedules depend on tides and weather, so check in advance",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "dry season: fast boats run when there is demand, and a liveaboard tours the two national parks weekly"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the rains: fast boats and the weekly park cruise are dry-season services, leaving the once-weekly ferry"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Bissagos_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Guinea-Bissau",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "poilao-turtles",
+      "name": "Green turtle nesting (Poilão)",
+      "kind": "wildlife",
+      "regions": [
+        "GW-BL"
+      ],
+      "status": "not-on",
+      "note": "the island is sacred and only a small number of visitors may land",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the nesting season on sacred Poilão, one of the largest green turtle colonies in the Atlantic"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Poil%C3%A3o",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.orangohotel.com/destino/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "the dry-season wind off the Sahara; nothing closes, but expect dusty, very dry air",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "harmattan dust off the Sahara can block the sun for days and cut visibility like fog"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3
+          ],
+          "reason": "the edges of the harmattan, which blows from late November to mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

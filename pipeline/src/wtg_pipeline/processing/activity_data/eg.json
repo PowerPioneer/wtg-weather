@@ -1,6 +1,6 @@
 {
   "iso2": "EG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "abu-simbel-sun-festival",
@@ -29,6 +29,200 @@
         {
           "url": "https://www.memphistours.com/egypt/abu-simbel-sun-festival",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "nile-cruise",
+      "name": "Nile cruise, Luxor to Aswan",
+      "kind": "tour",
+      "regions": [
+        "EG-LX",
+        "EG-ASN"
+      ],
+      "status": "open",
+      "note": "cruises between Luxor and Aswan sail all year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the cooler season, though nights on deck can be chilly from November to February"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "midday heat regularly passes 40 °C, hotter still inside the tombs, and sailings lean on air conditioning"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.trafalgar.com/real-word/nile-cruise/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.egypttoursplus.com/best-time-to-visit-aswan/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "luxor",
+      "name": "Luxor temples, tombs and balloon flights",
+      "kind": "site",
+      "regions": [
+        "EG-LX"
+      ],
+      "status": "open",
+      "note": "Luxor is the only place in Egypt with hot-air balloon flights",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the coolest months, with January highs around 23 °C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "average highs above 40 °C, and hotter still inside the tombs"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Luxor",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.trafalgar.com/real-word/nile-cruise/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "white-desert",
+      "name": "White Desert camping",
+      "kind": "tour",
+      "regions": [
+        "EG-WAD"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the cooler months, 15-25 °C by day, best for camping among the chalk formations"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.hidmc.com/blog-posts/discovering-the-beauty-of-the-white-desert",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://sunpyramidstours.com/blog/farafra-oasis",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-sinai",
+      "name": "Mount Sinai sunrise climb",
+      "kind": "hike",
+      "regions": [
+        "EG-JS"
+      ],
+      "status": "open",
+      "note": "most people climb through the night to reach the summit for sunrise; the wind blows hard at the top",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the cooler months; December to February are the coolest and driest"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "very hot, which makes the hike uncomfortable and even dangerous"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.roughguides.com/egypt/mount-sinai/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "red-sea-offshore-diving",
+      "name": "Offshore Red Sea reefs (Elphinstone, the Brothers)",
+      "kind": "dive",
+      "regions": [
+        "EG-BA"
+      ],
+      "status": "open",
+      "note": "dived all year; the water runs from about 21-23 °C in winter to near 30 °C in summer",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "oceanic whitetip sharks are most reliably seen at the offshore reefs"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.emperordivers.com/red-sea-best-time",
+          "checked": "2026-10-26"
         }
       ]
     }

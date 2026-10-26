@@ -1,0 +1,107 @@
+{
+  "iso2": "DZ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "tassili-trekking",
+      "name": "Tassili n'Ajjer treks",
+      "kind": "trek",
+      "regions": [
+        "DZ-33"
+      ],
+      "status": "open",
+      "note": "visits need an official guide and a park permit",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            2,
+            3
+          ],
+          "reason": "the main trekking seasons"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "extreme daytime highs"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "trekking is possible, but temperatures reach serious lows"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Tassili_n%27Ajjer_Cultural_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sebiba",
+      "name": "Sebiba, Djanet",
+      "kind": "festival",
+      "regions": [
+        "DZ-33"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "rites climax on Ashura, the tenth of Muharram, which moves about 11 days earlier each year and falls in mid-June in 2027"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sebiba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Ashura",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ghardaia-carpet-festival",
+      "name": "Ghardaia carpet festival",
+      "kind": "festival",
+      "regions": [
+        "DZ-47"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "a carpet festival in March and April, with competitions and sales in the M'zab valley"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ghardaïa",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "SC",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "diving-snorkelling",
@@ -50,6 +50,81 @@
         {
           "url": "https://en.wikipedia.org/wiki/2025%E2%80%9326_South-West_Indian_Ocean_cyclone_season",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "hawksbill-nesting-cousin",
+      "name": "Hawksbill turtle nesting on Cousin Island",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the usual peak of the hawksbill nesting season on Cousin Island"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            1,
+            2,
+            3
+          ],
+          "reason": "the nesting season, which typically starts in September or October and ends in March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.birdlife.org/news/2022/02/17/hawksbill-turtle-nesting-foray-underway-on-cousin-island-seychelles/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://natureseychelles.org/news/latest-news/hawksbill-turtle-nesting-season-a-trailblazer-arrives-on-cousin-island/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sooty-terns-bird-island",
+      "name": "Sooty tern colony on Bird Island",
+      "kind": "wildlife",
+      "status": "not-on",
+      "note": "outside the breeding season the terns are out at sea",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the colony at full strength: around 700,000 pairs of sooty terns nesting and raising chicks"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            10
+          ],
+          "reason": "the terns arrive from late March, and leave the island in October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bird_Island,_Seychelles",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.seyvillas.com/en/guide/islands/inner-islands/bird",
+          "checked": "2026-10-26"
         }
       ]
     }

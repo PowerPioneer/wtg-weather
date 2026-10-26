@@ -1,0 +1,20 @@
+{
+  "iso2": "SO",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "laas-geel",
+      "name": "Laas Geel rock art",
+      "kind": "site",
+      "status": "open",
+      "note": "painted rock shelters on the outskirts of Hargeisa, toured with local guides",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Laas_Geel",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "TG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,73 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "evala",
+      "name": "Evala wrestling (Kara)",
+      "kind": "festival",
+      "regions": [
+        "TG-K"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the Kabyè initiation wrestling held in and around Kara every July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Evala",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kara,_Togo",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kpime-falls",
+      "name": "Kpimé waterfall (Kpalimé)",
+      "kind": "site",
+      "regions": [
+        "TG-P"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the wet season, when the falls are at their most magnificent"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "dry season: the falls can run low, as their water is diverted to a nearby dam"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Kpalim%C3%A9",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kpalim%C3%A9",
+          "checked": "2026-10-26"
         }
       ]
     }

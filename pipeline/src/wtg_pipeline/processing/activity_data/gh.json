@@ -1,6 +1,6 @@
 {
   "iso2": "GH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,118 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "mole",
+      "name": "Mole National Park safari",
+      "kind": "wildlife",
+      "regions": [
+        "GH-NP"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "dry season: the grass is low, which is when game viewing is best, and the rivers shrink to waterholes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Mole_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "aboakyer",
+      "name": "Aboakyer deer-hunt festival (Winneba)",
+      "kind": "festival",
+      "regions": [
+        "GH-CP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "Winneba's deer-hunting festival, held on the first weekend of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Aboakyer_festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bakatue",
+      "name": "Bakatue festival (Elmina)",
+      "kind": "festival",
+      "regions": [
+        "GH-CP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Elmina's festival, celebrated on the first Tuesday of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bakatue_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "homowo",
+      "name": "Homowo festival (Accra)",
+      "kind": "festival",
+      "regions": [
+        "GH-AA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the Ga harvest festival's main celebrations, usually in August and occasionally in July or September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Homowo",
+          "checked": "2026-10-26"
         }
       ]
     }

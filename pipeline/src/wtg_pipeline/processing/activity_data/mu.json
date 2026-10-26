@@ -1,6 +1,6 @@
 {
   "iso2": "MU",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season-mu",
@@ -37,6 +37,73 @@
         {
           "url": "https://en.wikipedia.org/wiki/2025%E2%80%9326_South-West_Indian_Ocean_cyclone_season",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-mu",
+      "name": "Humpback whale watching",
+      "kind": "wildlife",
+      "regions": [
+        "MU-BL"
+      ],
+      "status": "not-on",
+      "note": "sperm whales are resident all year, so whale trips run in every month; the humpbacks are seasonal visitors",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "humpbacks migrate from Antarctic waters to breed and give birth in the Mauritian winter"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the end of the humpback season, which runs into October in some years"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.hidmc.com/blog-posts/whale-watching-in-mauritius-best-times-tour-operators",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.manawa.com/en-GB/activity/mauritius/flic-en-flac-tamarin-bay/whale-watching/whale-watching-in-mauritius-from-grande-riviere-noire/9318",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "maha-shivaratri-grand-bassin",
+      "name": "Maha Shivaratri pilgrimage to Grand Bassin",
+      "kind": "festival",
+      "regions": [
+        "MU-SA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "close to half a million pilgrims walk to the sacred lake of Ganga Talao; the date follows the Hindu calendar"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ganga_Talao",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://mautourco.com/multicultural-mauritius-tradition-and-devotion-the-great-night-of-shiva/",
+          "checked": "2026-10-26"
         }
       ]
     }

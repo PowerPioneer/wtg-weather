@@ -1,0 +1,107 @@
+{
+  "iso2": "DJ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "whale-sharks",
+      "name": "Swimming with whale sharks",
+      "kind": "swim",
+      "regions": [
+        "DJ-AR"
+      ],
+      "status": "not-on",
+      "note": "juvenile whale sharks gather in the Gulf of Tadjoura, around Arta Bay",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the whale sharks return to Djibouti's plankton-rich waters each year from mid-October to the end of February"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the first sharks arrive in the second half of the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://guide.visitdjibouti.dj/les-requins-baleines/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Whale_shark",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lake-assal",
+      "name": "Lake Assal",
+      "kind": "site",
+      "regions": [
+        "DJ-TA",
+        "DJ-AR"
+      ],
+      "status": "open",
+      "note": "a salt lake where visitors float in the brine beside a 65 km² crust of white salt",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "summer temperatures at the lake reach 52 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_Assal_(Djibouti)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://guide.visitdjibouti.dj/le-lac-assal-sur-les-terres-apaisees/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lac-abbe",
+      "name": "Lac Abbé's limestone chimneys",
+      "kind": "site",
+      "status": "open",
+      "note": "steaming limestone chimneys up to 50 m tall and flamingos on the lake, at their most striking at sunset",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer, when average temperatures on the lake run between 30 and 40 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_Abbe",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://guide.visitdjibouti.dj/le-lac-abbe-des-paysages-lunaires/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "iso2": "CF",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "dzanga-bai",
+      "name": "Forest elephants at Dzanga Bai",
+      "kind": "wildlife",
+      "regions": [
+        "CF-SE"
+      ],
+      "status": "open",
+      "note": "large numbers of forest elephants gather in the clearing throughout the year; afternoons give the best light",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dzanga-Sangha_Special_Reserve",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://dzanga-sangha.org/visit-dzanga-sangha/what-to-do-in-dzanga-sangha/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dzanga-sangha-gorillas",
+      "name": "Lowland gorilla tracking, Dzanga-Sangha",
+      "kind": "wildlife",
+      "regions": [
+        "CF-SE"
+      ],
+      "status": "open",
+      "note": "habituated western lowland gorilla groups from the Bai Hokou and Mongambe camps, in groups of three visitors at most",
+      "sources": [
+        {
+          "url": "https://dzanga-sangha.org/visit-dzanga-sangha/what-to-do-in-dzanga-sangha/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dzanga-Sangha_Special_Reserve",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "road-to-bayanga",
+      "name": "Overland from Bangui to Bayanga",
+      "kind": "transport",
+      "status": "open",
+      "note": "a 15 to 20 hour drive to Dzanga-Sangha; charter flights are the alternative",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            10,
+            11
+          ],
+          "reason": "the two rainy seasons, when road conditions to Bayanga become very difficult"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://dzanga-sangha.org/visit-dzanga-sangha/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dzanga-Sangha_Special_Reserve",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "CI",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,59 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "abissa",
+      "name": "Abissa festival (Grand-Bassam)",
+      "kind": "festival",
+      "regions": [
+        "CI-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the Nzema new-year festival, held in Grand-Bassam between October and November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Abissa",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://fr.wikipedia.org/wiki/Abissa",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fecadan",
+      "name": "FECADAN Dan culture festival (Man)",
+      "kind": "festival",
+      "regions": [
+        "CI-06"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the yearly Dan culture and arts festival in Man, with mask races, held every June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Man_(C%C3%B4te_d%27Ivoire)",
+          "checked": "2026-10-26"
         }
       ]
     }

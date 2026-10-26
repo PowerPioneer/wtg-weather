@@ -1,6 +1,6 @@
 {
   "iso2": "SN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,103 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "djoudj",
+      "name": "Djoudj National Bird Sanctuary",
+      "kind": "wildlife",
+      "regions": [
+        "SN-SL"
+      ],
+      "status": "limited",
+      "note": "far fewer birds, and in the rains the sanctuary shuts for about three months because moving about becomes impossible",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the migration peak, with close to 400 bird species in the park"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3,
+            4
+          ],
+          "reason": "either side of the peak: the migration gets going in December and thins from late February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://scootwestafrica.com/?p=5470",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thesalmons.org/lynn/wh-wcmc/Senegal%20-%20Djoudj.pdf",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "niokolo-koba",
+      "name": "Niokolo-Koba National Park",
+      "kind": "wildlife",
+      "regions": [
+        "SN-TC",
+        "SN-KE"
+      ],
+      "status": "limited",
+      "note": "in the rains (late June to late October) the animals disperse and the tracks need 4WD more than ever",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "dry season: the best game viewing, from the end of October to the end of June, when most tours run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thesalmons.org/lynn/wh-wcmc/Senegal%20-%20Niokolo-Koba.pdf",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "saint-louis-jazz",
+      "name": "Saint-Louis Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "SN-SL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "five days of concerts on Saint-Louis's Place Baya, usually in May; dates are set each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.musicinafrica.net/fr/magazine/senegal-le-festival-international-de-jazz-de-saint-louis-lance-aujourdhui-sa-34e-edition",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,12 +1,16 @@
 {
   "iso2": "UG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "gorilla-trekking",
       "name": "Mountain gorilla trekking",
       "kind": "wildlife",
-      "regions": [],
+      "regions": [
+        "UG-414",
+        "UG-404",
+        "UG-408"
+      ],
       "status": "open",
       "note": "trackable in every month of the year; the season decides how muddy the walk is and how hard the permit is to get, not whether the gorillas are there",
       "windows": [
@@ -45,6 +49,112 @@
         {
           "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Bwindi_Impenetrable_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kibale-chimpanzees",
+      "name": "Chimpanzee trekking in Kibale Forest",
+      "kind": "wildlife",
+      "regions": [
+        "UG-405"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            6,
+            7,
+            8
+          ],
+          "reason": "the dry seasons, the best months for trekking to see chimpanzees"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "by far the wettest month, when many roads may be closed"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/uganda/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kibale_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "savannah-game-drives",
+      "name": "Savannah-park game drives",
+      "kind": "wildlife",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            9
+          ],
+          "reason": "the end of the dry seasons, when wildlife concentrates around water sources"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the wettest month: many roads may be closed by the downpours"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/uganda/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "martyrs-day",
+      "name": "Uganda Martyrs' Day at Namugongo",
+      "kind": "festival",
+      "regions": [
+        "UG-113"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "3 June, a public holiday honouring the Uganda Martyrs, whose shrine at Namugongo hosts massive pilgrimages"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Uganda_Martyrs",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Uganda",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Basilica_of_the_Uganda_Martyrs,_Namugongo",
+          "checked": "2026-10-26"
         }
       ]
     }

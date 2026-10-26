@@ -1,0 +1,111 @@
+{
+  "iso2": "EH",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "dakhla-kitesurfing",
+      "name": "Kitesurfing at Dakhla",
+      "kind": "season",
+      "status": "open",
+      "note": "kited on both the ocean and the lagoon side of the peninsula; the long-term average wind is 16 knots",
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Dakhla",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dakhla,_Western_Sahara",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.windfinder.com/windstatistics/dakhla",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.iksurfmag.com/travel-guides/africa/morocco/dakhla/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.wearecravingadventure.com/?p=9014",
+          "checked": "2026-10-26"
+        }
+      ],
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the windiest months, with June to August blowing up to about 35 knots"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the lightest months: still kiteable, but fewer windy days, so check the forecast"
+        }
+      ]
+    },
+    {
+      "id": "dakhla-wintering-birds",
+      "name": "Wintering waders and flamingos, Dakhla Bay",
+      "kind": "wildlife",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the northern winter: the Dakhla peninsula and Cintra Bay are major wintering grounds for waders, with greater flamingos"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dakhla,_Western_Sahara",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dakhla-wave-surfing",
+      "name": "Wave surfing on Dakhla's Atlantic side",
+      "kind": "season",
+      "status": "open",
+      "note": "the ocean side has surf spots for every level, around Oum Lbouir bay",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "winter, when the Atlantic swells are bigger; October is the standout month for waves"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wearecravingadventure.com/?p=9014",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.iksurfmag.com/travel-guides/africa/morocco/dakhla/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

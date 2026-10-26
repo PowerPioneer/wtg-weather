@@ -1,6 +1,6 @@
 {
   "iso2": "RW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "gorilla-trekking",
@@ -48,6 +48,64 @@
         {
           "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "kwita-izina",
+      "name": "Kwita Izina gorilla naming",
+      "kind": "festival",
+      "regions": [
+        "RW-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "the annual ceremony naming the past year's gorilla births, at the foot of Volcanoes National Park; the date is set each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitrwanda.com/kwita-izina/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kwita_Izina",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "akagera-game-drives",
+      "name": "Akagera game drives",
+      "kind": "wildlife",
+      "regions": [
+        "RW-02"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the long dry season, when game viewing across the region is excellent"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitrwanda.com/destinations/akagera-national-park-2/",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "BF",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,91 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "fespaco",
+      "name": "FESPACO film festival, Ouagadougou",
+      "kind": "festival",
+      "regions": [
+        "BF-KAD"
+      ],
+      "status": "not-on",
+      "note": "Africa's biggest film festival is biennial: it runs only in odd-numbered years",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "held in odd-numbered years, opening on the last Saturday of February and running into early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Festival_panafricain_du_cinéma_et_de_la_télévision_de_Ouagadougou",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Panafrican_Film_and_Television_Festival_of_Ouagadougou",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "semaine-nationale-de-la-culture",
+      "name": "Semaine nationale de la culture, Bobo-Dioulasso",
+      "kind": "festival",
+      "regions": [
+        "BF-HOU"
+      ],
+      "status": "not-on",
+      "note": "a biennial culture week; the regional heats run in the off years",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the national final is held in Bobo-Dioulasso every second year, recently between late March and early May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Semaine_nationale_de_la_culture",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "karfiguela-falls",
+      "name": "Karfiguéla falls, near Banfora",
+      "kind": "site",
+      "regions": [
+        "BF-COM"
+      ],
+      "status": "open",
+      "note": "the cascades lie 12 km north-west of Banfora",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the rainy season, June to September, is when the falls run at their fullest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Cascades_de_Karfiguéla",
+          "checked": "2026-10-26"
         }
       ]
     }

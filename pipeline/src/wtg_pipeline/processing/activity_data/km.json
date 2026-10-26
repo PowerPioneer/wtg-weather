@@ -1,0 +1,113 @@
+{
+  "iso2": "KM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales-moheli",
+      "name": "Humpback whales off Mohéli",
+      "kind": "wildlife",
+      "regions": [
+        "KM-M"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "humpbacks come to Mohéli's warm waters to mate and give birth, staying with their calves until October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://missionblue.org/?p=48014",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://divingaway.com/en/destination-scuba-diving-88/comoros/moheli,-comores",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "itsamia-turtles",
+      "name": "Green turtles at Itsamia, Mohéli",
+      "kind": "wildlife",
+      "regions": [
+        "KM-M"
+      ],
+      "status": "open",
+      "note": "several thousand green turtles nest on Itsamia's beaches each year, and they come ashore in every month",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "turtle numbers around Mohéli rise in July and August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://iosea-turtles.cms.int/fr/node/29398",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Moheli",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://divingaway.com/en/destination-scuba-diving-88/comoros/moheli,-comores",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-karthala",
+      "name": "Mount Karthala summit hike",
+      "kind": "hike",
+      "regions": [
+        "KM-G"
+      ],
+      "status": "open",
+      "note": "a 20-25 km round trip with more than 1,600 m of climbing to the crater of an active volcano",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season: cooler, drier and less muddy on the trail"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the rainy and cyclone season: a slippery trail and often no view at the crater"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://outofyourcomfortzone.net/mount-karthala-comoros-climb-without-guide/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

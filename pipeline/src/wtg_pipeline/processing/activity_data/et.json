@@ -1,6 +1,6 @@
 {
   "iso2": "ET",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "danakil",
@@ -43,6 +43,179 @@
         {
           "url": "https://rove.me/to/ethiopia/danakil-depression",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "simien-trekking",
+      "name": "Trekking the Simien Mountains",
+      "kind": "trek",
+      "regions": [
+        "ET-AM"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the heavy rains block trekking routes, turn tracks to mud and close the campsites"
+        },
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "just after the rains, with wildflowers in full bloom"
+        },
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "clear skies, with the trekking routes and roads accessible"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://brilliant-ethiopia.com/regions/simien-mountains-national-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.brilliant-ethiopia.com/when-to-visit-ethiopia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bale-mountains",
+      "name": "Hiking the Bale Mountains",
+      "kind": "hike",
+      "regions": [
+        "ET-OR"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the dry season, the best time for hiking"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://brilliant-ethiopia.com/regions/bale-mountains-national-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.brilliant-ethiopia.com/when-to-visit-ethiopia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "omo-valley",
+      "name": "The Omo Valley",
+      "kind": "tour",
+      "regions": [
+        "ET-SN"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the rains come earlier in the south and leave parts of the Lower Omo inaccessible"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "outside the rains, the recommended time to visit"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://brilliant-ethiopia.com/regions/omo-valley",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.brilliant-ethiopia.com/when-to-visit-ethiopia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "timkat",
+      "name": "Timkat (Epiphany)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "19 January (20th in a leap year); Gondar, gathered at the Fasilides bath, is the centre of the celebrations"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://brilliant-ethiopia.com/timkat",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Timkat",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "meskel",
+      "name": "Meskel",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "27 September (28th in a leap year): the Demera bonfires are lit at dusk, with the capital's crowds in Meskel Square"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://brilliant-ethiopia.com/meskel",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Meskel",
+          "checked": "2026-10-26"
         }
       ]
     }

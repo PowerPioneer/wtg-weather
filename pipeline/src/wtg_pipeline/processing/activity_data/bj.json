@@ -1,6 +1,6 @@
 {
   "iso2": "BJ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,58 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "vodun-days",
+      "name": "Vodun festival (Ouidah)",
+      "kind": "festival",
+      "regions": [
+        "BJ-AQ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "Benin's Vodun celebration on 10 January, centred on Ouidah, with Vodun Days events in the days before"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Vodun_Days",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://vodundays.bj/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "savalou-yam-festival",
+      "name": "Yam festival (Savalou)",
+      "kind": "festival",
+      "regions": [
+        "BJ-CO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the new-yam festival on 15 August, when the king allows the first of the harvest to be eaten"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Savalou",
+          "checked": "2026-10-26"
         }
       ]
     }

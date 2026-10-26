@@ -1,0 +1,98 @@
+{
+  "iso2": "SH",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "whale-sharks",
+      "name": "Swimming with whale sharks (St Helena)",
+      "kind": "wildlife",
+      "regions": [
+        "SH-HL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "whale sharks visit St Helena every year from December to March; guided snorkelling only, no scuba with them"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.sainthelenaisland.info/whalesharks.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.sainthelenaisland.info/diving.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales",
+      "name": "Humpback whales (St Helena)",
+      "kind": "wildlife",
+      "regions": [
+        "SH-HL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "humpback whales are seen around the island mostly from June to December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.sainthelenaisland.info/dolphinwatching.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ascension-turtles",
+      "name": "Green turtle nesting (Ascension)",
+      "kind": "wildlife",
+      "regions": [
+        "SH-AC"
+      ],
+      "status": "not-on",
+      "note": "visitors need a visa arranged before arrival",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "green turtles come ashore to lay their eggs on Ascension's beaches from November to May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ascension_Island",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

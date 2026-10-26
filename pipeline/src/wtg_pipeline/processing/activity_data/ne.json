@@ -1,6 +1,6 @@
 {
   "iso2": "NE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,70 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "cure-salee",
+      "name": "Cure Salée and the Gerewol, In-Gall",
+      "kind": "festival",
+      "regions": [
+        "NE-1"
+      ],
+      "status": "not-on",
+      "note": "Tuareg and Wodaabe herders gather at the salt flats near In-Gall; the government fixes the date each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "held after the rains in September, usually in the last two weeks, with camel races and the Wodaabe Gerewol"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cure_Salée",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.aljazeera.com/gallery/2021/9/21/ingall-niger-hosts-camel-race-sahara-desert",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Gerewol",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "koure-giraffes",
+      "name": "West African giraffes around Kouré",
+      "kind": "wildlife",
+      "regions": [
+        "NE-6"
+      ],
+      "status": "open",
+      "note": "in the dry season the herds range south toward the Dosso reserve and are much harder to find",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "rainy season: the herds move north into the bush around Kouré, about 80 km south-east of Niamey"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dosso_Reserve",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.csmonitor.com/2007/0111/p20s01-sten.html",
+          "checked": "2026-10-26"
         }
       ]
     }

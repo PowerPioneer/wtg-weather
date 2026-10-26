@@ -1,0 +1,85 @@
+{
+  "iso2": "LS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "afriski",
+      "name": "Skiing at Afriski",
+      "kind": "ski",
+      "status": "not-on",
+      "note": "in summer the resort turns to mountain sports instead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the winter ski season at Afriski, about 3,000 m up in the Maluti Mountains"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Afriski",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Lesotho",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sani-pass",
+      "name": "Sani Pass",
+      "kind": "drive",
+      "regions": [
+        "LS-J"
+      ],
+      "status": "open",
+      "note": "the border posts at the pass open from 06:00 to 18:00",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "snow and ice can cover the steep road, and bad weather often closes the pass in winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sani_Pass",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Lesotho",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "maletsunyane-falls",
+      "name": "Maletsunyane Falls, Semonkong",
+      "kind": "site",
+      "regions": [
+        "LS-A"
+      ],
+      "status": "open",
+      "note": "in summer you can swim in the pool below; in winter it freezes and ice forms around the falls. The 204 m abseil can be cancelled for weather or high water",
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Lesotho",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.semonkonglodge.com/world-record-waterfall-abseil-at-maletsunyane-falls/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

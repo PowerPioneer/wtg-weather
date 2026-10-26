@@ -1,0 +1,58 @@
+{
+  "iso2": "CD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "virunga-gorillas",
+      "name": "Mountain gorilla trekking, Virunga",
+      "kind": "wildlife",
+      "regions": [
+        "CD-NK"
+      ],
+      "status": "closed",
+      "note": "the park lists gorilla treks as closed until further notice",
+      "sources": [
+        {
+          "url": "https://visit.virunga.org/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nyiragongo",
+      "name": "Nyiragongo volcano trek",
+      "kind": "trek",
+      "regions": [
+        "CD-NK"
+      ],
+      "status": "closed",
+      "note": "the park lists the Nyiragongo trek as closed until further notice",
+      "sources": [
+        {
+          "url": "https://visit.virunga.org/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lola-ya-bonobo",
+      "name": "Lola ya Bonobo sanctuary, Kinshasa",
+      "kind": "site",
+      "regions": [
+        "CD-KN"
+      ],
+      "status": "open",
+      "note": "day tours Tuesday to Sunday, closed Mondays; no booking needed for individuals",
+      "sources": [
+        {
+          "url": "https://www.bonobos.org/visit-lola-ya-bonobo",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Lola_ya_Bonobo",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

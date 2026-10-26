@@ -1,6 +1,6 @@
 {
   "iso2": "ML",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -35,6 +35,101 @@
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "djenne-crepissage",
+      "name": "Crépissage of the Great Mosque, Djenné",
+      "kind": "festival",
+      "regions": [
+        "ML-5"
+      ],
+      "status": "not-on",
+      "note": "a one-day community festival when the whole town replasters its mud mosque",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the mosque gets its new coat of mud each spring, usually in April before the rains; the exact day moves each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://roadsandkingdoms.com/2018/the-mud-mosque-of-mali/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://sacredsites.com/africa/mali/djenne.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sanke-mon",
+      "name": "Sanké mon collective fishing rite, San",
+      "kind": "festival",
+      "regions": [
+        "ML-4"
+      ],
+      "status": "not-on",
+      "note": "a UNESCO-listed rite marking the founding of San: fifteen hours of collective fishing, then a masked dance",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "held in June, on the second Thursday of the seventh lunar month, at the start of the rainy season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ich.unesco.org/en/RL/sanke-mon-collective-fishing-rite-in-sanke-00289",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.africanews.com/2024/06/14/disappearing-mali-pond-threatens-unesco-fishing-tradition/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/San,_Mali",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yaaral-cattle-crossing",
+      "name": "Yaaral cattle crossing, Diafarabé",
+      "kind": "festival",
+      "regions": [
+        "ML-5"
+      ],
+      "status": "not-on",
+      "note": "the Peul herds' return across the inner Niger Delta, a UNESCO-listed festival",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "thousands of cattle are driven across the Diaka in late November; the Saturday is set each year by river level and pasture"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Diafarabé",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/cultural-space-of-the-yaaral-and-degal-00132",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://globalvoices.org/2017/01/10/is-insecurity-threatening-cultural-growth-in-mali/",
+          "checked": "2026-10-26"
         }
       ]
     }

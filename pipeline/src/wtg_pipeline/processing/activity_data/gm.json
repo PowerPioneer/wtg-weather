@@ -1,0 +1,151 @@
+{
+  "iso2": "GM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "birdwatching",
+      "name": "Birdwatching",
+      "kind": "wildlife",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the early dry season, from late October to December, is the optimum time for birders"
+        },
+        {
+          "status": "open",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "seasonal wetlands tend to dry up from February onwards"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the rains make watching birds and other wildlife difficult"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/the-gambia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "coast-resorts",
+      "name": "Atlantic coast resorts",
+      "kind": "beach",
+      "regions": [
+        "GM-W",
+        "GM-B"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "peak season, late October to April: dry, with cooler nights"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "quieter resorts, and still good for independent travel before the rains"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the heart of the rains, at over 200 mm a month; guidebooks suggest avoiding these months"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/the-gambia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "upriver",
+      "name": "Travelling upriver",
+      "kind": "drive",
+      "regions": [
+        "GM-M",
+        "GM-U"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the wettest months, when dirt roads upriver are most likely to be cut off"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/the-gambia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "the dry-season wind off the Sahara; nothing closes, but expect dusty, very dry air",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "harmattan dust off the Sahara can block the sun for days and cut visibility like fog"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3
+          ],
+          "reason": "the edges of the harmattan, which blows from late November to mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

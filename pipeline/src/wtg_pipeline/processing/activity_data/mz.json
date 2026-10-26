@@ -1,11 +1,14 @@
 {
   "iso2": "MZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "bazaruto-diving",
       "name": "Diving the Bazaruto Archipelago",
       "kind": "dive",
+      "regions": [
+        "MZ-I"
+      ],
       "status": "open",
       "windows": [
         {
@@ -36,6 +39,126 @@
         {
           "url": "https://www.safaribookings.com/mozambique/best-time",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-mz",
+      "name": "Humpback whale migration",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "humpback whales move through Mozambican waters on their seasonal migration"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the tail of the migration, which runs until November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/mozambique/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/mozambique/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gorongosa",
+      "name": "Gorongosa National Park",
+      "kind": "wildlife",
+      "regions": [
+        "MZ-S"
+      ],
+      "status": "open",
+      "note": "the park shuts for the rainy season; it states that activities run from 1 March to 15 December",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the park is closed to visitors for the rainy season"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12
+          ],
+          "reason": "the park closes to visitors from mid-December for the rains"
+        },
+        {
+          "status": "limited",
+          "months": [
+            3
+          ],
+          "reason": "activities resume on 1 March, but some game-drive roads stay closed until they are safe"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the dry season, when game viewing is at its best"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://gorongosa.org/things-to-know/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safaribookings.com/gorongosa/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/mozambique/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "turtle-nesting-ponta-do-ouro",
+      "name": "Turtle nesting near Ponta do Ouro",
+      "kind": "wildlife",
+      "regions": [
+        "MZ-L"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "loggerhead and leatherback turtles come ashore to nest on the beaches near Ponta do Ouro"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/mozambique/when-to-go",
+          "checked": "2026-10-26"
         }
       ]
     }

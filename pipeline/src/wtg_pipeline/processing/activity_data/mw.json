@@ -1,0 +1,126 @@
+{
+  "iso2": "MW",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "liwonde",
+      "name": "Liwonde National Park",
+      "kind": "wildlife",
+      "regions": [
+        "MW-MH",
+        "MW-MG"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the middle and end of the dry season, the best months for wildlife viewing"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the rains: roads can quickly become impassable and a 4x4 is essential"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/liwonde/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safaribookings.com/malawi/best-time",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nyika-wildflowers",
+      "name": "Orchids and wildflowers on the Nyika Plateau",
+      "kind": "season",
+      "regions": [
+        "MW-RU"
+      ],
+      "status": "open",
+      "note": "the high grasslands flower all year, and the plateau is often in cloud in both seasons",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the rains bring the plateau's 200-plus orchid species and its wildflowers into bloom"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nyika_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safaribookings.com/nyika/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/malawi/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-mulanje",
+      "name": "Hiking Mount Mulanje",
+      "kind": "hike",
+      "regions": [
+        "MW-MU"
+      ],
+      "status": "open",
+      "note": "it rains on the plateau all year; mountain huts give hikers rustic shelter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the cool dry season, the most suitable months for hiking the massif"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the wet season, when hiking on the massif is not recommended"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mount_Mulanje",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

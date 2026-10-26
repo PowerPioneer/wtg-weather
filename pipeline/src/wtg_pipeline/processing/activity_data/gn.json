@@ -1,0 +1,117 @@
+{
+  "iso2": "GN",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "badiar",
+      "name": "Badiar National Park",
+      "kind": "wildlife",
+      "regions": [
+        "GN-KN"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "dry season: antelope, monkeys, lions and leopard are found in the savanna park"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Guinea",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "the dry-season wind off the Sahara; nothing closes, but expect dusty, very dry air",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "harmattan dust off the Sahara can block the sun for days and cut visibility like fog"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3
+          ],
+          "reason": "the edges of the harmattan, which blows from late November to mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fouta-djallon",
+      "name": "Hiking and waterfalls in the Fouta Djallon",
+      "kind": "hike",
+      "regions": [
+        "GN-DL",
+        "GN-PI",
+        "GN-LA"
+      ],
+      "status": "open",
+      "note": "walked from bases at Dalaba, Pita and Labé; the waterfalls thin out late in the dry season but always carry some water",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "the rains have ended but the landscape is still lush and the waterfalls run full"
+        },
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the dry season, the most popular time to hike, with roads at their most passable"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "rainy season: roads wash out and some treks become inaccessible"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://scootwestafrica.com/?p=3958",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vialala.com/destination/guinea",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
