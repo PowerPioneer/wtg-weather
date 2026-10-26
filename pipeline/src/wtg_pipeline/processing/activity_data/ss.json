@@ -1,0 +1,119 @@
+{
+  "iso2": "SS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "mundari-cattle-camps",
+      "name": "Mundari cattle camps near Terekeka",
+      "kind": "tour",
+      "regions": [
+        "SS-EC"
+      ],
+      "status": "open",
+      "note": "the Mundari herd long-horned cattle on the White Nile plains north of Juba, moving camp with the rains and floods",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "dry season: the herders camp along the banks of the White Nile, and it is the high season for Mundari weddings"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "heavy rains and floods move the camps away from the river and can make the tracks impassable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kumakonda.com/mundari-cattle-camp-2/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/south-sudan/travel-guide/best-time-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.mzunguexpeditions.com/southsudan_jan_2026_en",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "toposa-villages",
+      "name": "Toposa villages around Kapoeta",
+      "kind": "tour",
+      "regions": [
+        "SS-EE"
+      ],
+      "status": "open",
+      "note": "reached by flying from Juba to Kapoeta and driving out to the villages",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "early January falls in the high season of Toposa wedding ceremonies"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mzunguexpeditions.com/southsudan_jan_2026_en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rockyroadtravel.com/november-south-sudan-tour/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dry-season-travel",
+      "name": "Overland travel in the dry season",
+      "kind": "season",
+      "status": "open",
+      "note": "roads outside Juba are unpaved, so the rains decide how far you can get",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the dry season: sunny, with almost no rain from December to early February"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the heaviest rains: from July to November unpaved roads often become impassable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsibletravel.com/holidays/south-sudan/travel-guide/best-time-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/South_Sudan",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "HR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "plitvice",
@@ -10,7 +10,7 @@
         "HR-09"
       ],
       "status": "open",
-      "note": "open year-round, including over Christmas",
+      "note": "open every day of the year",
       "windows": [
         {
           "status": "limited",
@@ -19,17 +19,13 @@
             1,
             2
           ],
-          "reason": "some boardwalk routes close under snow and ice, though this is when the falls freeze and the park is at its emptiest"
+          "reason": "on freezing days with heavy snow the park is only partly open, to reduce the risk of slips on ice and snow"
         }
       ],
       "sources": [
         {
           "url": "https://www.plitvice-lakes.info/national-park/opening-times-plitvice-lakes/",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.localguidetocroatia.com/single-post/visit-plitvice-lakes-in-winter",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -53,13 +49,202 @@
             2,
             3
           ],
-          "reason": "the winter season runs 1 November to 31 March: fewer sailings, shorter days and island travel that depends on the weather. The coast itself rarely freezes"
+          "reason": "outside the main season ferry frequencies are reduced, some seasonal fast boats and catamarans stop altogether, and strong winds can delay or cancel crossings"
         }
       ],
       "sources": [
         {
           "url": "https://www.absolute-croatia.com/croatia/travel-information/visit-croatia-in-winter",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dubrovnik-walls",
+      "name": "Dubrovnik city walls",
+      "kind": "site",
+      "regions": [
+        "HR-19"
+      ],
+      "status": "open",
+      "note": "open all year except Christmas Day, on shorter hours in winter",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "extremely hot and crowded in peak summer, with crowds from opening to closing"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            10
+          ],
+          "reason": "spring and autumn, when the walk is cooler and far less crowded"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://chasingthedonkey.com/walking-walls-of-dubrovnik-city-walls",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dubrovnik-summer-festival",
+      "name": "Dubrovnik Summer Festival",
+      "kind": "festival",
+      "regions": [
+        "HR-19"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "held every year between 10 July and 25 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dubrovnik_Summer_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "krka",
+      "name": "Krka National Park waterfalls",
+      "kind": "site",
+      "regions": [
+        "HR-15"
+      ],
+      "status": "open",
+      "note": "open all year; swimming is allowed only in clearly marked areas",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "winter hours close the main sites at 16:00 or 17:00, and the Manojlovac falls and Burnum are shut"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://npkrka.hr/en_us/posjeti/radno-vrijeme/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://npkrka.hr/en_us/informacije/pravila-parka/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sinjska-alka",
+      "name": "Sinjska alka, Sinj",
+      "kind": "festival",
+      "regions": [
+        "HR-17"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the tournament is held on the first Sunday of August; UNESCO-listed since 2010"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sinjska_alka",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://total-croatia-news.com/news/made-in-croatia/exploring-croatia-s-intangible-unesco-heritage-sinjska-alka/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rijeka-carnival",
+      "name": "Rijeka Carnival",
+      "kind": "festival",
+      "regions": [
+        "HR-08"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the International Carnival Parade falls on the last Sunday before Ash Wednesday, usually in February"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            3
+          ],
+          "reason": "the carnival season runs before Lent, between late January and early March depending on the date of Easter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Rijeka_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitrijeka.hr/en/rijeka-carnival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "zagreb-advent",
+      "name": "Advent in Zagreb",
+      "kind": "festival",
+      "regions": [
+        "HR-21"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the heart of the Advent season, which runs through December"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "the season opens at the end of November and runs into the first week of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.adventzagreb.hr/",
+          "checked": "2026-10-26"
         }
       ]
     }

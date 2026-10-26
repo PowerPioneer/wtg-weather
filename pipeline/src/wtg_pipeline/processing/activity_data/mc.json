@@ -1,0 +1,78 @@
+{
+  "iso2": "MC",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "monaco-grand-prix",
+      "name": "Monaco Grand Prix",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "building the circuit takes six weeks and removing it three, so the streets are under construction either side of the race",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "from 2026 the street race is held on the first weekend of June, having been run in late May or early June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Monaco_Grand_Prix",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/monaco/monaco-grand-prix",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "monaco-yacht-show",
+      "name": "Monaco Yacht Show",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "held every September in Port Hercule"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rove.me/to/monaco/monaco-yacht-show",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Monaco_Yacht_Show",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "monaco-national-day",
+      "name": "Monaco National Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "19 November: fireworks over the harbour the evening before, then Mass, ceremonies and parades at the palace"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rove.me/to/monaco/national-day-of-monaco",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

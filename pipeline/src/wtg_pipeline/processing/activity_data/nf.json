@@ -1,0 +1,90 @@
+{
+  "iso2": "NF",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bounty-day",
+      "name": "Bounty Day",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the afternoon family gatherings are by invitation or a pre-booked tour lunch",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "8 June: descendants re-enact the 1856 Pitcairner landing at Kingston Pier, then process through Kingston"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.norfolkisland.com.au/stories/bounty-day-our-proudest-tradition/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Bounty_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "birdwatching-nf",
+      "name": "Birdwatching",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "forest birds such as the green parrot are resident all year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "coastal seabird activity peaks from November to February, after a breeding season that runs August to December"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "migratory species leave around March and April, returning from October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.norfolkisland.com.au/things-to-do/nature/birdwatching/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thanksgiving-nf",
+      "name": "Thanksgiving Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "one of the few places outside North America to keep Thanksgiving, a public holiday in late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.norfolkisland.com.au/things-to-do/events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_Norfolk_Island",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

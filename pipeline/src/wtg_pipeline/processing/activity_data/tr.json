@@ -1,6 +1,6 @@
 {
   "iso2": "TR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cappadocia-balloons",
@@ -18,7 +18,6 @@
             4,
             5,
             6,
-            9,
             10
           ],
           "reason": "spring and autumn give the highest chance of flying and the best conditions"
@@ -26,9 +25,9 @@
         {
           "status": "best",
           "months": [
-            8
+            9
           ],
-          "reason": "statistically the most reliable month of all, with a cancellation rate around 7%"
+          "reason": "the single most reliable month, with roughly 5–10% of flights cancelled"
         },
         {
           "status": "limited",
@@ -38,17 +37,173 @@
             2,
             3
           ],
-          "reason": "fog, snow and sustained wind cancel more than half of scheduled flights — though January and February are the months to fly if you want the valleys under snow"
+          "reason": "fog, snow and wind cancel roughly a third of flights or more from December to February, and a fifth or more in March — though clear January mornings give some of the most dramatic flights of the year, over snow-covered valleys"
         }
       ],
       "sources": [
         {
           "url": "https://tatildokya.com/en/hot-air-balloon-cappadocia-best-time-to-fly-by-month-2026",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://epicturkeytravel.com/cappadocia-hot-air-balloon-cancellation/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lycian-way",
+      "name": "The Lycian Way",
+      "kind": "trek",
+      "regions": [
+        "TR-48",
+        "TR-07"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4,
+            5,
+            9,
+            10,
+            11
+          ],
+          "reason": "the trekking seasons, February to May and September to November; February is often warmer and sunnier than March"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer in Lycia is too hot for long walks"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://cultureroutesinturkey.com/the-lycian-way/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Lycian_Way",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "iztuzu-turtles",
+      "name": "Loggerhead turtles, Iztuzu Beach (Dalyan)",
+      "kind": "wildlife",
+      "regions": [
+        "TR-48"
+      ],
+      "status": "not-on",
+      "note": "the beach is open by day all year; this is about the nesting turtles",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "loggerheads nest between May and August; from 1 May to 31 October the beach is closed to visitors from 20:00 to 08:00 to protect the nests"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/İztuzu_Beach",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Loggerhead_sea_turtle",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "istanbul-tulip-festival",
+      "name": "Istanbul Tulip Festival",
+      "kind": "festival",
+      "regions": [
+        "TR-34"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the international tulip festival is held every April, with Emirgan Park its showpiece"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Istanbul_Tulip_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Emirgan_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "seb-i-arus",
+      "name": "Seb-i Arus, the Mevlana festival in Konya",
+      "kind": "festival",
+      "regions": [
+        "TR-42"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "whirling-dervish sema ceremonies in the days leading up to 17 December, the anniversary of Rumi's death"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Rumi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Mevlevi_Order",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "anzac-day-gallipoli",
+      "name": "Anzac Day dawn service, Gallipoli",
+      "kind": "festival",
+      "regions": [
+        "TR-17"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "held at dawn on 25 April, the hour of the original landing, at the Anzac Commemorative Site on North Beach"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Anzac_Day",
+          "checked": "2026-10-26"
         }
       ]
     }

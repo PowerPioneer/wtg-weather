@@ -1,51 +1,102 @@
 {
   "iso2": "BH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
-      "id": "desert-trips",
-      "name": "Desert trips",
-      "kind": "tour",
-      "status": "open",
-      "note": "operators run all year, and in summer they run them early or late to keep clear of the worst of the heat",
+      "id": "sakhir-camping",
+      "name": "Sakhir winter camping season",
+      "kind": "season",
+      "regions": [
+        "BH-14"
+      ],
+      "status": "closed",
+      "note": "the Southern Governorate sets the season each year and registers campers in advance; it suspended the 2025-26 season early, in March 2026",
       "windows": [
-        {
-          "status": "best",
-          "months": [
-            11,
-            12,
-            1,
-            2,
-            3
-          ],
-          "reason": "the winter season, when daytime temperatures sit in a range you can spend a day outdoors in"
-        },
         {
           "status": "open",
           "months": [
-            10,
-            4
+            12,
+            1,
+            2
           ],
-          "reason": "the shoulder months, still comfortable enough for time in the open"
+          "reason": "the desert camping season in the south, run by the Southern Governorate"
         },
         {
           "status": "limited",
           "months": [
-            6,
-            7,
-            8
+            11,
+            3
           ],
-          "reason": "the hottest months, reaching the high forties with high humidity on the coast"
+          "reason": "dates move each year: the 2024-25 season ran from 20 November to 20 February, while the 2025-26 season opened on 5 December and was suspended in early March 2026"
         }
       ],
       "sources": [
         {
-          "url": "https://dubaidesertsafaritrip.com/blog/best-time-to-visit-uae-desert/",
-          "checked": "2026-08-28"
+          "url": "https://www.gdnonline.com/Details/1367925/Camping-season-set-to-start-on-December-5",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
-          "checked": "2026-08-28"
+          "url": "https://www.gdnonline.com/Details/1336563/Registration-dates-announced-for-Bahrain%E2%80%99s-camping-season",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.gdnonline.com/Details/1377427",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "spring-of-culture",
+      "name": "Spring of Culture",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the festival paused in 2026 and its organisers plan to return in 2027",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "an annual festival held in March, with internationally renowned musicians and artists performing in concerts"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bahrain",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.springofculture.org/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bahrain-grand-prix",
+      "name": "Bahrain Grand Prix",
+      "kind": "festival",
+      "regions": [
+        "BH-14"
+      ],
+      "status": "not-on",
+      "note": "the 2026 race was moved to Malaysia after the outbreak of the Iran war; it is scheduled to return to Sakhir",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the Formula One race at Sakhir, scheduled for mid-March as the season opener; its date has moved between March and April over the years"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bahrain_Grand_Prix",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2027_Formula_One_World_Championship",
+          "checked": "2026-10-26"
         }
       ]
     }

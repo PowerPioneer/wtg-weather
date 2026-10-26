@@ -1,0 +1,43 @@
+{
+  "iso2": "AF",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "band-e-amir",
+      "name": "Band-e Amir lakes",
+      "kind": "site",
+      "regions": [
+        "AF-BAM"
+      ],
+      "status": "open",
+      "note": "since August 2023 the authorities have barred women from entering the park",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "primarily a late spring and summer destination, when the lakes are open water"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the lakes freeze over in a severe winter, with temperatures down to about -20 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Band-e_Amir_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

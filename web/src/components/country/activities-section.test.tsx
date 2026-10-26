@@ -111,6 +111,6 @@ describe("ActivitiesSection", () => {
     render(<ActivitiesSection country={PERU} />);
     const trail = screen.getByText("Classic Inca Trail").closest("li") as HTMLElement;
     expect(within(trail).getByText(/Closed February/)).toBeInTheDocument();
-    expect(within(trail).getByText(/May–September/)).toBeInTheDocument();
+    expect(within(trail).getByText(/May–August/)).toBeInTheDocument();
   });
 });

@@ -1,13 +1,16 @@
 {
   "iso2": "QA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "desert-trips",
-      "name": "Desert and inland-sea trips",
+      "name": "Khor Al Adaid (Inland Sea)",
       "kind": "tour",
+      "regions": [
+        "QA-WA"
+      ],
       "status": "open",
-      "note": "operators run all year, and in summer they run them early or late to keep clear of the worst of the heat",
+      "note": "reachable only by 4x4 with an experienced off-road driver, or on one of the daily desert safaris and Inland Sea tours",
       "windows": [
         {
           "status": "best",
@@ -16,36 +19,85 @@
             12,
             1,
             2,
-            3
+            3,
+            4
           ],
-          "reason": "the winter season, when daytime temperatures sit in a range you can spend a day outdoors in"
+          "reason": "the best time to visit, when the weather is neither too hot nor too cool and locals camp in the desert"
         },
         {
           "status": "open",
           "months": [
-            10,
-            4
+            10
           ],
-          "reason": "the shoulder months, still comfortable enough for time in the open"
-        },
-        {
-          "status": "limited",
-          "months": [
-            6,
-            7,
-            8
-          ],
-          "reason": "the hottest months, reaching the high forties with high humidity on the coast"
+          "reason": "the start of Visit Qatar's winter season for Khor Al Adaid, which runs from October to April"
         }
       ],
       "sources": [
         {
-          "url": "https://dubaidesertsafaritrip.com/blog/best-time-to-visit-uae-desert/",
-          "checked": "2026-08-28"
+          "url": "https://visitqatar.com/intl-en/things-to-do/adventure-sports/desert/khor-al-adaid",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
-          "checked": "2026-08-28"
+          "url": "https://www.qatar-tribune.com/article/162284/nation/visit-qatar-unveils-khor-al-adaid-winter-season-interactive-map",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Khor_Al_Adaid",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "national-day",
+      "name": "Qatar National Day and Darb Al Saai",
+      "kind": "festival",
+      "regions": [
+        "QA-DA",
+        "QA-US"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Darb Al Saai heritage festival runs daily through early December, building to the 18 December parade on the Doha Corniche"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Qatar_National_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "qatar-grand-prix",
+      "name": "Qatar Grand Prix",
+      "kind": "festival",
+      "regions": [
+        "QA-ZA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12
+          ],
+          "reason": "the Formula One race at Lusail, scheduled for late November or early December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/2026_Formula_One_World_Championship",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2027_Formula_One_World_Championship",
+          "checked": "2026-10-26"
         }
       ]
     }

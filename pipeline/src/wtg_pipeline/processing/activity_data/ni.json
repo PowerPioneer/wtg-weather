@@ -1,6 +1,6 @@
 {
   "iso2": "NI",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "dry-season-ni",
@@ -18,17 +18,69 @@
             3,
             4
           ],
-          "reason": "the dry season, though it can still rain — anything from a shower to several days of downpour"
+          "reason": "the dry season, November to April, when bright days are expected"
         }
       ],
       "sources": [
         {
           "url": "https://www.adventure-life.com/central-america-mexico/articles/best-times-to-travel-to-central-america",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.responsibletravel.com/holidays/central-america/travel-guide/best-time-to-visit-central-america",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "palo-de-mayo",
+      "name": "Palo de Mayo, Bluefields",
+      "kind": "festival",
+      "regions": [
+        "NI-AS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the Caribbean coast's maypole festival runs through the whole of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Palo_de_Mayo",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "http://www.nicaragua.com/blog/the-maypole-festival-keeping-tradition-alive",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "santo-domingo-managua",
+      "name": "Fiestas de Santo Domingo, Managua",
+      "kind": "festival",
+      "regions": [
+        "NI-MN"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the patron-saint festival runs from the Bajada del Santo on 1 August to the Subida on 10 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Managua",
+          "checked": "2026-10-26"
         }
       ]
     }

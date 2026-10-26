@@ -1,6 +1,6 @@
 {
   "iso2": "CN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "great-wall",
@@ -74,16 +74,163 @@
         {
           "status": "best",
           "months": [
-            9,
-            10
+            3,
+            4
           ],
-          "reason": "cooler air and autumn foliage among the sandstone pillars"
+          "reason": "mild spring weather and fewer crowds"
+        },
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "foliage from late October to mid-November; avoid National Day week, 1 to 7 October, the busiest of the year"
         }
       ],
       "sources": [
         {
-          "url": "https://www.chinadiscovery.com/hunan/zhangjiajie.html",
-          "checked": "2026-08-28"
+          "url": "https://www.chinahighlights.com/zhangjiajie/best-time-to-visit.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harbin-ice-festival",
+      "name": "Harbin Ice and Snow World",
+      "kind": "festival",
+      "regions": [
+        "CN-HL"
+      ],
+      "status": "not-on",
+      "note": "a city of ice sculptures built fresh each winter; the opening date is announced each season",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the ice park runs from mid- or late December to late February, closing early if a warm spell melts the sculptures"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://chinafortravelers.com/guides/harbin-ice-festival/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://chinaservicesinfo.com/s/202502/27/WS67c00163498eec7e1f7306a2/harbin-ice-and-snow-world-closes.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "li-river-cruise",
+      "name": "Li River cruise, Guilin to Yangshuo",
+      "kind": "tour",
+      "regions": [
+        "CN-GX"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "low water: the big boats cannot run the full route, and trips shrink to a shorter stretch from Yangdi"
+        },
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "clearer, cooler weather with the river still high enough for the full run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://chinafortravelers.com/guides/li-river-cruise/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://travelchinawith.me/china-destinations/guilin-yangshuo/li-river-cruise/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "huangshan",
+      "name": "Huangshan (Yellow Mountain)",
+      "kind": "hike",
+      "regions": [
+        "CN-AH"
+      ],
+      "status": "open",
+      "note": "July and August are the peak months, when the summit hotels book out well ahead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the sea-of-clouds season, best after rain or snow clears; in winter rime frosts the pines"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.chinahighlights.com/huangshan/best-time-to-visit.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yuanyang-terraces",
+      "name": "Yuanyang rice terraces",
+      "kind": "site",
+      "regions": [
+        "CN-YN"
+      ],
+      "status": "open",
+      "note": "the terraces are there all year; for a couple of months after the harvest they hold neither water nor rice",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the flooded terraces reflect the sky like mirrors, from the end of November until the end of April"
+        },
+        {
+          "status": "open",
+          "months": [
+            8
+          ],
+          "reason": "the green-rice months, before the harvest begins in September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.fabionodariphoto.com/en/yuanyang-yunnan-rice-terraces-china/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.chinaxiantour.com/travel-guide/rice-terraces-in-china.html",
+          "checked": "2026-10-26"
         }
       ]
     }

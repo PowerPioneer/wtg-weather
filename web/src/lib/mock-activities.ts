@@ -16,7 +16,7 @@ import type { ActivityBlock } from "./types";
  * all" path that most of the world takes.
  */
 export const PERU_ACTIVITIES: ActivityBlock = {
-  reviewed: "2026-08-28",
+  reviewed: "2026-10-26",
   lede: "February is the only month Peru closes anything; one of the 6 below runs all year.",
   items: [
     {
@@ -34,11 +34,11 @@ export const PERU_ACTIVITIES: ActivityBlock = {
       sources: [
         {
           url: "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         },
         {
           url: "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         }
       ]
     },
@@ -57,11 +57,11 @@ export const PERU_ACTIVITIES: ActivityBlock = {
       sources: [
         {
           url: "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         },
         {
           url: "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         }
       ]
     },
@@ -78,11 +78,11 @@ export const PERU_ACTIVITIES: ActivityBlock = {
       sources: [
         {
           url: "https://www.alpacaexpeditions.com/why-the-inca-trail-closes-in-february-and-why-it-reopens-on-march-1/",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         },
         {
           url: "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         }
       ]
     },
@@ -119,8 +119,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
       onMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       sources: [
         {
+          url: "https://www.alpacaexpeditions.com/why-the-inca-trail-closes-in-february-and-why-it-reopens-on-march-1/",
+          checked: "2026-10-26"
+        },
+        {
           url: "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
-          checked: "2026-08-28"
+          checked: "2026-10-26"
         }
       ]
     },
@@ -184,7 +188,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "inca-trail",
@@ -199,7 +203,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -224,7 +228,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "colca-condors",
@@ -234,7 +238,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -254,7 +258,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "inca-trail",
@@ -269,7 +273,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -284,7 +288,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "colca-condors",
@@ -299,7 +303,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         },
         {
           id: "vinicunca",
@@ -319,12 +323,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "inca-trail",
           status: "best",
-          reason: "the dry months — driest trail and the clearest views from the passes"
+          reason: "the drier months — and the busiest on the trail"
         },
         {
           id: "colca-condors",
@@ -339,7 +343,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -354,12 +358,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "inca-trail",
           status: "best",
-          reason: "the dry months — driest trail and the clearest views from the passes"
+          reason: "the drier months — and the busiest on the trail"
         },
         {
           id: "colca-condors",
@@ -379,7 +383,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -394,12 +398,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "inca-trail",
           status: "best",
-          reason: "the dry months — driest trail and the clearest views from the passes"
+          reason: "the drier months — and the busiest on the trail"
         },
         {
           id: "colca-condors",
@@ -414,7 +418,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -429,12 +433,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "inca-trail",
           status: "best",
-          reason: "the dry months — driest trail and the clearest views from the passes"
+          reason: "the drier months — and the busiest on the trail"
         },
         {
           id: "colca-condors",
@@ -449,12 +453,12 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
     Sep: {
-      lede: "Nothing is closed in September, and 4 things below are at their best, though 1 is weather-dependent.",
+      lede: "Nothing is closed in September, and 3 things below are at their best, though 1 is weather-dependent.",
       rows: [
         {
           id: "amazon-high-water",
@@ -464,12 +468,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
-        },
-        {
-          id: "inca-trail",
-          status: "best",
-          reason: "the dry months — driest trail and the clearest views from the passes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "colca-condors",
@@ -482,9 +481,14 @@ export const PERU_ACTIVITIES: ActivityBlock = {
           reason: "dry, stable weather and the colour bands reliably visible"
         },
         {
+          id: "inca-trail",
+          status: "open",
+          reason: "permit-only, and permits for the dry months sell out well in advance"
+        },
+        {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -499,7 +503,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "colca-condors",
@@ -514,7 +518,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         },
         {
           id: "vinicunca",
@@ -539,7 +543,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-jungle-walking",
           status: "best",
-          reason: "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          reason: "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         },
         {
           id: "inca-trail",
@@ -554,7 +558,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     },
@@ -574,7 +578,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "amazon-high-water",
           status: "best",
-          reason: "high water floods the forest and opens a maze of channels; the peak is March and April"
+          reason: "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         },
         {
           id: "inca-trail",
@@ -589,7 +593,7 @@ export const PERU_ACTIVITIES: ActivityBlock = {
         {
           id: "machu-picchu",
           status: "open",
-          reason: "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut"
+          reason: "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "CI",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
@@ -13,28 +13,53 @@
           "status": "limited",
           "months": [
             12,
-            1
+            1,
+            2
           ],
-          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+          "reason": "the heart of the harmattan: dust off the Sahara can severely limit visibility and block the sun for days, and humidity drops very low"
         },
         {
           "status": "open",
           "months": [
             11,
-            2,
             3
           ],
-          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+          "reason": "the edges of the harmattan, which runs from the end of November to the middle of March — dry and hazy"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Harmattan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "abissa",
+      "name": "Abissa festival (Grand-Bassam)",
+      "kind": "festival",
+      "regions": [
+        "CI-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the Nzema new-year festival, held in Grand-Bassam between October and November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Abissa",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.britannica.com/science/harmattan",
-          "checked": "2026-08-28"
+          "url": "https://fr.wikipedia.org/wiki/Abissa",
+          "checked": "2026-10-26"
         }
       ]
     }

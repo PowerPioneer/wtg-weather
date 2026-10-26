@@ -1,0 +1,132 @@
+{
+  "iso2": "HT",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "kanaval",
+      "name": "Kanaval (Carnival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "carnival builds to Mardi Gras; lately towns hold their own parades rather than one national host city"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "pre-carnival Sundays open the season in January"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in years when Lent starts late, the last carnival days fall in early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Haitian_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visithaiti.com/getting-around/when-best-to-visit/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://lenouvelliste.com/en/article/264297/le-carnaval-national-sera-encore-decentralise",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fet-gede",
+      "name": "Fèt Gede (Festival of the Dead)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "vodou processions honour the dead in cemeteries nationwide on 1-2 November, biggest at Port-au-Prince's Grand Cimetière"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visithaiti.com/?p=4649",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.africanews.com/amp/2025/11/02/hundreds-of-voodoo-worshipers-mark-day-of-the-dead-in-haiti/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "independence-day-soup-joumou",
+      "name": "Independence Day and soup joumou",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "1 January is Independence Day, when Haitians eat soup joumou, a UNESCO-listed symbol of freedom"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ich.unesco.org/en/RL/joumou-soup-01853",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the heart of the hurricane season, when storms can knock out roads and infrastructure"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            11
+          ],
+          "reason": "inside the official season, which runs 1 June to 30 November, but outside its historical peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visithaiti.com/getting-around/when-best-to-visit/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

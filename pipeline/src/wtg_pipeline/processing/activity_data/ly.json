@@ -1,0 +1,26 @@
+{
+  "iso2": "LY",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "ghadames-old-town",
+      "name": "Ghadames old town",
+      "kind": "site",
+      "regions": [
+        "LY-GD"
+      ],
+      "status": "open",
+      "note": "the covered lanes stay cool, and residents still retreat there when summer turns unbearably hot",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ghadames",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Ghadames",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "IL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "masada",
@@ -10,37 +10,89 @@
         "IL-D"
       ],
       "status": "open",
-      "note": "the Snake Path up Masada is usually climbed before dawn for a reason",
+      "note": "the Snake Path is a sustained uphill climb; do not plan a midday ascent without checking the park's notice for the trail and date",
       "windows": [
         {
           "status": "best",
           "months": [
             3,
-            4,
-            5,
-            10,
             11
           ],
-          "reason": "spring and autumn give comfortable hiking temperatures at the lowest point on Earth"
+          "reason": "November is the best all-round month for a Dead Sea visit, and March the closest alternative"
         },
         {
           "status": "limited",
           "months": [
-            6,
             7,
             8
           ],
-          "reason": "38–45 °C makes midday activity inadvisable"
+          "reason": "daytime highs average around 40 °C, which can make exposed outdoor activity unsafe or impractical, especially around midday"
         }
       ],
       "sources": [
         {
           "url": "https://deadsea.com/explore/historical-sites/archaeological-and-historical-sites/masada/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://deadsea.com/dead-sea-weather/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "eilat-diving",
+      "name": "Eilat reef diving",
+      "kind": "dive",
+      "regions": [
+        "IL-D"
+      ],
+      "status": "open",
+      "note": "water conditions are good for diving all year, at about 21-25 °C",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Eilat",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hula-cranes",
+      "name": "Common cranes, Hula Valley",
+      "kind": "wildlife",
+      "regions": [
+        "IL-Z"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "tens of thousands of common cranes winter in the valley on the flyway between Finland and Ethiopia"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            3
+          ],
+          "reason": "the cranes arrive from late October and leave between February and early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Hula_Valley",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Common_crane",
+          "checked": "2026-10-26"
         }
       ]
     }

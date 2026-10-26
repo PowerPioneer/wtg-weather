@@ -1,40 +1,148 @@
 {
   "iso2": "SN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
       "name": "Travelling in the harmattan",
       "kind": "season",
       "status": "open",
-      "note": "nothing closes; the harmattan is the dry season, and it is what makes the roads passable — the trade-off is the dust",
+      "note": "nothing closes; the harmattan blows during the dry season — the trade-off is the dust",
       "windows": [
         {
           "status": "limited",
           "months": [
             12,
-            1
+            1,
+            2
           ],
-          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+          "reason": "the months the harmattan blows most: its Saharan dust can severely limit visibility for days at a time, and humidity can drop below 15%"
         },
         {
           "status": "open",
           "months": [
             11,
-            2,
             3
           ],
-          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+          "reason": "the edges of the harmattan season, which runs from the end of November to the middle of March"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Harmattan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "djoudj",
+      "name": "Djoudj National Bird Sanctuary",
+      "kind": "wildlife",
+      "regions": [
+        "SN-SL"
+      ],
+      "status": "limited",
+      "note": "far fewer birds, and in the rains the sanctuary shuts for about three months because moving about becomes impossible",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the migration peak, with close to 400 bird species in the park"
         },
         {
-          "url": "https://www.britannica.com/science/harmattan",
-          "checked": "2026-08-28"
+          "status": "open",
+          "months": [
+            11,
+            3,
+            4
+          ],
+          "reason": "either side of the peak: the migration gets going in December and thins after mid-February"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the rains: the park is officially closed, though a visit may be arranged with an eco-guard; many roads are impassable and there are far fewer birds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://scootwestafrica.com/?p=5470",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.thesalmons.org/lynn/wh-wcmc/Senegal%20-%20Djoudj.pdf",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "niokolo-koba",
+      "name": "Niokolo-Koba National Park",
+      "kind": "wildlife",
+      "regions": [
+        "SN-TC",
+        "SN-KE"
+      ],
+      "status": "limited",
+      "note": "in the rains (late June to late October) the animals disperse and the tracks need 4WD more than ever",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "dry season: the best game viewing, from the end of October to the end of June, when most tours run"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thesalmons.org/lynn/wh-wcmc/Senegal%20-%20Niokolo-Koba.pdf",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "saint-louis-jazz",
+      "name": "Saint-Louis Jazz Festival",
+      "kind": "festival",
+      "regions": [
+        "SN-SL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "held every May: five days of jazz and world music centred on Saint-Louis's Place Baya; dates are set each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.musicinafrica.net/fr/magazine/senegal-le-festival-international-de-jazz-de-saint-louis-lance-aujourdhui-sa-34e-edition",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.lonelyplanet.fr/destinations/afrique/senegal/fetes-festivals",
+          "checked": "2026-10-26"
         }
       ]
     }

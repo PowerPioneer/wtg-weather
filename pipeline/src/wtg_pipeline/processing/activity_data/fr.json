@@ -1,6 +1,6 @@
 {
   "iso2": "FR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "provence-lavender",
@@ -57,6 +57,245 @@
         {
           "url": "https://www.seechamonix.com/lifts/dates/season-dates-for-chamonix-valley-lifts",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "chamonix-skiing",
+      "name": "Skiing in Chamonix",
+      "kind": "ski",
+      "regions": [
+        "FR-74"
+      ],
+      "status": "closed",
+      "note": "no ski area in the valley runs between early May and late November",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "only Grands Montets and Flégère open, from late November, ahead of the main season"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the whole resort opens around the third week of December"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            3
+          ],
+          "reason": "the season in full swing, with all the main ski areas in the valley running"
+        },
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "late February is the sweet spot for most people, with the snow base well established"
+        },
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "most areas close in mid- to late April; Grands Montets runs on into early May"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "only Grands Montets and the Vallée Blanche high routes run, until early May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.seechamonix.com/lifts/dates/season-dates-for-chamonix-valley-lifts",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tour-du-mont-blanc",
+      "name": "Tour du Mont Blanc",
+      "kind": "trek",
+      "regions": [
+        "FR-74"
+      ],
+      "status": "closed",
+      "note": "the mountain huts the route depends on close from mid-September to mid-June, and snow lies on the high passes",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "the refuges open around mid-June, and lingering snow can make the high passes tricky into late June"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "peak season: everything is open and the trail is usually snow-free, though refuges book out fast"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "quieter, but the huts start closing around mid-September and early snow is possible on the passes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://10adventures.com/best-time-to-hike-the-tour-du-mont-blanc",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/mont-blanc/travel-guide/best-time-to-go-to-mont-blanc",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gr20",
+      "name": "GR20 across Corsica",
+      "kind": "trek",
+      "regions": [
+        "FR-2A",
+        "FR-2B"
+      ],
+      "status": "limited",
+      "note": "outside the summer the refuges stay open but unguarded, with no food, and snow makes it an alpine undertaking",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "every refuge is staffed and serving food, and the trail is clear of snow in all but the highest reaches"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the refuge guardians are present from the end of May to the end of September; the trail is walkable without alpine gear from early June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.le-gr20.fr/en/pages/infos-gr20/page.html",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.muchbetteradventures.com/magazine/when-to-hike-gr20/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nice-carnival",
+      "name": "Nice Carnival",
+      "kind": "festival",
+      "regions": [
+        "FR-06"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "about two weeks of day and night float parades and flower battles in the centre of Nice"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the dates follow the Christian calendar, so in some years it runs into early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nice_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://frenchrivieratraveller.com/blog/whats-on-february-2026/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "strasbourg-christmas-market",
+      "name": "Strasbourg Christmas market",
+      "kind": "festival",
+      "regions": [
+        "FR-67"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Christkindelsmärik, held since 1570, fills the old town until 24 December"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the market opens in the last week of November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.festivalenfrance.com/festival/marche-de-noel-de-strasbourg-christkindelsmarik",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ultimatechristmasmarkets.com/france/strasbourg-christmas-market/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fete-de-la-musique",
+      "name": "Fête de la Musique",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "on 21 June, the summer solstice, musicians play in the streets of cities and villages across the country"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.culture.gouv.fr/fr/regions/drac-centre-val-de-loire/nos-secteurs-d-activite/spectacle-vivant-musique-danse-theatre-pole-creation/fete-de-la-musique",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.connexionfrance.com/magazine/fte-de-la-musique-2024-frances-giant-june-21-street-party/665601",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "AU",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "kakadu-falls",
@@ -9,8 +9,167 @@
       "regions": [
         "AU-NT"
       ],
-      "status": "limited",
-      "note": "high-clearance 4WD only even when open, and the district has stayed shut for whole seasons for cyclone repairs - check the park's access report before you go",
+      "status": "closed",
+      "note": "high-clearance 4WD only even when open, and the area stayed closed for the whole of 2026 for road and infrastructure upgrades - check the park's daily access report before you go",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "outside the usual June-to-October road access season; an aerial tour is the way to see the falls in full flow"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when road access usually opens - though the falls stayed closed for the whole 2026 dry season for road and infrastructure upgrades"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kakadu.gov.au/news/access-and-alerts/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kakadutourism.com/see-and-do/attractions/jim-jim-falls",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "wangi-falls",
+      "name": "Swimming at Wangi Falls, Litchfield",
+      "kind": "swim",
+      "regions": [
+        "AU-NT"
+      ],
+      "status": "open",
+      "note": "the falls, picnic area and campground stay open all year; it is the plunge pool that shuts",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "swimming is banned in the wet season because of strong currents and the risk of saltwater crocodiles"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "the pool reopens for the dry season once rangers clear it, usually around mid-June and earlier in some years"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the dry season, when the pool is normally open for swimming"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://northernterritory.com/darwin-and-surrounds/see-and-do/wangi-falls",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ntindependent.com.au/wangi-falls-reopens-for-the-dry-with-a-new-crocodile-fence-to-be-installed/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "uluru-walks",
+      "name": "Walks at Uluru and Kata Tjuta",
+      "kind": "hike",
+      "regions": [
+        "AU-NT"
+      ],
+      "status": "open",
+      "note": "the park is open all year; in the hot months tracks can be closed for the heat",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the hottest months, often well above 35°C; the park advises against walking after 11am in summer"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://uluru.gov.au/plan/plan-your-trip/staying-safe/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://uluru.gov.au/plan/when-come/seasons/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "stinger-season",
+      "name": "Sea swimming in tropical Queensland",
+      "kind": "swim",
+      "regions": [
+        "AU-QLD"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "stinger season: box jellyfish and Irukandji from Bundaberg northwards; swim inside the stinger nets and wear a full-body suit"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://lifesaving.com.au/news/swimmers-urged-to-take-advice-during-marine-stinger-season",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cape-york-telegraph-track",
+      "name": "Cape York and the Old Telegraph Track",
+      "kind": "drive",
+      "regions": [
+        "AU-QLD"
+      ],
+      "status": "open",
       "windows": [
         {
           "status": "closed",
@@ -21,7 +180,15 @@
             3,
             4
           ],
-          "reason": "the wet season floods the access roads; in those months the falls are reachable only from the air"
+          "reason": "wet-season flooding closes the track and makes the Cape's dirt roads impassable"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            11
+          ],
+          "reason": "the changeover months: the track usually opens around May and closes once the wet arrives in November or December"
         },
         {
           "status": "best",
@@ -32,25 +199,135 @@
             9,
             10
           ],
-          "reason": "the dry season, when the road normally opens"
-        },
-        {
-          "status": "limited",
-          "months": [
-            5,
-            11
-          ],
-          "reason": "the changeover months - the road opens and closes on the park's inspection rather than on a date"
+          "reason": "the dry season, when the track is normally open to 4WDs"
         }
       ],
       "sources": [
         {
-          "url": "https://kakadu.gov.au/news/access-and-alerts/",
-          "checked": "2026-08-28"
+          "url": "https://www.4wdingaustralia.com/travel-queensland/old-telegraph-track/",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://kakadutourism.com/see-and-do/attractions/jim-jim-falls",
-          "checked": "2026-08-28"
+          "url": "https://contourmaps.app/routes/old-telegraph-track",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ningaloo-whale-sharks",
+      "name": "Swimming with whale sharks, Ningaloo Reef",
+      "kind": "wildlife",
+      "regions": [
+        "AU-WA"
+      ],
+      "status": "not-on",
+      "note": "tours run from Exmouth and Coral Bay",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "reason": "whale sharks gather on the reef after the annual coral spawning"
+        },
+        {
+          "status": "open",
+          "months": [
+            8
+          ],
+          "reason": "the tail of the season, which some years runs on into August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.westernaustralia.com/en/places-to-visit/ningaloo-reef-and-the-coral-coast/ningaloo-reef",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.portnews.com.au/story/7911395/welcome-back-whale-sharks/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hervey-bay-whales",
+      "name": "Humpback whale watching, Hervey Bay",
+      "kind": "wildlife",
+      "regions": [
+        "AU-QLD"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "peak sightings: active adults in August, mothers and calves in September"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10,
+            11
+          ],
+          "reason": "the edges of the season, which runs from July to about November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://statements.qld.gov.au/statements/95565",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.apollocamper.com/blog/guide-to-hervey-bay-whale-watching",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ski-season-au",
+      "name": "Skiing (Thredbo, Perisher, Mt Buller, Falls Creek)",
+      "kind": "ski",
+      "regions": [
+        "AU-NSW",
+        "AU-VIC"
+      ],
+      "status": "closed",
+      "note": "outside winter the lifts are not running for skiing",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the ski season, which traditionally opens on the King's Birthday weekend in early June; how much terrain opens depends on snowfall"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the last days of the season, which closes in early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://planetski.eu/2026/06/05/ski-resorts-in-australia-open-for-the-season-this-weekend/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.mountainwatch.com/?p=45189",
+          "checked": "2026-10-26"
         }
       ]
     }

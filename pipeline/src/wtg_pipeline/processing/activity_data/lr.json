@@ -1,0 +1,98 @@
+{
+  "iso2": "LR",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sapo",
+      "name": "Sapo National Park",
+      "kind": "wildlife",
+      "regions": [
+        "LR-SI"
+      ],
+      "status": "open",
+      "note": "entry needs Forestry Development Authority approval, and with no roads or trails the park is reached on foot",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "wet season: rivers can rise more than 4 m in a night, flooding the forest beside them"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sapo_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rainy-season-roads",
+      "name": "Road travel in the rains",
+      "kind": "drive",
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the rainy season, May to October: road travel times increase dramatically"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Liberia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "the dry-season wind off the Sahara; nothing closes, but expect dusty, very dry air",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "harmattan dust off the Sahara can block the sun for days and cut visibility like fog"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3
+          ],
+          "reason": "the dry, dust-laden harmattan blows inland from November to March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Liberia",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

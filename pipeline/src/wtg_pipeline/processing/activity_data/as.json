@@ -1,0 +1,84 @@
+{
+  "iso2": "AS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "flag-day-as",
+      "name": "Flag Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "17 April: village crews race 50-person fautasi longboats in Pago Pago Harbor"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/American_Samoa",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Flag_Day_(American_Samoa)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "npsa-hiking",
+      "name": "National Park of American Samoa",
+      "kind": "hike",
+      "status": "open",
+      "note": "October to May is the wet season, with frequent rain showers",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the cooler, drier season, considered best for outdoor activities"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/npsa/planyourvisit/index.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nps.gov/npsa/planyourvisit/basicinfo.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-as",
+      "name": "Humpback whales",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "humpbacks come to breed and raise their calves from July to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://americansamoa.noaa.gov/science/ecosystems.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

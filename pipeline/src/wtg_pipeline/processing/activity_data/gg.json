@@ -1,0 +1,66 @@
+{
+  "iso2": "GG",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "guernsey-liberation-day",
+      "name": "Liberation Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "9 May marks the 1945 liberation from German occupation, with an island-wide cavalcade of classic vehicles"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Liberation_Day_(Channel_Islands)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "alderney-week",
+      "name": "Alderney Week",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the island's summer festival begins on the first Monday of August and lasts six days"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Alderney",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sark-dark-skies",
+      "name": "Dark skies on Sark",
+      "kind": "site",
+      "status": "open",
+      "note": "the world's first Dark Sky Island since 2011, with no cars and no lighting in the lanes; an overnight stay is what shows the Milky Way",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sark",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitguernsey.com/experiences/island-hopping/sark/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

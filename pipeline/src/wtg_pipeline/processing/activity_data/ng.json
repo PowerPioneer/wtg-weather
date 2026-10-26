@@ -1,40 +1,113 @@
 {
   "iso2": "NG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
       "name": "Travelling in the harmattan",
       "kind": "season",
       "status": "open",
-      "note": "nothing closes; the harmattan is the dry season, and it is what makes the roads passable — the trade-off is the dust",
+      "note": "nothing closes; the harmattan blows during the dry season, and the trade-off is the dust",
       "windows": [
         {
           "status": "limited",
           "months": [
             12,
-            1
+            1,
+            2
           ],
-          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+          "reason": "the harmattan blows especially in December, January and February: dust off the Sahara can severely limit visibility, and humidity drops very low"
         },
         {
           "status": "open",
           "months": [
             11,
-            2,
             3
           ],
-          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+          "reason": "the edges of the harmattan, which runs from the end of November to the middle of March: dry air, cool mornings and hazy skies"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Harmattan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "osun-osogbo",
+      "name": "Osun-Osogbo festival",
+      "kind": "festival",
+      "regions": [
+        "NG-OS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "a two-week programme at the sacred grove on the Osun river outside Osogbo, held every August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Osun-Osogbo",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "calabar-carnival",
+      "name": "Calabar Carnival",
+      "kind": "festival",
+      "regions": [
+        "NG-CR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "Cross River State's carnival, held every December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Calabar_Carnival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "argungu",
+      "name": "Argungu Fishing Festival",
+      "kind": "festival",
+      "regions": [
+        "NG-KE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "a four-day fishing festival in Argungu each February or March; it has been suspended for years at a time"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Argungu_Fishing_Festival",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,0 +1,94 @@
+{
+  "iso2": "BM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales",
+      "name": "Humpback whales",
+      "kind": "wildlife",
+      "status": "not-on",
+      "note": "Bermuda is a mid-ocean transit zone for humpbacks travelling between Caribbean breeding grounds and northern feeding grounds",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "humpbacks pass Bermuda through winter and spring, when they can be spotted from shore"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            5
+          ],
+          "reason": "the edges of the season, which runs from late December to mid-May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.whalesbermuda.com/research",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.gotobermuda.com/plan/travel-tips/bermuda-weather",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cup-match",
+      "name": "Cup Match",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "a two-day cricket holiday between St George's and Somerset, on a Thursday and Friday at the end of July or start of August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.gotobermuda.com/plan/inspiration/itinerary/the-ultimate-bermuda-cup-match-itinerary-guide",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Bermuda",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bermuda-day",
+      "name": "Bermuda Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "a public holiday at the end of May, with a parade in Hamilton and a road race into the city"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bermuda_Day",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Bermuda",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

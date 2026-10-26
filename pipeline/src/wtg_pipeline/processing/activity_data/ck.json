@@ -1,0 +1,89 @@
+{
+  "iso2": "CK",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales-ck",
+      "name": "Humpback whales",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "humpbacks are typically seen until the end of October"
+        },
+        {
+          "status": "open",
+          "months": [
+            7
+          ],
+          "reason": "humpbacks usually arrive from mid to late July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cookislands.org.uk/Whale-watching-Cook-Islands.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "te-maeva-nui",
+      "name": "Te Maeva Nui",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the two-week celebration of self-rule runs into early August, around Constitution Day on 4 August"
+        },
+        {
+          "status": "open",
+          "months": [
+            7
+          ],
+          "reason": "festivities usually open in late July with a parade through Avarua"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cookislands.org.uk/Celebration-of-a-nation.html",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.cookislands.org.uk/2026-events-calendar.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vaka-eiva",
+      "name": "Vaka Eiva canoe festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "a week of outrigger canoe racing in late November, the islands' biggest sporting event"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cookislands.org.uk/2026-events-calendar.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

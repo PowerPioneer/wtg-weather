@@ -1,6 +1,6 @@
 {
   "iso2": "PH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "donsol-whale-sharks",
@@ -10,7 +10,7 @@
         "PH-SOR"
       ],
       "status": "not-on",
-      "note": "Donsol's sharks are wild and unfed, which is why they have a season at all",
+      "note": "Donsol's sharks are wild and unfed",
       "windows": [
         {
           "status": "best",
@@ -18,7 +18,7 @@
             3,
             4
           ],
-          "reason": "the peak of the season, when five to ten sightings in a day is normal and fifteen to twenty not unusual"
+          "reason": "March and April typically give the most consistent daily sightings"
         },
         {
           "status": "open",
@@ -27,19 +27,20 @@
             12,
             1,
             2,
-            5
+            5,
+            6
           ],
-          "reason": "the sharks gather at Donsol from November to May"
+          "reason": "the sharks aggregate in Donsol Bay from November through June"
         }
       ],
       "sources": [
         {
           "url": "https://philippinedives.com/dive-guide/donsol/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.seaview180.com/blogs/q-as/when-is-the-whale-shark-season-for-snorkeling-in-specific-locations-like-the-philippines",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -51,26 +52,210 @@
         "PH-PLW"
       ],
       "status": "open",
-      "note": "western Palawan is the sheltered side of the country — typhoons mostly hit the eastern seaboard",
+      "note": "boat crossings are weather-dependent: a squall or a windy day can close one",
       "windows": [
         {
-          "status": "limited",
+          "status": "best",
           "months": [
-            10,
-            11,
-            12
+            2,
+            3,
+            4
           ],
-          "reason": "the highest typhoon risk of the year nationally, though Palawan is among the more sheltered destinations"
+          "reason": "February through April are the driest months, the core of the dry season"
         }
       ],
       "sources": [
         {
-          "url": "https://underwaterasia.info/diving-the-philippines",
-          "checked": "2026-08-28"
+          "url": "https://www.ultimatetravelmagazine.com/palawan-island-hopping-el-nido-coron/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tubbataha",
+      "name": "Tubbataha Reefs liveaboards",
+      "kind": "dive",
+      "regions": [
+        "PH-PLW"
+      ],
+      "status": "closed",
+      "note": "a remote reef with nowhere to stay, reached only by liveaboard, so trips run only in the calm-sea window",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the heart of the short dive season, when seas are calmest"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            6
+          ],
+          "reason": "liveaboards run only from about mid-March to mid-June; outside that the seas are too rough for the crossing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tubbataha_Reef",
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.dive-the-world.com/faqs-diving-philippines.php",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sinulog",
+      "name": "Sinulog festival",
+      "kind": "festival",
+      "regions": [
+        "PH-CEB"
+      ],
+      "status": "not-on",
+      "note": "street dancing and parties centred on Cebu City",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held on the third Sunday of January, with street parties the night before"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sinulog",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ati-atihan",
+      "name": "Ati-Atihan festival",
+      "kind": "festival",
+      "regions": [
+        "PH-AKL"
+      ],
+      "status": "not-on",
+      "note": "the biggest celebration is in Kalibo, Aklan",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "held on the third Sunday of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ati-Atihan_festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "panagbenga",
+      "name": "Panagbenga flower festival",
+      "kind": "festival",
+      "regions": [
+        "PH-BEN"
+      ],
+      "status": "not-on",
+      "note": "Baguio's month-long flower festival",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "runs through February, with the street dancing and float parades in the last week"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the festival concludes on the first weekend of March with a grand fireworks display"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Panagbenga_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "boracay",
+      "name": "Boracay's White Beach",
+      "kind": "beach",
+      "regions": [
+        "PH-AKL"
+      ],
+      "status": "open",
+      "note": "Bulabog Beach on the other side of the island is the kiteboarding spot, in season November to April",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the amihan northeast monsoon leaves White Beach calm and good for swimming"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the habagat southwest monsoon brings wind and waves that can make White Beach unsuitable for swimming, plus typhoon risk"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Boracay",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "siargao-surf",
+      "name": "Surfing Cloud 9 on Siargao",
+      "kind": "season",
+      "regions": [
+        "PH-SUN"
+      ],
+      "status": "open",
+      "note": "Cloud 9's hollow right-hander hosts the annual Siargao Cup",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "the habagat monsoon blows offshore from August to December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Siargao",
+          "checked": "2026-10-26"
         }
       ]
     }

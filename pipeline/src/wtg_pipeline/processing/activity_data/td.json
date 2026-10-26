@@ -1,0 +1,109 @@
+{
+  "iso2": "TD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "zakouma",
+      "name": "Zakouma National Park",
+      "kind": "wildlife",
+      "regions": [
+        "TD-SA"
+      ],
+      "status": "closed",
+      "note": "the floodplains go under water in the rains, getting around becomes virtually impossible and the park closes to visitors",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "early dry season: relatively cool, with the animals still spread out"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "outlying water dries up and game concentrates, peaking in March and April when it passes 40°C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "the dry season can run into May, but Camp Nomade operates only from December to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.naturalhighsafaris.com/chad/zakouma-national-park/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://timbuktutravel.com/lodge/camp-nomade",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ennedi",
+      "name": "Ennedi massif expeditions",
+      "kind": "drive",
+      "status": "open",
+      "note": "the long dry season runs October to June; the July to September rains can be surprisingly heavy",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the best months for Ennedi; group expeditions depart November to March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://atrsafari.com/safari-locations/chad/ennedi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.naturalworldsafaris.com/africa/chad/safaris/ennedi-exploration",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chad-gerewol",
+      "name": "Wodaabe Gerewol",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the one time each year the Wodaabe groups gather; the site follows the herders and is fixed late",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "held at the end of the rainy season, around the last week of September and the start of October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsibletravel.com/holidays/chad/travel-guide/gerewol-festival-in-chad",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.ecofinagency.com/fils-tourism-uk/0307-47539-gerewol-the-male-beauty-contest-in-chad-and-niger",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

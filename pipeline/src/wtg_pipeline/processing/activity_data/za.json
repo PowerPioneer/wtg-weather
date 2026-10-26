@@ -1,6 +1,6 @@
 {
   "iso2": "ZA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "kruger-game-viewing",
@@ -61,28 +61,176 @@
             7,
             8,
             9,
-            10,
-            11
+            10
           ],
-          "reason": "the season runs roughly July to December, with land-based viewing from the Hermanus cliffs among the best anywhere"
+          "reason": "the peak of the season: July to September across South Africa, and at Hermanus the southern rights arrive in large numbers in late September and early October, watched from the clifftop paths"
         },
         {
           "status": "open",
           "months": [
             6,
-            12
+            11
           ],
-          "reason": "the edges of the season — first arrivals in June, stragglers into December"
+          "reason": "the edges of the Hermanus season, which opens in early June and closes on 30 November"
         }
       ],
       "sources": [
         {
           "url": "https://www.whalehermanus.com/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://farandwild.travel/wilder/article/whale-watching-south-africa-complete-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "namaqualand-flowers",
+      "name": "Namaqualand wildflowers",
+      "kind": "season",
+      "regions": [
+        "ZA-NC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "after the winter rains, wildflowers carpet Namaqualand; Namaqua National Park's Skilpad section opens only in flower season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Namaqua_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://approachtours.com/south-africa-weather-by-month/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sardine-run",
+      "name": "The sardine run",
+      "kind": "dive",
+      "regions": [
+        "ZA-EC",
+        "ZA-NL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7
+          ],
+          "reason": "shoals of sardines move up the coast, chased by dolphins, sharks, gannets and Bryde's whales"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sardine_run",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://farandwild.travel/wilder/article/whale-watching-south-africa-complete-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cape-town-beaches",
+      "name": "Cape Town beaches",
+      "kind": "beach",
+      "regions": [
+        "ZA-WC"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the hot, largely dry Cape summer; January is the most popular month for beach days"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the Cape's winter rainy season, with the heaviest rain of the year in June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/south-africa/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://approachtours.com/south-africa-weather-by-month/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "national-arts-festival",
+      "name": "National Arts Festival, Makhanda",
+      "kind": "festival",
+      "regions": [
+        "ZA-EC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "eleven days of arts in Makhanda, from the last week of June into the first week of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/National_Arts_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cape-town-minstrel-carnival",
+      "name": "Cape Town Minstrel Carnival",
+      "kind": "festival",
+      "regions": [
+        "ZA-WC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "the minstrel parade through Cape Town on 2 January, Tweede Nuwe Jaar"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cape_Town_Minstrel_Carnival",
+          "checked": "2026-10-26"
         }
       ]
     }

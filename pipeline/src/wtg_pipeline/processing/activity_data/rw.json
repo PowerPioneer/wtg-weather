@@ -1,6 +1,6 @@
 {
   "iso2": "RW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "gorilla-trekking",
@@ -19,12 +19,17 @@
             6,
             7,
             8,
-            9,
-            12,
+            9
+          ],
+          "reason": "the dry season, with the best hiking conditions of the year"
+        },
+        {
+          "status": "open",
+          "months": [
             1,
             2
           ],
-          "reason": "the drier months — firmer paths and clearer views, but peak demand, so permits need booking well ahead"
+          "reason": "a shorter dry spell of warm, sunny treks, but prices are generally higher and permits need planning well in advance"
         },
         {
           "status": "limited",
@@ -33,21 +38,75 @@
             4,
             5
           ],
-          "reason": "the main rains, mid-March to mid-May: muddy, steep going, though permits are easier to get and prices lower"
+          "reason": "the main rains, March to mid-May, make the trails slippery — though permits are discounted from November to May when combined with another park"
         }
       ],
       "sources": [
         {
           "url": "https://www.go2africa.com/destinations/rwanda/when-to-go",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://horizonguides.com/guides/gorilla-trekking/when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kwita-izina",
+      "name": "Kwita Izina gorilla naming",
+      "kind": "festival",
+      "regions": [
+        "RW-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "Rwanda's annual ceremony naming its newborn mountain gorillas, at the foothills of Volcanoes National Park — held on 4 September in 2026"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitrwanda.com/kwita-izina/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kwita_Izina",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "akagera-game-drives",
+      "name": "Akagera game drives",
+      "kind": "wildlife",
+      "regions": [
+        "RW-02"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the long dry season, when game viewing across the region is excellent"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitrwanda.com/destinations/akagera-national-park-2/",
+          "checked": "2026-10-26"
         }
       ]
     }

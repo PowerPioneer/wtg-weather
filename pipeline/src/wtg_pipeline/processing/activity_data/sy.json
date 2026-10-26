@@ -1,0 +1,44 @@
+{
+  "iso2": "SY",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "krak-des-chevaliers",
+      "name": "Krak des Chevaliers",
+      "kind": "site",
+      "regions": [
+        "SY-HI"
+      ],
+      "status": "open",
+      "note": "open to the public; damaged in the civil war, with conservation work under way",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Krak_des_Chevaliers",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "damascus-international-fair",
+      "name": "Damascus International Fair",
+      "kind": "festival",
+      "status": "not-on",
+      "note": "the first edition after the fall of the Assad government was held in 2025",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the annual international fair opens in late August on the fairground off the airport highway"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Damascus_International_Fair",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

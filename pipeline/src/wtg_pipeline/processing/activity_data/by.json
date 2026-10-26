@@ -1,0 +1,103 @@
+{
+  "iso2": "BY",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "slavianski-bazaar",
+      "name": "Slavianski Bazaar arts festival, Vitebsk",
+      "kind": "festival",
+      "regions": [
+        "BY-VI"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the international arts festival fills Vitebsk's amphitheatre every July, as it has since 1992"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ru.wikipedia.org/wiki/Славянский_базар_в_Витебске",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Slavianski_Bazaar_in_Vitebsk",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kupalle-alexandria",
+      "name": "Kupalle midsummer festival, Alexandria",
+      "kind": "festival",
+      "regions": [
+        "BY-MA"
+      ],
+      "status": "not-on",
+      "note": "bonfires, flower wreaths floated on the water and folk music on the banks of the Dnieper",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Kupala night falls on 6-7 July in Belarus, and the national festival on the Dnieper at Alexandria is held in July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://uk.mfa.gov.by/en/embassy/news/c81511e6829abec2.html",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kupala_Night",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "belovezhskaya-pushcha",
+      "name": "Belovezhskaya Pushcha and its bison",
+      "kind": "wildlife",
+      "regions": [
+        "BY-BR"
+      ],
+      "status": "open",
+      "note": "beautiful in every season, and the park's enclosures make a bison sighting all but certain whenever you go",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "harsh winters, often below -10 °C, with short days, limited services and some trails closed"
+        },
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            9
+          ],
+          "reason": "late spring and early autumn bring decent weather on the trails with fewer crowds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.takeyourbackpack.com/backpacking-in-belarus/visit-belovezhskaya-pushcha-national-park/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.mustseespots.com/belarus/articles/belovezhskaya-pushcha-national-park-european-bison-ancient-forest-guide/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

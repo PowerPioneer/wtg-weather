@@ -1,0 +1,82 @@
+{
+  "iso2": "FO",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "olavsoka",
+      "name": "Ólavsøka national festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the national festival is celebrated on 28-29 July, centred on Tórshavn"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/%C3%93lavs%C3%B8ka",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitfaroeislands.com/en/see-do/inspiration-guides/top-annual-happenings",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "g-festival",
+      "name": "G! Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the music festival is held in the seaside village of Syðrugøta on Eysturoy in mid or late July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/G!_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitfaroeislands.com/en/see-do/inspiration-guides/top-annual-happenings",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "summartonar",
+      "name": "Summartónar summer concerts",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "summer concerts are held across the islands through June and July, some of them free"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitfaroeislands.com/en/see-do/inspiration-guides/top-annual-happenings",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitfaroeislands.com/en/see-do/inspiration-guides/popular-guides/monthly-guides-to-the-faroe-islands/june-in-the-faroe-islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

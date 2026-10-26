@@ -1,6 +1,6 @@
 {
   "iso2": "CA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "moraine-lake-road",
@@ -10,7 +10,7 @@
         "CA-AB"
       ],
       "status": "open",
-      "note": "the road is the only vehicle access; in winter the lake is reached on snowshoes, fat bike or skis",
+      "note": "the road is the only vehicle access; in winter the only way up is to cross-country ski or snowshoe the closed road, which stops short of the avalanche zone below the lakeshore",
       "windows": [
         {
           "status": "closed",
@@ -20,28 +20,23 @@
             1,
             2,
             3,
-            4,
-            5
+            4
           ],
-          "reason": "Parks Canada closes the road for the season from around Canadian Thanksgiving in mid-October until early June, with the exact date set by snowfall"
+          "reason": "the road closes for the season around Canadian Thanksgiving weekend in October and reopens around the May long weekend or at the very beginning of June"
         },
         {
           "status": "limited",
           "months": [
             10,
-            6
+            5
           ],
-          "reason": "the closing and reopening months — in 2026 the Lake Louise and Moraine Lake shuttles finished on 12 October"
+          "reason": "the closing and reopening months — the road shuts around Thanksgiving weekend in October and usually reopens around the May long weekend"
         }
       ],
       "sources": [
         {
-          "url": "https://banff.tips/guides/seasonal-closures",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://endlesswonder.ca/destinations/north-america/canada/alberta/moraine-lake-winter/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -65,17 +60,241 @@
             3,
             4
           ],
-          "reason": "the Skywalk, the Glacier Adventure and the Icefields Discovery Centre all close for the winter, and the drive itself needs a road-condition check after snow"
+          "reason": "the Columbia Icefield Skywalk and Glacier Adventure run only from about the start of May to mid-October, and in winter the parkway has no services and is not often plowed, so it can be icy after snow"
         }
       ],
       "sources": [
         {
           "url": "https://thebanffblog.com/banff-in-winter/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://banff.tips/guides/seasonal-closures",
-          "checked": "2026-08-28"
+          "url": "https://www.banfflakelouise.com/business/columbia-icefield-skywalk",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://banffjaspercollection.com/attractions/columbia-icefield/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "churchill-polar-bears",
+      "name": "Polar bears, Churchill",
+      "kind": "wildlife",
+      "regions": [
+        "CA-MB"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "peak season: the bears wait on the Hudson Bay coast for the big freeze, and are watched from tundra vehicles"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "bears start gathering on the coast from July, and summer viewing is a close second to autumn"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.travelmanitoba.com/blog/the-ultimate-guide-to-polar-bear-season-in-churchill-manitoba/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.travelmanitoba.com/everything-churchill/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "churchill-belugas",
+      "name": "Beluga whales, Churchill",
+      "kind": "wildlife",
+      "regions": [
+        "CA-MB"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "belugas gather in the Churchill area from about early July to late August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.travelmanitoba.com/everything-churchill/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.travelmanitoba.com/churchill/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-alley",
+      "name": "Icebergs, Iceberg Alley",
+      "kind": "season",
+      "regions": [
+        "CA-NL"
+      ],
+      "status": "not-on",
+      "note": "the bergs drift along a coast that runs from Labrador to the southeast shore of the island of Newfoundland",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "late May and early June is the suggested time, at places like Twillingate, Bonavista and Cape Spear"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            7
+          ],
+          "reason": "bergs are plentiful from April, though sea ice can trap them, and the season lasts longer the farther north you go"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.newfoundlandlabrador.com/things-to-do/iceberg-viewing",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nwt-aurora",
+      "name": "Northern lights, Northwest Territories",
+      "kind": "season",
+      "regions": [
+        "CA-NT"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "the late-summer aurora season runs from mid-August to the end of September"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the winter aurora season runs from mid-November until early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://spectacularnwt.com/what-to-do/aurora",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "quebec-winter-carnival",
+      "name": "Quebec Winter Carnival",
+      "kind": "festival",
+      "regions": [
+        "CA-QC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "ten days of winter festival in Quebec City, held between late January and mid-February"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "in some years the carnival opens in late January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://carnaval.qc.ca/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Quebec_Winter_Carnival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "whistler-ski",
+      "name": "Skiing at Whistler Blackcomb",
+      "kind": "ski",
+      "regions": [
+        "CA-BC"
+      ],
+      "status": "closed",
+      "note": "outside the winter season the ski runs are shut, apart from a small summer glacier area on Blackcomb",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the heart of the ski season; ski-outs to the valley are usually possible from December to April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season is projected to open around 20 November, depending on snow"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "the season is projected to close in mid-May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.onthesnow.com/british-columbia/whistler-blackcomb/ski-resort",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Whistler_Blackcomb",
+          "checked": "2026-10-26"
         }
       ]
     }

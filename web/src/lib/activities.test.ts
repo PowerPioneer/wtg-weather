@@ -49,7 +49,7 @@ describe("yearShape", () => {
     expect(shape[0].status).toBe("closed");
     expect(shape[0].months).toEqual([2]);
     const best = shape.find((s) => s.status === "best");
-    expect(best?.months).toEqual([5, 6, 7, 8, 9]);
+    expect(best?.months).toEqual([5, 6, 7, 8]);
   });
 
   it("omits the months a dated event is not on", () => {

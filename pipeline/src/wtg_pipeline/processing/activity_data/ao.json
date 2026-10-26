@@ -1,0 +1,92 @@
+{
+  "iso2": "AO",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "luanda-carnival",
+      "name": "Luanda Carnival",
+      "kind": "festival",
+      "regions": [
+        "AO-LUA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "carnival groups parade and compete on Luanda's Marginal on the Tuesday before Lent"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://pt.wikipedia.org/wiki/Carnaval_de_Luanda",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Angola",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kalandula-falls",
+      "name": "Kalandula Falls",
+      "kind": "site",
+      "regions": [
+        "AO-MAL"
+      ],
+      "status": "open",
+      "note": "the Lucala River drops 105 m here; the road from Luanda is in poor condition",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "the rainy season, when the falls are at their best"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Kalandula_Falls",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kalandula_Falls",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "overland-road-travel",
+      "name": "Overland road travel",
+      "kind": "drive",
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the rainy season, when bridges and even roads can be washed away"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Angola",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

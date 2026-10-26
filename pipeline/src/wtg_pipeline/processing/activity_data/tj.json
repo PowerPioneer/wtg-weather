@@ -1,0 +1,144 @@
+{
+  "iso2": "TJ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "pamir-highway",
+      "name": "The Pamir Highway",
+      "kind": "drive",
+      "regions": [
+        "TJ-GB"
+      ],
+      "status": "limited",
+      "note": "heavy winter snow closes high mountain roads for long spells; most reopen in late May or June",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the roads are open and guesthouses are operating; the best months for the high Pamirs"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the highway is fully open from June, and the weather is pleasant until mid-September"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the shoulders: roads reopen after the winter snows in late May or June, and snow from October can close some again"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/?p=5159",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fann-mountains",
+      "name": "Fann Mountains, Iskanderkul and the Seven Lakes",
+      "kind": "trek",
+      "regions": [
+        "TJ-SU"
+      ],
+      "status": "limited",
+      "note": "the lakes are an April-to-October trip; in winter snow can close the mountain roads",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the best trekking months, with mountain roads open and guesthouses operating"
+        },
+        {
+          "status": "open",
+          "months": [
+            4,
+            5,
+            6,
+            9,
+            10
+          ],
+          "reason": "Iskanderkul and the Seven Lakes can be visited from April to October; high trekking runs from late June to mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Fann_Mountains",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "navruz-tj",
+      "name": "Navruz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the spring new year around 21 March is a four-day public holiday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "buzkashi-tj",
+      "name": "Buzkashi season",
+      "kind": "season",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the horseback goat-carcass game is played in a season that generally runs from November through April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Buzkashi",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

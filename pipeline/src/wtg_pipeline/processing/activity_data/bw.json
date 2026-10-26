@@ -1,6 +1,6 @@
 {
   "iso2": "BW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "okavango-mokoro",
@@ -24,21 +24,120 @@
         {
           "status": "open",
           "months": [
-            5,
+            5
+          ],
+          "reason": "the flood is spreading, opening new mokoro routes almost daily"
+        },
+        {
+          "status": "limited",
+          "months": [
             9,
             10
           ],
-          "reason": "the wider flood season, with boat safaris and strong game viewing"
+          "reason": "water levels drop and some camps halt their mokoro trips, though this varies from camp to camp"
         }
       ],
       "sources": [
         {
           "url": "https://www.okavango.com/best-time-to-visit-okavango-delta.php",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.cedarberg-travel.com/okavango-delta-flood/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "makgadikgadi-zebra-migration",
+      "name": "Zebra migration in the Makgadikgadi Pans",
+      "kind": "wildlife",
+      "regions": [
+        "BW-CE"
+      ],
+      "status": "not-on",
+      "note": "in the dry season the game moves west to the Boteti River instead",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the rains fill the eastern pans and zebras migrate across the park in great numbers to drink"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the wet season begins and the herds start to arrive"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/makgadikgadi/best-time",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chobe-riverfront",
+      "name": "Chobe Riverfront",
+      "kind": "wildlife",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "late in the dry season, animals are drawn to the river as waterholes across the park dry out"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/chobe/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/botswana/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "central-kalahari",
+      "name": "Central Kalahari Game Reserve",
+      "kind": "wildlife",
+      "regions": [
+        "BW-GH"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the rains fill the pans of Deception Valley and animals gather to drink"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/kalahari/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/botswana/when-to-go",
+          "checked": "2026-10-26"
         }
       ]
     }

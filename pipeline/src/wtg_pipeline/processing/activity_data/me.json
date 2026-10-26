@@ -1,6 +1,6 @@
 {
   "iso2": "ME",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "bay-of-kotor",
@@ -15,7 +15,7 @@
             5,
             10
           ],
-          "reason": "the shoulder months, and the best balance of weather, crowds and prices on the bay; late April to mid-May is the single best window"
+          "reason": "the shoulder seasons: comfortable, and far less crowded than summer"
         },
         {
           "status": "open",
@@ -23,7 +23,7 @@
             6,
             9
           ],
-          "reason": "early June and mid-September to early October are still peak season but far less crowded than midsummer"
+          "reason": "still busy — June is warm before the late-summer heat, and in September the cruise-ship crowds start to thin"
         },
         {
           "status": "limited",
@@ -31,17 +31,72 @@
             7,
             8
           ],
-          "reason": "the most crowded and most expensive weeks of the year"
+          "reason": "peak summer heat and the busiest cruise-ship weeks of the year"
         }
       ],
       "sources": [
         {
           "url": "https://adriaticways.com/kotor-weather-best-time-to-visit/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.sunshineseeker.com/destinations/kotor/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fasinada",
+      "name": "Fašinada, Perast",
+      "kind": "festival",
+      "regions": [
+        "ME-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "at sunset on 22 July, local boats drop stones around Our Lady of the Rocks to widen the islet"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Our_Lady_of_the_Rocks",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "durmitor-hiking",
+      "name": "Hiking in Durmitor (Bobotov Kuk)",
+      "kind": "hike",
+      "regions": [
+        "ME-21"
+      ],
+      "status": "limited",
+      "note": "outside summer the trails can be under snow; in winter Durmitor is for skiing",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "summer, when activity on the massif shifts to hiking and mountaineering"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Durmitor_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Žabljak",
+          "checked": "2026-10-26"
         }
       ]
     }

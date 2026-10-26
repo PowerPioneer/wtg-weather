@@ -1,6 +1,6 @@
 {
   "iso2": "US",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "tioga-road",
@@ -67,24 +67,293 @@
             12,
             1,
             2,
-            3
+            3,
+            4
           ],
-          "reason": "closed for the winter beyond the Badger Pass ski area; it shuts between late October and mid-November and reopens between late May and early June"
+          "reason": "snow closes the road and it is not possible to drive to Glacier Point; in winter only the first five miles stay open, to the Badger Pass ski area"
         },
         {
           "status": "limited",
           "months": [
             11,
-            4,
             5
           ],
-          "reason": "the shoulder months either side of the closure - the dates move with the snow"
+          "reason": "the road usually closes for snow at some point in November and reopens in late May or early June"
         }
       ],
       "sources": [
         {
-          "url": "https://www.nps.gov/yose/planyourvisit/tiogaopen.htm",
-          "checked": "2026-08-28"
+          "url": "https://www.nps.gov/yose/planyourvisit/wroads.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "going-to-the-sun-road",
+      "name": "Going-to-the-Sun Road over Logan Pass, Glacier",
+      "kind": "drive",
+      "regions": [
+        "US-MT"
+      ],
+      "status": "open",
+      "note": "the lower sections of the road stay open all year; it is the alpine stretch over Logan Pass that waits on the snowplough",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "snow shuts the alpine section over Logan Pass; it is typically fully open only from early July to mid-October"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "ploughing is still under way and there is no set opening date over Logan Pass; it is typically fully open by early July"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "usually fully open until the third Monday of October, though early snow can close it sooner"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/glac/planyourvisit/gtsrinfo.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "yellowstone-roads",
+      "name": "Yellowstone park roads by car",
+      "kind": "drive",
+      "regions": [
+        "US-WY"
+      ],
+      "status": "open",
+      "note": "the road from the North Entrance through Mammoth and Lamar Valley to the Northeast Entrance is the one route open to cars all year",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "most roads close to cars in early November; in winter only guided snowcoach and snowmobile tours travel the interior"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "roads reopen to cars in stages from mid-April and are typically all open by Memorial Day weekend"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "Dunraven Pass and the Beartooth Highway close in mid-October, and snow can shut other roads without warning"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/yell/planyourvisit/seasons.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.eastidahonews.com/?p=455919",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "trail-ridge-road",
+      "name": "Trail Ridge Road, Rocky Mountain",
+      "kind": "drive",
+      "regions": [
+        "US-CO"
+      ],
+      "status": "open",
+      "note": "the highest continuous paved road in the US, topping out at 12,183 feet",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "blowing and drifting snow at high elevation closes the road for the winter; it historically reopens on Memorial Day weekend"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "the road historically opens on Memorial Day weekend; a late-May snowstorm can push that into June"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "snow and high winds close it for the season, on average around 23 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/romo/learn/news/trail-ridge-road-opens-for-the-season-may-28.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.kunc.org/community/2012-10-18/trail-ridge-road-closes-early-for-winter-season",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "denali-park-road",
+      "name": "Denali Park Road buses",
+      "kind": "tour",
+      "regions": [
+        "US-AK"
+      ],
+      "status": "closed",
+      "note": "outside the bus season the road is snowbound beyond Park Headquarters, and most lodging near the park closes from autumn until mid-May",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "transit buses start on 20 May, with narrated tour buses about a week earlier"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the full summer bus service runs; private cars are limited to the first 15 miles"
+        },
+        {
+          "status": "limited",
+          "months": [
+            9
+          ],
+          "reason": "transit buses stop on the second Thursday after Labor Day; afterwards private cars may drive to Teklanika River (mile 30) until snow closes the road"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/dena/planyourvisit/hours.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nps.gov/dena/planyourvisit/shoulder-season.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fairbanks-aurora",
+      "name": "Northern lights, Fairbanks",
+      "kind": "season",
+      "regions": [
+        "US-AK"
+      ],
+      "status": "not-on",
+      "note": "the aurora is there all year, but in the summer the night sky at this latitude is too bright to see it",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the aurora season: nights are dark enough to see the lights from late August to late April"
+        },
+        {
+          "status": "open",
+          "months": [
+            8,
+            4
+          ],
+          "reason": "the edges of the season, which runs from 21 August to 21 April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.gi.alaska.edu/monitors/aurora-forecast",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.explorefairbanks.com/explore-the-area/aurora-season/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hawaii-humpbacks",
+      "name": "Humpback whale watching, Hawaii",
+      "kind": "wildlife",
+      "regions": [
+        "US-HI"
+      ],
+      "status": "not-on",
+      "note": "the whales come to Hawaii each winter to breed and calve, and head north to their feeding grounds by summer",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "peak whale season, when the sanctuary's annual whale count is held"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            4
+          ],
+          "reason": "humpbacks can be seen from shore and at sea from November through April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://hawaiihumpbackwhale.noaa.gov/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://hawaiihumpbackwhale.noaa.gov/involved/ocean-count.html",
+          "checked": "2026-10-26"
         }
       ]
     }

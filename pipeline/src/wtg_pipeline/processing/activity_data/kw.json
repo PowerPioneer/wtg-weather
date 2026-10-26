@@ -1,13 +1,81 @@
 {
   "iso2": "KW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
-      "id": "desert-trips",
-      "name": "Desert trips",
-      "kind": "tour",
+      "id": "spring-camping",
+      "name": "Spring desert camping season",
+      "kind": "season",
+      "regions": [
+        "KW-JA",
+        "KW-AH"
+      ],
+      "status": "closed",
+      "note": "camps need a municipal licence and go on designated sites in Jahra and Ahmadi",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the municipality's spring camping season, when families set up desert camps for barbecues, sports and horse riding"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            3
+          ],
+          "reason": "the season runs from 15 November to 15 March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kuwaittimes.com/kuwait-camping-season-begins-amid-price-hikes",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kuwaittimes.com/municipality-approves-20-sites-for-camping",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "national-days",
+      "name": "National Day and Liberation Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "back-to-back holidays on 25 February (National Day) and 26 February (Liberation Day); the national day moved from June to escape the summer heat"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kuwait",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/National_Day_(Kuwait)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "flamingos",
+      "name": "Flamingos on Jahra and Sulaibikhat bays",
+      "kind": "wildlife",
+      "regions": [
+        "KW-JA"
+      ],
       "status": "open",
-      "note": "operators run all year, and in summer they run them early or late to keep clear of the worst of the heat",
+      "note": "flamingos can be found in Kuwait all year",
       "windows": [
         {
           "status": "best",
@@ -18,34 +86,13 @@
             2,
             3
           ],
-          "reason": "the winter season, when daytime temperatures sit in a range you can spend a day outdoors in"
-        },
-        {
-          "status": "open",
-          "months": [
-            10,
-            4
-          ],
-          "reason": "the shoulder months, still comfortable enough for time in the open"
-        },
-        {
-          "status": "limited",
-          "months": [
-            6,
-            7,
-            8
-          ],
-          "reason": "the hottest months, reaching the high forties with high humidity on the coast"
+          "reason": "the milder months, when flocks of up to a few thousand gather in Sulaibikhat and Jahra bays"
         }
       ],
       "sources": [
         {
-          "url": "https://dubaidesertsafaritrip.com/blog/best-time-to-visit-uae-desert/",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
-          "checked": "2026-08-28"
+          "url": "https://kuwaittimes.com/article/21454/lifestyle/art-fashion/pretty-in-pink-flamingo-watching-season-takes-flight-in-kuwait/amp",
+          "checked": "2026-10-26"
         }
       ]
     }

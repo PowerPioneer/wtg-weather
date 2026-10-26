@@ -1,0 +1,102 @@
+{
+  "iso2": "TC",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales",
+      "name": "Humpback whale watching",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "sightings typically peak in February as humpbacks pass through the Turks Islands Passage"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            3,
+            4
+          ],
+          "reason": "tours run January to April off Grand Turk and Salt Cay; the whales are present from late December to early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visittci.com/salt-cay/things-to-do/whale-watching",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visittci.com/travel-info/useful-info/when-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Salt_Cay,_Turks_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "valentines-day-cup",
+      "name": "Valentine's Day Cup model sailboat race",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "a February model-sailboat race on Bambarra Beach, Middle Caicos"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visittci.com/travel-info/useful-info/when-to-visit",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "mid-August through September is when a hurricane is most likely to strike the islands"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            10,
+            11
+          ],
+          "reason": "inside the June-November hurricane season, but direct strikes have been rare in recent decades"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visittci.com/travel-info/useful-info/when-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

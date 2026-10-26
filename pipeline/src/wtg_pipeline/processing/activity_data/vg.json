@@ -1,0 +1,90 @@
+{
+  "iso2": "VG",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "bvi-spring-regatta",
+      "name": "BVI Spring Regatta and Sailing Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "a week of racing out of Nanny Cay, Tortola, held in late March or early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bvispringregatta.org/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/British_Virgin_Islands",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "anegada-lobster-festival",
+      "name": "Anegada Lobster Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "a three-day lobster feast on the coral island of Anegada, held over a late-November weekend"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bvitourism.com/events/anegada-lobster-festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak of the hurricane season; Irma struck the islands on 6 September 2017"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            11
+          ],
+          "reason": "inside the official season, which runs June to November, but outside its historical peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/British_Virgin_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "AM",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "monasteries-hiking",
@@ -33,6 +33,94 @@
         {
           "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-armenia",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "vardavar",
+      "name": "Vardavar water festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "held 98 days after Easter, usually in July, when strangers of every age douse each other with water"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "in years with an early Easter it falls in late June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Vardavar",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tsaghkadzor-ski",
+      "name": "Skiing at Tsaghkadzor",
+      "kind": "ski",
+      "regions": [
+        "AM-KT"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the heart of a ski season that starts in mid-December"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            3
+          ],
+          "reason": "the season usually starts in mid-December and stretches well into March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tsaghkadzor",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "wings-of-tatev",
+      "name": "Wings of Tatev cable car",
+      "kind": "transport",
+      "regions": [
+        "AM-SU"
+      ],
+      "status": "open",
+      "note": "runs all year, with shorter hours in the cooler months and closed on Mondays outside the summer",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "longest hours of the year, 9 am to 8 pm every day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Wings_of_Tatev",
+          "checked": "2026-10-26"
         }
       ]
     }

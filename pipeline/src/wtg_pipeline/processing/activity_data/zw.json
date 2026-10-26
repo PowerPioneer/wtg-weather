@@ -1,6 +1,6 @@
 {
   "iso2": "ZW",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "victoria-falls",
@@ -39,6 +39,137 @@
         {
           "url": "https://www.travelbutlers.com/victoria-falls/best-time-to-visit/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "zambezi-rafting",
+      "name": "White-water rafting below Victoria Falls",
+      "kind": "tour",
+      "regions": [
+        "ZW-MN"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            3,
+            4,
+            5
+          ],
+          "reason": "the Zambezi is in full flood and rafting does not run; the dates vary with the rains"
+        },
+        {
+          "status": "limited",
+          "months": [
+            2
+          ],
+          "reason": "high-water rafting may continue, depending on river levels"
+        },
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "low water exposes the big rapids; multi-day trips usually start in mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://wildhorizons.co.za/the-best-time-to-visit-victoria-falls-seasonal-summary/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.travelbutlers.com/victoria-falls/best-time-to-visit/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hwange",
+      "name": "Hwange National Park",
+      "kind": "wildlife",
+      "regions": [
+        "ZW-MN"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season: animals gather at the waterholes and big elephant herds build up"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "some camps and lodges close, and some roads become challenging or impassable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/hwange/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safaribookings.com/zimbabwe/best-time",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mana-pools",
+      "name": "Mana Pools National Park",
+      "kind": "wildlife",
+      "regions": [
+        "ZW-MW"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, the best months for wildlife viewing"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the rains: parts of the park may close to vehicles, many camps shut and roads turn to mud"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.safaribookings.com/mana-pools/best-time",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safaribookings.com/zimbabwe/best-time",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "ES",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "caminito-del-rey",
@@ -29,17 +29,17 @@
             7,
             8
           ],
-          "reason": "midsummer temperatures on the exposed walkway regularly pass 40 °C"
+          "reason": "summer temperatures rise well above 30 °C, up to about 35 °C, on a walkway with little shade, and afternoon closures can occur in extreme heat"
         }
       ],
       "sources": [
         {
           "url": "https://caminodelrey.es/best-time-to-visit-caminito-del-rey-month-by-month-weather-and-tips/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://caminito-del-rey-tickets.com/opening-hours/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -62,17 +62,13 @@
             9,
             10
           ],
-          "reason": "mild temperatures, with the Generalife gardens in flower or in autumn colour"
+          "reason": "spring (April to June) and autumn (September to October) are mild, with less chance of extreme heat or cold"
         }
       ],
       "sources": [
         {
-          "url": "https://thealhambra.org/hours-best-time/",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.alhambra-granada-tickets.com/alhambra-opening-hours/",
-          "checked": "2026-08-28"
+          "url": "https://www.granada-tickets.com/alhambra/timings-opening-hours/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -103,6 +99,151 @@
         {
           "url": "https://caminoways.com/which-months-can-you-walk-the-camino",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "las-fallas",
+      "name": "Las Fallas, Valencia",
+      "kind": "festival",
+      "regions": [
+        "ES-V"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "daily mascletà fireworks from 1 March; the monuments go up on 15 March and are burned on the night of 19 March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitvalencia.com/en/events-valencia/festivities/the-fallas",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Falles",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "seville-holy-week",
+      "name": "Holy Week in Seville",
+      "kind": "festival",
+      "regions": [
+        "ES-SE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "processions run from Palm Sunday to Easter Sunday morning, so the week falls in late March or in April depending on Easter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Holy_Week_in_Seville",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.spainseeker.com/en/event/sevilla-holy-week",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "san-fermin",
+      "name": "San Fermín, Pamplona",
+      "kind": "festival",
+      "regions": [
+        "ES-NA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the fiesta runs 6 to 14 July, with a bull run through the old town every morning from 7 July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Running_of_the_bulls",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "la-tomatina",
+      "name": "La Tomatina, Buñol",
+      "kind": "festival",
+      "regions": [
+        "ES-V"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the tomato fight is held on the last Wednesday of August, ticketed and capped at 20,000 people since 2013"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/La_Tomatina",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.donquijote.org/spanish-culture/holidays/la-tomatina/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sierra-nevada-ski",
+      "name": "Skiing in the Sierra Nevada",
+      "kind": "ski",
+      "regions": [
+        "ES-GR"
+      ],
+      "status": "closed",
+      "note": "the lifts close from late April until the end of November",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season opens at the end of November"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the season runs from late November to late April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skiresort.com/en/snow-reports/seasonstart/sierra-nevada-spain/",
+          "checked": "2026-10-26"
         }
       ]
     }

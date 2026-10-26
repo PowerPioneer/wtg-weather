@@ -1,6 +1,6 @@
 {
   "iso2": "CU",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "hurricane-season",
@@ -37,17 +37,200 @@
             3,
             4
           ],
-          "reason": "outside the hurricane season entirely, in the dry Caribbean winter"
+          "reason": "outside the hurricane season entirely, in Cuba's November-to-April dry season"
         }
       ],
       "sources": [
         {
           "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.roughguides.com/destinations/central-america-and-the-caribbean/cuba/when-to-go/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "parrandas-remedios",
+      "name": "Parrandas de Remedios",
+      "kind": "festival",
+      "regions": [
+        "CU-05"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the original parrandas, held in Remedios from Christmas Eve into Christmas Day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Parrandas",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/parrandas-festivities-of-the-centre-of-cuba-01405",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "havana-film-festival",
+      "name": "Havana Film Festival",
+      "kind": "festival",
+      "regions": [
+        "CU-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the Festival of New Latin American Cinema runs for about ten days in Havana every December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Havana_Film_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.cinematropical.com/cinema-tropical/ivan-giroud-reappointed-director-of-the-havana-film-fest",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "havana-book-fair",
+      "name": "Havana International Book Fair",
+      "kind": "festival",
+      "regions": [
+        "CU-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the fair opens in February at La Cabaña fortress in Havana"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "after Havana the fair tours the provinces, closing in Santiago de Cuba in March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Havana_International_Book_Fair",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.cuba.travel/destinos/la-habana/eventos-en-la-habana",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "santiago-carnival",
+      "name": "Santiago de Cuba Carnival",
+      "kind": "festival",
+      "regions": [
+        "CU-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Santiago holds its carnival in July rather than before Lent, roughly 18 to 27 July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival_of_Santiago_de_Cuba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Santiago_de_Cuba",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fiesta-del-fuego",
+      "name": "Festival del Caribe (Fiesta del Fuego)",
+      "kind": "festival",
+      "regions": [
+        "CU-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Santiago's festival of Caribbean culture runs every year from 3 to 9 July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cuba.travel/home/post/85937/el-festival-del-caribe-regresa-con-todo-su-intenso-ardor-caribeño-a-santiago-de-cuba",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://es.wikipedia.org/wiki/Fiesta_del_Fuego",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://tiplr.com/tips/caribbean/cuba/santiago-de-cuba/santiago-de-cuba-santiago-de-cuba/fiesta-del-fuego-july-festival-in-santiago-de-cuba/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "romerias-de-mayo",
+      "name": "Romerías de Mayo, Holguín",
+      "kind": "festival",
+      "regions": [
+        "CU-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the Romerías de Mayo festival fills Holguín from 2 to 8 May each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://es.wikipedia.org/wiki/Romerías_de_Mayo",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.ahora.cu/es/cultura/18591-romerias-de-mayo-fundacion-e-historia",
+          "checked": "2026-10-26"
         }
       ]
     }

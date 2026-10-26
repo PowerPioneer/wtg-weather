@@ -1,0 +1,90 @@
+{
+  "iso2": "MR",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "iron-ore-train",
+      "name": "Iron ore train, Nouadhibou to Zouérat",
+      "kind": "transport",
+      "regions": [
+        "MR-08",
+        "MR-07",
+        "MR-11"
+      ],
+      "status": "open",
+      "note": "departs Nouadhibou daily, with one passenger carriage; riding a hopper means desert heat by day and near-freezing nights",
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Mauritania",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Mauritania_Railway",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "banc-darguin-birds",
+      "name": "Wintering shorebirds, Banc d'Arguin",
+      "kind": "wildlife",
+      "regions": [
+        "MR-08"
+      ],
+      "status": "open",
+      "note": "a breeding colony of pelicans, cormorants and terns uses the islands too",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the northern winter, when over two million waders from Europe, Siberia and Greenland winter on the mudflats"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Banc_d'Arguin_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Banc_d'Arguin_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chinguetti-dunes",
+      "name": "Chinguetti and the Adrar dunes",
+      "kind": "hike",
+      "regions": [
+        "MR-07"
+      ],
+      "status": "open",
+      "note": "camel-supported walks into the dunes around the old trading town",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "average highs above 40°C make dune walks and camel treks punishing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Chinguetti",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Chinguetti",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

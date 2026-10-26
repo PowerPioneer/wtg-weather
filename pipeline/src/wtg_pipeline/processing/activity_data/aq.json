@@ -1,0 +1,139 @@
+{
+  "iso2": "AQ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "peninsula-cruises",
+      "name": "Expedition cruises to the Antarctic Peninsula",
+      "kind": "tour",
+      "status": "closed",
+      "note": "no tourist voyages run in the Antarctic winter",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the summer tour season, which runs from November to March"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the first expedition departures leave in late October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tourism_in_Antarctica",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.coolantarctica.com/Travel/antarctica_trip_questions.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "adelie-penguins",
+      "name": "Adélie penguin colonies",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "Adélies arrive at their colonies in late October or November and breed through February"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the adults and their young leave the colonies and return to the sea in March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ad%C3%A9lie_penguin",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "aq-whale-watching",
+      "name": "Whale watching off the Antarctic Peninsula",
+      "kind": "wildlife",
+      "status": "closed",
+      "note": "whales are watched only from expedition ships, and no voyages run in the Antarctic winter",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "late summer: whale numbers peak as migrating humpbacks arrive and the sea ice is at its lowest"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            12,
+            1
+          ],
+          "reason": "humpbacks, minkes and orcas are seen from the ships, with numbers building through the summer"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://oceanwide-expeditions.com/blog/our-guide-to-antarctic-whale-watching-on-an-expedition-cruise",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.wildlifeworldwide.com/journal/expedition-voyages-calendar",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ross-sea-voyages",
+      "name": "Ross Sea voyages from New Zealand",
+      "kind": "tour",
+      "status": "closed",
+      "note": "pack ice blocks ships from the Ross Sea for the rest of the year",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the sea ice shrinks back just enough for ships from New Zealand to enter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.heritage-expeditions.com/antarctica-ross-sea-cruises/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/antarctica/travel-guide/the-ross-sea",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "iso2": "CG",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "odzala-gorillas",
+      "name": "Odzala-Kokoua gorillas and forest",
+      "kind": "wildlife",
+      "regions": [
+        "CG-15"
+      ],
+      "status": "open",
+      "note": "visitable most of the year; the park has the highest recorded densities of western lowland gorilla in Central Africa",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "a short break in the rains in the north, with better road conditions"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the long dry season and Odzala's lowest rainfall: July is the driest and coolest month, and June one of the best times for gorilla trekking"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.timbuktutravel.com/country/republic-of-the-congo-trip/best-time-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.naturalworldsafaris.com/africa/republic-of-congo/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/congo/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Odzala-Kokoua_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sea-turtle-nesting",
+      "name": "Leatherback and olive ridley turtle nesting",
+      "kind": "wildlife",
+      "regions": [
+        "CG-5",
+        "CG-16"
+      ],
+      "status": "not-on",
+      "note": "the turtles nest on Congo's Atlantic beaches from September to April; outside that there is nothing to see",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "peak nesting: olive ridleys in early December, leatherbacks in early January"
+        },
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            2,
+            3,
+            4
+          ],
+          "reason": "leatherbacks and olive ridleys nest on Congolese beaches from September to April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.cambridge.org/core/product/3CA5BFB25DCBCD3B68C0B4F68DFDEA33/core-reader",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.wcs.org/wildcards/posts/turtle-patrol",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lesio-louna-gorillas",
+      "name": "Lésio-Louna gorilla reserve",
+      "kind": "wildlife",
+      "regions": [
+        "CG-14"
+      ],
+      "status": "open",
+      "note": "rescued gorillas watched at the Iboubikro sanctuary plus a pirogue trip on the Léfini river, about 140 km north of Brazzaville",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "dry season: better road access and drier trails, with little risk of rain"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.privatetourscapetown.com/blog/lesio-louna-gorilla-reserve-guide",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://trekafricatours.com/?p=29535",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://fr.wikipedia.org/wiki/R%C3%A9serve_de_L%C3%A9sio-Louna",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

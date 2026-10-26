@@ -1,0 +1,130 @@
+{
+  "iso2": "SL",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "mount-bintumani",
+      "name": "Climbing Mount Bintumani",
+      "kind": "trek",
+      "regions": [
+        "SL-N"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "dry season, November to April: the time to attempt Sierra Leone's highest peak"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "rainy season: guidebooks warn that an ascent in the rains approaches madness"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/sierra-leone/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "upcountry-roads",
+      "name": "Travelling upcountry",
+      "kind": "drive",
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the wettest months, July and August, and for some while after: dirt roads turn to mud and remote rural areas become almost impossible to reach"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/sierra-leone/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "peninsula-beaches",
+      "name": "Freetown Peninsula beaches",
+      "kind": "beach",
+      "regions": [
+        "SL-W"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "as the rains end the water clears and skies turn blue between showers"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/sierra-leone/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "harmattan",
+      "name": "Travelling in the harmattan",
+      "kind": "season",
+      "status": "open",
+      "note": "the dry-season wind off the Sahara; nothing closes, and it is less choking here than nearer the desert",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the harmattan haze is thickest: Saharan dust means skies are never crystal blue"
+        },
+        {
+          "status": "open",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the haze can linger until March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/sierra-leone/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Harmattan",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

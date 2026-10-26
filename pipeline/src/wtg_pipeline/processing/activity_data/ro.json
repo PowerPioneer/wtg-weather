@@ -1,6 +1,6 @@
 {
   "iso2": "RO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "transfagarasan",
@@ -39,6 +39,69 @@
         {
           "url": "https://www.romania-insider.com/romania-transfagarasan-mountain-road-open-earlier-2024",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "transalpina",
+      "name": "Transalpina road",
+      "kind": "drive",
+      "regions": [
+        "RO-GJ",
+        "RO-VL",
+        "RO-SB",
+        "RO-AB"
+      ],
+      "status": "closed",
+      "note": "closed in winter",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "open from mid-May to mid-October, weather permitting, and in daytime only"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the season's edges: it opens around mid-May and closes around mid-October, depending on the weather"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Transalpina_(DN67C)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sighisoara-medieval-festival",
+      "name": "Sighișoara Medieval Festival",
+      "kind": "festival",
+      "regions": [
+        "RO-MS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "held on the last weekend of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sighișoara_Medieval_Festival",
+          "checked": "2026-10-26"
         }
       ]
     }

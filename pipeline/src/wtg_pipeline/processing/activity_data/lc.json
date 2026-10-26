@@ -1,0 +1,108 @@
+{
+  "iso2": "LC",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "carnival",
+      "name": "Saint Lucia Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "band launches and fetes start building in June"
+        },
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "carnival month: competitions build to the Carnival Monday and Tuesday street parades"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://stlucia.org/en/things-to-do/festivals/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.islands.com/caribbean/caribbean-carnival-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jazz-arts-festival",
+      "name": "Saint Lucia Jazz & Arts Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "international and Caribbean headliners from the last days of April into May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://stlucia.org/en/things-to-do/festivals/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Lucia_Jazz_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "creole-heritage-month",
+      "name": "Creole Heritage Month and Jounen Kwéyòl",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "a month of creole culture across the island, building to Jounen Kwéyòl late in October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://stlucia.org/en/things-to-do/festivals/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "whale-dolphin-watching",
+      "name": "Whale and dolphin watching",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "spinner dolphins and resident pilot whales are seen year-round",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "humpback whales migrate through between February and April, inside the calmer-sea months of December to May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://stlucia.org/en/things-to-do/whale-dolphin-watching/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

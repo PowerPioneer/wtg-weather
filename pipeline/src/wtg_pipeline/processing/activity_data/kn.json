@@ -1,0 +1,114 @@
+{
+  "iso2": "KN",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sugar-mas",
+      "name": "Sugar Mas (St Kitts carnival)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "the main carnival season runs from mid-December through the Christmas holidays"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the National Carnival Parade on New Year's Day and the Last Lap on 2 January close the festival"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "in some years the opening events begin in late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.officeholidays.com/holidays/saint-kitts-and-nevis/st-kitts-carnival-day",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://travelnoire.com/sugar-mas-is-the-carnival-of-st-kitts-and-nevis",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_Saint_Kitts_and_Nevis",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "music-festival",
+      "name": "St Kitts Music Festival",
+      "kind": "festival",
+      "regions": [
+        "KN-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "three nights of popular music at Warner Park Stadium, Basseterre, in late June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/St._Kitts_Music_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.sknis.gov.kn/2023/05/15/venue-preparations-underway-for-25th-anniversary-celebration/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_Saint_Kitts_and_Nevis",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "culturama",
+      "name": "Culturama (Nevis)",
+      "kind": "festival",
+      "regions": [
+        "KN-10"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "Nevis's festival of folk arts, calypso and pageants, from late July into early August, ending with a march through Charlestown"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Culturama",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.oecs.int/en/component/spproperty/property/30-nevis-culturama?Itemid=286",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_Saint_Kitts_and_Nevis",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

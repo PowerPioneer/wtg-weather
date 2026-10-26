@@ -1,0 +1,99 @@
+{
+  "iso2": "ST",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "sea-turtle-nesting",
+      "name": "Sea turtle nesting and hatching",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "female turtles come ashore at night to lay their eggs"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "nesting watches end in mid-March, but hatchlings keep heading to sea into April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.principecollection.com/en/experiences/turtle-watching",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.programatato.org/post/observação-de-tartarugas-marinhas",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "principe-whales",
+      "name": "Humpback whales off Príncipe",
+      "kind": "wildlife",
+      "regions": [
+        "ST-P"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "humpback whales visit the waters around Príncipe and boat trips go out to find them"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.principecollection.com/en/experiences/whale-watching-boat",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pico-de-sao-tome",
+      "name": "Pico de São Tomé trek",
+      "kind": "trek",
+      "regions": [
+        "ST-S"
+      ],
+      "status": "open",
+      "note": "a two-day climb through Obô Natural Park, camping on the way",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "outside the October-to-May rains, when the often-slippery path is driest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Pico_de_São_Tomé",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/São_Tomé_and_Príncipe",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

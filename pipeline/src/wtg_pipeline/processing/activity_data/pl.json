@@ -1,6 +1,6 @@
 {
   "iso2": "PL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "morskie-oko",
@@ -10,17 +10,16 @@
         "PL-MA"
       ],
       "status": "open",
-      "note": "the most walked route in Tatra National Park — a paved road from Palenica Białczańska, two to three hours up to the lake",
+      "note": "a paved road from Palenica Białczańska, two to three hours' walk up to the lake",
       "windows": [
         {
           "status": "best",
           "months": [
-            6,
             7,
             8,
             9
           ],
-          "reason": "the summer walking season in the Tatras"
+          "reason": "the prime hiking months in the Tatras, when the trails are clear"
         },
         {
           "status": "limited",
@@ -37,11 +36,144 @@
       "sources": [
         {
           "url": "https://www.skyhookadventure.com/blog/tatra-mountains-hiking",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://polandwander.com/tatra-national-park-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dunajec-rafting",
+      "name": "Dunajec Gorge rafting",
+      "kind": "tour",
+      "regions": [
+        "PL-MA"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the raftsmen's season runs only from 1 April to 31 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://flisacy.pl/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lazienki-chopin-concerts",
+      "name": "Chopin concerts in Łazienki Park",
+      "kind": "festival",
+      "regions": [
+        "PL-MZ"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "free piano recitals of Chopin's music are held at his monument on summer Sundays"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/%C5%81azienki_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "opener-festival",
+      "name": "Open'er Festival",
+      "kind": "festival",
+      "regions": [
+        "PL-PM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "four days at the turn of June and July at the Gdynia-Kosakowo airfield on the Baltic coast"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "in some years the festival opens in the last days of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Open%27er_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://opener.pl/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.poland.travel/en/experience-opener-festival-2026-polands-premier-music-celebration-by-the-sea/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bieszczady-autumn",
+      "name": "Bieszczady autumn colours",
+      "kind": "season",
+      "regions": [
+        "PL-PK"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "the beech forests turn green, yellow and red, and the deer rut can be heard"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.poland.travel/en/30505-2/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bialowieza-forest",
+      "name": "Białowieża Forest",
+      "kind": "wildlife",
+      "regions": [
+        "PL-PD"
+      ],
+      "status": "open",
+      "note": "guided tours into the strictly protected area, on foot, by bike or by horse-drawn carriage, run all year",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bia%C5%82owie%C5%BCa_Forest",
+          "checked": "2026-10-26"
         }
       ]
     }

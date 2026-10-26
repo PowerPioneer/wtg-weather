@@ -1,6 +1,6 @@
 {
   "iso2": "VU",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season",
@@ -48,6 +48,65 @@
         {
           "url": "https://taketravelinfo.com/best-time-to-travel-to-south-pacific-a-seasonal-guide/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "pentecost-land-diving",
+      "name": "Land diving (Naghol), Pentecost",
+      "kind": "festival",
+      "regions": [
+        "VU-PAM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6
+          ],
+          "reason": "the traditional season, tied to the yam harvest, when the vines are at their most elastic"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "Vanuatu's tourism office lists jumps on Pentecost through to September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Land_diving",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vanuatu.travel/en/things-to-do/culture",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-yasur",
+      "name": "Mount Yasur volcano, Tanna",
+      "kind": "site",
+      "regions": [
+        "VU-TAE"
+      ],
+      "status": "open",
+      "note": "visits are guided only, usually timed for sunset, and access closes whenever volcanic activity rises",
+      "sources": [
+        {
+          "url": "https://www.vanuatu.travel/en/things-to-do/volcanos",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vanuatu.travel/en/about-vanuatu/provinces/tafea/tanna",
+          "checked": "2026-10-26"
         }
       ]
     }

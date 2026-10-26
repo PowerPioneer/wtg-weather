@@ -1,0 +1,93 @@
+{
+  "iso2": "AX",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "kastelholm-castle",
+      "name": "Kastelholm Castle",
+      "kind": "site",
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the castle is open daily only from 2 May to 30 September; outside that it opens on a few set days around Easter and the autumn school break, and otherwise by arrangement"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.museum.ax/museer-sevardheter/kastelholms-slott",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.museum.ax/besok-vara-museer-och-sevardheter",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pommern",
+      "name": "Pommern museum ship (Mariehamn)",
+      "kind": "site",
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the museum ship is closed to visitors from 1 October to 30 April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.pommern.ax/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bomarsund",
+      "name": "Bomarsund fortress ruins",
+      "kind": "site",
+      "status": "open",
+      "note": "the fortress ruins can be visited all year round",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the ruins can be visited, but the visitor centre is open only from early May to the end of August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.museum.ax/besok-vara-museer-och-sevardheter",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

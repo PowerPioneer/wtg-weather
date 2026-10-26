@@ -1,6 +1,6 @@
 {
   "iso2": "WS",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "cyclone-season",
@@ -48,6 +48,89 @@
         {
           "url": "https://taketravelinfo.com/best-time-to-travel-to-south-pacific-a-seasonal-guide/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "teuila-festival",
+      "name": "Teuila Festival",
+      "kind": "festival",
+      "regions": [
+        "WS-TU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "a week of dance, the Miss Samoa pageant and a float parade in Apia, usually in early September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://antor.com/news/samoas-teuila-festival-returns-in-2026-showcasing-the-best-of-samoan-culture/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://samoaobserver.ws/category/samoa/110976",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://pmn.co.nz/read/language-and-culture/teuila-festival-a-celebration-of-samoan-culture-tradition-and-music",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "palolo-rising",
+      "name": "Palolo rising",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the reef worms rise before dawn about seven days after the October and November full moons"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thecoconet.tv/coco-talanoa/pacific-blog/palolo-rising-1/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://samoaobserver.ws/category/samoa/106007",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "siva-afi-competition",
+      "name": "International Siva Afi (fire knife) Competition",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "the annual international fire-knife dance competition, held over three days in November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://antor.com/news/21st-siva-afi-international-competition-an-achievement-for-samoa/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.samoa.travel/whats-on/events-calendar/",
+          "checked": "2026-10-26"
         }
       ]
     }

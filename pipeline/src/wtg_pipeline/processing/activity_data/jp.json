@@ -1,6 +1,6 @@
 {
   "iso2": "JP",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "fuji-climb",
@@ -69,7 +69,7 @@
     },
     {
       "id": "hokkaido-ski",
-      "name": "Skiing in Hokkaido",
+      "name": "Skiing in Hokkaido and Nagano",
       "kind": "ski",
       "regions": [
         "JP-01",
@@ -84,7 +84,7 @@
             1,
             2
           ],
-          "reason": "world-class powder in the depths of the northern winter"
+          "reason": "the most reliable months for the light, dry powder snow"
         },
         {
           "status": "open",
@@ -92,17 +92,21 @@
             12,
             3
           ],
-          "reason": "the shoulders of the ski season"
+          "reason": "the edges of a season that runs from mid-December to early March; late-season snow turns heavier and wetter"
         }
       ],
       "sources": [
         {
           "url": "https://www.adventure-life.com/asia/articles/asia-cruise-when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.odynovotours.com/japan/best-time-to-visit.html",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -119,17 +123,153 @@
             10,
             11
           ],
-          "reason": "maple, ginkgo and ash turn from October into early November; Hokkaido peaks first, in October"
+          "reason": "maples and larches turn from Hokkaido, which peaks in mid-to-late October, to central Honshu and Kyoto in mid-to-late November"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the last colour, in western Honshu, Shikoku and Kyushu, can last into early December"
         }
       ],
       "sources": [
         {
           "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.odynovotours.com/japan/best-time-to-visit.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tateyama-kurobe",
+      "name": "Tateyama Kurobe Alpine Route",
+      "kind": "drive",
+      "regions": [
+        "JP-16",
+        "JP-20"
+      ],
+      "status": "closed",
+      "note": "the mountain route shuts for the winter under deep snow",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6
+          ],
+          "reason": "the route opens in mid-April and the Yuki-no-Otani snow walls line the road into June"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "summer and autumn on the open route, which shuts for winter on 30 November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.alpen-route.com/en/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Tateyama_Kurobe_Alpine_Route",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sapporo-snow-festival",
+      "name": "Sapporo Snow Festival",
+      "kind": "festival",
+      "regions": [
+        "JP-01"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "a week of snow and ice sculptures in early February, at Odori Park, Susukino and Tsudome"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.snowfes.com/english/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sapporo_Snow_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gion-matsuri",
+      "name": "Gion Matsuri",
+      "kind": "festival",
+      "regions": [
+        "JP-26"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Kyoto's festival runs all July; the great float processions are on 17 and 24 July, with street-party evenings before each"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.japan-guide.com/e/e3942.html",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Gion_Matsuri",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "okinawa-snorkelling",
+      "name": "Snorkelling in Okinawa",
+      "kind": "swim",
+      "regions": [
+        "JP-47"
+      ],
+      "status": "open",
+      "note": "hardier snorkellers go in all year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "water and air are usually comfortable for snorkelling from May to October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.japan-guide.com/e/e2424_snorkeling.html",
+          "checked": "2026-10-26"
         }
       ]
     }

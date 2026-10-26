@@ -1,6 +1,6 @@
 {
   "iso2": "MN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "golden-eagle-festival",
@@ -24,6 +24,58 @@
         {
           "url": "https://www.responsiblevacation.com/vacations/festivals/travel-guide/when-to-visit-festivals",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "naadam",
+      "name": "Naadam festival",
+      "kind": "festival",
+      "regions": [
+        "MN-1"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the national festival of wrestling, horse racing and archery is held 11-13 July in Ulaanbaatar's National Sports Stadium"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Naadam",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tsagaan-sar",
+      "name": "Tsagaan Sar lunar new year",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the three-day lunar new year moves each year and falls in February in most years"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in some years it falls at the turn of February and March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tsagaan_Sar",
+          "checked": "2026-10-26"
         }
       ]
     }

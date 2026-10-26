@@ -1,0 +1,90 @@
+{
+  "iso2": "MP",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "dry-season-mp",
+      "name": "Island and beach travel",
+      "kind": "season",
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "the dry season"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the rainy season, July to November, when typhoons are possible"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Northern_Mariana_Islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Saipan",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nps.gov/amme/planyourvisit/basicinfo.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "american-memorial-park",
+      "name": "American Memorial Park",
+      "kind": "site",
+      "status": "open",
+      "note": "the visitor center is open daily; the park honours those killed in the 1944 Marianas campaign",
+      "sources": [
+        {
+          "url": "https://www.nps.gov/amme/index.htm",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "flame-tree-arts-festival",
+      "name": "Flame Tree Arts Festival, Saipan",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "Saipan's arts festival of music, dance, crafts and local food, held as the flame trees bloom; dates are set each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://nasaa-arts.org/northern-marianas-flame-tree-arts-festival/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.iexplore.com/articles/travel-guides/australia-and-south-pacific/northern-mariana-islands/festivals-and-events",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

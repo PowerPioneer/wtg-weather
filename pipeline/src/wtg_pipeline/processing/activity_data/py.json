@@ -1,0 +1,76 @@
+{
+  "iso2": "PY",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "encarnacion-carnival",
+      "name": "Encarnación Carnival",
+      "kind": "festival",
+      "regions": [
+        "PY-7"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the carnival runs through January and February, with clubs competing in judged parades"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Encarnaci%C3%B3n,_Paraguay",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "san-juan-py",
+      "name": "Fiesta de San Juan",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "San Juan on 24 June, with fire games on the eve: a burning ball kicked through the crowd, barefoot walks over coals"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_John%27s_Eve",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "caacupe",
+      "name": "Virgin of Caacupé festival",
+      "kind": "festival",
+      "regions": [
+        "PY-3"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "a major religious festival on 8 December in honour of the Virgin of Caacupé"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Caacup%C3%A9",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

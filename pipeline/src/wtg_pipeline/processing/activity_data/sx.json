@@ -1,0 +1,119 @@
+{
+  "iso2": "SX",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "heineken-regatta",
+      "name": "St. Maarten Heineken Regatta",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "several days of racing and nightly beach concerts in early March, drawing 200-plus boats"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.heinekenregatta.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.vacationstmaarten.com/events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sint_Maarten",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "St. Maarten Carnival, Philipsburg",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the Dutch side's carnival runs from April into May, centred on the Carnival Village and the Grand Carnival parade"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.vacationstmaarten.com/events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Sint_Maarten",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "st-maartens-day",
+      "name": "St. Maarten's Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "11 November marks Columbus's 1493 sighting of the island, with events on both sides of the border"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.vacationstmaarten.com/events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak of the hurricane season; Irma, a Category 5 storm, hit on 6-7 September 2017"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            11
+          ],
+          "reason": "inside the official season, which runs 1 June to 30 November, but outside its historical peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sint_Maarten",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

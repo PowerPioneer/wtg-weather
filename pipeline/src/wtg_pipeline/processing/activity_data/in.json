@@ -1,6 +1,6 @@
 {
   "iso2": "IN",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "manali-leh-highway",
@@ -11,7 +11,7 @@
         "IN-HP"
       ],
       "status": "open",
-      "note": "the only road approaches to Ladakh, and both cross passes above 5,000 m",
+      "note": "crosses the Baralacha La, Lachulung La and Tanglang La passes, which close under snow from November to May",
       "windows": [
         {
           "status": "closed",
@@ -22,7 +22,7 @@
             3,
             4
           ],
-          "reason": "shut under snow. The highway normally opens to civilian traffic in late May or early June — 27 May in 2025, 19 May in 2024 — and stays open until October"
+          "reason": "shut under snow. The highway opens to civilian traffic in late May — 27 May in 2025, 19 May in 2024 — and closes between late October and mid-November (20 November in 2025)"
         },
         {
           "status": "limited",
@@ -30,25 +30,27 @@
             5,
             11
           ],
-          "reason": "the opening and closing months; the exact date is announced each year rather than fixed"
+          "reason": "the opening and closing months; the date differs from year to year"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the season is ending, and some high passes begin closing under early snow"
         },
         {
           "status": "best",
           "months": [
-            9,
-            10
+            9
           ],
-          "reason": "roads still open, crowds gone, and the clearest autumn light on the mountains"
+          "reason": "the sweet spot of the season, with the high passes open through mid-September"
         }
       ],
       "sources": [
         {
-          "url": "https://www.stayvista.com/blog/when-do-ladakh-roads-open-in-2026-manali-and-srinagar-route-status-and-travel-advice/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://jtreks.co/ladakh/articles/ladakh-when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -79,6 +81,323 @@
         {
           "url": "https://jtreks.co/ladakh/articles/ladakh-when-to-go",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "ranthambore-tigers",
+      "name": "Tiger safaris in Ranthambore",
+      "kind": "wildlife",
+      "regions": [
+        "IN-RJ"
+      ],
+      "status": "open",
+      "note": "the core zones are the ones for tigers; some buffer zones may still run safaris in the monsoon, depending on rain and forest department rules",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the core zones close for the monsoon, from July to September, and reopen in October"
+        },
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "water sources dry up, tigers gather at the lakes and waterholes, and thin cover makes them easier to spot"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://bigcatsindia.com/ranthambore-safari-timings/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.findingouradventure.com/travel-diaries/best-time-to-visit-ranthambore-national-park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mp-tiger-reserves",
+      "name": "Kanha, Bandhavgarh and Pench tiger reserves",
+      "kind": "wildlife",
+      "regions": [
+        "IN-MP"
+      ],
+      "status": "open",
+      "note": "the buffer zones stay open for safaris while the cores are shut",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the core zones close for the monsoon breeding season and road repairs, reopening on 1 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.outlooktraveller.com/whats-new/mp-to-shut-6-tiger-reserves-till-october-for-this-reason",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://thehitavada.com/Encyc/2023/9/30/Tiger-Reserves-set-to-reopen-from-Oct-1-with-25-fee-hike.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "corbett-dhikala",
+      "name": "Dhikala zone, Corbett National Park",
+      "kind": "wildlife",
+      "regions": [
+        "IN-UT"
+      ],
+      "status": "open",
+      "note": "Dhikala is Corbett's best-known zone; the Jhirna and Dhela zones stay open all year, weather permitting",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "shut for the monsoon, for visitor safety"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "open only until 15 June, when the zone closes for the monsoon"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the zone reopens on 15 November, so only the second half of the month is bookable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.etvbharat.com/en/bharat/corbett-parks-dhikala-zone-embraces-online-booking-sells-out-in-record-time-enn25103104328",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://discoverwithdheeraj.com/jim-corbett-national-park-travel-guide/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "valley-of-flowers",
+      "name": "Valley of Flowers trek",
+      "kind": "trek",
+      "regions": [
+        "IN-UT"
+      ],
+      "status": "closed",
+      "note": "the national park is open only from 1 June to 31 October",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "peak bloom, from mid-July to mid-August, when the monsoon brings the valley into full flower"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9,
+            10
+          ],
+          "reason": "the park is open but the flowering is either still to come or fading"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.outlooktraveller.com/News/valley-of-flowers-national-park-opens-for-2026-season-in-uttarakhand",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.veenaworld.com/blog/valley-of-flowers-uttarakhand-a-complete-travel-guide",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kedarnath",
+      "name": "Kedarnath temple pilgrimage",
+      "kind": "site",
+      "regions": [
+        "IN-UT"
+      ],
+      "status": "closed",
+      "note": "the temple is snowbound and shut for about six months each winter, while worship moves to Omkareshwar Temple in Ukhimath",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the pilgrimage season, between the spring reopening and the winter closing"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the doors reopen in spring on a date announced each year and timed by the ascendant — 22 April in 2026"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the doors close for winter on Bhai Dooj, which falls in late October or November — 3 November in 2024, 23 October in 2025"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.etvbharat.com/en/state/mahashivratri-2026-kedarnath-temple-opening-announced-enn26021501713",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.newsonair.gov.in/shri-kedarnath-and-shri-yamunotri-temples-close-for-winter-on-bhaiya-dooj",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.outlooktraveller.com/whats-new/the-kedarnath-temple-will-close-its-doors-to-worshippers-on-november-3",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gulmarg-skiing",
+      "name": "Skiing at Gulmarg",
+      "kind": "ski",
+      "regions": [
+        "IN-JK"
+      ],
+      "status": "closed",
+      "note": "the ski season runs from about late December to late March",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the most reliable snow, from the second half of January through February"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            3
+          ],
+          "reason": "the edges of the season: snow cover is building in December, and March snow can change fast in warmer days"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.skiresort.com/en/ski-resort/gulmarg-kongdoori-apharwat/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bikatadventures.com/Home/Blog/best-time-to-ski-and-activities-to-do-in-gulmarg",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pushkar-fair",
+      "name": "Pushkar Camel Fair",
+      "kind": "festival",
+      "regions": [
+        "IN-RJ"
+      ],
+      "status": "not-on",
+      "note": "the fair follows the Hindu lunar calendar, so its dates move each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "held in the month of Kartik and ending on its full moon, usually late October or November, with camel trading, races and folk music"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Pushkar_Fair",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.outlooktraveller.com/amp/story/celebrating-people/destinations/india/all-you-need-to-know-about-the-pushkar-mela-the-ultimate-camel-fair-in-india",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "andaman-diving",
+      "name": "Diving off Havelock (Swaraj Dweep)",
+      "kind": "dive",
+      "regions": [
+        "IN-AN"
+      ],
+      "status": "open",
+      "note": "the dive season runs from October to May",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the peak: the steadiest seas, mild currents and the most marine life, though also the busiest weeks"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the southwest monsoon brings strong winds and rough seas; boat trips are cancelled at short notice and only a few centres dive"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.thehansindia.com/life-style/andamans-dive-season-reopens-in-october-what-first-time-divers-in-havelock-should-know-1118445",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.padi.com/diving-in/india/havelock-island-swaraj-dweep/",
+          "checked": "2026-10-26"
         }
       ]
     }

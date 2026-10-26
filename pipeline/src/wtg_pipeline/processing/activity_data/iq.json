@@ -1,0 +1,108 @@
+{
+  "iso2": "IQ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "arbaeen",
+      "name": "Arbaeen pilgrimage, Karbala",
+      "kind": "festival",
+      "regions": [
+        "IQ-KA",
+        "IQ-NA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "20 Safar, forty days after Ashura, when millions walk the 80 km from Najaf; the lunar date moves about 11 days earlier each year and falls in late July in 2027"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Arba%27een_Pilgrimage",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Ashura",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "newroz",
+      "name": "Newroz in Kurdistan",
+      "kind": "festival",
+      "regions": [
+        "IQ-AR",
+        "IQ-DA",
+        "IQ-SU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "fires lit on the evening of 20 March open the Kurdish new year at the spring equinox; Akre is known for its celebrations"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Newroz_as_celebrated_by_Kurds",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Akre",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ur",
+      "name": "Ur and its ziggurat",
+      "kind": "site",
+      "regions": [
+        "IQ-DQ"
+      ],
+      "status": "open",
+      "note": "the Great Ziggurat is cleared and is the best-preserved landmark on the site",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "mild, dry winter days, with highs of about 18-21 °C at nearby Nasiriyah"
+        },
+        {
+          "status": "limited",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "average highs of about 46-47 °C at nearby Nasiriyah, which turns exploring the open site into a slog"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ur",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Nasiriyah",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.takeyourbackpack.com/backpacking-in-iraq/visit-ur/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

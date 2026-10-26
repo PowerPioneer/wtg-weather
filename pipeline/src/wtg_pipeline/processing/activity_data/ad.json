@@ -1,0 +1,110 @@
+{
+  "iso2": "AD",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "grandvalira-ski",
+      "name": "Skiing at Grandvalira",
+      "kind": "ski",
+      "regions": [
+        "AD-02",
+        "AD-03"
+      ],
+      "status": "closed",
+      "note": "the lifts close for skiing from early April to early December; opening and closing dates move with the snow",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "the middle of the ski season"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the season opens in early December"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the lifts close in the first days of April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.grandvalira.com/en/resort/openning-times",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Tourism_in_Andorra",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "grandvalira-summer",
+      "name": "Grandvalira summer lifts and Mon(t) Magic park",
+      "kind": "site",
+      "regions": [
+        "AD-02"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "every summer lift and attraction is running, including the Portella chairlift"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            9
+          ],
+          "reason": "the summer season runs from about 20 June to mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.grandvalira.com/en/opening-times-summer",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "meritxell-national-day",
+      "name": "Andorran National Day (Meritxell)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "8 September is both the feast of Our Lady of Meritxell and Andorra's national day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Our_Lady_of_Meritxell",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.grandvalira.com/en/opening-times-summer",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

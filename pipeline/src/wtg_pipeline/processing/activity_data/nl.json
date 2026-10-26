@@ -1,6 +1,6 @@
 {
   "iso2": "NL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "keukenhof",
@@ -37,6 +37,159 @@
         {
           "url": "https://www.holland.com/global/tourism/get-inspired/dutch-icons/tulip-season-in-the-netherlands",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "kings-day",
+      "name": "King's Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "held on 27 April, or on the 26th when the 27th is a Sunday"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Koningsdag",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/netherlands/kings-day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "amsterdam-light-festival",
+      "name": "Amsterdam Light Festival",
+      "kind": "festival",
+      "regions": [
+        "NL-NH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "light artworks along the canals through December and into mid-January"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the festival opens in late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://amsterdamlightfestival.com/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/netherlands/amsterdam-light-festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "corso-zundert",
+      "name": "Corso Zundert flower parade",
+      "kind": "festival",
+      "regions": [
+        "NL-NB"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "the flower-covered floats parade on the first Sunday of September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bloemencorso_Zundert",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.corsozundert.nl/en/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "alkmaar-cheese-market",
+      "name": "Alkmaar cheese market",
+      "kind": "festival",
+      "regions": [
+        "NL-NH"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the Friday morning markets are joined by extra Tuesday evening markets"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            4,
+            5,
+            6,
+            9
+          ],
+          "reason": "every Friday morning on the Waagplein, from the last Friday in March to the last Friday in September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.kaasmarkt.nl/en/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/netherlands/alkmaar-cheese-market",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nijmegen-four-days-marches",
+      "name": "Four Days Marches, Nijmegen",
+      "kind": "festival",
+      "regions": [
+        "NL-GE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "the four-day walking event is held in the third week of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/International_Four_Days_Marches_Nijmegen",
+          "checked": "2026-10-26"
         }
       ]
     }

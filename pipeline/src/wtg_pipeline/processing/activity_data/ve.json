@@ -1,6 +1,6 @@
 {
   "iso2": "VE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "angel-falls",
@@ -10,7 +10,7 @@
         "VE-F"
       ],
       "status": "limited",
-      "note": "the falls are visible from the air all year; it is the river journey to the base that depends on the water level",
+      "note": "it is the river journey to the base that depends on the water level; the falls can also be seen on an overflight",
       "windows": [
         {
           "status": "best",
@@ -22,7 +22,7 @@
             10,
             11
           ],
-          "reason": "the rainy season, when the falls run at their fullest and the rivers are deep enough for boats to reach the base — July and August are the most dramatic"
+          "reason": "the rainy season, when the falls run at their fullest and boats can reach the base — the rains peak from late July to mid-October"
         },
         {
           "status": "limited",
@@ -32,17 +32,74 @@
             3,
             4
           ],
-          "reason": "the dry months, when boats often cannot get through and trips are cancelled"
+          "reason": "the dry months: the rivers run low, especially in March and April, and boats may have to be pushed over the shallows"
         }
       ],
       "sources": [
         {
           "url": "https://www.chimuadventures.com/en/blog/your-guide-visiting-angel-falls-venezuelas-highest-waterfall",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://ospreyexpeditions.com/angel-falls-tour-most-frequently-asked-questions/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dancing-devils",
+      "name": "Dancing Devils of Yare",
+      "kind": "festival",
+      "regions": [
+        "VE-M"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6
+          ],
+          "reason": "held on Corpus Christi, a Thursday that falls in late May or June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dancing_Devils_of_Yare",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/venezuelas-dancing-devils-of-corpus-christi-00639",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "roraima",
+      "name": "Mount Roraima trek",
+      "kind": "trek",
+      "regions": [
+        "VE-F"
+      ],
+      "status": "open",
+      "note": "climbers are held to a monthly quota of 200",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the dry season, the best time to climb; the rains run roughly April to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mount_Roraima",
+          "checked": "2026-10-26"
         }
       ]
     }

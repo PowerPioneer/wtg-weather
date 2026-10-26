@@ -1,0 +1,121 @@
+{
+  "iso2": "TN",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "douz-festival",
+      "name": "International Festival of the Sahara, Douz",
+      "kind": "festival",
+      "regions": [
+        "TN-73"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "four days at the end of December: camel races, horse displays, a Bedouin wedding and a poetry contest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/International_Festival_of_the_Sahara",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carthage-festival",
+      "name": "International Festival of Carthage",
+      "kind": "festival",
+      "regions": [
+        "TN-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "concerts in the restored amphitheatre at Carthage every July and August since 1964"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/International_Festival_of_Carthage",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "djerba-beaches",
+      "name": "Djerba beaches",
+      "kind": "beach",
+      "regions": [
+        "TN-82"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the sea is at its warmest, about 25-28 °C"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the sea sits around 15-18 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Djerba",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chott-el-djerid",
+      "name": "Chott el Djerid salt lake",
+      "kind": "site",
+      "regions": [
+        "TN-73",
+        "TN-72"
+      ],
+      "status": "open",
+      "note": "in winter small inflows of water reach the lake",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the lake is almost dry and daytime heat can reach about 50 °C, though the haze throws up mirages"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Chott_el_Djerid",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

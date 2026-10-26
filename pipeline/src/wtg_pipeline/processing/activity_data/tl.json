@@ -1,6 +1,6 @@
 {
   "iso2": "TL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "atauro-whales",
@@ -16,7 +16,7 @@
             11,
             12
           ],
-          "reason": "the migration months, when pygmy blue whales pass through along with humpbacks, pilot whales and orca"
+          "reason": "whales and dolphins are seen year round but are particularly abundant from October to December, including blue whales, humpbacks, pilot whales and orca"
         }
       ],
       "sources": [
@@ -26,7 +26,85 @@
         },
         {
           "url": "https://diveadventures.com.au/country/timor-leste/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-ramelau",
+      "name": "Mount Ramelau (Tatamailau)",
+      "kind": "hike",
+      "regions": [
+        "TL-AN"
+      ],
+      "status": "open",
+      "note": "climbed from Hato Bulico to a summit statue of the Virgin Mary; an annual pilgrimage goes up around 25 March",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when you can camp on the saddle below the summit for sunset and sunrise"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "the wet season: the summit gets cold, wet and windy and the Hato Bulico road can become dangerous or impassable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mount_Ramelau",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/East_Timor",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "atauro-diving",
+      "name": "Diving off Atauro Island",
+      "kind": "dive",
+      "status": "open",
+      "note": "Atauro is the country's most pristine diving area",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "May to November is the best time for diving of any kind"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://diveadventures.com.au/country/timor-leste/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/East_Timor",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "UZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "silk-road-cities",
@@ -8,7 +8,8 @@
       "kind": "site",
       "regions": [
         "UZ-SA",
-        "UZ-BU"
+        "UZ-BU",
+        "UZ-XO"
       ],
       "status": "open",
       "note": "the monuments are open all year — it is the walking between them that the season decides",
@@ -37,6 +38,55 @@
         {
           "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "navruz-uz",
+      "name": "Navruz",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the spring new year around 21 March is a public holiday, and the cities are lively"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kalpak-travel.com/blog/best-time-travel-central-asia/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Nowruz",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chimgan-ski",
+      "name": "Skiing at Chimgan",
+      "kind": "ski",
+      "status": "closed",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the season starts in December and lasts until mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Chimgan",
+          "checked": "2026-10-26"
         }
       ]
     }

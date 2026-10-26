@@ -1,0 +1,119 @@
+{
+  "iso2": "CM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "race-of-hope",
+      "name": "Mount Cameroon Race of Hope",
+      "kind": "festival",
+      "regions": [
+        "CM-SW"
+      ],
+      "status": "not-on",
+      "note": "a televised 38 km run from Buea to the summit and back",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "held once a year, in January or February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mount_Cameroon_Race_of_Hope",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-cameroon-climb",
+      "name": "Climbing Mount Cameroon",
+      "kind": "trek",
+      "regions": [
+        "CM-SW"
+      ],
+      "status": "open",
+      "note": "the Guinness Trail from near Buea is the usual route, with huts along the way",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the dry season, December to early March, is the best time to climb"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Mount_Cameroon",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ngondo",
+      "name": "Ngondo festival, Douala",
+      "kind": "festival",
+      "regions": [
+        "CM-LT"
+      ],
+      "status": "not-on",
+      "note": "the Sawa coastal peoples' water festival, centred on a beach on Wouri Bay",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "held in the first two weeks of December every year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ngondo",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "benoue-national-park",
+      "name": "Bénoué National Park",
+      "kind": "wildlife",
+      "regions": [
+        "CM-NO"
+      ],
+      "status": "open",
+      "note": "known for its hippo colonies and the giant eland",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reason": "dry season: wildlife gathers at the waterholes and sandbars appear along the Bénoué river"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Cameroon",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Bénoué_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

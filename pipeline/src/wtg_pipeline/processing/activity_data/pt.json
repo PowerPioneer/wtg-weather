@@ -1,6 +1,6 @@
 {
   "iso2": "PT",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "madeira-levadas",
@@ -31,12 +31,139 @@
         "PT-20"
       ],
       "status": "open",
-      "note": "one of very few places on Earth where sperm whales can be seen reliably in any month; tours run all year",
+      "note": "sperm whales are resident and can be seen all year round, so whale watching is possible in every month; the widest mix of species is from March to October",
       "windows": [],
       "sources": [
         {
-          "url": "https://wwhandbook.iwc.int/en/country-profiles/portugal",
-          "checked": "2026-08-28"
+          "url": "https://whalewatchingazores.com/blog/faq/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/azores/travel-guide/whale-watching",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lisbon-santo-antonio",
+      "name": "St Anthony's festivities, Lisbon",
+      "kind": "festival",
+      "regions": [
+        "PT-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "St Anthony's Day, 13 June, is Lisbon's municipal holiday, celebrated with parades and weddings"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Anthony_of_Lisbon",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "porto-sao-joao",
+      "name": "São João, Porto",
+      "kind": "festival",
+      "regions": [
+        "PT-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the night of 23 June: street parties, inflatable hammers, and fireworks over the Douro at midnight"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Festa_de_S%C3%A3o_Jo%C3%A3o_do_Porto",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/portugal/festa-de-sao-joao-do-porto",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "madeira-flower-festival",
+      "name": "Madeira Flower Festival",
+      "kind": "festival",
+      "regions": [
+        "PT-30"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the spring flower festival runs mostly through May"
+        },
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "in some years it opens in the last days of April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitmadeira.com/en/whats-on/events/flower-festival/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nazare-big-waves",
+      "name": "Giant waves at Nazaré",
+      "kind": "season",
+      "regions": [
+        "PT-10"
+      ],
+      "status": "not-on",
+      "note": "the record waves are a winter phenomenon; in summer Praia do Norte is an ordinary beach",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "severe North Atlantic storms make December the likeliest month for the biggest swells"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            1,
+            2,
+            3
+          ],
+          "reason": "the big-wave season, when Atlantic storm swells are focused by the Nazaré Canyon onto Praia do Norte"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rove.me/to/portugal/nazare-big-waves-season",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Praia_do_Norte_(Nazar%C3%A9)",
+          "checked": "2026-10-26"
         }
       ]
     }

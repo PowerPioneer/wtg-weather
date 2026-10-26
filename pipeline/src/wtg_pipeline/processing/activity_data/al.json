@@ -1,12 +1,13 @@
 {
   "iso2": "AL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "albanian-riviera",
       "name": "The Albanian Riviera",
       "kind": "swim",
-      "status": "open",
+      "status": "limited",
+      "note": "many hotels, restaurants and activity operators close from mid- or late September to early or mid-June, and November to April are very quiet",
       "windows": [
         {
           "status": "best",
@@ -14,15 +15,15 @@
             6,
             9
           ],
-          "reason": "the sweet spot — mid-June and the first three weeks of September, with warm sea, dry air and prices below the midsummer peak"
+          "reason": "the best months: pleasant weather, fewer crowds and fairer prices than peak summer"
         },
         {
-          "status": "open",
+          "status": "limited",
           "months": [
             5,
             10
           ],
-          "reason": "the wider shoulder season, warm and reliable with lighter crowds, good for the Alps as well as the coast"
+          "reason": "quieter and cheaper still, but many hotels, beach clubs and tour operators close for the off-season"
         },
         {
           "status": "limited",
@@ -30,17 +31,72 @@
             7,
             8
           ],
-          "reason": "the peak weeks, when the beaches and the villa prices are at their busiest"
+          "reason": "peak summer: sweltering heat, sky-high prices and overcrowded beaches"
         }
       ],
       "sources": [
         {
-          "url": "https://www.lonelyplanet.com/articles/best-time-to-visit-albania",
-          "checked": "2026-08-28"
+          "url": "https://findingalexx.com/albanian-riviera-travel-guide/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "valbona-theth",
+      "name": "Valbona–Theth pass hike",
+      "kind": "hike",
+      "regions": [
+        "AL-10",
+        "AL-07"
+      ],
+      "status": "limited",
+      "note": "snow lies on the high ground from October or November until March or April",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "guided trips over the pass run from mid-May to mid-October, after the snowmelt"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Valbonë_Valley_National_Park",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://findingalexx.com/albanian-riviera-travel-guide/",
-          "checked": "2026-08-28"
+          "url": "https://thethi-guide.com/destinations/valbona-valley/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dita-e-veres",
+      "name": "Dita e Verës (Summer Day), Elbasan",
+      "kind": "festival",
+      "regions": [
+        "AL-03"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "a public holiday on 14 March, celebrated hardest in Elbasan, with bonfires on the eve and ballokume cookies"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Summer_Day_(Albania)",
+          "checked": "2026-10-26"
         }
       ]
     }

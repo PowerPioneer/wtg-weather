@@ -1,0 +1,128 @@
+{
+  "iso2": "RU",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "white-nights-st-petersburg",
+      "name": "White Nights and Scarlet Sails, St Petersburg",
+      "kind": "season",
+      "regions": [
+        "RU-SPE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the sky never gets fully dark, and the Scarlet Sails show for school graduates lights the Neva in late June"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            7,
+            8
+          ],
+          "reason": "white nights run from about 22 April to 21 August, the night sky only reaching twilight"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/White_Nights_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Scarlet_Sails_(tradition)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "baikal-ice",
+      "name": "Walking and driving on Lake Baikal's ice",
+      "kind": "season",
+      "regions": [
+        "RU-IRK",
+        "RU-BU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the heart of the ice season: visitors walk, skate and cycle on ice that can reach about 140 cm"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            4
+          ],
+          "reason": "the edges of an ice season that usually runs from mid-January to mid-April; the ice weakens towards its end"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_Baikal",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kizhi",
+      "name": "Kizhi island and its wooden churches",
+      "kind": "site",
+      "regions": [
+        "RU-KR"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "hydrofoils run daily from Petrozavodsk, about 90 minutes each way"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            10
+          ],
+          "reason": "the hydrofoil season runs from 15 May to 15 October"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "no scheduled hydrofoils between mid-October and mid-May; the island stays open all year, 10:00 to 16:00 in winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://kizhi.karelia.ru/vizit-v-muzej/ostrov-kizhi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kizhi.karelia.ru/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

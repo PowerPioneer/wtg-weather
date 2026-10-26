@@ -1,0 +1,67 @@
+{
+  "iso2": "PW",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "jellyfish-lake",
+      "name": "Jellyfish Lake (Rock Islands)",
+      "kind": "swim",
+      "regions": [
+        "PW-150"
+      ],
+      "status": "open",
+      "note": "the lake needs a Rock Islands permit, and the jellyfish now appear only sporadically, so seeing them is not guaranteed",
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Palau",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Jellyfish_Lake",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "peleliu-battlefield",
+      "name": "Peleliu WWII battlefield",
+      "kind": "site",
+      "regions": [
+        "PW-350"
+      ],
+      "status": "open",
+      "note": "the whole island is a battlefield landmark; a boat runs from Koror twice a week",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Peleliu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "independence-day-pw",
+      "name": "Independence Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "the 1 October national holiday, one of Palau's annual special events"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Palau",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://pristineparadisepalau.com/events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "CL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "w-trek",
@@ -10,16 +10,15 @@
         "CL-MA"
       ],
       "status": "limited",
-      "note": "the route stays open in winter, but most of the park's refugios and trails do not",
+      "note": "the park is open year-round, but outside October to April the W may be hiked only with a guide",
       "windows": [
         {
           "status": "best",
           "months": [
-            11,
             12,
             3
           ],
-          "reason": "the shoulder months — world-class walking without January's peak-season crowds"
+          "reason": "fewer crowds than the January–February peak; December brings settled weather and the best hiking conditions"
         },
         {
           "status": "open",
@@ -27,7 +26,16 @@
             1,
             2
           ],
-          "reason": "the warmest weeks and the height of the season; January is both the best weather and the busiest"
+          "reason": "the peak months, when the park is packed"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            4
+          ],
+          "reason": "inside the October-to-April season, when the W can be hiked without a guide; the refugios and campsites run from mid-September to mid-April"
         },
         {
           "status": "limited",
@@ -38,17 +46,170 @@
             8,
             9
           ],
-          "reason": "most hotels and trails shut for the winter; the trek itself remains walkable in a near-empty park"
+          "reason": "winter: many hotels shut, and the W may be hiked only with a guide or local tour operator"
         }
       ],
       "sources": [
         {
           "url": "https://www.swoop-patagonia.com/chile/torres-del-paine/hiking/w-trek",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "andes-ski",
+      "name": "Skiing near Santiago (Valle Nevado, Portillo)",
+      "kind": "ski",
+      "regions": [
+        "CL-RM",
+        "CL-VS"
+      ],
+      "status": "closed",
+      "note": "winter-only ski resorts in the high Andes above Santiago",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the Andean ski season, which opens in June, conditions permitting"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the tail of the season: Valle Nevado runs into October, while Portillo usually closes early in the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Valle_Nevado",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Portillo,_Chile",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tapati",
+      "name": "Tapati Rapa Nui festival, Easter Island",
+      "kind": "festival",
+      "regions": [
+        "CL-VS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "a two-week festival of Rapa Nui culture, held around the beginning of February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Easter_Island",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fiestas-patrias",
+      "name": "Fiestas Patrias",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "national holidays on 18 and 19 September: fondas, rodeos, cueca and the great military parade in Santiago"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Fiestas_Patrias_(Chile)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "flowering-desert",
+      "name": "The flowering desert (desierto florido)",
+      "kind": "season",
+      "regions": [
+        "CL-AT"
+      ],
+      "status": "not-on",
+      "note": "not an annual event: the bloom needs a year of unusually heavy rain, often linked to El Niño",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "in a wet year the desert between Vallenar and Copiapó blooms from September to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Flowering_desert",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carretera-austral",
+      "name": "Driving the Carretera Austral",
+      "kind": "drive",
+      "regions": [
+        "CL-AI"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the season for the route, with roads open and buses running"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the off-season: some roads become impassable in autumn and winter and bus routes usually stop"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
+          "checked": "2026-10-26"
         }
       ]
     }

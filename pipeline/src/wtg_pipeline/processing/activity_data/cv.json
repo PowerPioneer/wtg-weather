@@ -1,0 +1,170 @@
+{
+  "iso2": "CV",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "humpback-whales",
+      "name": "Humpback whale watching (Boa Vista)",
+      "kind": "wildlife",
+      "regions": [
+        "CV-BV"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "peak season: humpbacks gather off Boa Vista, one of two known North Atlantic breeding grounds"
+        },
+        {
+          "status": "open",
+          "months": [
+            2,
+            5
+          ],
+          "reason": "the edges of the season; whale-watching boats run from February to May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tui.co.uk/things-to-do/boa-vista/whale-watching-cruise-6-121612/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tui.co.uk/things-to-do/boa-vista/boa-vista-whale-watching-adventure-by-speedboat-5-508513",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://journal.iwc.int/index.php/jcrm/article/view/547",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "loggerhead-turtles",
+      "name": "Loggerhead turtle nesting",
+      "kind": "wildlife",
+      "regions": [
+        "CV-BV"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "nesting starts about mid-June and lasts through September, and the first nests hatch from August"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "nesting is over, but nests keep hatching through November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.turtle-foundation.org/en/nesting-season-just-around-the-corner/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kitesurfing",
+      "name": "Kitesurfing and windsurfing (Sal)",
+      "kind": "season",
+      "status": "open",
+      "note": "the windiest months run from October to April",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the trade winds blow strong and consistent from the end of October until April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.iksurfmag.com/travel-guides/africa/cape-verde/sal",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mindelo-carnival",
+      "name": "Mindelo Carnival",
+      "kind": "festival",
+      "regions": [
+        "CV-SV"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "pre-Lenten carnival peaking on Carnival Tuesday with the groups' parade; February or early March, set by Easter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://paulinaontheroad.com/?p=94856",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://forbesafricalusofona.com/?p=152687",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "baia-das-gatas-festival",
+      "name": "Baía das Gatas music festival",
+      "kind": "festival",
+      "regions": [
+        "CV-SV"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "three days of music on the beach at Baía das Gatas, held on a full-moon weekend in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Festival_de_Ba%C3%ADa_das_Gatas",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.routard.com/guide_agenda_detail/3764/festival_baia_das_gatas_a_sao_vicente.htm",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://inforpress.cv/en/article-10868",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

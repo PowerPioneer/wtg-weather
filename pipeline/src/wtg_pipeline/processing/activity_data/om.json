@@ -1,6 +1,6 @@
 {
   "iso2": "OM",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "ras-al-jinz-turtles",
@@ -26,17 +26,89 @@
             8,
             9
           ],
-          "reason": "hatchlings emerging, though these are also the hottest weeks of the Omani year"
+          "reason": "still inside the May–September peak, when the chance of seeing hatchlings is reasonably high; nights are warm and humid"
         }
       ],
       "sources": [
         {
           "url": "https://rasaljinz-turtlereserve.com/en/turtle-viewing/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.oman-spirit.com/guides/turtle-watching-ras-al-jinz/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "khareef",
+      "name": "Khareef season, Salalah",
+      "kind": "season",
+      "regions": [
+        "OM-ZU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the summer monsoon wraps the Dhofar mountains in fog and rain, and Salalah holds an annual Khareef festival"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "the monsoon fades in early September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Khareef",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "musandam-dhow",
+      "name": "Musandam dhow cruises",
+      "kind": "tour",
+      "regions": [
+        "OM-MU"
+      ],
+      "status": "open",
+      "note": "cruises run into the fjords, home to pods of humpback dolphins",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the tourist season, from late October to April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the air heats up to 50 °C and the sea to 38 °C"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Musandam_Peninsula",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "BE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "bruges-christmas",
@@ -18,6 +18,14 @@
             12
           ],
           "reason": "the Christmas market season along the canals and cobbled squares"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "the markets open in late November and run into early January"
         }
       ],
       "sources": [
@@ -28,6 +36,64 @@
         {
           "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
           "checked": "2026-08-28"
+        },
+        {
+          "url": "https://rove.me/to/belgium/bruges-christmas-market",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "binche-carnival",
+      "name": "Carnival of Binche",
+      "kind": "festival",
+      "regions": [
+        "BE-WHT"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the Gilles parade from Sunday to Shrove Tuesday before Ash Wednesday, so late February or early March depending on Easter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival_of_Binche",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/belgium/carnaval-de-binche",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hallerbos-bluebells",
+      "name": "Bluebells in the Hallerbos",
+      "kind": "season",
+      "regions": [
+        "BE-VBR"
+      ],
+      "status": "not-on",
+      "note": "the wood is open all year; the blue carpet lasts only a few weeks",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "the bluebell carpet usually peaks in mid-April, though the weather shifts the dates each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://rove.me/to/belgium/hallerbos",
+          "checked": "2026-10-26"
         }
       ]
     }

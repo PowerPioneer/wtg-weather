@@ -1,0 +1,99 @@
+{
+  "iso2": "LI",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "national-day",
+      "name": "Liechtenstein National Day",
+      "kind": "festival",
+      "regions": [
+        "LI-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "on 15 August: a ceremony outside Vaduz Castle, a folk festival, torches on the Fürstensteig and fireworks over Vaduz"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Liechtenstein_National_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "malbun-skiing",
+      "name": "Skiing in Malbun",
+      "kind": "ski",
+      "regions": [
+        "LI-10"
+      ],
+      "status": "closed",
+      "note": "the country's only ski resort; outside the winter season the ski lifts do not run",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the lifts run from the second half of December to early April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the lifts close in early April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bergbahnen.li/winter/offnungszeiten/offnungszeiten",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Malbun",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-castle",
+      "name": "Gutenberg Castle (Balzers)",
+      "kind": "site",
+      "regions": [
+        "LI-01"
+      ],
+      "status": "open",
+      "note": "the outer courtyard is open free of charge all year round",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "outside the summer season only the outer courtyard is open; the chapel, rose garden and guided tours wait for May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Gutenberg_Castle",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

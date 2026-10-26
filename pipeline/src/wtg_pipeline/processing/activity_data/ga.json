@@ -1,0 +1,137 @@
+{
+  "iso2": "GA",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "loango-humpbacks",
+      "name": "Humpback whales off Loango",
+      "kind": "wildlife",
+      "regions": [
+        "GA-8"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "humpbacks migrate along the coast off Loango, often visible on boat trips"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the tail of the migration; some operators still see whales offshore in October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tripbase.com/destinations/loango-gabon-np/when-to-visit/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.wildlifeworldwide.com/locations/loango-national-park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "loango-turtles",
+      "name": "Nesting leatherbacks on Loango's beaches",
+      "kind": "wildlife",
+      "regions": [
+        "GA-8"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "leatherback and other sea turtles come ashore to nest, with hatchlings in the months after"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tripbase.com/destinations/loango-gabon-np/when-to-visit/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "loango-safari",
+      "name": "Loango National Park safari",
+      "kind": "wildlife",
+      "regions": [
+        "GA-8"
+      ],
+      "status": "open",
+      "note": "forest elephants, gorillas and monkeys along an uninhabited coastline",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the long dry season: much less rain and easier going on tracks and trails"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.tripbase.com/destinations/loango-gabon-np/when-to-visit/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://journeysbydesign.com/destinations/gabon/loango-national-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Gabon",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lope-mandrills",
+      "name": "Mandrill hordes in Lopé",
+      "kind": "wildlife",
+      "regions": [
+        "GA-6"
+      ],
+      "status": "open",
+      "note": "Lopé's mandrill hordes average over 600 animals, tracked on foot with a guide",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the dry season is the mandrills' mating season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mandrill",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Gabon",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

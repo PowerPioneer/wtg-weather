@@ -1,13 +1,14 @@
 {
   "iso2": "IS",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "highland-f-roads",
       "name": "Highland F-roads (Landmannalaugar, Askja)",
       "kind": "drive",
       "regions": [
-        "IS-8"
+        "IS-8",
+        "IS-6"
       ],
       "status": "open",
       "windows": [
@@ -22,22 +23,28 @@
             4,
             5
           ],
-          "reason": "the interior is shut for winter - F-roads stay gated until the snow clears and the rivers drop to a fordable depth"
+          "reason": "the interior is shut for winter - F-roads stay closed until the snow has melted and the ground has dried enough; even the earliest opening in 2021-2025 came in late May"
         },
         {
           "status": "limited",
           "months": [
             6
           ],
-          "reason": "opening in stages through the month; F208 to Landmannalaugar usually falls around 10-20 June, and the road administration sets each road's date on inspection rather than in advance"
+          "reason": "opening in stages: F208 to Landmannalaugar has opened between late May and late June (on average 2 June over 2021-2025), and other roads follow into July"
         },
         {
           "status": "best",
           "months": [
-            7,
+            7
+          ],
+          "reason": "every road in the road administration's table has opened by mid-July, and the second half of July is when essentially every F-road is open at once"
+        },
+        {
+          "status": "open",
+          "months": [
             8
           ],
-          "reason": "the full network is normally open and the river crossings are at their most manageable"
+          "reason": "the main highland roads are open; autumn closures come from September onward"
         },
         {
           "status": "limited",
@@ -45,17 +52,17 @@
             9,
             10
           ],
-          "reason": "roads start closing again as the first snows arrive; check the official road status the morning you drive"
+          "reason": "roads close when autumn weather makes them impassable, which can happen any time from September onward and abruptly after a single storm; check the official road status the morning you drive"
         }
       ],
       "sources": [
         {
           "url": "https://mapoficeland.is/guides/f-roads-opening-dates-iceland/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.camper.is/%F0%9F%8F%94%EF%B8%8F-the-highland-countdown-f-road-opening-forecast-2026/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -78,13 +85,25 @@
             2,
             3
           ],
-          "reason": "the glacier is cold enough for the natural caves to be stable, and guided tours run"
+          "reason": "the park names November to March as the best time to visit, and the ice is at its most stable in mid-winter"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            4
+          ],
+          "reason": "the edges of the season: tours to the natural caves run October to April, but the caves form in different places each year and October's ice is the least stable"
         }
       ],
       "sources": [
         {
           "url": "https://guidetoiceland.is/nature-info/ice-caves-in-iceland",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visiticeland.com/article/iceland-in-november/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -93,27 +112,40 @@
       "name": "Puffin colonies",
       "kind": "wildlife",
       "status": "closed",
-      "note": "outside the nesting window the birds are out at sea and the colonies are empty",
+      "note": "the puffin spends about eight months a year out at sea; by early October nearly all have left the coast",
       "windows": [
         {
           "status": "best",
           "months": [
             5,
             6,
-            7,
+            7
+          ],
+          "reason": "the puffins are ashore to nest, and May to mid-August is the best time to see them; boat tours to the colonies run from early May"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the first birds arrive on the cliffs and islands in late April"
+        },
+        {
+          "status": "limited",
+          "months": [
             8
           ],
-          "reason": "the Atlantic puffins are ashore to nest and boat tours to the colonies run"
+          "reason": "the tail of the season: tours run until mid-August, and the birds head back out to sea by mid-to-late August"
         }
       ],
       "sources": [
         {
           "url": "https://www.cafevatnajokull.is/puffin-tours",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://guidetoiceland.is/book-trips-holiday/adventure-tours/hiking",
-          "checked": "2026-08-28"
+          "url": "https://www.visiticeland.com/article/meet-the-peculiar-puffins-in-iceland",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -125,7 +157,7 @@
         "IS-8"
       ],
       "status": "closed",
-      "note": "the huts and the highland bus link close with the F-roads",
+      "note": "the huts along the trail are closed and locked in winter",
       "windows": [
         {
           "status": "best",
@@ -133,7 +165,7 @@
             7,
             8
           ],
-          "reason": "the trail is clear of snow, the huts are staffed and the highland buses run"
+          "reason": "the trail's huts are open and staffed by a warden through the summer"
         },
         {
           "status": "limited",
@@ -141,17 +173,77 @@
             6,
             9
           ],
-          "reason": "the edges of the season - it opens with the F-roads around mid-June and winds down through September"
+          "reason": "the edges of the season: the huts open on average around 25 June, once the road administration opens the Fjallabak roads, and close around mid-September"
         }
       ],
       "sources": [
         {
-          "url": "https://guidetoiceland.is/book-trips-holiday/adventure-tours/hiking",
-          "checked": "2026-08-28"
+          "url": "https://www.fi.is/en/mountain-huts/all-mountain-huts/hrafntinnusker",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "northern-lights",
+      "name": "Northern lights",
+      "kind": "season",
+      "status": "not-on",
+      "note": "from May to August the sky does not get dark enough to see them",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the longest nights give the widest viewing window"
         },
         {
-          "url": "https://mapoficeland.is/guides/f-roads-opening-dates-iceland/",
-          "checked": "2026-08-28"
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            2,
+            3,
+            4
+          ],
+          "reason": "from September through April the sky gets dark enough for aurora viewing"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visiticeland.com/article/astrotourism-iceland/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visiticeland.com/article/iceland-in-november/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "thjodhatid",
+      "name": "Þjóðhátíð (Westman Islands festival)",
+      "kind": "festival",
+      "regions": [
+        "IS-8"
+      ],
+      "status": "not-on",
+      "note": "in some years the weekend begins in the last days of July",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held in Herjólfsdalur on Heimaey over the weekend before the first Monday in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/%C3%9Ej%C3%B3%C3%B0h%C3%A1t%C3%AD%C3%B0",
+          "checked": "2026-10-26"
         }
       ]
     }

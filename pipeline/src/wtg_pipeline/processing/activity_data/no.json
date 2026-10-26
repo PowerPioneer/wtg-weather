@@ -1,6 +1,6 @@
 {
   "iso2": "NO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "trolltunga",
@@ -10,7 +10,7 @@
         "NO-12"
       ],
       "status": "limited",
-      "note": "outside the summer window a certified guide is compulsory, so the hike is bookable rather than shut",
+      "note": "outside the summer window hikers are told to go only with a guide, so the hike is bookable rather than shut",
       "windows": [
         {
           "status": "best",
@@ -19,14 +19,14 @@
             7,
             8
           ],
-          "reason": "the main season — experienced hikers may go unguided from 1 June, and the trail is clear of snow with very long daylight"
+          "reason": "the main season, with long, bright days; experienced hikers may go unguided from 1 June, though snow can linger on the path into June"
         },
         {
           "status": "open",
           "months": [
             9
           ],
-          "reason": "still walkable unguided to the end of the month, with shorter days and colder weather"
+          "reason": "experienced hikers may still go unguided until 30 September, but the days are shorter"
         },
         {
           "status": "limited",
@@ -40,17 +40,17 @@
             4,
             5
           ],
-          "reason": "a hiking guide is compulsory from 1 October to 31 May"
+          "reason": "outside the summer season, from 1 October to 31 May, hikers are told to go only with a guide"
         }
       ],
       "sources": [
         {
           "url": "https://www.trolltunga.com/en/plan-your-hike/seasons",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.visitnorway.com/places-to-go/fjord-norway/the-hardangerfjord-region/hiking-to-trolltunga/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -69,21 +69,21 @@
         {
           "status": "best",
           "months": [
-            11,
-            12,
-            1
-          ],
-          "reason": "the darkest, longest nights of the season, with viewing strongest roughly 21:00 to 02:00"
-        },
-        {
-          "status": "open",
-          "months": [
             9,
             10,
             2,
             3
           ],
-          "reason": "the season runs September to April; October and November are statistically among the strongest for activity, and March pairs dark evenings with enough snow for husky and snowmobile trips"
+          "reason": "the peak months either side of deep winter; look from about 18:00 to 02:00, best just before midnight, and in March the snow makes it husky and snowmobile season too"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "the longest, darkest nights, as northern Scandinavia sinks into polar night, though December is not necessarily the best month for sightings"
         },
         {
           "status": "limited",
@@ -96,15 +96,208 @@
       "sources": [
         {
           "url": "https://www.visitfinland.com/en/articles/the-best-times-to-see-northern-lights/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.visitnordic.com/en/northern-lights",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "midnight-sun",
+      "name": "Midnight sun",
+      "kind": "season",
+      "regions": [
+        "NO-18",
+        "NO-19",
+        "NO-20",
+        "NO-21"
+      ],
+      "status": "not-on",
+      "note": "further north the window is wider: in Svalbard the sun does not set from 20 April to 22 August",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "the sun stays above the horizon all night across the north: Lofoten 28 May-14 July, Tromsø 20 May-22 July"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            7
+          ],
+          "reason": "the season starts at the North Cape on 14 May and ends there on 29 July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitnorway.com/things-to-do/nature-attractions/midnight-sun/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.visitsvalbard.com/visitor-information/seasons/polar-summer",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "trollstigen",
+      "name": "Trollstigen mountain road",
+      "kind": "drive",
+      "regions": [
+        "NO-15"
+      ],
+      "status": "closed",
+      "note": "normally open from mid-May to October, but roadworks shorten the 2026 and 2027 seasons to 1 June-15 August",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "open from 1 June while the roadworks continue"
+        },
+        {
+          "status": "limited",
+          "months": [
+            8
+          ],
+          "reason": "roadworks close the road again from 15 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Trollstigen",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "preikestolen",
+      "name": "Preikestolen (Pulpit Rock) hike",
+      "kind": "hike",
+      "regions": [
+        "NO-11"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "snow and ice make the walk harder, and it is not always possible to reach the top in winter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Preikestolen",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "andenes-whales",
+      "name": "Whale safaris from Andenes",
+      "kind": "wildlife",
+      "regions": [
+        "NO-18"
+      ],
+      "status": "open",
+      "note": "whales are seen off Andenes all year, and trips run in every month",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "reason": "the main summer season, May to mid-September, for sperm whales and pilot whales"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.whalesafari.no/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "winter-orcas",
+      "name": "Winter orca safaris (Skjervøy, Alta)",
+      "kind": "wildlife",
+      "regions": [
+        "NO-19",
+        "NO-20"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1
+          ],
+          "reason": "orca trips from Skjervøy and Alta run from October to January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.whalesafari.no/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "svalbard-sunny-winter",
+      "name": "Svalbard's sunny winter (dog sledding, snowmobile safaris)",
+      "kind": "season",
+      "regions": [
+        "NO-21"
+      ],
+      "status": "not-on",
+      "note": "snowmobile and dog-sled trips also run in the dark northern-lights winter, October to February; this is the season the light comes back",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "light returns after the dark months, and dog sledding and snowmobile safaris reach remote High Arctic wilderness"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "the sunny winter ends on 16 May, when the polar summer begins"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.visitsvalbard.com/visitor-information/seasons/sunny-winter",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.visitsvalbard.com/",
+          "checked": "2026-10-26"
         }
       ]
     }

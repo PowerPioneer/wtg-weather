@@ -1,11 +1,15 @@
 {
   "iso2": "GT",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "tikal-semuc",
       "name": "Tikal and Semuc Champey",
       "kind": "site",
+      "regions": [
+        "GT-PE",
+        "GT-AV"
+      ],
       "status": "open",
       "note": "both are open all year; the dry season is what makes the roads and the ruins comfortable",
       "windows": [
@@ -30,6 +34,105 @@
         {
           "url": "https://goguatemalatravel.com/best-time-to-visit-central-america/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "antigua-semana-santa",
+      "name": "Semana Santa, Antigua",
+      "kind": "festival",
+      "regions": [
+        "GT-SA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "Holy Week, in March or April, when processions cross carpets of dyed sawdust and flowers"
+        },
+        {
+          "status": "open",
+          "months": [
+            2
+          ],
+          "reason": "a parish procession every Sunday of Lent, which can begin in early February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Antigua_Guatemala",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Holy_Week_processions_in_Guatemala",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Holy_Week",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sumpango-kites",
+      "name": "Giant kite festival, Sumpango",
+      "kind": "festival",
+      "regions": [
+        "GT-SA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "giant kites are built and flown on 1 November, the Day of the Dead, to help the spirits find their way"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sumpango",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Day_of_the_Dead",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "todos-santos-fiesta",
+      "name": "Todos Santos Cuchumatán fiesta",
+      "kind": "festival",
+      "regions": [
+        "GT-HU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "the town's fiesta runs 31 October to 2 November, centred on All Saints' Day, with its famous horse races, traditional dances and marimba music"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the fiesta opens on 31 October, the last day of the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Todos_Santos_Cuchumatán",
+          "checked": "2026-10-26"
         }
       ]
     }

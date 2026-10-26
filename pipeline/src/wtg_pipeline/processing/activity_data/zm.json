@@ -1,6 +1,6 @@
 {
   "iso2": "ZM",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "victoria-falls",
@@ -89,7 +89,7 @@
         "ZM-10"
       ],
       "status": "open",
-      "note": "South Luangwa is the birthplace of the walking safari; over 450 bird species are recorded here",
+      "note": "South Luangwa is the birthplace of the walking safari; more than 400 bird species are recorded here",
       "windows": [
         {
           "status": "limited",
@@ -100,7 +100,7 @@
             3,
             4
           ],
-          "reason": "the green season — many camps close and some roads become hard to drive, though it is the best stretch of the year for birds as the migrants arrive"
+          "reason": "the green season — some camps close, though it is arguably the best time for birds as the migrants settle in"
         },
         {
           "status": "best",
@@ -108,20 +108,23 @@
             6,
             7,
             8,
-            9,
-            10
+            9
           ],
-          "reason": "the dry months, when the camps are open and the walking safaris run"
+          "reason": "the dry season, with ideal conditions for walking safaris"
         }
       ],
       "sources": [
         {
+          "url": "https://www.timbuktutravel.com/region/south-luangwa-national-park-safari",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://www.go2africa.com/destinations/south-luangwa-national-park/why-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://greensafaris.com/blog/myth-busting-green-season-safaris-in-south-luangwa/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     }

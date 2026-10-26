@@ -1,0 +1,91 @@
+{
+  "iso2": "GQ",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "ureca-turtles",
+      "name": "Nesting sea turtles at Ureca",
+      "kind": "wildlife",
+      "regions": [
+        "GQ-BS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the drier season, November to March, when turtles come ashore to lay on the remote southern beaches"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ureca",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Bioko",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "southern-bioko-hiking",
+      "name": "Hiking southern Bioko and the Iladyi cascades",
+      "kind": "hike",
+      "regions": [
+        "GQ-BS"
+      ],
+      "status": "open",
+      "note": "Ureca in the far south takes over 10,000 mm of rain a year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "December to March are Bioko's driest months"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Equatorial_Guinea",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Bioko",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pico-basile",
+      "name": "Pico Basilé summit road",
+      "kind": "drive",
+      "regions": [
+        "GQ-BN",
+        "GQ-BS"
+      ],
+      "status": "open",
+      "note": "the drive up Equatorial Guinea's highest peak needs a special permit, requested at least two days ahead",
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Bioko",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Pico_Basilé",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

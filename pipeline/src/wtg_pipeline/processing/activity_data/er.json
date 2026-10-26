@@ -1,0 +1,64 @@
+{
+  "iso2": "ER",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "asmara",
+      "name": "Asmara's modernist architecture",
+      "kind": "site",
+      "regions": [
+        "ER-MA"
+      ],
+      "status": "open",
+      "note": "a UNESCO World Heritage city since 2017, inscribed as a modernist African city",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Asmara",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "independence-week",
+      "name": "Independence Week, Asmara",
+      "kind": "festival",
+      "regions": [
+        "ER-MA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "a week of carnivals, parades, concerts and street performances building to Independence Day on 24 May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Independence_Day_(Eritrea)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dahlak-islands",
+      "name": "Diving the Dahlak Archipelago",
+      "kind": "dive",
+      "regions": [
+        "ER-SK"
+      ],
+      "status": "open",
+      "note": "reached by boat from Massawa; remote, with very little tourism",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dahlak_Archipelago",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

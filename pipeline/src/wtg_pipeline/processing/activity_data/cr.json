@@ -1,6 +1,6 @@
 {
   "iso2": "CR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "tortuguero-turtles",
@@ -15,22 +15,29 @@
         {
           "status": "best",
           "months": [
-            7,
             8,
-            9,
+            9
+          ],
+          "reason": "the peak of green-turtle nesting"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
             10
           ],
-          "reason": "green turtles nest from July to mid-October, with the peak through August and September"
+          "reason": "nesting runs from July (sometimes June) to mid-October, tailing off at either end"
         }
       ],
       "sources": [
         {
           "url": "https://www.tortugueroinfo.com/costa-rica-sea-turtles/seasons-when-to-see-them.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -50,7 +57,17 @@
             9,
             10
           ],
-          "reason": "the largest arrivals of the year, peaking in October in the depths of the rainy season"
+          "reason": "the largest arribadas of the year, in the rainy-season peak of the nesting"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            11,
+            12
+          ],
+          "reason": "olive ridleys are most active from July to December"
         },
         {
           "status": "limited",
@@ -68,11 +85,178 @@
       "sources": [
         {
           "url": "https://gypsycabnosara.com/the-ultimate-guide-to-turtle-watching-in-ostional-costa-rica/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ballena-whales",
+      "name": "Humpback whales, Marino Ballena",
+      "kind": "wildlife",
+      "regions": [
+        "CR-P"
+      ],
+      "status": "not-on",
+      "note": "two separate humpback populations visit, so Uvita has two whale seasons a year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "southern-hemisphere humpbacks arrive from late July to late October, with August and September the best window"
+        },
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "north Pacific humpbacks visit from late December to late March, peaking in January and February"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10
+          ],
+          "reason": "the edges of the southern-hemisphere season, which runs from late July to late October"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            3
+          ],
+          "reason": "the edges of the northern season, from late December to late March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitcostarica.com/where-to-go/protected-areas/ballena-national-marine-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.roughguides.com/costa-rica/uvita-whale-watching/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "corcovado-sirena",
+      "name": "Corcovado National Park (Sirena station)",
+      "kind": "hike",
+      "regions": [
+        "CR-P"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            10
+          ],
+          "reason": "the Sirena, El Tigre and Los Patos sectors close every October for maintenance, in the Osa's wettest month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ticotimes.net/2026/09/19/corcovado-sirena-visitor-capacity-costa-rica",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://jameskaiser.com/costa-rica-guide/parks/corcovado/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "limon-carnival",
+      "name": "Limón Carnival",
+      "kind": "festival",
+      "regions": [
+        "CR-L"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "about ten days of parades and street festivities in the week around 12 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-holiday-celebrations-festivals-events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.teletica.com/masqn/limon-se-prepara-para-vivir-su-gran-fiesta_418586",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "palmares-fiestas",
+      "name": "Fiestas de Palmares",
+      "kind": "festival",
+      "regions": [
+        "CR-A"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "a two-week fair in January, with a huge horseback tope and a carnival parade"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Palmares_de_Alajuela",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-holiday-celebrations-festivals-events/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "boruca-diablitos",
+      "name": "Danza de los Diablitos, Boruca",
+      "kind": "festival",
+      "regions": [
+        "CR-P"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the Boruca people's new-year festival, from the night of 30 December to 2 January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Danza_de_los_Diablitos",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Boruca",
+          "checked": "2026-10-26"
         }
       ]
     }

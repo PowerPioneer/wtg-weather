@@ -1,6 +1,6 @@
 {
   "iso2": "KE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "mara-migration",
@@ -18,7 +18,7 @@
             8,
             9
           ],
-          "reason": "the densest herds and the most frequent Mara River crossing attempts, most reliably between about 15 August and 5 September"
+          "reason": "the highest chance of seeing herds cross the Mara River"
         },
         {
           "status": "open",
@@ -26,17 +26,254 @@
             7,
             10
           ],
-          "reason": "the herds build from late July and return south through the last two weeks of October"
+          "reason": "the first crossings come in July, and in late October the herds start back south"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the return crossings south can run into early November"
         }
       ],
       "sources": [
         {
           "url": "https://kenyaluxurysafari.co.uk/kenya-great-migration/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.africanmeccasafaris.com/travel-guide/kenya/parks-reserves/masai-mara/wildebeest-migration",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "amboseli",
+      "name": "Amboseli and the Kilimanjaro view",
+      "kind": "wildlife",
+      "regions": [
+        "KE-700"
+      ],
+      "status": "open",
+      "note": "the park is open all year; cloud often hides Kilimanjaro as the day warms, so the view is a morning thing in any month",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the long dry season: almost no rain, and animals crowd the few remaining waterholes and swamps"
+        },
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the short dry spell: warm, dry and good game viewing around the swamps"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.rhinoafrica.com/en/destinations/amboseli-national-park/21726",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.safari.com/destinations/amboseli-national-park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mount-kenya",
+      "name": "Climbing Mount Kenya",
+      "kind": "trek",
+      "regions": [
+        "KE-200",
+        "KE-400"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            7,
+            8,
+            9
+          ],
+          "reason": "the dry seasons, the recommended climbing windows"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5,
+            11
+          ],
+          "reason": "the long and short rains make the mountain wet and noticeably harder going"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.discoverafrica.com/safaris/mount-kenya-national-park/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.adventurealternative.com/?p=3537",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "samburu",
+      "name": "Samburu game drives",
+      "kind": "wildlife",
+      "regions": [
+        "KE-700",
+        "KE-400"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the long dry season: sunny, almost rainless, and the tracks are dry and easy to drive"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the long rains: the reserve's roads can be at their most challenging"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.africanmeccasafaris.com/travel-guide/kenya/parks-reserves/samburu/when-best-time-to-visit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://safaribookings.com/samburu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "watamu-humpbacks",
+      "name": "Humpback whales off Watamu",
+      "kind": "wildlife",
+      "regions": [
+        "KE-300"
+      ],
+      "status": "not-on",
+      "note": "the whales spend the rest of the year in Antarctic waters",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "humpbacks migrate up from the Antarctic to breed, and whale-watching boats run from Watamu"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.the-star.co.ke/counties/coast/2020-08-23-humpback-whale-migration-boosts-watamu-tourism",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.standardmedia.co.ke/amp/article/2001292871/whale-migration-attracts-more-tourists-to-watamu",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "diani-kitesurfing",
+      "name": "Kitesurfing at Diani",
+      "kind": "season",
+      "regions": [
+        "KE-300"
+      ],
+      "status": "open",
+      "note": "the beach is there all year; kiting runs on the two trade-wind seasons",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the Kaskazi, the north-east trade wind, blows from December to March"
+        },
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the Kusi, the south-east trade wind, blows through the middle of the year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.iksurfmag.com/travel-guides/africa/kenya/diani-beach/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.sportif.travel/destinations/97/Africa/Kenya_-_Diani_Beach",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lamu-cultural-festival",
+      "name": "Lamu Cultural Festival",
+      "kind": "festival",
+      "regions": [
+        "KE-300"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "three days of Swahili culture on Lamu Island, with dhow and donkey races; the dates move each year (20-22 November in 2025)"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "some years the festival runs into early December, as it did from 30 November to 2 December in 2023"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.standardmedia.co.ke/counties/article/2001534526/historic-lamu-island-bursts-into-life-for-three-day-cultural-fiesta",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.the-star.co.ke/news/2023-11-14-over-30000-guests-to-attend-lamu-cultural-festival",
+          "checked": "2026-10-26"
         }
       ]
     }

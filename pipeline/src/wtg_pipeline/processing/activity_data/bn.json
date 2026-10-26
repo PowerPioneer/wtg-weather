@@ -1,0 +1,77 @@
+{
+  "iso2": "BN",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "istana-open-house",
+      "name": "Hari Raya open house at Istana Nurul Iman",
+      "kind": "festival",
+      "regions": [
+        "BN-BM"
+      ],
+      "status": "not-on",
+      "note": "the Sultan's palace opens to the public for three days and receives about 110,000 visitors",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the palace opens for three days during Hari Raya Aidilfitri, which currently falls in March (20–22 March in 2026, 9–11 March in 2027) and moves about eleven days earlier each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Istana_Nurul_Iman",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Eid_al-Fitr",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ulu-temburong",
+      "name": "Ulu Temburong National Park",
+      "kind": "wildlife",
+      "regions": [
+        "BN-TE"
+      ],
+      "status": "open",
+      "note": "reached only by river, by longboat from Batang Duri, with a canopy walkway 50 m above the forest floor; visits are booked as a tour package",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ulu_Temburong_National_Park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Brunei",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kampong-ayer",
+      "name": "Kampong Ayer water village",
+      "kind": "site",
+      "regions": [
+        "BN-BM"
+      ],
+      "status": "open",
+      "note": "the water village in Bandar Seri Begawan, reached by water taxi, with a cultural and tourism gallery",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kampong_Ayer",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Brunei",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

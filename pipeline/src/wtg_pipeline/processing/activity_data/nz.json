@@ -1,6 +1,6 @@
 {
   "iso2": "NZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "great-walks",
@@ -16,7 +16,6 @@
         {
           "status": "best",
           "months": [
-            10,
             11,
             12,
             1,
@@ -25,6 +24,13 @@
             4
           ],
           "reason": "the official Great Walks season: huts staffed by rangers, bridges in place and avalanche risk monitored"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "still outside the season on most of the three: the Kepler opens in late October, the Milford and Routeburn on 1 November"
         },
         {
           "status": "limited",
@@ -41,7 +47,15 @@
       "sources": [
         {
           "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/fiordland/places/fiordland-national-park/things-to-do/tracks/milford-track/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/fiordland/places/fiordland-national-park/things-to-do/tracks/kepler-track/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/fiordland/places/fiordland-national-park/things-to-do/tracks/routeburn-track/",
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.newzealand.com/us/feature/milford-track/",
@@ -87,12 +101,153 @@
       ],
       "sources": [
         {
+          "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/central-north-island/places/tongariro-national-park/things-to-do/tracks/tongariro-alpine-crossing/",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://www.nationalgeographic.com/travel/article/guide-to-hiking-new-zealand-great-walks",
           "checked": "2026-08-28"
         },
         {
           "url": "https://activeadventures.com/blog/the-great-walks-of-new-zealand",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "abel-tasman-coast-track",
+      "name": "Abel Tasman Coast Track",
+      "kind": "trek",
+      "regions": [
+        "NZ-TAS"
+      ],
+      "status": "open",
+      "note": "a Great Walk that can be walked all year; huts and campsites must be booked in advance in every season, and the water taxis run year-round",
+      "sources": [
+        {
+          "url": "https://www.doc.govt.nz/parks-and-recreation/places-to-go/nelson-tasman/places/abel-tasman-national-park/things-to-do/tracks/abel-tasman-coast-track/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "queenstown-skiing",
+      "name": "Skiing at the Queenstown ski fields",
+      "kind": "ski",
+      "regions": [
+        "NZ-OTA"
+      ],
+      "status": "closed",
+      "note": "the ski fields run from mid-June to early October",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the fields usually open in mid-June, depending on the weather"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the peak of the season, when conditions are generally best"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "spring skiing, often with some of the season's biggest snowfalls"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the fields close in early October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.queenstownnz.co.nz/things-to-do/skiing-and-snowboarding/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.queenstownnz.co.nz/stories/post/experience-spring-skiing-like-a-queenstown-local/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Coronet_Peak",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kaikoura-whales",
+      "name": "Whale watching, Kaikoura",
+      "kind": "wildlife",
+      "regions": [
+        "NZ-CAN"
+      ],
+      "status": "open",
+      "note": "sperm whales live close to shore off Kaikoura all year, so the boats sail in every season",
+      "sources": [
+        {
+          "url": "https://www.whalewatch.co.nz/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.whalewatch.co.nz/kaikoura-marine-life/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "waitangi-day",
+      "name": "Waitangi Day at the Treaty Grounds",
+      "kind": "festival",
+      "regions": [
+        "NZ-NTL"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "6 February: a dawn service, kapa haka and waka in the harbour at the Waitangi Treaty Grounds"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Waitangi_Day",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "matariki",
+      "name": "Matariki (Maori New Year)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7
+          ],
+          "reason": "a public holiday on a Friday between late June and mid-July, set by the Maori lunar calendar, with concerts and festivals of light"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Matariki",
+          "checked": "2026-10-26"
         }
       ]
     }

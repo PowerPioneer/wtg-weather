@@ -1,0 +1,140 @@
+{
+  "iso2": "BI",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "lake-tanganyika-beaches",
+      "name": "Lake Tanganyika beaches, Bujumbura",
+      "kind": "beach",
+      "regions": [
+        "BI-BM"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the dry season, which Burundi gets between May and August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Tourism_in_Burundi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Geography_of_Burundi",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kibira-chimpanzees",
+      "name": "Chimpanzee tracking in Kibira National Park",
+      "kind": "wildlife",
+      "regions": [
+        "BI-CI",
+        "BI-KY",
+        "BI-MU",
+        "BI-NG"
+      ],
+      "status": "open",
+      "note": "the park can be visited all year, but tracking means hours of hiking on steep forest trails",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the long dry season: forest trails are drier and less muddy for chimpanzee tracking"
+        },
+        {
+          "status": "best",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the short dry season, the other window when the trails dry out"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://bujukuecotours.com/destination/kibira-national-park-in-burundi/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://safarifind.com/destinations/kibira",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rusizi-hippos",
+      "name": "Hippos and boat trips, Rusizi National Park",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "boat trips on the Rusizi river for hippos, crocodiles and birds, a short drive north of Bujumbura",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "dry season: wildlife concentrates along the river, with hundreds of hippos in its pools and delta"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://safarifind.com/destinations/rusizi-national-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://kubwafive-safaris.com/?p=16843",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "karera-falls",
+      "name": "Karera Waterfalls",
+      "kind": "site",
+      "regions": [
+        "BI-RT"
+      ],
+      "status": "open",
+      "note": "a 4x4 is strongly recommended on the rough, rocky access roads, especially in the wet season",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            5,
+            10,
+            11
+          ],
+          "reason": "the rainy seasons, March to May and October to November, when the water flow peaks and the falls are at their most dramatic"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://bujukuecotours.com/destination/karera-waterfalls/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://safarifind.com/destinations/karera-waterfalls",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,44 +1,159 @@
 {
   "iso2": "MG",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "lemur-watching",
       "name": "Lemur watching",
       "kind": "wildlife",
       "status": "open",
-      "note": "lemurs are found nowhere else on Earth, and Madagascar has over a hundred species; the parks are reachable all year but the season decides the roads",
+      "note": "Madagascar can be visited from April to November; after a damaging cyclone season some areas can stay closed into April",
       "windows": [
         {
           "status": "best",
           "months": [
-            5,
-            6,
-            7,
-            8,
             9,
-            10
+            10,
+            11
           ],
-          "reason": "the dry season, which is when the lemur tours run"
+          "reason": "conditions are at their best from September onward, and October and November are a particularly good time to see baby lemurs"
         },
         {
           "status": "limited",
           "months": [
+            12,
             1,
             2,
             3
           ],
-          "reason": "cyclone risk and rough seas; the months usually advised against, especially for coastal travel"
+          "reason": "the wettest months and the Indian Ocean cyclone season, which is why late April to early November is the better time to visit"
         }
       ],
       "sources": [
         {
-          "url": "https://www.africanbudgetsafaris.com/blog/best-time-to-visit-madagascar/",
-          "checked": "2026-08-28"
+          "url": "https://safari-consultants.com/destinations/madagascar/madagascar-seasons-when-to-travel/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tsingy-de-bemaraha",
+      "name": "Tsingy de Bemaraha National Park",
+      "kind": "site",
+      "regions": [
+        "MG-M"
+      ],
+      "status": "open",
+      "note": "the park can only be reached in the dry season; the exact opening and closing dates shift a little each year",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "heavy rains make the access roads impassable and the park stays closed"
         },
         {
-          "url": "https://safari-consultants.com/destinations/madagascar/madagascar-seasons-when-to-travel/",
-          "checked": "2026-08-28"
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the park reopens from mid-April, but the route is often not passable until the start of May"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season ends in mid- to late November as the rains return"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.vivytravel.com/good-to-know-before-visiting-the-bemaraha-national-park/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.madamagazine.com/en/deutsch-tsingy-de-bemaraha",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "humpback-whales-sainte-marie",
+      "name": "Humpback whales off Île Sainte-Marie",
+      "kind": "wildlife",
+      "regions": [
+        "MG-A"
+      ],
+      "status": "not-on",
+      "note": "the whales spend the rest of the year in Antarctic waters",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "humpbacks gather in the channel to find a mate; the males leap, splash and sing"
+        },
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the first whales arrive from Antarctic waters"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.travellocal.com/articles/whale-watching-madagascar-ile-sainte-marie",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.untamedtravelling.com/en/destinations/africa/tours/whale-season-ile-sainte-marie",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "whale-sharks-nosy-be",
+      "name": "Whale sharks off Nosy Be",
+      "kind": "wildlife",
+      "regions": [
+        "MG-D"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "whale sharks visit Nosy Be to feed, often around bait balls"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "researchers still find whale sharks regularly visiting into December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.downtoearth.org.in/wildlife-biodiversity/madagascar-emerges-as-hotspot-for-endangered-whale-sharks-60570",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://cursosdebuceo.com/blog/post/354",
+          "checked": "2026-10-26"
         }
       ]
     }

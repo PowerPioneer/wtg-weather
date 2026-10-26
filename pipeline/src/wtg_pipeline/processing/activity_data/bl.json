@@ -1,0 +1,109 @@
+{
+  "iso2": "BL",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "st-barts-music-festival",
+      "name": "St Barts Music Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "classical music with international artists, usually over the second and third weeks of January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.saintbarth-tourisme.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Barth%C3%A9lemy",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carnival",
+      "name": "Carnival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the island's grand carnival parade comes in the run-up to Lent"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "when Lent starts late, carnival falls in early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.saintbarth-tourisme.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Saint_Barth%C3%A9lemy",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bucket-regatta",
+      "name": "St Barths Bucket Regatta",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "a superyacht race held in March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.saintbarth-tourisme.com/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/St_Barths_Bucket_Regatta",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gourmet-festival",
+      "name": "St Barth Gourmet Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "top chefs present exclusive dinners over a week in November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.saintbarth-tourisme.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

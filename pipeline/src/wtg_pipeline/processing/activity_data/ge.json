@@ -1,0 +1,108 @@
+{
+  "iso2": "GE",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "tusheti-abano-pass",
+      "name": "Tusheti via the Abano Pass",
+      "kind": "drive",
+      "regions": [
+        "GE-KA"
+      ],
+      "status": "closed",
+      "note": "the only road in crosses the Abano Pass, snowbound for most of the year; outside the road season Tusheti is reachable only by helicopter",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the pass usually opens between late May and mid-June and stays open through September, snow permitting"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the first snows can close the pass; some years it stays open until mid-October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://georgia.travel/tusheti",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Abano_Pass",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gudauri-ski",
+      "name": "Skiing at Gudauri",
+      "kind": "ski",
+      "regions": [
+        "GE-MM"
+      ],
+      "status": "closed",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the ski season runs from December until around the middle of April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://georgia.travel/gudauri",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Gudauri",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rtveli",
+      "name": "Rtveli grape harvest, Kakheti",
+      "kind": "festival",
+      "regions": [
+        "GE-KA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "the grape harvest normally takes place in late September in eastern Georgia"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the harvest comes later, in mid-October, in western Georgia"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Rtveli",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

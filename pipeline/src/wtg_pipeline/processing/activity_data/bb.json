@@ -1,0 +1,118 @@
+{
+  "iso2": "BB",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "crop-over",
+      "name": "Crop Over",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "the festival season begins in June"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the festival peaks through July and ends with Grand Kadooment on the first Monday in August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Crop_Over",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitbarbados.org/must-do-festivals-in-barbados",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitbarbados.org/mission-crop-over",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "food-rum-festival",
+      "name": "Barbados Food & Rum Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "held every November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitbarbados.org/must-do-festivals-in-barbados",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitbarbados.org/things-to-do/events-and-festivals",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "oistins-fish-festival",
+      "name": "Oistins Fish Festival",
+      "kind": "festival",
+      "regions": [
+        "BB-01"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "held around Easter in the fishing town of Oistins, so it falls in March or April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitbarbados.org/must-do-festivals-in-barbados",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "reggae-festival",
+      "name": "Barbados Reggae Festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "a week of reggae events in April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitbarbados.org/must-do-festivals-in-barbados",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.visitbarbados.org/things-to-do/events-and-festivals",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "iso2": "JE",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "elizabeth-castle",
+      "name": "Elizabeth Castle",
+      "kind": "site",
+      "status": "open",
+      "note": "a tidal island: walk the causeway at low tide or take the amphibious castle ferry, which runs whenever the castle is open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "closed for the winter; the castle opens from mid-March to the start of November"
+        },
+        {
+          "status": "limited",
+          "months": [
+            3
+          ],
+          "reason": "the season opens in mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.jerseyheritage.org/places-to-visit/elizabeth-castle/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jersey-liberation-day",
+      "name": "Liberation Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "9 May marks the 1945 liberation, with a re-enactment in Liberation Square and celebrations across St Helier"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Liberation_Day_(Channel_Islands)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jersey-battle-of-flowers",
+      "name": "Battle of Flowers",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held on the second Friday and Saturday of August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jersey_Battle_of_Flowers",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

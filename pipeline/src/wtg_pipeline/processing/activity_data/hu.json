@@ -1,24 +1,22 @@
 {
   "iso2": "HU",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "thermal-baths",
       "name": "The thermal baths",
       "kind": "site",
       "status": "open",
-      "note": "Budapest's Turkish baths, some of them 16th and 17th century, are open all year — and the cold months are the point rather than the problem",
+      "note": "Budapest's baths include Turkish baths dating back to the 16th century, and the cold months are the point rather than the problem",
       "windows": [
         {
           "status": "best",
           "months": [
-            11,
             12,
             1,
-            2,
-            3
+            2
           ],
-          "reason": "the season most thermal destinations are at their peak: the colder the air outside, the better the water"
+          "reason": "winter: Széchenyi is billed as best for winter visits, with steaming outdoor pools and locals playing chess in the water even in the cold"
         }
       ],
       "sources": [
@@ -28,7 +26,147 @@
         },
         {
           "url": "https://www.travelcounsellors.co.uk/find-your-travel-counsellor/kayleigh-benney/the-top-12-thermal-baths-hot-springs-in-europe-you-ll-want-to-save/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sziget-festival",
+      "name": "Sziget Festival",
+      "kind": "festival",
+      "regions": [
+        "HU-BU"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "held every August on Óbuda Island in northern Budapest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sziget_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://szigetfestival.com/en",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visithungary.com/articles/summer-in-hungary",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "busojaras",
+      "name": "Busójárás (Mohács)",
+      "kind": "festival",
+      "regions": [
+        "HU-BA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "six days of masked carnival to scare away winter, ending the day before Ash Wednesday, usually in February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bus%C3%B3j%C3%A1r%C3%A1s",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visithungary.com/articles/winter-in-hungary",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lake-balaton",
+      "name": "Lake Balaton",
+      "kind": "beach",
+      "regions": [
+        "HU-SO",
+        "HU-ZA"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the peak season, with the lake's water averaging about 25°C for swimming"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1,
+            2
+          ],
+          "reason": "the lake freezes over in winter, the season for skating and ice-fishing rather than swimming"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_Balaton",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lake-heviz",
+      "name": "Lake Hévíz thermal lake",
+      "kind": "swim",
+      "regions": [
+        "HU-ZA"
+      ],
+      "status": "open",
+      "note": "the lake bath is open all year for outdoor bathing: the water is about 33-35°C in summer and stays near 22°C in winter",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_H%C3%A9v%C3%ADz",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.heviz.hu/en/lake-heviz/lake-bath-opening-hours-prices",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hungarian-grand-prix",
+      "name": "Hungarian Grand Prix",
+      "kind": "festival",
+      "regions": [
+        "HU-PE"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "Formula 1 at the Hungaroring outside Budapest, traditionally held between mid-July and late August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Hungarian_Grand_Prix",
+          "checked": "2026-10-26"
         }
       ]
     }

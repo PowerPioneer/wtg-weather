@@ -1,0 +1,86 @@
+{
+  "iso2": "XK",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "dokufest",
+      "name": "DokuFest, Prizren",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the documentary and short film festival is held every year in early August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Dokufest",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://dokufest.com/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sunny-hill-festival",
+      "name": "Sunny Hill Festival, Pristina",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "held in late July or early August at the festival park on the edge of Pristina, though it has skipped some years"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sunny_Hill_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "peaks-of-the-balkans",
+      "name": "Peaks of the Balkans trail",
+      "kind": "trek",
+      "status": "limited",
+      "note": "a cross-border trek through Kosovo, Albania and Montenegro, down into the Rugova Canyon; each crossing needs a border-police permit arranged in advance. Outside the season some guesthouses close and snow can lie on the high passes",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the main hiking season: all guesthouses are open, the weather is fairly stable and the high passes are largely free of snow, though snow is possible in early June and late September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://peaksofthebalkans.info/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://brookebeyond.com/peaks-of-the-balkans",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://bookatrekking.com/en/blog/peaks-of-the-balkans/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "EE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "tallinn-christmas-market",
@@ -17,24 +17,86 @@
           "months": [
             12
           ],
-          "reason": "the market runs from late November to the end of December, with choirs, folk music and Estonian winter food"
+          "reason": "the market runs from late November into early January, with Estonian crafts and food such as sausages and sauerkraut"
         },
         {
           "status": "open",
           "months": [
             11
           ],
-          "reason": "the market opens in the second half of November"
+          "reason": "the market opens in late November"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the market stays open into early January"
         }
       ],
       "sources": [
         {
-          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
-          "checked": "2026-08-28"
+          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "soomaa-fifth-season",
+      "name": "Soomaa's 'fifth season' floods",
+      "kind": "season",
+      "regions": [
+        "EE-67",
+        "EE-84"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "the spring flood, the 'fifth season', usually comes in late March or early April and canoes paddle through flooded forest"
         },
         {
-          "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
-          "checked": "2026-08-28"
+          "status": "open",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the canoeing season lasts from April until October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Soomaa_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "jaanipaev",
+      "name": "Jaanipaev midsummer",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "23-24 June are public holidays, with bonfires lit on midsummer eve and jumped over for luck"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jaanipäev",
+          "checked": "2026-10-26"
         }
       ]
     }

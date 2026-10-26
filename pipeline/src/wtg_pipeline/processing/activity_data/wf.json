@@ -1,0 +1,72 @@
+{
+  "iso2": "WF",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "territory-day-wf",
+      "name": "Territory Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "29 July: katoaga ceremonies with dancing and offerings to the king and chiefs"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Wallis-et-Futuna",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "saint-pierre-chanel",
+      "name": "Feast of Saint Pierre Chanel (Futuna)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "28 April, celebrated every year on Futuna, where his basilica at Poi draws Pacific pilgrims"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://fr.wikipedia.org/wiki/Pierre_Chanel",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://fr.wikipedia.org/wiki/Wallis-et-Futuna",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "lake-lalolalo",
+      "name": "Lake Lalolalo",
+      "kind": "site",
+      "regions": [
+        "WF-UV"
+      ],
+      "status": "open",
+      "note": "a sheer-walled, almost circular crater lake off Route 1; the water itself is almost inaccessible",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Lake_Lalolalo",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Wallis_and_Futuna",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

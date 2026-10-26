@@ -1,0 +1,84 @@
+{
+  "iso2": "SR",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "galibi-turtles",
+      "name": "Leatherback turtles at Galibi",
+      "kind": "wildlife",
+      "regions": [
+        "SR-MA"
+      ],
+      "status": "not-on",
+      "note": "almost half the known leatherback population lays its eggs on this stretch of coast",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "the nesting beach can be visited, under strict supervision, from February to June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Galibi_Nature_Reserve",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "keti-koti",
+      "name": "Keti Koti",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "emancipation day on 1 July, a public holiday since 1955 marking the end of slavery in 1863"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Keti_Koti",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "phagwa-sr",
+      "name": "Phagwa (Holi)",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the Hindu spring festival of colours, which usually falls in March"
+        },
+        {
+          "status": "open",
+          "months": [
+            2
+          ],
+          "reason": "in some years the lunar date falls in late February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Holi",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "iso2": "MA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "toubkal",
@@ -58,8 +58,7 @@
       "name": "Sahara camel trekking (Erg Chebbi)",
       "kind": "tour",
       "regions": [
-        "MA-06",
-        "MA-13"
+        "MA-06"
       ],
       "status": "open",
       "windows": [
@@ -80,17 +79,128 @@
             10,
             11
           ],
-          "reason": "spring and autumn, when the dunes are walkable through the day"
+          "reason": "spring and autumn, when daytime temperatures are pleasant and the nights cold but manageable"
         }
       ],
       "sources": [
         {
+          "url": "https://vagrantsoftheworld.com/planning-camel-trekking-in-morocco/",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://www.thenaturaladventure.com/tours/morocco/mount-toubkal-and-sahara-desert-trek/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.skyhookadventure.com/blog/best-time-to-climb-mount-toubkal",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gnaoua-festival",
+      "name": "Gnaoua World Music Festival, Essaouira",
+      "kind": "festival",
+      "regions": [
+        "MA-11"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "three days of Gnaoua and world music in Essaouira, normally in the last week of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.festival-gnaoua.net/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Essaouira",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "rose-festival",
+      "name": "Rose Festival, Kelaat M'Gouna",
+      "kind": "festival",
+      "regions": [
+        "MA-13"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "a week-long festival each May celebrating the rose season in the Dades and M'Goun valleys"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Kalaat_M%27Gouna",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fes-sacred-music",
+      "name": "Fes Festival of World Sacred Music",
+      "kind": "festival",
+      "regions": [
+        "MA-05"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "ten days of concerts in Fes, usually in early June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Fes_Festival_of_World_Sacred_Music",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "taghazout-surf",
+      "name": "Surfing at Taghazout",
+      "kind": "surf",
+      "regions": [
+        "MA-13"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the waves work best from September to April, especially for advanced surfers"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Taghazout",
+          "checked": "2026-10-26"
         }
       ]
     }

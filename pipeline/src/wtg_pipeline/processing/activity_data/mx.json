@@ -1,6 +1,6 @@
 {
   "iso2": "MX",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "monarch-butterflies",
@@ -11,7 +11,7 @@
         "MX-MEX"
       ],
       "status": "not-on",
-      "note": "the sanctuaries in the oyamel fir forests west of Mexico City are open to visitors only while the butterflies are there",
+      "note": "the sanctuaries lie on the eastern edge of Michoacán, where the reserve crosses into the State of Mexico",
       "windows": [
         {
           "status": "best",
@@ -20,7 +20,7 @@
             2,
             3
           ],
-          "reason": "peak season from mid-January to the end of March, when the overwintering population is at its largest"
+          "reason": "the best months, from late January through March, when the overwintering population reaches its peak"
         },
         {
           "status": "open",
@@ -28,17 +28,224 @@
             11,
             12
           ],
-          "reason": "the butterflies start arriving in early November and the sanctuaries open from around mid-to-late November"
+          "reason": "the butterflies start arriving in early-to-mid November, and by December all of them are in residence"
         }
       ],
       "sources": [
         {
           "url": "https://www.mexperience.com/travel/outdoors/monarch-butterflies-mexico/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://monarchjointventure.org/faq/overwintering/visiting-mexican-overwintering-sites",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "whale-sharks-holbox",
+      "name": "Swimming with whale sharks, Holbox",
+      "kind": "wildlife",
+      "regions": [
+        "MX-ROO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8
+          ],
+          "reason": "the most sightings, as warm water draws feeding whale sharks to the Yucatan coast"
+        },
+        {
+          "status": "open",
+          "months": [
+            5,
+            6,
+            9
+          ],
+          "reason": "the season runs from about mid-May to mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Holbox",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Whale_shark",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "grey-whales-baja",
+      "name": "Grey whale lagoons, Baja California Sur",
+      "kind": "wildlife",
+      "regions": [
+        "MX-BCS"
+      ],
+      "status": "not-on",
+      "note": "the whales calve in the sheltered lagoons of San Ignacio, Ojo de Liebre and Magdalena Bay, then head back north to Alaska",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "the bulk of the population is in the lagoons from mid-February to mid-March"
+        },
+        {
+          "status": "open",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "the whales arrive from late December, and most calves are born in mid-January"
+        },
+        {
+          "status": "open",
+          "months": [
+            4
+          ],
+          "reason": "mothers with newborn calves are the last to leave, usually by mid-April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mexperience.com/travel/outdoors/whale-watching-in-mexico/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Gray_whale",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "day-of-the-dead",
+      "name": "Day of the Dead",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "families honour their dead on 1 and 2 November, some keeping all-night vigils beside the graves"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the festivities begin at the end of October, and some places also mark 31 October"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ich.unesco.org/en/RL/indigenous-festivity-dedicated-to-the-dead-00054",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Day_of_the_Dead",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "guelaguetza",
+      "name": "Guelaguetza, Oaxaca",
+      "kind": "festival",
+      "regions": [
+        "MX-OAX"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "held on the two Mondays after 16 July; in some years it shifts a week and ends on 1 August"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Guelaguetza",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "copper-canyon",
+      "name": "Copper Canyon",
+      "kind": "site",
+      "regions": [
+        "MX-CHH"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4,
+            10,
+            11
+          ],
+          "reason": "the mild, temperate months, and the busiest at the canyon"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            9
+          ],
+          "reason": "the rainy season: monsoon-like downpours turn the canyon lush and green, and it is quieter"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.mexperience.com/travel/outdoors/copper-canyon-mexico/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chichen-itza-equinox",
+      "name": "Equinox serpent shadow, Chichen Itza",
+      "kind": "festival",
+      "regions": [
+        "MX-YUC"
+      ],
+      "status": "not-on",
+      "note": "this is a light effect on El Castillo's staircase, visible for several weeks around each equinox",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "around the spring equinox a feathered-serpent shadow appears to crawl down the pyramid, watched by thousands"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "the same light effect appears around the autumn equinox"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/El_Castillo,_Chichen_Itza",
+          "checked": "2026-10-26"
         }
       ]
     }

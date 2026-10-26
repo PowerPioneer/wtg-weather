@@ -1,0 +1,81 @@
+{
+  "iso2": "NR",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "angam-day",
+      "name": "Angam Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10
+          ],
+          "reason": "26 October marks the day the Nauruan population recovered to 1,500, a day of celebration and reflection"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Angam_Day",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Nauru",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "independence-day-nr",
+      "name": "Independence Day",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "Nauru's national holiday falls on 31 January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_Nauru",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikivoyage.org/wiki/Nauru",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "command-ridge",
+      "name": "Command Ridge",
+      "kind": "hike",
+      "status": "open",
+      "note": "a short walk to the island's highest point and a wartime Japanese communications post",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the rainy season, when torrential rain and thunderstorms are frequent"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikivoyage.org/wiki/Nauru",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

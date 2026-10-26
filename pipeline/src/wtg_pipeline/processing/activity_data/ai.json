@@ -1,0 +1,136 @@
+{
+  "iso2": "AI",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "summer-festival",
+      "name": "Anguilla Summer Festival and Boat Racing Week",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the carnival-style festival and Boat Racing Week, ending in the round-the-island Champion of Champions race"
+        },
+        {
+          "status": "open",
+          "months": [
+            7
+          ],
+          "reason": "in some years the festival starts in July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ivisitanguilla.com/festivals-and-events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ivisitanguilla.com/sports",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "festival-del-mar",
+      "name": "Festival del Mar, Island Harbour",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "two days of boat races, swimming and seafood in Island Harbour over Easter weekend"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "when Easter falls in March, so does the festival"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ivisitanguilla.com/festivals-and-events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://festivaldelmar.ai/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Anguilla",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "moonsplash",
+      "name": "Moonsplash reggae festival",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3,
+            4
+          ],
+          "reason": "Bankie Banx's reggae festival on Rendezvous Bay, held in March or April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://ivisitanguilla.com/festivals-and-events/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Anguilla",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hurricane-season",
+      "name": "Beach and boat trips",
+      "kind": "season",
+      "status": "open",
+      "note": "nothing shuts for the season; this is about the odds of a storm interrupting a trip",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            8,
+            9,
+            10
+          ],
+          "reason": "the peak of the hurricane season; Irma hit the island in September 2017"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            11
+          ],
+          "reason": "storms can reach Anguilla from July to November, outside the historical mid-August to mid-October peak"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Anguilla",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nhc.noaa.gov/climo/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

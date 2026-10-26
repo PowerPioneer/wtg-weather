@@ -1,6 +1,6 @@
 {
   "iso2": "PK",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "karakoram-highway",
@@ -29,7 +29,7 @@
             7,
             8
           ],
-          "reason": "the highway is fully open from about May to October and the weather is comfortable enough for sightseeing and trekking"
+          "reason": "the highway is fully open from April to October and the weather is comfortable enough for sightseeing and trekking"
         },
         {
           "status": "limited",
@@ -40,17 +40,134 @@
             2,
             3
           ],
-          "reason": "outside that window, severe weather, landslides and flooding disrupt the road far more often"
+          "reason": "outside the May-to-October window, severe weather, landslides, rockfall and flooding are likelier to disrupt the road, and snow closes side roads and high passes"
         }
       ],
       "sources": [
         {
           "url": "https://northerndiscover.com/guides/time-to-visit-hunza/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.gadventures.com/blog/karakoram-highway/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "khunjerab-pass",
+      "name": "Khunjerab Pass",
+      "kind": "drive",
+      "regions": [
+        "PK-GB"
+      ],
+      "status": "open",
+      "note": "the border crossing with China moved to year-round operation in December 2024, having previously run only from April to November",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the crossing is open, but snow on the pass can close the road above Sost for days or weeks until it is cleared"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://northerndiscover.com/guides/time-to-visit-hunza/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Khunjerab_Pass",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "deosai-plains",
+      "name": "Deosai National Park",
+      "kind": "site",
+      "regions": [
+        "PK-GB"
+      ],
+      "status": "closed",
+      "note": "the high plateau lies under snow for most of the year; its Balti name means 'summer's place'",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the plateau is reachable only in summer, roughly June to September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://northerndiscover.com/guides/time-to-visit-hunza/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Deosai_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "shandur-polo",
+      "name": "Shandur Polo Festival",
+      "kind": "festival",
+      "regions": [
+        "PK-GB",
+        "PK-KP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "held every year from 7 to 9 July on the Shandur polo ground, between Gilgit-Baltistan and Chitral"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Shandur_Polo_Festival",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "chilam-joshi",
+      "name": "Chilam Joshi in the Kalash valleys",
+      "kind": "festival",
+      "regions": [
+        "PK-KP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "the Kalash spring festival, celebrated each year in mid-May, from 13 to 16 May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Chilam_Joshi",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Kalash_people",
+          "checked": "2026-10-26"
         }
       ]
     }

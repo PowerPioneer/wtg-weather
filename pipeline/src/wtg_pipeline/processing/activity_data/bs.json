@@ -1,0 +1,86 @@
+{
+  "iso2": "BS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "junkanoo",
+      "name": "Junkanoo parades",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "night-long parades circle Bay and Shirley Streets in Nassau on Boxing Day and New Year's Day"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.worldnomads.com/explore/caribbean/the-bahamas/january-junkanoo-bahamas",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Junkanoo",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "family-island-regatta",
+      "name": "National Family Island Regatta",
+      "kind": "festival",
+      "regions": [
+        "BS-EX"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4
+          ],
+          "reason": "traditional wooden sloops race in Elizabeth Harbour off George Town for several days in late April"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.sailingscuttlebutt.com/?p=134608",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.tribune242.com/news/2024/apr/25/regatta-time-again",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bimini-hammerheads",
+      "name": "Great hammerhead diving, Bimini",
+      "kind": "dive",
+      "regions": [
+        "BS-BI"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "great hammerheads gather off Bimini in winter; dedicated trips run January to March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.diveworldwide.com/trip-ideas/great-hammerhead-encounters",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

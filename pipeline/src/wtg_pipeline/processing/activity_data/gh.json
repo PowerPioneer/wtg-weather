@@ -1,40 +1,152 @@
 {
   "iso2": "GH",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "harmattan",
       "name": "Travelling in the harmattan",
       "kind": "season",
       "status": "open",
-      "note": "nothing closes; the harmattan is the dry season, and it is what makes the roads passable — the trade-off is the dust",
+      "note": "nothing closes; the harmattan blows during the dry season, and the trade-off is the dust",
       "windows": [
         {
           "status": "limited",
           "months": [
             12,
-            1
+            1,
+            2
           ],
-          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+          "reason": "the wind blows especially in December, January and February: dust off the Sahara can severely limit visibility for several days, and humidity can drop below 15%"
         },
         {
           "status": "open",
           "months": [
             11,
-            2,
             3
           ],
-          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+          "reason": "the harmattan, a dry and dusty wind off the Sahara, runs from the end of November to the middle of March"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Harmattan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.britannica.com/science/harmattan",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "mole",
+      "name": "Mole National Park safari",
+      "kind": "wildlife",
+      "regions": [
+        "GH-NP"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "dry season: the grass is low, which is when game viewing is best, and the rivers shrink to waterholes"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Mole_National_Park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "aboakyer",
+      "name": "Aboakyer deer-hunt festival (Winneba)",
+      "kind": "festival",
+      "regions": [
+        "GH-CP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            5
+          ],
+          "reason": "Winneba's deer-hunting festival, held on the first weekend of May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Aboakyer_festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bakatue",
+      "name": "Bakatue festival (Elmina)",
+      "kind": "festival",
+      "regions": [
+        "GH-CP"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7
+          ],
+          "reason": "Elmina's festival, celebrated on the first Tuesday of July"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bakatue_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bradtguides.com/destinations/africa/ghana/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "homowo",
+      "name": "Homowo festival (Accra)",
+      "kind": "festival",
+      "regions": [
+        "GH-AA"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "the Ga harvest festival's main celebrations, usually in August and occasionally in July or September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Homowo",
+          "checked": "2026-10-26"
         }
       ]
     }

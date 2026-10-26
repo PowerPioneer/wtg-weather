@@ -1,6 +1,6 @@
 {
   "iso2": "MV",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "hanifaru-mantas",
@@ -9,8 +9,8 @@
       "regions": [
         "MV-20"
       ],
-      "status": "closed",
-      "note": "a protected bay in Baa Atoll, snorkel-only and time-limited even in season",
+      "status": "not-on",
+      "note": "a protected bay in Baa Atoll, snorkel-only with daily visitor limits; outside the season mantas are still around Baa, but large feeding gatherings in the bay are rare",
       "windows": [
         {
           "status": "best",
@@ -34,12 +34,8 @@
       ],
       "sources": [
         {
-          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://amaldives.com/activities/diving/hanifaru-bay-diving",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -48,7 +44,7 @@
       "name": "Atoll diving",
       "kind": "dive",
       "status": "open",
-      "note": "the monsoon does not stop the diving, it moves it: in the northeast monsoon the mantas and whale sharks are on the western side of the atolls, in the southwest monsoon on the eastern side",
+      "note": "the monsoon does not stop the diving: the southwest monsoon (roughly May to November) brings the plankton that draws mantas and whale sharks, at the cost of some visibility",
       "windows": [
         {
           "status": "best",
@@ -64,12 +60,131 @@
       ],
       "sources": [
         {
-          "url": "https://www.zubludiving.com/articles/zublu-insights/whale-shark-and-manta-rays-seasons-in-the-maldives",
-          "checked": "2026-08-28"
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-maldives",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.originaldiving.com/indian-ocean/maldives/best-time",
-          "checked": "2026-08-28"
+          "url": "https://amaldives.com/activities/diving/maamigili-whale-sharks",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "surfing",
+      "name": "Surfing the Malé atolls",
+      "kind": "season",
+      "regions": [
+        "MV-26"
+      ],
+      "status": "not-on",
+      "note": "the breaks closest to the airport, such as Chickens, Cokes and Pasta Point, sit in North Malé Atoll",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "southwest monsoon swells bring the most consistent waves of the year"
+        },
+        {
+          "status": "open",
+          "months": [
+            3,
+            10
+          ],
+          "reason": "the shoulders of the March-to-October surf season"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://amaldives.com/activities/surfing",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.perfectwavetravel.com/surf-trips/maldives/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://amaldives.com/activities/surfing/chickens-surfing",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "south-ari-whale-sharks",
+      "name": "Whale sharks in South Ari Atoll",
+      "kind": "wildlife",
+      "regions": [
+        "MV-00"
+      ],
+      "status": "open",
+      "note": "one of the few places where whale sharks are resident all year, around Dhigurah and Maamigili, though no encounter is guaranteed",
+      "sources": [
+        {
+          "url": "https://amaldives.com/activities/diving/maamigili-whale-sharks",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Dhigurah_(Alif_Dhaal_Atoll)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fuvahmulah-tiger-sharks",
+      "name": "Tiger shark diving at Fuvahmulah",
+      "kind": "dive",
+      "regions": [
+        "MV-29"
+      ],
+      "status": "open",
+      "note": "the tiger sharks gather at Tiger Harbour year-round, drawn by waste from the fish market",
+      "sources": [
+        {
+          "url": "https://amaldives.com/islands/fuvahmulah",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Fuvahmulah",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vaadhoo-sea-of-stars",
+      "name": "Bioluminescence at Vaadhoo",
+      "kind": "season",
+      "regions": [
+        "MV-13"
+      ],
+      "status": "limited",
+      "note": "the glowing plankton can appear in any month, but outside June to October it is rarely at its brightest",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the months when the glow is most often seen, brightest on dark new-moon nights"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Vaadhoo_(Raa_Atoll)",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://amaldives.com/activities/sea-of-stars",
+          "checked": "2026-10-26"
         }
       ]
     }

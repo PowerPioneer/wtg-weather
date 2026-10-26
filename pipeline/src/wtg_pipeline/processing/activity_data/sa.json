@@ -1,51 +1,137 @@
 {
   "iso2": "SA",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "desert-trips",
-      "name": "Desert trips",
+      "name": "Desert camping (kashta season)",
       "kind": "tour",
       "status": "open",
-      "note": "operators run all year, and in summer they run them early or late to keep clear of the worst of the heat",
+      "note": "tour operators run desert and camping trips; around Riyadh, Al Thumamah is a favourite spot",
       "windows": [
         {
           "status": "best",
           "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the kashta season: the balmy months when camping in the open is a favourite winter pastime"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.worldtravelguide.net/guides/middle-east/saudi-arabia/region-hotels",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.arabnews.com/saudi-arabia/campers-in-saudi-arabia-enjoy-cool-weather-host-friends-and-families-in-nature-1993911",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "riyadh-season",
+      "name": "Riyadh Season",
+      "kind": "festival",
+      "regions": [
+        "SA-01"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
             11,
             12,
             1,
             2,
             3
           ],
-          "reason": "the winter season, when daytime temperatures sit in a range you can spend a day outdoors in"
+          "reason": "the city-wide entertainment season, typically October through March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Riyadh_Season",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "hegra",
+      "name": "Hegra, AlUla",
+      "kind": "site",
+      "regions": [
+        "SA-03"
+      ],
+      "status": "open",
+      "note": "guided Hegra tours run daily all year, subject to weather and visibility",
+      "sources": [
+        {
+          "url": "https://www.experiencealula.com/en/things-to-do/experiences/hegra-day-tour",
+          "checked": "2026-10-26"
         },
         {
-          "status": "open",
-          "months": [
-            10,
-            4
-          ],
-          "reason": "the shoulder months, still comfortable enough for time in the open"
-        },
+          "url": "https://www.experiencealula.com/en",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "taif-summer",
+      "name": "Taif highlands",
+      "kind": "season",
+      "regions": [
+        "SA-02"
+      ],
+      "status": "open",
+      "windows": [
         {
-          "status": "limited",
+          "status": "best",
           "months": [
             6,
             7,
             8
           ],
-          "reason": "the hottest months, reaching the high forties with high humidity on the coast"
+          "reason": "the kingdom's best-known summer retreat: at 1,879 m it is much cooler than the rest of the country"
         }
       ],
       "sources": [
         {
-          "url": "https://dubaidesertsafaritrip.com/blog/best-time-to-visit-uae-desert/",
-          "checked": "2026-08-28"
+          "url": "https://en.wikipedia.org/wiki/Taif",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "saudi-grand-prix",
+      "name": "Saudi Arabian Grand Prix",
+      "kind": "festival",
+      "regions": [
+        "SA-02"
+      ],
+      "status": "not-on",
+      "note": "the 2026 race was cancelled after the outbreak of the Iran war",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "the Formula One race on the Jeddah Corniche, scheduled for late March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/2027_Formula_One_World_Championship",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.trawey.com/which-month-is-the-best-for-a-desert-safari/",
-          "checked": "2026-08-28"
+          "url": "https://en.wikipedia.org/wiki/2026_Bahrain_Grand_Prix",
+          "checked": "2026-10-26"
         }
       ]
     }

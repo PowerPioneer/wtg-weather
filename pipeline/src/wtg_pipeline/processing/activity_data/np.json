@@ -1,6 +1,6 @@
 {
   "iso2": "NP",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "everest-base-camp",
@@ -56,6 +56,95 @@
         {
           "url": "https://www.responsibletravel.com/holidays/everest-base-camp/travel-guide/best-time-to-visit-everest-base-camp",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "annapurna-circuit",
+      "name": "Annapurna Circuit and the Thorong La",
+      "kind": "trek",
+      "regions": [
+        "NP-GA",
+        "NP-DH"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "the most popular season: warm days, freezing nights and clear views, though teahouses fill up fast"
+        },
+        {
+          "status": "best",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "most of the snow has melted from the pass, though it grows hotter and more humid towards late May"
+        },
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the Thorong La, above 5,400 m, is often blocked by snow and can stay closed for days at a time"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the monsoon: heavy rain on the southern side and cloud-hidden views, though the north lies in a rain shadow"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Annapurna_Circuit",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.acethehimalaya.com/best-time-for-annapurna-circuit-trek/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "upper-mustang",
+      "name": "Upper Mustang",
+      "kind": "trek",
+      "regions": [
+        "NP-DH"
+      ],
+      "status": "open",
+      "note": "a restricted area: foreigners need a special permit, $500 for ten days",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "it lies in the rain shadow of the Annapurna and Dhaulagiri ranges, so stays dry while the monsoon soaks the rest of Nepal"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Upper_Mustang",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/nepal/travel-guide/best-time-to-visit-nepal",
+          "checked": "2026-10-26"
         }
       ]
     }

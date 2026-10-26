@@ -1,0 +1,88 @@
+{
+  "iso2": "SM",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "san-marino-christmas",
+      "name": "Christmas in San Marino (Natale delle Meraviglie)",
+      "kind": "festival",
+      "regions": [
+        "SM-07"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "lights, Christmas markets and an ice rink in the historic centre, daily from 24 December"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            1
+          ],
+          "reason": "it opens at the end of November on weekends and closes on 6 January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.visitsanmarino.com/pub2/VisitSM/evento/20261128_Il_Natale_delle_Meraviglie_26_27.html",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "captains-regent-investiture",
+      "name": "Investiture of the Captains Regent",
+      "kind": "festival",
+      "regions": [
+        "SM-07"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            4,
+            10
+          ],
+          "reason": "the two heads of state are sworn in on 1 April and 1 October, with a flag-raising, Mass and procession"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Captains_Regent",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "feast-of-saint-marinus",
+      "name": "Feast of Saint Marinus and the Republic",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "3 September, the national feast celebrating the founding of the republic in 301"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Public_holidays_in_San_Marino",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Culture_of_San_Marino",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

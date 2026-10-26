@@ -1,6 +1,6 @@
 {
   "iso2": "TZ",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "mara-river-crossing",
@@ -20,17 +20,17 @@
             9,
             10
           ],
-          "reason": "the migration reaches the northern Serengeti and crosses the Mara; August and September are when most of the herds are on that stretch"
+          "reason": "the migration reaches the northern Serengeti and crosses the Mara River, usually from July; the herds cross back south around October"
         }
       ],
       "sources": [
         {
           "url": "https://www.serengeti.com/great-migration-africa.php",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.asiliaafrica.com/blog/when-to-see-the-great-migration/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -39,8 +39,7 @@
       "name": "Wildebeest calving (Ndutu and the southern plains)",
       "kind": "wildlife",
       "regions": [
-        "TZ-01",
-        "TZ-26"
+        "TZ-01"
       ],
       "status": "not-on",
       "note": "a few weeks of the migration's year, on the southern short-grass plains rather than in the north",
@@ -51,17 +50,237 @@
             1,
             2
           ],
-          "reason": "the herds drop their calves on the Ndutu and southeastern plains - thousands a day at the peak, with the predators that follow them"
+          "reason": "the herds drop their calves on the plains around Ndutu and the southern Serengeti - some 8,000 a day by February, with the predators that follow them"
         }
       ],
       "sources": [
         {
           "url": "https://www.asiliaafrica.com/blog/calving-season-the-great-migration-s-best-kept-secret/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.discoverafrica.com/blog/our-most-frequently-asked-questions-about-the-serengeti-calving-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "kilimanjaro",
+      "name": "Climbing Kilimanjaro",
+      "kind": "trek",
+      "regions": [
+        "TZ-09"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1,
+            2,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry seasons; January and February are the warmest months, August and September the busiest"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the long rains bring sustained heavy downpours; April is the wettest month on the mountain"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.responsibletravel.com/holidays/kilimanjaro/travel-guide/best-time-to-climb-kilimanjaro",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.muchbetteradventures.com/explore/kilimanjaro/best-time-to-climb/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "zanzibar-beaches",
+      "name": "Zanzibar beaches",
+      "kind": "beach",
+      "regions": [
+        "TZ-07",
+        "TZ-11",
+        "TZ-15"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, once the heavy rains have cleared"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the long rains, far heavier than at any other time of year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.go2africa.com/destinations/zanzibar/when-to-go",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.go2africa.com/destinations/tanzania/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mafia-whale-sharks",
+      "name": "Whale sharks off Mafia Island",
+      "kind": "swim",
+      "regions": [
+        "TZ-19"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the peak whale shark sighting season off Mafia Island"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.wwf.org.uk/node/39656",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://altezzatravel.com/articles/mafia-island-whale-sharks",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "mahale-chimpanzees",
+      "name": "Chimpanzee trekking in the Mahale Mountains",
+      "kind": "wildlife",
+      "regions": [
+        "TZ-08"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "closed",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the camps shut for the long rains, reopening towards the end of May"
+        },
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season, when the chimps come down closer to the base of the mountains"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.expertafrica.com/tanzania/mahale-mountains-national-park",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://yellowzebrasafaris.com/tanzania/where-to-go/mahale-mountains-national-park/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "nyerere-game-drives",
+      "name": "Nyerere (Selous) game drives",
+      "kind": "wildlife",
+      "regions": [
+        "TZ-16",
+        "TZ-19",
+        "TZ-12"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the dry season: animals gather around the water as the land dries out"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4,
+            5
+          ],
+          "reason": "the long rains: many tented camps close in April, virtually all by May, and many roads become impassable"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.expertafrica.com/tanzania/nyerere-national-park",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "sauti-za-busara",
+      "name": "Sauti za Busara",
+      "kind": "festival",
+      "regions": [
+        "TZ-15"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "four days of live African music in Stone Town, held every February; dates are announced each year"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Sauti_za_Busara",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://thecitizen.co.tz/tanzania/news/entertainment/sauti-za-busara-moves-to-larger-venue-as-demand-for-2026-edition-surges-5322212",
+          "checked": "2026-10-26"
         }
       ]
     }

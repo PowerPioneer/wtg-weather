@@ -1,0 +1,108 @@
+{
+  "iso2": "GL",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "northern-lights",
+      "name": "Northern lights",
+      "kind": "season",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "the aurora season, when the Arctic night sky often lights up"
+        },
+        {
+          "status": "open",
+          "months": [
+            8,
+            4
+          ],
+          "reason": "the edges of the season, which runs from late August into April and sometimes early May"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitgreenland.com/things-to-do/northern-lights/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "dog-sledding",
+      "name": "Dog sledding",
+      "kind": "tour",
+      "regions": [
+        "GL-QE",
+        "GL-QA"
+      ],
+      "status": "closed",
+      "note": "sledding is a winter and spring activity in the dog-sled districts north of the Arctic Circle",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2,
+            3,
+            4
+          ],
+          "reason": "February to April is the best time, from Sisimiut and Kangerlussuaq as well as Ilulissat"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "Ilulissat's winter season, with dog sledding, runs from January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitgreenland.com/things-to-do/dog-sledding/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://visitgreenland.com/destinations/ilulissat/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "ilulissat-icefjord-boats",
+      "name": "Boat and kayak tours, Ilulissat Icefjord",
+      "kind": "tour",
+      "regions": [
+        "GL-QA"
+      ],
+      "status": "closed",
+      "note": "in winter the sea freezes, and the icefjord takes on a different character",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the summer season for boat and kayak tours beneath the towering icebergs"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://visitgreenland.com/destinations/ilulissat/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
