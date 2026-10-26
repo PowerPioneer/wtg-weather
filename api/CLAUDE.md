@@ -53,6 +53,13 @@ uv run uvicorn wtg_api.main:app --reload
   weekly advisory run. It is mounted rather than loaded into Postgres because
   the pipeline runs on the host and Postgres is on the internal-only network
   this repo forbids exposing to it.
+- **Premium country series**: `GET /api/countries/{slug}/premium` serves the
+  bundle's `premium/<slug>.json` (snow, sea temperature, humidity, heat) — a
+  sibling of `countries/`, never inside it, because the static pages are built
+  from `countries/` and are public HTML. Unlike `/v1/*` it is publicly routed,
+  so it is gated like premium tiles: 401 without a session, 403 without the
+  entitlement, 404 when the country has no premium series. Responses are
+  `Cache-Control: private` — a shared cache must never hold one.
 
 ## Rules
 

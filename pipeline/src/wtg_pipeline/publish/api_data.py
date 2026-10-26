@@ -169,6 +169,8 @@ class PublishResult:
     skipped: tuple[str, ...]
     changed: int
     pruned: int
+    #: Countries with a premium payload under ``premium/``. See `premium_data`.
+    premium: int = 0
 
 
 @dataclass
@@ -1204,17 +1206,35 @@ def run_publish_api_data(*, base_dir: Path | None = None) -> PublishResult:
             advisories_json_path(),
         )
 
+    country_frame = pd.read_parquet(country_perc)
+    admin1_frame = pd.read_parquet(admin1_perc)
     entries, skipped = build_payloads(
         country_gdf=frames["country"].gdf,
         admin1_gdf=frames["admin1"].gdf,
-        country_percentiles=pd.read_parquet(country_perc),
-        admin1_percentiles=pd.read_parquet(admin1_perc),
+        country_percentiles=country_frame,
+        admin1_percentiles=admin1_frame,
         capitals=load_capitals(),
         advisories=advisories,
         region_levels=region_levels,
     )
     assert_publishable(entries, base_dir=base_dir)
     changed, pruned = write_bundle(entries, base_dir=base_dir)
+
+    # The premium four go beside the free bundle, never in it — the static
+    # pages are built from `countries/` and are public HTML. Imported here
+    # because `premium_data` builds on this module.
+    from wtg_pipeline.publish.premium_data import build_premium_payloads, write_premium_bundle
+
+    premium = build_premium_payloads(
+        country_gdf=frames["country"].gdf,
+        admin1_gdf=frames["admin1"].gdf,
+        country_percentiles=country_frame,
+        admin1_percentiles=admin1_frame,
+        published=entries.keys(),
+    )
+    premium_changed, premium_pruned = write_premium_bundle(premium, base_dir=base_dir)
+    changed += premium_changed
+    pruned += premium_pruned
 
     suppressed_published = sum(
         1
@@ -1240,4 +1260,5 @@ def run_publish_api_data(*, base_dir: Path | None = None) -> PublishResult:
         skipped=tuple(sorted(skipped)),
         changed=changed,
         pruned=pruned,
+        premium=len(premium),
     )

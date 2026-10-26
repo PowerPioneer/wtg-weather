@@ -332,6 +332,25 @@ class SignedTileURLResponse(BaseModel):
     tier: Literal["free", "premium"]
 
 
+class PremiumClimate(BaseModel):
+    """The four Premium variables for one country, January first.
+
+    Every series is optional: a landlocked country has no sea temperature, and
+    the pipeline leaves out any series with a hole rather than publishing it.
+    Envelopes exist only for the two variables the tiles carry one for.
+    """
+
+    slug: str
+    snow: list[float] | None = None  # cm
+    snowBandLow: list[float] | None = None  # noqa: N815 - mirrors the web's field name
+    snowBandHigh: list[float] | None = None  # noqa: N815
+    sst: list[float] | None = None  # °C
+    sstBandLow: list[float] | None = None  # noqa: N815
+    sstBandHigh: list[float] | None = None  # noqa: N815
+    humidity: list[float] | None = None  # %
+    heat: list[float] | None = None  # °C feels-like
+
+
 # --- Onboarding ---
 
 

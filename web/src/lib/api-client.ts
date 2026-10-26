@@ -21,6 +21,7 @@ import type {
   AccountPlan,
   AccountRole,
   CountryData,
+  PremiumClimate,
   RegionRow,
   SessionUser,
 } from "./types";
@@ -176,6 +177,28 @@ export async function fetchTileUrl(
   if (!res.ok) throw new Error(`fetchTileUrl(${tier}) failed: ${res.status}`);
   const raw = (await res.json()) as { url: string; expires_at: number };
   return { url: raw.url, expiresAt: raw.expires_at };
+}
+
+/**
+ * `/api/countries/{slug}/premium` — the premium four for one country.
+ *
+ * Returns `null` for anything that is not a 200: 401 (signed out), 403 (not
+ * premium) and 404 (no premium series for this country) all mean the same
+ * thing to the page — keep the teaser it already rendered. A network failure
+ * is the same again, which is why this does not throw: the teaser is a
+ * complete, correct page and an error state would be worse than it.
+ */
+export async function fetchPremiumClimate(slug: string): Promise<PremiumClimate | null> {
+  try {
+    const res = await fetch(`/api/countries/${encodeURIComponent(slug)}/premium`, {
+      credentials: "same-origin",
+      headers: { accept: "application/json" },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as PremiumClimate;
+  } catch {
+    return null;
+  }
 }
 
 /**
