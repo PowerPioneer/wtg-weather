@@ -258,7 +258,9 @@ services:
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
       REDIS_URL: redis://redis:6379/1
       EMAIL_URL: ${GLITCHTIP_EMAIL_URL}
-      GLITCHTIP_DOMAIN: http://localhost
+      # The public URL GlitchTip puts in its own emails (alerts, invites,
+      # password resets) and DSN display. Was http://localhost.
+      GLITCHTIP_DOMAIN: https://glitchtip.v2.wheretogoforgreatweather.com
       # The uptime monitor rejects any target resolving to a private IP —
       # sound SSRF protection on a shared instance, but self-defeating here.
       # These containers sit on an `internal: true` network with no egress, so
@@ -285,7 +287,9 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/glitchtip
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
       REDIS_URL: redis://redis:6379/1
-      GLITCHTIP_DOMAIN: http://localhost
+      # The public URL GlitchTip puts in its own emails (alerts, invites,
+      # password resets) and DSN display. Was http://localhost.
+      GLITCHTIP_DOMAIN: https://glitchtip.v2.wheretogoforgreatweather.com
       # Same setting as glitchtip-web above: the web container validates the
       # monitor on save, this one runs the checks. Both need it, or a monitor
       # saved through the form is refused again at check time.
@@ -303,7 +307,12 @@ services:
     logging: *default-logging
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     environment:
-      BASE_URL: https://v2.wheretogoforgreatweather.com/_plausible
+      # Plausible builds every asset, link and form action from this. It still
+      # named the old `/_plausible` subpath on the main host after Plausible
+      # moved to its own subdomain; Caddy does not route that path, so the
+      # dashboard rendered unstyled with a dead Login link (found 2026-10-26).
+      # Tracking was unaffected — the script and /api/event are on this host.
+      BASE_URL: https://plausible.v2.wheretogoforgreatweather.com
       SECRET_KEY_BASE: ${PLAUSIBLE_SECRET_KEY_BASE}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/plausible
       CLICKHOUSE_DATABASE_URL: http://clickhouse:8123/plausible
