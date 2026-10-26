@@ -69,8 +69,10 @@ Absent, because it would have to be invented:
 
 The prose fields — ``summary``, ``monthNotes``, the best-month and related-country
 captions — are generated from the numbers above, mechanically and
-deterministically. They read drier than editorial copy, and that is the trade:
-every sentence is checkable against the series printed on the same page.
+deterministically, so every sentence is checkable against the series printed
+on the same page. ``summary`` is the country page's intro and also weaves in
+the curated activities; it is written by ``publish/intro.py``, whose docstring
+says what it may and may not say.
 """
 
 from __future__ import annotations
@@ -98,6 +100,7 @@ from wtg_pipeline.processing.country_registry import (
 )
 from wtg_pipeline.processing.country_rules import SUPPRESSED_COUNTRIES
 from wtg_pipeline.processing.scoring import DEFAULT_PREFERENCES, polygon_score
+from wtg_pipeline.publish.intro import MonthlyClimate, build_intro
 from wtg_pipeline.sources import geoboundaries
 from wtg_pipeline.tiles.build_geojson import (
     FREE_SOURCE_VARIABLES,
@@ -419,103 +422,6 @@ def format_area(area_km2: float | None) -> str | None:
 
 
 # ─── generated prose ─────────────────────────────────────────────────────
-
-
-def _preference_phrase() -> str:
-    """The default preferences, spelled out from the table rather than retyped."""
-    by_variable = {p.variable: p for p in DEFAULT_PREFERENCES}
-    temp = by_variable.get("t2m")
-    rain = by_variable.get("tp")
-    sun = by_variable.get("sun_hours")
-    parts: list[str] = []
-    if temp is not None:
-        parts.append(f"{temp.lo:.0f}–{temp.hi:.0f} °C")
-    if rain is not None:
-        parts.append(f"under {rain.hi:g} mm of rain a day")
-    if sun is not None:
-        parts.append(f"at least {sun.lo:g} hours of sun")
-    return ", ".join(parts)
-
-
-def possessive(name: str) -> str:
-    """``Peru`` → ``Peru's``, ``United States`` → ``United States'``.
-
-    Not a nicety: roughly twenty country names end in *s* — the United States,
-    the Netherlands, the Philippines, the Maldives, the Bahamas — and the naive
-    form put "United States's national averages" at the top of each of their
-    pages.
-    """
-    return f"{name}'" if name.endswith(("s", "S")) else f"{name}'s"
-
-
-def _extreme(values: Sequence[float], *, highest: bool) -> tuple[int, float]:
-    index = max(range(12), key=lambda i: values[i]) if highest else min(range(12), key=lambda i: values[i])
-    return index, values[index]
-
-
-def build_summary(
-    *,
-    name: str,
-    climate: PolygonClimate,
-    best_months: Sequence[int],
-    region_count: int,
-    region_temp_span: tuple[float, float] | None,
-    from_regions: bool,
-) -> str:
-    """A factual paragraph, assembled from the series on the same page."""
-    rain_month = climate.rain_month()
-    warm_i, warm_v = _extreme(climate.t, highest=True)
-    cool_i, cool_v = _extreme(climate.t, highest=False)
-    wet_i, wet_v = _extreme(rain_month, highest=True)
-    dry_i, dry_v = _extreme(rain_month, highest=False)
-    sun_lo = min(climate.sun)
-    sun_hi = max(climate.sun)
-
-    # A country whose warmest and coldest months round to the same figure
-    # genuinely has no seasonal swing worth naming; saying "from 26 °C in
-    # January to 26 °C in January" reads as a bug in the sentence rather than a
-    # fact about the tropics.
-    subject = possessive(name)
-    if warm_i == cool_i or f"{warm_v:.0f}" == f"{cool_v:.0f}":
-        temperature = f"{subject} national average holds near {warm_v:.0f} °C all year"
-    else:
-        temperature = (
-            f"{subject} national averages run from {cool_v:.0f} °C in "
-            f"{MONTH_NAMES[cool_i]} to {warm_v:.0f} °C in {MONTH_NAMES[warm_i]}"
-        )
-    if wet_i == dry_i or f"{wet_v:.0f}" == f"{dry_v:.0f}":
-        rainfall = f"around {wet_v:.0f} mm of rain a month"
-    else:
-        rainfall = (
-            f"rainfall between {dry_v:.0f} mm in {MONTH_NAMES[dry_i]} and "
-            f"{wet_v:.0f} mm in {MONTH_NAMES[wet_i]}"
-        )
-    sunshine = (
-        f"{sun_lo:.1f} hours of sun a day"
-        if f"{sun_lo:.1f}" == f"{sun_hi:.1f}"
-        else f"{sun_lo:.1f}–{sun_hi:.1f} hours of sun a day"
-    )
-    sentences = [f"{temperature}, with {rainfall} and {sunshine}."]
-    if best_months:
-        named = [MONTH_NAMES[i] for i in best_months]
-        listed = named[0] if len(named) == 1 else ", ".join(named[:-1]) + f" and {named[-1]}"
-        sentences.append(
-            f"Against the default preferences ({_preference_phrase()}), "
-            f"the strongest months are {listed}."
-        )
-    if region_count and region_temp_span is not None:
-        low, high = region_temp_span
-        sentences.append(
-            f"Its {region_count} regions span {low:.0f}–{high:.0f} °C in annual mean "
-            f"temperature, so the national figure hides a good deal."
-        )
-    if from_regions:
-        sentences.append(
-            f"{name} is large enough that the map paints it as a mosaic of its "
-            f"regions rather than one national colour; the figures above are the "
-            f"mean of those regions."
-        )
-    return " ".join(sentences)
 
 
 def build_month_notes(climate: PolygonClimate) -> dict[str, str]:
@@ -964,26 +870,22 @@ def build_payloads(
                 }
             )
 
-        region_span: tuple[float, float] | None = None
-        if region_rows:
-            annual_means = [
-                sum(r["tl"]) / 12  # type: ignore[arg-type]
-                for r in region_rows
-            ]
-            region_span = (min(annual_means), max(annual_means))
-
         capital = capitals.get(entry.adm0_a3)
         payload: dict[str, object] = {
             "slug": entry.slug,
             "name": entry.name,
             "iso2": entry.iso2,
             "region": entry.region,
-            "summary": build_summary(
+            "summary": build_intro(
                 name=entry.name,
-                climate=climate,
-                best_months=best_order,
-                region_count=len(region_rows),
-                region_temp_span=region_span,
+                climate=MonthlyClimate(
+                    t_max=climate.t_max,
+                    t_min=climate.t_min,
+                    rain_day=climate.rain_day,
+                    sun=climate.sun,
+                    scores=scores,
+                ),
+                curated=curated,
                 from_regions=from_regions,
             ),
             # `tMax` and `tMin` are the mean daily maximum and minimum — the

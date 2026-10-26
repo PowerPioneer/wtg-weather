@@ -331,30 +331,14 @@ def test_generated_prose_reports_the_series_it_was_built_from(
 ) -> None:
     entries, _skipped = _build(monkeypatch)
     peru = entries["peru"]
+    # These fixtures are flat across the year, so every month scores the same
+    # and the intro has to say so rather than invent a season.
+    assert "in every month" in peru["summary"]
     assert "27 °C" in peru["summary"]
-    # These fixtures are flat across the year, which is the case that used to
-    # produce "from 27 °C in January to 27 °C in January".
-    assert "holds near 27 °C all year" in peru["summary"]
-    # Guard the degenerate phrasing itself rather than counting month names.
-    # A month may legitimately be named once per fact — January is both the
-    # wettest month and one of the strongest here — so a bare count also fires
-    # on correct prose, which it did once the sunshine model stopped
-    # understating how many months clear the preference threshold.
-    assert "in January to" not in peru["summary"]
     assert set(peru["monthNotes"]) == set(api_data.MONTH_LABELS)
     assert "27 °C" in peru["monthNotes"]["Jan"]
     assert len(peru["bestMonths"]) == 3
     assert all(0 <= month["score"] <= 100 for month in peru["bestMonths"])
-
-
-# ─── writing ─────────────────────────────────────────────────────────────
-
-
-def test_possessive_handles_country_names_ending_in_s() -> None:
-    """About twenty of them do, and they are not obscure ones."""
-    assert api_data.possessive("Peru") == "Peru's"
-    for name in ("United States", "Netherlands", "Philippines", "Maldives", "Bahamas"):
-        assert api_data.possessive(name) == f"{name}'"
 
 
 # ─── writing ─────────────────────────────────────────────────────────────
