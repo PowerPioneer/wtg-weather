@@ -59,6 +59,14 @@ Leave unset: `PUBLIC_API_ORIGIN` (tracks `PUBLIC_WEB_ORIGIN`).
 | `EMAIL_PROVIDER` | `scaleway` | The sending domain is verified at T-7, not here. |
 | `CADDY_BASICAUTH_HASH` | 60 characters, `$` doubled | Untouched — but a rewritten `.env` is where it gets mangled. Check with `docker compose exec caddy sh -c 'echo ${#CADDY_BASICAUTH_HASH}'`. |
 
+## Check it before swapping
+
+```bash
+./infra/scripts/check-env-cutover.sh .env.cutover
+```
+
+Prints names and pass/fail only, never a value, so the output is safe to share.
+
 ## After swapping the file
 
 ```bash
