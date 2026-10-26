@@ -60,7 +60,7 @@
             6,
             7
           ],
-          "reason": "the east-coast season runs May to September, with blue whales off Trincomalee from about March to July"
+          "reason": "the east-coast season runs May to September, with blue whales off Trincomalee best from May to July"
         },
         {
           "status": "open",
@@ -74,7 +74,7 @@
       "sources": [
         {
           "url": "https://journalofsrilanka.com/post-details/best-time-for-whale-watching-in-sri-lanka-2025-mirissa-trincomalee-guide/63",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://wwhandbook.iwc.int/en/country-profiles/sri-lanka",
@@ -218,7 +218,14 @@
           "months": [
             4
           ],
-          "reason": "the season's start, with less consistent waves but thinner crowds"
+          "reason": "the surf season runs April to October, though its best months are May to October"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "Sri Lanka Tourism still counts November in its best period, May to November"
         }
       ],
       "sources": [

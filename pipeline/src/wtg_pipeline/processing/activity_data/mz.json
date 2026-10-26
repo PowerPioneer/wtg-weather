@@ -14,31 +14,28 @@
         {
           "status": "best",
           "months": [
-            7,
-            8,
-            9
+            4,
+            5,
+            6,
+            9,
+            10,
+            11
           ],
-          "reason": "the clearest water of the year, as the winter winds settle and the ocean calms"
+          "reason": "the water is clear and calm, and visibility is very good"
         },
         {
           "status": "open",
           "months": [
-            4,
-            5,
-            6,
-            10
+            7,
+            8
           ],
-          "reason": "the wider dry-season diving window, April to October, with good visibility and active marine life"
+          "reason": "the middle of the dry season, though July and August can be windy on the coast"
         }
       ],
       "sources": [
         {
-          "url": "https://www.originaldiving.com/africa/mozambique/southern-mozambique-bazaruto-archipelago/best-time",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://www.safaribookings.com/mozambique/best-time",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -49,22 +46,16 @@
       "status": "not-on",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
             6,
             7,
             8,
-            9
-          ],
-          "reason": "humpback whales move through Mozambican waters on their seasonal migration"
-        },
-        {
-          "status": "open",
-          "months": [
+            9,
             10,
             11
           ],
-          "reason": "the tail of the migration, which runs until November"
+          "reason": "humpback whales migrate through Mozambican waters from June to November"
         }
       ],
       "sources": [

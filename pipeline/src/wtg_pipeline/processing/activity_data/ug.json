@@ -20,12 +20,11 @@
             6,
             7,
             8,
-            9,
             12,
             1,
             2
           ],
-          "reason": "the drier months — firmer paths and clearer views, but peak demand, so permits need booking well ahead"
+          "reason": "Uganda's two dry seasons - trails are clear of mud, but demand peaks, so permits need booking well ahead"
         },
         {
           "status": "limited",
@@ -34,21 +33,17 @@
             4,
             5
           ],
-          "reason": "the main rains, mid-March to mid-May: muddy, steep going, though permits are easier to get and prices lower"
+          "reason": "the main rains, mid-March to mid-May: heavy rain makes trekking slippery, though permits are easier to get and prices a little lower"
         }
       ],
       "sources": [
         {
-          "url": "https://www.go2africa.com/destinations/rwanda/when-to-go",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://horizonguides.com/guides/gorilla-trekking/when-to-go",
-          "checked": "2026-08-28"
+          "url": "https://www.go2africa.com/destinations/uganda/when-to-go",
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://en.wikipedia.org/wiki/Bwindi_Impenetrable_National_Park",

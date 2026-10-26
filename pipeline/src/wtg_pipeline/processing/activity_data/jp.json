@@ -69,7 +69,7 @@
     },
     {
       "id": "hokkaido-ski",
-      "name": "Skiing in Hokkaido",
+      "name": "Skiing in Hokkaido and Nagano",
       "kind": "ski",
       "regions": [
         "JP-01",
@@ -84,7 +84,7 @@
             1,
             2
           ],
-          "reason": "world-class powder in the depths of the northern winter"
+          "reason": "the most reliable months for the light, dry powder snow"
         },
         {
           "status": "open",
@@ -92,17 +92,21 @@
             12,
             3
           ],
-          "reason": "the shoulders of the ski season"
+          "reason": "the edges of a season that runs from mid-December to early March; late-season snow turns heavier and wetter"
         }
       ],
       "sources": [
         {
           "url": "https://www.adventure-life.com/asia/articles/asia-cruise-when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.odynovotours.com/japan/best-time-to-visit.html",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -119,17 +123,24 @@
             10,
             11
           ],
-          "reason": "maple, ginkgo and ash turn from October into early November; Hokkaido peaks first, in October"
+          "reason": "maples and larches turn from Hokkaido, which peaks in mid-to-late October, to central Honshu and Kyoto in mid-to-late November"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the last colour, in western Honshu, Shikoku and Kyushu, can last into early December"
         }
       ],
       "sources": [
         {
           "url": "https://www.kimkim.com/c/best-time-to-visit-japan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.odynovotours.com/japan/best-time-to-visit.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

@@ -15,33 +15,36 @@
         {
           "status": "best",
           "months": [
-            11,
             12,
             1,
-            2,
-            3
+            2
           ],
-          "reason": "the southern summer, with the longest days and the boat and walkway services all running"
+          "reason": "the southern summer, which many consider the best time to visit Patagonia"
         },
         {
           "status": "open",
           "months": [
-            5,
-            6,
-            7,
-            8
+            11,
+            3
           ],
-          "reason": "still visitable in winter and all but empty of crowds"
+          "reason": "the shoulder season in Argentine Patagonia, with fewer visitors than the December and January peak"
+        },
+        {
+          "status": "open",
+          "months": [
+            5
+          ],
+          "reason": "the glacier can still be visited in May, when it should be empty of crowds"
         }
       ],
       "sources": [
         {
           "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.latinamericaforless.com/blog/best-time-to-visit-patagonia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -181,7 +184,7 @@
           "months": [
             2
           ],
-          "reason": "the blessing of the fruit opens the programme on the last Sunday of February"
+          "reason": "the festival programme opens in the last days of February"
         }
       ],
       "sources": [

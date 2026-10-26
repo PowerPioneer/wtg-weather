@@ -17,24 +17,27 @@
           "months": [
             12
           ],
-          "reason": "the market runs from late November to the end of December, with choirs, folk music and Estonian winter food"
+          "reason": "the market runs from late November into early January, with Estonian crafts and food such as sausages and sauerkraut"
         },
         {
           "status": "open",
           "months": [
             11
           ],
-          "reason": "the market opens in the second half of November"
+          "reason": "the market opens in late November"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the market stays open into early January"
         }
       ],
       "sources": [
         {
-          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

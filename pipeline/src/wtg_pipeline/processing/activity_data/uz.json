@@ -73,17 +73,11 @@
       "status": "closed",
       "windows": [
         {
-          "status": "best",
-          "months": [
-            1,
-            2
-          ],
-          "reason": "the heart of a ski season that starts in December"
-        },
-        {
           "status": "open",
           "months": [
             12,
+            1,
+            2,
             3
           ],
           "reason": "the season starts in December and lasts until mid-March"

@@ -62,11 +62,11 @@
       "sources": [
         {
           "url": "https://www.munich-ticket.com/neuschwanstein-castle/timings-opening-hours/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.mygermanyvacation.com/how-to-visit-neuschwanstein-castle-in-winter/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -81,32 +81,22 @@
       "note": "reached by cog railway and cable car, so it is accessible in every month — what changes is whether you go up for the view or the snow",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
-            6,
-            7,
-            8,
-            9
-          ],
-          "reason": "the clearest skies and the alpine paths free of snow"
-        },
-        {
-          "status": "best",
-          "months": [
+            12,
             1,
-            2
+            2,
+            3,
+            4,
+            5
           ],
-          "reason": "the ski season on the glacier"
+          "reason": "the glacier ski season, which often starts in December and ends in May"
         }
       ],
       "sources": [
         {
           "url": "https://northabroad.com/zugspitze-germany-travel-guide/",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://travelerbibles.com/zugspitze-best-time-to-visit/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -159,7 +149,14 @@
           "months": [
             2
           ],
-          "reason": "the street carnival runs from Weiberfastnacht to Shrove Tuesday, with the Rose Monday parade; it follows Easter, so in late-Easter years it reaches early March"
+          "reason": "the street carnival runs from Weiberfastnacht to Shrove Tuesday, with the Rose Monday parade; its dates move with Easter"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in late-Easter years the street carnival runs into early March: Rose Monday falls on 4 March in 2030, and can fall as late as 8 March"
         },
         {
           "status": "open",

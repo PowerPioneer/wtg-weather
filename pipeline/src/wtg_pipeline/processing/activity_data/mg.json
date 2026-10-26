@@ -7,38 +7,32 @@
       "name": "Lemur watching",
       "kind": "wildlife",
       "status": "open",
-      "note": "lemurs are found nowhere else on Earth, and Madagascar has over a hundred species; the parks are reachable all year but the season decides the roads",
+      "note": "Madagascar can be visited from April to November; after a damaging cyclone season some areas can stay closed into April",
       "windows": [
         {
           "status": "best",
           "months": [
-            5,
-            6,
-            7,
-            8,
             9,
-            10
+            10,
+            11
           ],
-          "reason": "the dry season, which is when the lemur tours run"
+          "reason": "conditions are at their best from September onward, and October and November are a particularly good time to see baby lemurs"
         },
         {
           "status": "limited",
           "months": [
+            12,
             1,
             2,
             3
           ],
-          "reason": "cyclone risk and rough seas; the months usually advised against, especially for coastal travel"
+          "reason": "the wettest months and the Indian Ocean cyclone season, which is why late April to early November is the better time to visit"
         }
       ],
       "sources": [
         {
-          "url": "https://www.africanbudgetsafaris.com/blog/best-time-to-visit-madagascar/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://safari-consultants.com/destinations/madagascar/madagascar-seasons-when-to-travel/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -158,7 +152,7 @@
           "checked": "2026-10-26"
         },
         {
-          "url": "https://cursosdebuceo.com/en/blog/post/354",
+          "url": "https://cursosdebuceo.com/blog/post/354",
           "checked": "2026-10-26"
         }
       ]

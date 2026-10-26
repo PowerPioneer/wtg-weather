@@ -17,27 +17,33 @@
           "status": "best",
           "months": [
             7,
-            8,
-            9
+            8
           ],
-          "reason": "the lakes are clear of snow and the hiking is at its most straightforward"
+          "reason": "the peak of summer, when the snow has melted and the weather is warm - also the busiest months"
         },
         {
           "status": "open",
           "months": [
             6
           ],
-          "reason": "the season opens in June, with warm and settled weather but possible late snow at altitude"
+          "reason": "the best period starts in mid-June, though after a long winter snow can still lie on the ground"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "fewer crowds, though the weather is less predictable, with rain or even snow possible"
         }
       ],
       "sources": [
         {
           "url": "https://traventuria.com/bulgaria/seven-rila-lakes-rila-monastery-tour-from-sofia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://bags-always-packed.com/7-rila-lakes/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

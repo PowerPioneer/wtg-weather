@@ -31,12 +31,16 @@
         "PT-20"
       ],
       "status": "open",
-      "note": "one of very few places on Earth where sperm whales can be seen reliably in any month; tours run all year",
+      "note": "sperm whales are resident and can be seen all year round, so whale watching is possible in every month; the widest mix of species is from March to October",
       "windows": [],
       "sources": [
         {
-          "url": "https://wwhandbook.iwc.int/en/country-profiles/portugal",
-          "checked": "2026-08-28"
+          "url": "https://whalewatchingazores.com/blog/faq/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.responsibletravel.com/holidays/azores/travel-guide/whale-watching",
+          "checked": "2026-10-26"
         }
       ]
     },

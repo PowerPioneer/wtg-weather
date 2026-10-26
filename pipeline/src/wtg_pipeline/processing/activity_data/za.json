@@ -61,28 +61,27 @@
             7,
             8,
             9,
-            10,
-            11
+            10
           ],
-          "reason": "the season runs roughly July to December, with land-based viewing from the Hermanus cliffs among the best anywhere"
+          "reason": "the peak of the season: July to September across South Africa, and at Hermanus the southern rights arrive in large numbers in late September and early October, watched from the clifftop paths"
         },
         {
           "status": "open",
           "months": [
             6,
-            12
+            11
           ],
-          "reason": "the edges of the season — first arrivals in June, stragglers into December"
+          "reason": "the edges of the Hermanus season, which opens in early June and closes on 30 November"
         }
       ],
       "sources": [
         {
           "url": "https://www.whalehermanus.com/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://farandwild.travel/wilder/article/whale-watching-south-africa-complete-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

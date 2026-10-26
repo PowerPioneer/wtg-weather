@@ -20,17 +20,17 @@
             9,
             10
           ],
-          "reason": "the migration reaches the northern Serengeti and crosses the Mara; August and September are when most of the herds are on that stretch"
+          "reason": "the migration reaches the northern Serengeti and crosses the Mara River, usually from July; the herds cross back south around October"
         }
       ],
       "sources": [
         {
           "url": "https://www.serengeti.com/great-migration-africa.php",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.asiliaafrica.com/blog/when-to-see-the-great-migration/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -39,8 +39,7 @@
       "name": "Wildebeest calving (Ndutu and the southern plains)",
       "kind": "wildlife",
       "regions": [
-        "TZ-01",
-        "TZ-26"
+        "TZ-01"
       ],
       "status": "not-on",
       "note": "a few weeks of the migration's year, on the southern short-grass plains rather than in the north",
@@ -51,17 +50,17 @@
             1,
             2
           ],
-          "reason": "the herds drop their calves on the Ndutu and southeastern plains - thousands a day at the peak, with the predators that follow them"
+          "reason": "the herds drop their calves on the plains around Ndutu and the southern Serengeti - some 8,000 a day by February, with the predators that follow them"
         }
       ],
       "sources": [
         {
           "url": "https://www.asiliaafrica.com/blog/calving-season-the-great-migration-s-best-kept-secret/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.discoverafrica.com/blog/our-most-frequently-asked-questions-about-the-serengeti-calving-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

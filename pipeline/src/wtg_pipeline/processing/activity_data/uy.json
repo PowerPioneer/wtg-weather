@@ -82,7 +82,7 @@
           "months": [
             2
           ],
-          "reason": "the heart of a carnival lasting more than 40 days, with candombe drum parades"
+          "reason": "the month of the Desfile de Llamadas, the candombe drum parade held over two nights in February, at the heart of a carnival lasting more than 40 days"
         },
         {
           "status": "open",
@@ -102,6 +102,14 @@
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Carnival_in_Uruguay",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://rove.me/to/uruguay/uruguay-montevideo-carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.montevideo.com.uy/Archivo/Desfile-de-Llamadas-2025-las-comparsas-que-desfilan-este-sabado-en-la-segunda-jornada-uc914447",
           "checked": "2026-10-26"
         }
       ]

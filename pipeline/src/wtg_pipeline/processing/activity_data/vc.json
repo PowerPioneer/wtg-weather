@@ -9,19 +9,12 @@
       "status": "not-on",
       "windows": [
         {
-          "status": "open",
-          "months": [
-            5
-          ],
-          "reason": "two months of shows and competitions lead up to the parades"
-        },
-        {
           "status": "best",
           "months": [
             6,
             7
           ],
-          "reason": "the carnival culminates in the last weeks of June and early July"
+          "reason": "a festival spanning two months that culminates in the last weeks of June and early July"
         }
       ],
       "sources": [

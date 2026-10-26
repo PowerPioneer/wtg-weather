@@ -20,7 +20,7 @@
             9,
             10
           ],
-          "reason": "the park is open daily from 1 May to 31 October, 07:00 to 16:00"
+          "reason": "the park opens at 07:00 daily from early May (1 May in most years; 19 May in 2026) to 31 October"
         },
         {
           "status": "limited",
@@ -34,11 +34,11 @@
       "sources": [
         {
           "url": "https://samaria-gorge.gr/FAQ.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.west-crete.com/samaria-gorge.htm",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -61,7 +61,7 @@
             2,
             3
           ],
-          "reason": "the winter schedule, when the site is open without the summer queues"
+          "reason": "the winter schedule (1 November to 31 March), when the site is significantly less crowded and entry fees are reduced"
         },
         {
           "status": "limited",
@@ -69,17 +69,17 @@
             7,
             8
           ],
-          "reason": "peak heat on unshaded marble, and the year's heaviest crowds"
+          "reason": "peak heat, when the site may close for part of the day as temperatures become extreme"
         }
       ],
       "sources": [
         {
           "url": "https://acropolisathens.org/opening-hours/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://greektriplanner.me/blog/visiting-greece-in-winter",
-          "checked": "2026-08-28"
+          "url": "https://athenswalkingtours.gr/our-blog/winter-in-athens-why-it-s-the-perfect-low-season-destination-530.html",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -104,17 +104,17 @@
             2,
             3
           ],
-          "reason": "reduced winter timetables and slower boats — Piraeus to Santorini takes at least eight hours rather than under five — and northerly winds cancel dockings at short notice"
+          "reason": "reduced winter timetables and only the slower boats — Piraeus to Santorini takes around eight hours — and ferries do not sail in high winds"
         }
       ],
       "sources": [
         {
           "url": "https://greekferrytravel.com/greek-islands-in-winter-everything-you-need-to-know/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.davestravelpages.com/winter-in-santorini/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

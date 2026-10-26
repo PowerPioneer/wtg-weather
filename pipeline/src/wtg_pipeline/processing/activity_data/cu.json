@@ -37,17 +37,21 @@
             3,
             4
           ],
-          "reason": "outside the hurricane season entirely, in the dry Caribbean winter"
+          "reason": "outside the hurricane season entirely, in Cuba's November-to-April dry season"
         }
       ],
       "sources": [
         {
           "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.roughguides.com/destinations/central-america-and-the-caribbean/cuba/when-to-go/",
+          "checked": "2026-10-26"
         }
       ]
     },

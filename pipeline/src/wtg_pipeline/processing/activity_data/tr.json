@@ -18,7 +18,6 @@
             4,
             5,
             6,
-            9,
             10
           ],
           "reason": "spring and autumn give the highest chance of flying and the best conditions"
@@ -26,9 +25,9 @@
         {
           "status": "best",
           "months": [
-            8
+            9
           ],
-          "reason": "statistically the most reliable month of all, with a cancellation rate around 7%"
+          "reason": "the single most reliable month, with roughly 5–10% of flights cancelled"
         },
         {
           "status": "limited",
@@ -38,17 +37,17 @@
             2,
             3
           ],
-          "reason": "fog, snow and sustained wind cancel more than half of scheduled flights — though January and February are the months to fly if you want the valleys under snow"
+          "reason": "fog, snow and wind cancel roughly a third of flights or more from December to February, and a fifth or more in March — though clear January mornings give some of the most dramatic flights of the year, over snow-covered valleys"
         }
       ],
       "sources": [
         {
           "url": "https://tatildokya.com/en/hot-air-balloon-cappadocia-best-time-to-fly-by-month-2026",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://epicturkeytravel.com/cappadocia-hot-air-balloon-cancellation/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

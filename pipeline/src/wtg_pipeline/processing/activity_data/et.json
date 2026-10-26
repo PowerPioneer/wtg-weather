@@ -9,8 +9,8 @@
       "regions": [
         "ET-AF"
       ],
-      "status": "limited",
-      "note": "one of the hottest inhabited places on Earth, averaging around 49 °C for most of the year — the season is about survivability, not access",
+      "status": "open",
+      "note": "the hottest place on Earth by average annual temperature, at 35–40 °C — the season is decided by the heat, not by access",
       "windows": [
         {
           "status": "best",
@@ -18,31 +18,43 @@
             11,
             12,
             1,
-            2,
-            3
+            2
           ],
-          "reason": "the high season, when temperatures fall to something a visitor can tolerate"
+          "reason": "the ideal months, when conditions are milder"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            3,
+            4,
+            5
+          ],
+          "reason": "within the September-to-May season, with daytime temperatures of 35–40 °C"
         },
         {
           "status": "limited",
           "months": [
-            5,
             6,
             7,
             8,
             9
           ],
-          "reason": "the hottest months, when tours are strongly discouraged"
+          "reason": "the hottest months, spiking past 40 °C — the advice is to avoid June to September, and tours then are mostly private"
         }
       ],
       "sources": [
         {
           "url": "https://www.brilliant-ethiopia.com/regions/danakil-depression",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://rove.me/to/ethiopia/danakil-depression",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.brilliant-ethiopia.com/when-to-visit-ethiopia",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -139,10 +151,11 @@
         {
           "status": "limited",
           "months": [
+            3,
             4,
             5
           ],
-          "reason": "the rains come earlier in the south and leave parts of the Lower Omo inaccessible"
+          "reason": "the rains come earlier in the south, from March, and leave parts of the Omo Valley inaccessible"
         },
         {
           "status": "best",
@@ -205,7 +218,7 @@
           "months": [
             9
           ],
-          "reason": "27 September (28th in a leap year): the Demera bonfires are lit at dusk, with the capital's crowds in Meskel Square"
+          "reason": "27 September (28th in a leap year): the Demera bonfires are lit after dark on the eve, and the capital gathers in Meskel Square"
         }
       ],
       "sources": [

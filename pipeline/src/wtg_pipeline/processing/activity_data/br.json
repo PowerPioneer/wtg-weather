@@ -16,23 +16,31 @@
         {
           "status": "best",
           "months": [
-            6,
             7,
             8,
             9,
-            10
+            10,
+            11
           ],
-          "reason": "the dry season concentrates the animals and thins the vegetation; August is the pick, with the water at its lowest"
+          "reason": "the prime months for jaguar sightings along the rivers; through October it is also the dry season, when the animals cluster around water sources"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            12
+          ],
+          "reason": "within the June-to-December season for visiting the Pantanal, but outside the July-to-November peak for jaguar sightings"
         }
       ],
       "sources": [
         {
           "url": "https://www.pantanaljaguarsafaris.com/best-time-to-visit",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.responsiblevacation.com/vacations/brazil-wildlife/travel-guide/best-time-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -68,17 +76,24 @@
           "months": [
             2
           ],
-          "reason": "Carnival falls in February, in the warm and humid part of the Brazilian year"
+          "reason": "Carnival is held in the week before Lent, which puts it in February or early March"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in some years Carnival falls in early March rather than February"
         }
       ],
       "sources": [
         {
           "url": "https://www.jacadatravel.com/latin-america/brazil/travel-guides/when-is-the-best-time-to-visit-brazil/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.responsibletravel.com/holidays/brazil/travel-guide/best-time-to-visit-brazil",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

@@ -63,22 +63,25 @@
             8,
             9
           ],
-          "reason": "the best months of a season that runs July to early November"
+          "reason": "August and September are the best months for an encounter, within the official swimming season of July to October"
         },
         {
           "status": "open",
           "months": [
             7,
-            10,
-            11
+            10
           ],
-          "reason": "the wider Tongan whale season"
+          "reason": "the official whale-swimming season, July to October"
         }
       ],
       "sources": [
         {
-          "url": "https://farandawayadventures.com/tongas-humpback-whale-season-when-to-watch/",
-          "checked": "2026-08-28"
+          "url": "https://tongapocketguide.com/when-is-the-whale-season-in-tonga",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://taketravelinfo.com/best-time-to-travel-to-south-pacific-a-seasonal-guide/",
+          "checked": "2026-10-26"
         }
       ]
     },

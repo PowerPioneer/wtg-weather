@@ -84,9 +84,16 @@
       "regions": [
         "CO-MET"
       ],
-      "status": "limited",
-      "note": "the river's famous colour comes from plants that only show it part of the year; daily entry is capped, so check for places early",
+      "status": "closed",
+      "note": "Cormacarena closes access in the dry season, when the river's flow drops; daily entry is limited, so check for places early, and a certified local guide is required",
       "windows": [
+        {
+          "status": "open",
+          "months": [
+            6
+          ],
+          "reason": "access reopens around mid-year — on 30 May in 2025 — though the plants turn red only from the end of June"
+        },
         {
           "status": "best",
           "months": [
@@ -97,6 +104,13 @@
             11
           ],
           "reason": "the riverbed plants turn red from around late June or July through November"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the flow drops as the dry season begins and Cormacarena closes access — on 22 December in 2019"
         }
       ],
       "sources": [
@@ -106,6 +120,14 @@
         },
         {
           "url": "https://www.parquesnacionales.gov.co/nuestros-parques/pnn-sierra-de-la-macarena/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.elespectador.com/ambiente/cerrado-el-ingreso-a-cano-cristales-por-inicio-de-temporada-seca-article-897264/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://radionacional.co/cultura/turismo/inicia-temporada-turistica-2025-en-cano-cristales-el-rio-mas-hermoso-del-mundo",
           "checked": "2026-10-26"
         }
       ]

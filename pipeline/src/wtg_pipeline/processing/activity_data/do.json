@@ -37,17 +37,17 @@
             3,
             4
           ],
-          "reason": "outside the hurricane season entirely, in the dry Caribbean winter"
+          "reason": "outside the hurricane season, which runs 1 June to 30 November; December to April is the Caribbean's high season"
         }
       ],
       "sources": [
         {
           "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -198,10 +198,16 @@
           "status": "best",
           "months": [
             6,
-            7,
+            7
+          ],
+          "reason": "usually the best wind months by far, with strong, consistent trade winds on Cabarete Bay"
+        },
+        {
+          "status": "open",
+          "months": [
             8
           ],
-          "reason": "the strongest, most reliable onshore trade winds of the year on Cabarete Bay"
+          "reason": "the hurricane season starts, which can bring storms or no wind at all"
         }
       ],
       "sources": [
@@ -211,10 +217,6 @@
         },
         {
           "url": "https://57hours.com/review/kitesurfing-in-cabarete/",
-          "checked": "2026-10-26"
-        },
-        {
-          "url": "https://en.wikipedia.org/wiki/Cabarete",
           "checked": "2026-10-26"
         }
       ]

@@ -15,22 +15,29 @@
         {
           "status": "best",
           "months": [
-            7,
             8,
-            9,
+            9
+          ],
+          "reason": "the peak of green-turtle nesting"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
             10
           ],
-          "reason": "green turtles nest from July to mid-October, with the peak through August and September"
+          "reason": "nesting runs from July (sometimes June) to mid-October, tailing off at either end"
         }
       ],
       "sources": [
         {
           "url": "https://www.tortugueroinfo.com/costa-rica-sea-turtles/seasons-when-to-see-them.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -50,7 +57,17 @@
             9,
             10
           ],
-          "reason": "the largest arrivals of the year, peaking in October in the depths of the rainy season"
+          "reason": "the largest arribadas of the year, in the rainy-season peak of the nesting"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            8,
+            11,
+            12
+          ],
+          "reason": "olive ridleys are most active from July to December"
         },
         {
           "status": "limited",
@@ -68,11 +85,11 @@
       "sources": [
         {
           "url": "https://gypsycabnosara.com/the-ultimate-guide-to-turtle-watching-in-ostional-costa-rica/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://costaricaexperts.com/costa-rica-travel-blog/costa-rica-sea-turtle-nesting-where-to-go-when/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -127,10 +144,6 @@
         {
           "url": "https://www.roughguides.com/costa-rica/uvita-whale-watching/",
           "checked": "2026-10-26"
-        },
-        {
-          "url": "https://en.wikipedia.org/wiki/Ballena_Marine_National_Park",
-          "checked": "2026-10-26"
         }
       ]
     },
@@ -176,7 +189,7 @@
           "months": [
             10
           ],
-          "reason": "about ten days of parades and street festivities in the week around 12 October, Día de las Culturas"
+          "reason": "about ten days of parades and street festivities in the week around 12 October"
         }
       ],
       "sources": [

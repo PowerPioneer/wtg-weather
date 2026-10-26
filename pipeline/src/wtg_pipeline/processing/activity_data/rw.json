@@ -19,12 +19,17 @@
             6,
             7,
             8,
-            9,
-            12,
+            9
+          ],
+          "reason": "the dry season, with the best hiking conditions of the year"
+        },
+        {
+          "status": "open",
+          "months": [
             1,
             2
           ],
-          "reason": "the drier months — firmer paths and clearer views, but peak demand, so permits need booking well ahead"
+          "reason": "a shorter dry spell of warm, sunny treks, but prices are generally higher and permits need planning well in advance"
         },
         {
           "status": "limited",
@@ -33,21 +38,17 @@
             4,
             5
           ],
-          "reason": "the main rains, mid-March to mid-May: muddy, steep going, though permits are easier to get and prices lower"
+          "reason": "the main rains, March to mid-May, make the trails slippery — though permits are discounted from November to May when combined with another park"
         }
       ],
       "sources": [
         {
           "url": "https://www.go2africa.com/destinations/rwanda/when-to-go",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://horizonguides.com/guides/gorilla-trekking/when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.cedarberg-travel.com/best-time-visit-rwanda-uganda-gorilla-trekking/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -65,7 +66,7 @@
           "months": [
             9
           ],
-          "reason": "the annual ceremony naming the past year's gorilla births, at the foot of Volcanoes National Park; the date is set each year"
+          "reason": "Rwanda's annual ceremony naming its newborn mountain gorillas, at the foothills of Volcanoes National Park — held on 4 September in 2026"
         }
       ],
       "sources": [

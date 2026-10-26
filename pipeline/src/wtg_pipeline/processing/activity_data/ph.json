@@ -10,7 +10,7 @@
         "PH-SOR"
       ],
       "status": "not-on",
-      "note": "Donsol's sharks are wild and unfed, which is why they have a season at all",
+      "note": "Donsol's sharks are wild and unfed",
       "windows": [
         {
           "status": "best",
@@ -18,7 +18,7 @@
             3,
             4
           ],
-          "reason": "the peak of the season, when five to ten sightings in a day is normal and fifteen to twenty not unusual"
+          "reason": "March and April typically give the most consistent daily sightings"
         },
         {
           "status": "open",
@@ -27,19 +27,20 @@
             12,
             1,
             2,
-            5
+            5,
+            6
           ],
-          "reason": "the sharks gather at Donsol from November to May"
+          "reason": "the sharks aggregate in Donsol Bay from November through June"
         }
       ],
       "sources": [
         {
           "url": "https://philippinedives.com/dive-guide/donsol/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.seaview180.com/blogs/q-as/when-is-the-whale-shark-season-for-snorkeling-in-specific-locations-like-the-philippines",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -51,26 +52,22 @@
         "PH-PLW"
       ],
       "status": "open",
-      "note": "western Palawan is the sheltered side of the country — typhoons mostly hit the eastern seaboard",
+      "note": "boat crossings are weather-dependent: a squall or a windy day can close one",
       "windows": [
         {
-          "status": "limited",
+          "status": "best",
           "months": [
-            10,
-            11,
-            12
+            2,
+            3,
+            4
           ],
-          "reason": "the highest typhoon risk of the year nationally, though Palawan is among the more sheltered destinations"
+          "reason": "February through April are the driest months, the core of the dry season"
         }
       ],
       "sources": [
         {
-          "url": "https://underwaterasia.info/diving-the-philippines",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.dive-the-world.com/faqs-diving-philippines.php",
-          "checked": "2026-08-28"
+          "url": "https://www.ultimatetravelmagazine.com/palawan-island-hopping-el-nido-coron/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -178,6 +175,13 @@
             2
           ],
           "reason": "runs through February, with the street dancing and float parades in the last week"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the festival concludes on the first weekend of March with a grand fireworks display"
         }
       ],
       "sources": [

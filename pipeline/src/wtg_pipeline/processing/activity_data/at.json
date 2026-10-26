@@ -14,31 +14,31 @@
       "note": "the valley paths around Hallstatt stay walkable in winter; it is the high alpine routes that have a season",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
             6,
             7,
-            8,
-            9
+            8
           ],
-          "reason": "the hiking season runs June to the end of September, with June good for the higher trails before the heat and the crowds"
+          "reason": "summer: the mountains give fresh air, cool moments and wide views on hot days"
         },
         {
           "status": "best",
           "months": [
+            9,
             10
           ],
-          "reason": "autumn, when the temperatures are pleasant and clear days give the longest views"
+          "reason": "autumn, which runs September to November, is hiking season: the temperatures are pleasant and clear days give fantastic distant views"
         }
       ],
       "sources": [
         {
           "url": "https://www.hallstatt.net/about-hallstatt/active-summer-holiday/wanderzeit-en-US/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.hallstatt.net/about-hallstatt/active-summer-holiday/wanderzeit-en-US/hiking-in-autumn-austria/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -166,6 +166,13 @@
             11
           ],
           "reason": "the Rathausplatz market opens in mid-November"
+        },
+        {
+          "status": "limited",
+          "months": [
+            1
+          ],
+          "reason": "most markets close before the new year, but a few - Schönbrunn Palace, Riesenradplatz and the Ice World on Rathausplatz - stay open until 6 January"
         }
       ],
       "sources": [

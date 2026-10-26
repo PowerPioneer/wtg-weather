@@ -18,7 +18,9 @@
         {
           "status": "open",
           "months": [
-            6
+            5,
+            6,
+            8
           ],
           "reason": "the Liberation Day carnival at Paseo de Susana typically runs from late May to early August"
         }

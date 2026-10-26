@@ -11,16 +11,10 @@
         {
           "status": "best",
           "months": [
+            3,
             4
           ],
-          "reason": "a week of racing out of Nanny Cay, Tortola, normally held in the first week of April"
-        },
-        {
-          "status": "open",
-          "months": [
-            3
-          ],
-          "reason": "some years the regatta starts in the last days of March"
+          "reason": "a week of racing out of Nanny Cay, Tortola, held in late March or early April"
         }
       ],
       "sources": [

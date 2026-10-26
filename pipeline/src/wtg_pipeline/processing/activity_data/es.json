@@ -29,17 +29,17 @@
             7,
             8
           ],
-          "reason": "midsummer temperatures on the exposed walkway regularly pass 40 °C"
+          "reason": "summer temperatures rise well above 30 °C, up to about 35 °C, on a walkway with little shade, and afternoon closures can occur in extreme heat"
         }
       ],
       "sources": [
         {
           "url": "https://caminodelrey.es/best-time-to-visit-caminito-del-rey-month-by-month-weather-and-tips/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://caminito-del-rey-tickets.com/opening-hours/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -62,17 +62,13 @@
             9,
             10
           ],
-          "reason": "mild temperatures, with the Generalife gardens in flower or in autumn colour"
+          "reason": "spring (April to June) and autumn (September to October) are mild, with less chance of extreme heat or cold"
         }
       ],
       "sources": [
         {
-          "url": "https://thealhambra.org/hours-best-time/",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.alhambra-granada-tickets.com/alhambra-opening-hours/",
-          "checked": "2026-08-28"
+          "url": "https://www.granada-tickets.com/alhambra/timings-opening-hours/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -233,18 +229,12 @@
           "reason": "the season opens at the end of November"
         },
         {
-          "status": "best",
-          "months": [
-            1,
-            2,
-            3
-          ],
-          "reason": "the middle of the ski season"
-        },
-        {
           "status": "open",
           "months": [
             12,
+            1,
+            2,
+            3,
             4
           ],
           "reason": "the season runs from late November to late April"

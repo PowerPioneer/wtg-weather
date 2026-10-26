@@ -24,21 +24,27 @@
         {
           "status": "open",
           "months": [
-            5,
+            5
+          ],
+          "reason": "the flood is spreading, opening new mokoro routes almost daily"
+        },
+        {
+          "status": "limited",
+          "months": [
             9,
             10
           ],
-          "reason": "the wider flood season, with boat safaris and strong game viewing"
+          "reason": "water levels drop and some camps halt their mokoro trips, though this varies from camp to camp"
         }
       ],
       "sources": [
         {
           "url": "https://www.okavango.com/best-time-to-visit-okavango-delta.php",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.cedarberg-travel.com/okavango-delta-flood/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

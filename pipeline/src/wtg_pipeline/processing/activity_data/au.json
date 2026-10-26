@@ -9,22 +9,24 @@
       "regions": [
         "AU-NT"
       ],
-      "status": "limited",
-      "note": "high-clearance 4WD only even when open, and the district has stayed shut for whole seasons for cyclone repairs - check the park's access report before you go",
+      "status": "closed",
+      "note": "high-clearance 4WD only even when open, and the area stayed closed for the whole of 2026 for road and infrastructure upgrades - check the park's daily access report before you go",
       "windows": [
         {
           "status": "closed",
           "months": [
+            11,
             12,
             1,
             2,
             3,
-            4
+            4,
+            5
           ],
-          "reason": "the wet season floods the access roads; in those months the falls are reachable only from the air"
+          "reason": "outside the usual June-to-October road access season; an aerial tour is the way to see the falls in full flow"
         },
         {
-          "status": "best",
+          "status": "open",
           "months": [
             6,
             7,
@@ -32,25 +34,17 @@
             9,
             10
           ],
-          "reason": "the dry season, when the road normally opens"
-        },
-        {
-          "status": "limited",
-          "months": [
-            5,
-            11
-          ],
-          "reason": "the changeover months - the road opens and closes on the park's inspection rather than on a date"
+          "reason": "the dry season, when road access usually opens - though the falls stayed closed for the whole 2026 dry season for road and infrastructure upgrades"
         }
       ],
       "sources": [
         {
           "url": "https://kakadu.gov.au/news/access-and-alerts/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://kakadutourism.com/see-and-do/attractions/jim-jim-falls",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

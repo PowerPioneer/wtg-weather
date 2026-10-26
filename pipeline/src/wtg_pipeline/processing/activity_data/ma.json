@@ -58,8 +58,7 @@
       "name": "Sahara camel trekking (Erg Chebbi)",
       "kind": "tour",
       "regions": [
-        "MA-06",
-        "MA-13"
+        "MA-06"
       ],
       "status": "open",
       "windows": [
@@ -80,17 +79,21 @@
             10,
             11
           ],
-          "reason": "spring and autumn, when the dunes are walkable through the day"
+          "reason": "spring and autumn, when daytime temperatures are pleasant and the nights cold but manageable"
         }
       ],
       "sources": [
         {
+          "url": "https://vagrantsoftheworld.com/planning-camel-trekking-in-morocco/",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://www.thenaturaladventure.com/tours/morocco/mount-toubkal-and-sahara-desert-trek/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.skyhookadventure.com/blog/best-time-to-climb-mount-toubkal",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

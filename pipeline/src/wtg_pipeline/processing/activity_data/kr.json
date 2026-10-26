@@ -46,20 +46,19 @@
           "status": "best",
           "months": [
             3,
-            4,
-            5
+            4
           ],
-          "reason": "the blossom moves up the country between March and May"
+          "reason": "the blossom opens on Jeju at the end of March and in Seoul in early April, and is over by mid-April"
         }
       ],
       "sources": [
         {
           "url": "https://geographyworlds.com/blog/seasons-in-south-korea/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.jacadatravel.com/asia/south-korea/travel-guides/when-is-the-best-time-to-visit-south-korea/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -81,7 +80,11 @@
       "sources": [
         {
           "url": "https://geographyworlds.com/blog/seasons-in-south-korea/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.jacadatravel.com/asia/south-korea/travel-guides/when-is-the-best-time-to-visit-south-korea/",
+          "checked": "2026-10-26"
         }
       ]
     },

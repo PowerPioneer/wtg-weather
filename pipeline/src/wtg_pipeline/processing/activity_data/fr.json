@@ -68,7 +68,7 @@
         "FR-74"
       ],
       "status": "closed",
-      "note": "the ski lifts are shut from May to November; some reopen in summer for walkers, not skiers",
+      "note": "no ski area in the valley runs between early May and late November",
       "windows": [
         {
           "status": "limited",
@@ -78,20 +78,26 @@
           "reason": "only Grands Montets and Flégère open, from late November, ahead of the main season"
         },
         {
-          "status": "best",
-          "months": [
-            1,
-            2,
-            3
-          ],
-          "reason": "the heart of the season, with every ski area in the valley running"
-        },
-        {
           "status": "open",
           "months": [
             12
           ],
           "reason": "the whole resort opens around the third week of December"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            3
+          ],
+          "reason": "the season in full swing, with all the main ski areas in the valley running"
+        },
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "late February is the sweet spot for most people, with the snow base well established"
         },
         {
           "status": "open",
@@ -212,7 +218,7 @@
           "months": [
             2
           ],
-          "reason": "about two weeks of day and night float parades and flower battles on the Promenade des Anglais"
+          "reason": "about two weeks of day and night float parades and flower battles in the centre of Nice"
         },
         {
           "status": "open",

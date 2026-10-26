@@ -16,12 +16,11 @@
         {
           "status": "best",
           "months": [
-            6,
             7,
             8,
             9
           ],
-          "reason": "the summer season for the day hikes and the hut-to-hut routes"
+          "reason": "the summer hiking season, when the trails are at their prime"
         },
         {
           "status": "limited",
@@ -31,23 +30,24 @@
             1,
             2,
             3,
-            4
+            4,
+            5
           ],
-          "reason": "the high trails are winter mountaineering terrain rather than walking"
+          "reason": "the seasonal closure: the higher trails, saddles and peaks are shut from 1 November to 31 May, though the paths to most mountain huts stay open"
         }
       ],
       "sources": [
         {
           "url": "https://www.skyhookadventure.com/blog/tatra-mountains-hiking",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://polandwander.com/tatra-national-park-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://hiking-trails.com/trail/high-tatra-hut-to-hut/",
-          "checked": "2026-08-28"
+          "url": "https://blog.gopass.travel/en/winter-closures-in-the-high-and-low-tatras-slowakia/",
+          "checked": "2026-10-26"
         }
       ]
     },

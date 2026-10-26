@@ -10,17 +10,16 @@
         "PL-MA"
       ],
       "status": "open",
-      "note": "the most walked route in Tatra National Park — a paved road from Palenica Białczańska, two to three hours up to the lake",
+      "note": "a paved road from Palenica Białczańska, two to three hours' walk up to the lake",
       "windows": [
         {
           "status": "best",
           "months": [
-            6,
             7,
             8,
             9
           ],
-          "reason": "the summer walking season in the Tatras"
+          "reason": "the prime hiking months in the Tatras, when the trails are clear"
         },
         {
           "status": "limited",
@@ -37,11 +36,11 @@
       "sources": [
         {
           "url": "https://www.skyhookadventure.com/blog/tatra-mountains-hiking",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://polandwander.com/tatra-national-park-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

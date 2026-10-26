@@ -9,13 +9,13 @@
       "status": "not-on",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
             8,
             9,
             10
           ],
-          "reason": "the heart of the humpback season, which typically runs to the end of October"
+          "reason": "humpbacks are typically seen until the end of October"
         },
         {
           "status": "open",

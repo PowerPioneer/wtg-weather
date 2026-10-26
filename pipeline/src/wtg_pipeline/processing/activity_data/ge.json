@@ -13,17 +13,11 @@
       "note": "the only road in crosses the Abano Pass, snowbound for most of the year; outside the road season Tusheti is reachable only by helicopter",
       "windows": [
         {
-          "status": "best",
-          "months": [
-            7,
-            8
-          ],
-          "reason": "midsummer, when the pass road is reliably open"
-        },
-        {
           "status": "open",
           "months": [
             6,
+            7,
+            8,
             9
           ],
           "reason": "the pass usually opens between late May and mid-June and stays open through September, snow permitting"
@@ -57,21 +51,15 @@
       "status": "closed",
       "windows": [
         {
-          "status": "best",
-          "months": [
-            1,
-            2,
-            3
-          ],
-          "reason": "the middle of a ski season that runs from December to mid-April"
-        },
-        {
           "status": "open",
           "months": [
             12,
+            1,
+            2,
+            3,
             4
           ],
-          "reason": "the season opens in December and ends around the middle of April"
+          "reason": "the ski season runs from December until around the middle of April"
         }
       ],
       "sources": [

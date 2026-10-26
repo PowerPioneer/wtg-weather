@@ -59,18 +59,12 @@
         {
           "status": "best",
           "months": [
-            7,
-            8
-          ],
-          "reason": "peak summer: every guesthouse is open and the high passes are largely free of snow"
-        },
-        {
-          "status": "open",
-          "months": [
             6,
+            7,
+            8,
             9
           ],
-          "reason": "the main hiking season, though snow can linger on the higher passes in June"
+          "reason": "the main hiking season: all guesthouses are open, the weather is fairly stable and the high passes are largely free of snow, though snow is possible in early June and late September"
         }
       ],
       "sources": [
@@ -80,6 +74,10 @@
         },
         {
           "url": "https://brookebeyond.com/peaks-of-the-balkans",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://bookatrekking.com/en/blog/peaks-of-the-balkans/",
           "checked": "2026-10-26"
         }
       ]

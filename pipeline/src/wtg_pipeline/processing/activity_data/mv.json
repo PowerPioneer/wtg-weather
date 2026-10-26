@@ -9,8 +9,8 @@
       "regions": [
         "MV-20"
       ],
-      "status": "closed",
-      "note": "a protected bay in Baa Atoll, snorkel-only and time-limited even in season",
+      "status": "not-on",
+      "note": "a protected bay in Baa Atoll, snorkel-only with daily visitor limits; outside the season mantas are still around Baa, but large feeding gatherings in the bay are rare",
       "windows": [
         {
           "status": "best",
@@ -34,12 +34,8 @@
       ],
       "sources": [
         {
-          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://amaldives.com/activities/diving/hanifaru-bay-diving",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -48,7 +44,7 @@
       "name": "Atoll diving",
       "kind": "dive",
       "status": "open",
-      "note": "the monsoon does not stop the diving, it moves it: in the northeast monsoon the mantas and whale sharks are on the western side of the atolls, in the southwest monsoon on the eastern side",
+      "note": "the monsoon does not stop the diving: the southwest monsoon (roughly May to November) brings the plankton that draws mantas and whale sharks, at the cost of some visibility",
       "windows": [
         {
           "status": "best",
@@ -64,12 +60,12 @@
       ],
       "sources": [
         {
-          "url": "https://www.zubludiving.com/articles/zublu-insights/whale-shark-and-manta-rays-seasons-in-the-maldives",
-          "checked": "2026-08-28"
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-maldives",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://www.originaldiving.com/indian-ocean/maldives/best-time",
-          "checked": "2026-08-28"
+          "url": "https://amaldives.com/activities/diving/maamigili-whale-sharks",
+          "checked": "2026-10-26"
         }
       ]
     },

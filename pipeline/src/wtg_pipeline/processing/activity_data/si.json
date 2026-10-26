@@ -12,29 +12,27 @@
         {
           "status": "closed",
           "months": [
+            11,
             12,
             1,
-            2
+            2,
+            3
           ],
-          "reason": "the gorge closes for the winter — the boardwalks are not safe under ice"
-        },
-        {
-          "status": "best",
-          "months": [
-            4,
-            5
-          ],
-          "reason": "the river is at its fullest from mid-April to the end of May"
+          "reason": "the gorge is open to visitors from April to October and officially closed in winter"
         }
       ],
       "sources": [
         {
-          "url": "https://www.bled.si/en/what-to-see-do/attractions/6/vintgar-gorge/",
-          "checked": "2026-08-28"
+          "url": "https://www.vintgar.si/en/my-visit/opening-hours/",
+          "checked": "2026-10-26"
         },
         {
           "url": "https://routinelynomadic.com/vintgar-gorge-slovenia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.bled.si/en/what-to-see-do/attractions/6/vintgar-gorge/",
+          "checked": "2026-10-26"
         }
       ]
     },

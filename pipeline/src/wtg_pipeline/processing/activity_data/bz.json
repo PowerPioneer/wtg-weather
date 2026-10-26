@@ -13,20 +13,20 @@
         {
           "status": "limited",
           "months": [
+            9,
             10,
             11
           ],
-          "reason": "the part of the Atlantic hurricane season when storms historically cause disruption — in Belize the risk is concentrated late, in October and November"
+          "reason": "the late Atlantic hurricane season — September and October are its peak, and most hurricanes that reach Belize arrive in October or November"
         },
         {
           "status": "open",
           "months": [
             6,
             7,
-            8,
-            9
+            8
           ],
-          "reason": "inside the official season, which runs 1 June to 30 November, but outside its historical peak"
+          "reason": "inside the official season, which runs 1 June to 30 November, but before the late-season months when Belize's storms usually arrive"
         },
         {
           "status": "best",
@@ -37,17 +37,17 @@
             3,
             4
           ],
-          "reason": "outside the hurricane season entirely, in the dry Caribbean winter"
+          "reason": "outside the hurricane season, when storms are rare — and the Caribbean's high season"
         }
       ],
       "sources": [
         {
-          "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
-          "checked": "2026-08-28"
+          "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://belizewithalvin.com/caribbean-hurricane-season/",
-          "checked": "2026-08-28"
+          "url": "https://www.101holidays.co.uk/best-time-to-visit-the-caribbean/",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -65,17 +65,17 @@
           "months": [
             4,
             5,
-            6
+            6,
+            7
           ],
-          "reason": "whale sharks gather to feed on spawning snapper around the full moons, most reliably April to June"
+          "reason": "whale-shark watching runs around the full moons from April to July, when the sharks gather to feed on spawning snapper"
         },
         {
           "status": "open",
           "months": [
-            3,
-            7
+            3
           ],
-          "reason": "the edges of the spawning season; sightings cluster around each full moon"
+          "reason": "the snapper spawning season begins in March"
         }
       ],
       "sources": [

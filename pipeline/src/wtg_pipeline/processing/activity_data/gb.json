@@ -17,17 +17,17 @@
           "months": [
             8
           ],
-          "reason": "the Fringe runs through August — 7 to 31 in 2026"
+          "reason": "the Fringe runs for three weeks in August — 6 to 30 August in 2027"
         }
       ],
       "sources": [
         {
           "url": "https://www.edfringe.com/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.edinburghfestivalcity.com/festivals/edinburgh-festival-fringe",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -48,27 +48,25 @@
             7,
             8
           ],
-          "reason": "peak midge season — July is the worst month, and Glen Coe, Torridon and the Cuillin foothills on Skye are the worst places"
+          "reason": "peak midge season — July is the worst month, and Torridon, Knoydart and the glen floors of Skye are among the worst places"
         },
         {
           "status": "best",
           "months": [
-            4,
             5,
-            9,
-            10
+            9
           ],
-          "reason": "long enough days for the hills, either side of the midges"
+          "reason": "the best walking months either side of the midge peak — long daylight in May, and September is arguably the best month for hillwalking"
         }
       ],
       "sources": [
         {
           "url": "https://www.wildernessscotland.com/blog/midges-in-scotland/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://outdoorscot.co.uk/blog/midge-season-scotland",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

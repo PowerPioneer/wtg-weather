@@ -90,8 +90,7 @@
       "name": "Borobudur at sunrise",
       "kind": "site",
       "regions": [
-        "ID-JT",
-        "ID-YO"
+        "ID-JT"
       ],
       "status": "open",
       "windows": [
@@ -112,11 +111,11 @@
       "sources": [
         {
           "url": "https://discoverindonesia.info/blog/best-time-to-visit-indonesia/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.selectiveasia.com/indonesia-holidays/weather/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

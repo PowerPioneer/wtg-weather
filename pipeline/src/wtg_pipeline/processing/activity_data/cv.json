@@ -55,18 +55,12 @@
         {
           "status": "open",
           "months": [
-            6
-          ],
-          "reason": "nesting begins around mid-June"
-        },
-        {
-          "status": "best",
-          "months": [
+            6,
             7,
             8,
             9
           ],
-          "reason": "loggerheads come ashore at night to lay their eggs, and the first nests hatch from August"
+          "reason": "nesting starts about mid-June and lasts through September, and the first nests hatch from August"
         },
         {
           "status": "open",
@@ -74,7 +68,7 @@
             10,
             11
           ],
-          "reason": "nesting is over, but hatchlings emerge from the last nests"
+          "reason": "nesting is over, but nests keep hatching through November"
         }
       ],
       "sources": [

@@ -10,37 +10,33 @@
         "IL-D"
       ],
       "status": "open",
-      "note": "the Snake Path up Masada is usually climbed before dawn for a reason",
+      "note": "the Snake Path is a sustained uphill climb; do not plan a midday ascent without checking the park's notice for the trail and date",
       "windows": [
         {
           "status": "best",
           "months": [
             3,
-            4,
-            5,
-            10,
             11
           ],
-          "reason": "spring and autumn give comfortable hiking temperatures at the lowest point on Earth"
+          "reason": "November is the best all-round month for a Dead Sea visit, and March the closest alternative"
         },
         {
           "status": "limited",
           "months": [
-            6,
             7,
             8
           ],
-          "reason": "38–45 °C makes midday activity inadvisable"
+          "reason": "daytime highs average around 40 °C, which can make exposed outdoor activity unsafe or impractical, especially around midday"
         }
       ],
       "sources": [
         {
           "url": "https://deadsea.com/explore/historical-sites/archaeological-and-historical-sites/masada/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://deadsea.com/dead-sea-weather/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -53,16 +49,7 @@
       ],
       "status": "open",
       "note": "water conditions are good for diving all year, at about 21-25 °C",
-      "windows": [
-        {
-          "status": "limited",
-          "months": [
-            7,
-            8
-          ],
-          "reason": "air temperatures often exceed 40 °C"
-        }
-      ],
+      "windows": [],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Eilat",

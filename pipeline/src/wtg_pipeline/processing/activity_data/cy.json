@@ -17,7 +17,7 @@
             9,
             10
           ],
-          "reason": "the shoulder seasons: warm sea, and air temperatures you can walk a site in"
+          "reason": "inside the May-to-October beach season, with the sea above 20°C, but outside the two hottest months"
         },
         {
           "status": "limited",
@@ -25,13 +25,13 @@
             7,
             8
           ],
-          "reason": "peak summer heat on unshaded archaeological sites"
+          "reason": "the hottest months, which can be hard going for anyone not used to the heat"
         }
       ],
       "sources": [
         {
           "url": "https://dom.com.cy/en/live/blog/water-temperature-in-cyprus-by-month/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://seatemperature.net/seas/mediterranean-sea",

@@ -55,6 +55,13 @@
             2
           ],
           "reason": "Adélies arrive at their colonies in late October or November and breed through February"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the adults and their young leave the colonies and return to the sea in March"
         }
       ],
       "sources": [

@@ -22,12 +22,12 @@
           "reason": "the desert camping season in the south, run by the Southern Governorate"
         },
         {
-          "status": "open",
+          "status": "limited",
           "months": [
             11,
             3
           ],
-          "reason": "dates move each year: the 2024-25 season opened on 20 November, the 2025-26 season was set to run until 25 March"
+          "reason": "dates move each year: the 2024-25 season ran from 20 November to 20 February, while the 2025-26 season opened on 5 December and was suspended in early March 2026"
         }
       ],
       "sources": [
@@ -57,7 +57,7 @@
           "months": [
             3
           ],
-          "reason": "an annual arts festival each March since 2005, with internationally known musicians and artists"
+          "reason": "an annual festival held in March, with internationally renowned musicians and artists performing in concerts"
         }
       ],
       "sources": [

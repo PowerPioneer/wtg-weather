@@ -10,7 +10,7 @@
         "CA-AB"
       ],
       "status": "open",
-      "note": "the road is the only vehicle access; in winter the lake is reached on snowshoes, fat bike or skis",
+      "note": "the road is the only vehicle access; in winter the only way up is to cross-country ski or snowshoe the closed road, which stops short of the avalanche zone below the lakeshore",
       "windows": [
         {
           "status": "closed",
@@ -20,28 +20,23 @@
             1,
             2,
             3,
-            4,
-            5
+            4
           ],
-          "reason": "Parks Canada closes the road for the season from around Canadian Thanksgiving in mid-October until early June, with the exact date set by snowfall"
+          "reason": "the road closes for the season around Canadian Thanksgiving weekend in October and reopens around the May long weekend or at the very beginning of June"
         },
         {
           "status": "limited",
           "months": [
             10,
-            6
+            5
           ],
-          "reason": "the closing and reopening months — in 2026 the Lake Louise and Moraine Lake shuttles finished on 12 October"
+          "reason": "the closing and reopening months — the road shuts around Thanksgiving weekend in October and usually reopens around the May long weekend"
         }
       ],
       "sources": [
         {
-          "url": "https://banff.tips/guides/seasonal-closures",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://endlesswonder.ca/destinations/north-america/canada/alberta/moraine-lake-winter/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -65,17 +60,21 @@
             3,
             4
           ],
-          "reason": "the Skywalk, the Glacier Adventure and the Icefields Discovery Centre all close for the winter, and the drive itself needs a road-condition check after snow"
+          "reason": "the Columbia Icefield Skywalk and Glacier Adventure run only from about the start of May to mid-October, and in winter the parkway has no services and is not often plowed, so it can be icy after snow"
         }
       ],
       "sources": [
         {
           "url": "https://thebanffblog.com/banff-in-winter/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
-          "url": "https://banff.tips/guides/seasonal-closures",
-          "checked": "2026-08-28"
+          "url": "https://www.banfflakelouise.com/business/columbia-icefield-skywalk",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://banffjaspercollection.com/attractions/columbia-icefield/",
+          "checked": "2026-10-26"
         }
       ]
     },

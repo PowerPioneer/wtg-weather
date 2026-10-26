@@ -18,7 +18,7 @@
             8,
             9
           ],
-          "reason": "the densest herds and the most frequent Mara River crossing attempts, most reliably between about 15 August and 5 September"
+          "reason": "the highest chance of seeing herds cross the Mara River"
         },
         {
           "status": "open",
@@ -26,17 +26,24 @@
             7,
             10
           ],
-          "reason": "the herds build from late July and return south through the last two weeks of October"
+          "reason": "the first crossings come in July, and in late October the herds start back south"
+        },
+        {
+          "status": "open",
+          "months": [
+            11
+          ],
+          "reason": "the return crossings south can run into early November"
         }
       ],
       "sources": [
         {
           "url": "https://kenyaluxurysafari.co.uk/kenya-great-migration/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.africanmeccasafaris.com/travel-guide/kenya/parks-reserves/masai-mara/wildebeest-migration",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -179,7 +186,7 @@
             8,
             9
           ],
-          "reason": "humpbacks migrate up from the Antarctic to breed, passing close enough to Watamu to be seen from shore"
+          "reason": "humpbacks migrate up from the Antarctic to breed, and whale-watching boats run from Watamu"
         }
       ],
       "sources": [
@@ -249,7 +256,14 @@
           "months": [
             11
           ],
-          "reason": "three days of Swahili culture in Lamu Old Town, with dhow and donkey races; the county sets the dates each year, usually late November"
+          "reason": "three days of Swahili culture on Lamu Island, with dhow and donkey races; the dates move each year (20-22 November in 2025)"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "some years the festival runs into early December, as it did from 30 November to 2 December in 2023"
         }
       ],
       "sources": [

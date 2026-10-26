@@ -119,7 +119,14 @@
           "months": [
             11
           ],
-          "reason": "the town's fiesta runs 31 October to 2 November, centred on its famous horse races on All Saints' Day"
+          "reason": "the town's fiesta runs 31 October to 2 November, centred on All Saints' Day, with its famous horse races, traditional dances and marimba music"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the fiesta opens on 31 October, the last day of the month"
         }
       ],
       "sources": [

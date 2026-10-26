@@ -15,42 +15,42 @@
         {
           "status": "best",
           "months": [
-            11,
-            12,
-            1
-          ],
-          "reason": "the darkest, longest nights of the season, with viewing strongest roughly 21:00 to 02:00"
-        },
-        {
-          "status": "open",
-          "months": [
             9,
             10,
             2,
             3
           ],
-          "reason": "the season runs September to April; October and November are statistically among the strongest for activity, and March pairs dark evenings with enough snow for husky and snowmobile trips"
+          "reason": "the peak months of a season that runs from the end of August to April, with the best viewing from about 18:00 to 02:00"
+        },
+        {
+          "status": "open",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "long, fully dark nights, with most of Lapland in polar night in December and January; November is statistically among the strongest months for aurora activity"
         },
         {
           "status": "limited",
           "months": [
             4
           ],
-          "reason": "the tail of the season, as the nights shorten"
+          "reason": "the tail of the season: the nights grow lighter in early April and the chances drop sharply by mid-month"
         }
       ],
       "sources": [
         {
           "url": "https://www.visitfinland.com/en/articles/the-best-times-to-see-northern-lights/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.visitnordic.com/en/northern-lights",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.best-served.co.uk/blog/the-best-time-to-see-the-northern-lights-a-month-by-month-guide",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

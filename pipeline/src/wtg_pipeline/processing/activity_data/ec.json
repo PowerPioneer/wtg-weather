@@ -15,20 +15,19 @@
         {
           "status": "best",
           "months": [
-            7,
-            8
+            7
           ],
-          "reason": "the cool, dry season: the Humboldt Current brings nutrient-rich water and with it whale sharks, hammerheads and dolphins, plus migratory birds"
+          "reason": "one of the best months for marine wildlife: the Humboldt Current brings nutrient-rich cold water that draws whale sharks, hammerheads and dolphins, and migratory birds gather"
         }
       ],
       "sources": [
         {
           "url": "https://www.wildernesstravel.com/latin-america/galapagos/best-time-to-visit-galapagos/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.wildlifeworldwide.com/journal/galapagos-wildlife-calendar",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -37,33 +36,26 @@
       "name": "Humpback whales off the Pacific coast",
       "kind": "wildlife",
       "regions": [
-        "EC-M",
-        "EC-SE"
+        "EC-M"
       ],
       "status": "not-on",
       "note": "the whales are in Antarctic waters the rest of the year",
       "windows": [
         {
-          "status": "best",
-          "months": [
-            7,
-            8
-          ],
-          "reason": "peak months, with sighting success rates around 95%"
-        },
-        {
           "status": "open",
           "months": [
             6,
+            7,
+            8,
             9
           ],
-          "reason": "humpbacks migrate up from Antarctica to breed off the Ecuadorian coast between June and September"
+          "reason": "humpbacks migrate from their Antarctic feeding grounds to mate and give birth off the coast between June and September; Puerto López and Machalilla National Park are the places to watch"
         }
       ],
       "sources": [
         {
           "url": "https://andeantc.com/whale-season-ecuador-pacific/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://wwhandbook.iwc.int/en/country-profiles/ecuador",

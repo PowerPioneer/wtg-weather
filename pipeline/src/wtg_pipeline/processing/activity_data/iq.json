@@ -78,7 +78,7 @@
             1,
             2
           ],
-          "reason": "winter highs of about 18-21 °C at nearby Nasiriyah"
+          "reason": "mild, dry winter days, with highs of about 18-21 °C at nearby Nasiriyah"
         },
         {
           "status": "limited",
@@ -86,7 +86,7 @@
             7,
             8
           ],
-          "reason": "average highs near 45 °C at nearby Nasiriyah"
+          "reason": "average highs of about 46-47 °C at nearby Nasiriyah, which turns exploring the open site into a slog"
         }
       ],
       "sources": [
@@ -96,6 +96,10 @@
         },
         {
           "url": "https://en.wikipedia.org/wiki/Nasiriyah",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.takeyourbackpack.com/backpacking-in-iraq/visit-ur/",
           "checked": "2026-10-26"
         }
       ]

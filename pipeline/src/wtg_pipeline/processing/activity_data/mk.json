@@ -65,12 +65,16 @@
           "months": [
             1
           ],
-          "reason": "held each January for the New Year of the Julian calendar, a village carnival claimed to be over 1,400 years old"
+          "reason": "held on 13 and 14 January for the New Year of the Julian calendar, a village carnival said to be over 1,400 years old"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Vevčani",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://journeymacedonia.com/cultural_historical/vevchani-carnival/",
           "checked": "2026-10-26"
         }
       ]

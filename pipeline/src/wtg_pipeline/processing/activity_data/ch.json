@@ -16,42 +16,48 @@
         {
           "status": "closed",
           "months": [
-            11,
             12,
             1,
             2,
             3,
             4
           ],
-          "reason": "closed under snow: the Furka from late October until late May, the Grimsel through the same window"
+          "reason": "shut under snow through the winter: the passes reopen between late May and late June, once the snow is cleared"
         },
         {
           "status": "limited",
           "months": [
             5,
-            10
+            6
           ],
-          "reason": "the opening and closing months — in 2026 the Furka, Grimsel and Nufenen reopened on 29 May"
+          "reason": "the reopening months — the Furka typically reopens between late May and late June and the Susten mid-to-late June; in 2026 the Furka, Grimsel and Nufenen reopened on 29 May"
         },
         {
           "status": "best",
           "months": [
-            6,
             7,
             8,
             9
           ],
-          "reason": "the driving and hiking season for the high passes"
+          "reason": "the simplest window, with all three passes open: late June through September"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "there is no fixed closing date — recent winter closures fell in late October or the first half of November"
         }
       ],
       "sources": [
         {
           "url": "https://planthealps.com/guides/swiss-mountain-passes-open-dates/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.the-ski-guru.com/2026/06/01/switzerland-furka-grimsel-nufenen-passes-reopen-2026/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -126,6 +132,13 @@
             4
           ],
           "reason": "the cogwheel railway from Alpnachstad runs only from May to November"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5
+          ],
+          "reason": "the season opens in mid-May — on 11 May in 2026"
         }
       ],
       "sources": [
@@ -151,13 +164,19 @@
         {
           "status": "closed",
           "months": [
-            11,
             12,
             1,
             2,
             3
           ],
           "reason": "the falls are open daily only from early April to early November"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11
+          ],
+          "reason": "the season ends in early November, weather permitting"
         }
       ],
       "sources": [

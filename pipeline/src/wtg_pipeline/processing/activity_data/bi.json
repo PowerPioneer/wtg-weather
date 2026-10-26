@@ -12,7 +12,7 @@
       "status": "open",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
             6,
             7,
@@ -116,18 +116,13 @@
         {
           "status": "best",
           "months": [
-            12,
-            1
-          ],
-          "reason": "heavy rains swell the cascades, most of all around December and January"
-        },
-        {
-          "status": "best",
-          "months": [
+            3,
+            4,
+            5,
             10,
             11
           ],
-          "reason": "the rains are back and the falls run at their most dramatic"
+          "reason": "the rainy seasons, March to May and October to November, when the water flow peaks and the falls are at their most dramatic"
         }
       ],
       "sources": [

@@ -10,7 +10,7 @@
         "MM-04"
       ],
       "status": "closed",
-      "note": "the operators fly only in the dry season and pack the balloons away for the rest of the year",
+      "note": "the operators fly only in a season that runs from October to, at the latest, April",
       "windows": [
         {
           "status": "best",
@@ -20,25 +20,22 @@
             1,
             2
           ],
-          "reason": "the heart of the dry season, with the most reliable morning conditions over the temple plain"
+          "reason": "the months when both operators fly, including Golden Eagle's shorter mid-November-to-mid-February season; November's cool, dry weather is called ideal for a balloon ride"
         },
         {
           "status": "open",
           "months": [
             10,
-            3
+            3,
+            4
           ],
-          "reason": "Balloons Over Bagan flies from mid-October into March; other operators keep a shorter November-to-February season"
+          "reason": "Balloons Over Bagan flies from mid-October, with a season its packages give as ending in March or April"
         }
       ],
       "sources": [
         {
-          "url": "https://www.wanderonless.com/south-east-asia-travel-where-to-go/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://vinwonders.com/en/wonderpedia/news/southeast-asia-in-november/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://balloonsoverbagan.com/services/balloons-over-bagan/",

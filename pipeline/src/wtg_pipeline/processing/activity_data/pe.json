@@ -1,6 +1,6 @@
 {
   "iso2": "PE",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "inca-trail",
@@ -17,18 +17,18 @@
         },
         {
           "status": "best",
-          "months": [5, 6, 7, 8, 9],
-          "reason": "the dry months — driest trail and the clearest views from the passes"
+          "months": [5, 6, 7, 8],
+          "reason": "the drier months — and the busiest on the trail"
         }
       ],
       "sources": [
         {
           "url": "https://www.alpacaexpeditions.com/why-the-inca-trail-closes-in-february-and-why-it-reopens-on-march-1/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -68,12 +68,16 @@
       "kind": "site",
       "regions": ["PE-CUS"],
       "status": "open",
-      "note": "open every day of the year, on timed entry by circuit; reached by train when the Inca Trail is shut",
+      "note": "the citadel stays open all year, including February when the Inca Trail is shut; the alternative treks reach it by train",
       "windows": [],
       "sources": [
         {
+          "url": "https://www.alpacaexpeditions.com/why-the-inca-trail-closes-in-february-and-why-it-reopens-on-march-1/",
+          "checked": "2026-10-26"
+        },
+        {
           "url": "https://trexperienceperu.com/travel-news/inca-trail-closed-february-2026-alternatives-treks",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -88,17 +92,17 @@
         {
           "status": "best",
           "months": [12, 1, 2, 3, 4, 5],
-          "reason": "high water floods the forest and opens a maze of channels; the peak is March and April"
+          "reason": "high water makes the rivers and creeks navigable and lets boats into hidden creeks and lakes; around Iquitos the river peaks in May"
         }
       ],
       "sources": [
         {
           "url": "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -113,17 +117,17 @@
         {
           "status": "best",
           "months": [6, 7, 8, 9, 10, 11],
-          "reason": "low water exposes the trails and river beaches, concentrates wildlife around shrinking pools, and brings fewer mosquitoes"
+          "reason": "low water opens the usually submerged trails to walking, and there are fewer mosquitoes"
         }
       ],
       "sources": [
         {
           "url": "https://www.rainforestcruises.com/guides/best-time-to-visit-iquitos",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.adventure-life.com/amazon/articles/best-time-of-year-to-travel-to-the-amazon",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

@@ -45,6 +45,13 @@
             3
           ],
           "reason": "the lifts run from the second half of December to early April"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the lifts close in early April"
         }
       ],
       "sources": [

@@ -9,7 +9,7 @@
       "status": "open",
       "windows": [
         {
-          "status": "closed",
+          "status": "limited",
           "months": [
             10,
             11,
@@ -19,7 +19,7 @@
             3,
             4
           ],
-          "reason": "the castle is open daily only from early May to the end of September; otherwise visits are by arrangement"
+          "reason": "the castle is open daily only from 2 May to 30 September; outside that it opens on a few set days around Easter and the autumn school break, and otherwise by arrangement"
         }
       ],
       "sources": [

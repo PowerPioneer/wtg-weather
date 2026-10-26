@@ -18,7 +18,7 @@
             11,
             12
           ],
-          "reason": "the Christmas season runs from mid-November into early January, when the 182-year-old park is lit for the holidays"
+          "reason": "the Christmas season runs from mid-November into early January, when the park is lit for the holidays"
         },
         {
           "status": "open",
@@ -30,16 +30,12 @@
       ],
       "sources": [
         {
-          "url": "https://www.getyourguide.com/explorer/travel-inspiration/best-christmas-markets-europe/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://www.balticmedia.com/christmas-traditions-in-northern-europe-nordic-and-baltic-countries/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.forbes.com/sites/davidnikel/2025/12/03/copenhagens-tivoli-gardens-lights-up-for-the-holiday-season/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },

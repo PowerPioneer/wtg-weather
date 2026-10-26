@@ -11,7 +11,7 @@
         "IN-HP"
       ],
       "status": "open",
-      "note": "the only road approaches to Ladakh, and both cross passes above 5,000 m",
+      "note": "crosses the Baralacha La, Lachulung La and Tanglang La passes, which close under snow from November to May",
       "windows": [
         {
           "status": "closed",
@@ -22,7 +22,7 @@
             3,
             4
           ],
-          "reason": "shut under snow. The highway normally opens to civilian traffic in late May or early June — 27 May in 2025, 19 May in 2024 — and stays open until October"
+          "reason": "shut under snow. The highway opens to civilian traffic in late May — 27 May in 2025, 19 May in 2024 — and closes between late October and mid-November (20 November in 2025)"
         },
         {
           "status": "limited",
@@ -30,25 +30,27 @@
             5,
             11
           ],
-          "reason": "the opening and closing months; the exact date is announced each year rather than fixed"
+          "reason": "the opening and closing months; the date differs from year to year"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the season is ending, and some high passes begin closing under early snow"
         },
         {
           "status": "best",
           "months": [
-            9,
-            10
+            9
           ],
-          "reason": "roads still open, crowds gone, and the clearest autumn light on the mountains"
+          "reason": "the sweet spot of the season, with the high passes open through mid-September"
         }
       ],
       "sources": [
         {
-          "url": "https://www.stayvista.com/blog/when-do-ladakh-roads-open-in-2026-manali-and-srinagar-route-status-and-travel-advice/",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://jtreks.co/ladakh/articles/ladakh-when-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -263,7 +265,7 @@
           "months": [
             4
           ],
-          "reason": "the doors reopen in late April or May on a date set each year by astrological calculation"
+          "reason": "the doors reopen in spring on a date announced each year and timed by the ascendant — 22 April in 2026"
         },
         {
           "status": "limited",
@@ -271,7 +273,7 @@
             10,
             11
           ],
-          "reason": "the doors close for winter on Bhai Dooj, in late October or November depending on the lunar calendar"
+          "reason": "the doors close for winter on Bhai Dooj, which falls in late October or November — 3 November in 2024, 23 October in 2025"
         }
       ],
       "sources": [
@@ -281,6 +283,10 @@
         },
         {
           "url": "https://www.newsonair.gov.in/shri-kedarnath-and-shri-yamunotri-temples-close-for-winter-on-bhaiya-dooj",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.outlooktraveller.com/whats-new/the-kedarnath-temple-will-close-its-doors-to-worshippers-on-november-3",
           "checked": "2026-10-26"
         }
       ]

@@ -162,20 +162,21 @@
         {
           "status": "best",
           "months": [
-            12,
-            1,
-            2
+            3,
+            4,
+            5,
+            10,
+            11
           ],
-          "reason": "winter averages 20-23 °C at the lowest point on land"
+          "reason": "spring and autumn, the most comfortable conditions, when air temperatures do not exceed 35 °C"
         },
         {
           "status": "limited",
           "months": [
-            6,
             7,
             8
           ],
-          "reason": "summer averages 32-39 °C"
+          "reason": "the low-lying Dead Sea easily reaches 40 °C in July and August"
         }
       ],
       "sources": [
@@ -185,6 +186,10 @@
         },
         {
           "url": "https://international.visitjordan.com/wheretogo/the-dead-sea/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.jacadatravel.com/middle-east/jordan/travel-guides/when-is-the-best-time-to-visit-jordan/",
           "checked": "2026-10-26"
         }
       ]
@@ -197,17 +202,7 @@
         "JO-AQ"
       ],
       "status": "open",
-      "note": "more than thirty dive sites on the Red Sea reefs, dived all year; winters are mild",
-      "windows": [
-        {
-          "status": "limited",
-          "months": [
-            7,
-            8
-          ],
-          "reason": "on land, average highs reach about 41 °C"
-        }
-      ],
+      "note": "more than thirty primary dive sites on the Gulf of Aqaba; winters are mild, sometimes warm, and summers very hot and dry",
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Aqaba",

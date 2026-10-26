@@ -67,24 +67,24 @@
             12,
             1,
             2,
-            3
+            3,
+            4
           ],
-          "reason": "closed for the winter beyond the Badger Pass ski area; it shuts between late October and mid-November and reopens between late May and early June"
+          "reason": "snow closes the road and it is not possible to drive to Glacier Point; in winter only the first five miles stay open, to the Badger Pass ski area"
         },
         {
           "status": "limited",
           "months": [
             11,
-            4,
             5
           ],
-          "reason": "the shoulder months either side of the closure - the dates move with the snow"
+          "reason": "the road usually closes for snow at some point in November and reopens in late May or early June"
         }
       ],
       "sources": [
         {
-          "url": "https://www.nps.gov/yose/planyourvisit/tiogaopen.htm",
-          "checked": "2026-08-28"
+          "url": "https://www.nps.gov/yose/planyourvisit/wroads.htm",
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -208,7 +208,7 @@
           "months": [
             5
           ],
-          "reason": "the road historically opens on Memorial Day weekend, later when snowpack is heavy"
+          "reason": "the road historically opens on Memorial Day weekend; a late-May snowstorm can push that into June"
         },
         {
           "status": "limited",

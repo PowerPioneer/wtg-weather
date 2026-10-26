@@ -21,7 +21,7 @@
             3,
             4
           ],
-          "reason": "shut for the winter under snow — it normally opens in the second half of May and closes again in the first days of November"
+          "reason": "shut for the winter under snow — it usually opens in late May or early June, depending on the winter's snow, and closes around the end of October or in November"
         },
         {
           "status": "limited",
@@ -38,17 +38,17 @@
             8,
             9
           ],
-          "reason": "reliably open and clear"
+          "reason": "the months safely inside the open season, clear of the snow-dependent opening and closing dates"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Stelvio_Pass",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://italyplanner.com/stelvio-pass-guide.html",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -63,33 +63,29 @@
       "note": "the only true summer ski area in Italy, and it runs on the opposite calendar to the rest of the country's resorts",
       "windows": [
         {
-          "status": "best",
+          "status": "open",
           "months": [
             6,
             7,
-            8
+            8,
+            9,
+            10
           ],
-          "reason": "the glacier ski area runs through the summer; the season spans roughly May to November"
+          "reason": "the glacier ski lifts run through the summer, from late May to early November"
         },
         {
-          "status": "open",
+          "status": "limited",
           "months": [
             5,
-            9,
-            10,
             11
           ],
-          "reason": "the edges of the summer glacier season"
+          "reason": "the opening and closing months: the lifts open in late May and close in early November"
         }
       ],
       "sources": [
         {
-          "url": "https://www.powderhounds.com/Europe/Italy/Stelvio.aspx",
-          "checked": "2026-08-28"
-        },
-        {
           "url": "https://www.mondoneve.it/en/passo-stelvio/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -182,7 +178,7 @@
             7,
             8
           ],
-          "reason": "every hut is open and the weather is at its most settled"
+          "reason": "the heart of the hut season, when every refuge is open — also the weeks when booking beds in advance is essential"
         },
         {
           "status": "open",

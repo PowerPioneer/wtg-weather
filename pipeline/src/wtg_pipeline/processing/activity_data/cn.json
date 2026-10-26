@@ -74,16 +74,24 @@
         {
           "status": "best",
           "months": [
-            9,
-            10
+            3,
+            4
           ],
-          "reason": "cooler air and autumn foliage among the sandstone pillars"
+          "reason": "mild spring weather and fewer crowds"
+        },
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "foliage from late October to mid-November; avoid National Day week, 1 to 7 October, the busiest of the year"
         }
       ],
       "sources": [
         {
-          "url": "https://www.chinadiscovery.com/hunan/zhangjiajie.html",
-          "checked": "2026-08-28"
+          "url": "https://www.chinahighlights.com/zhangjiajie/best-time-to-visit.htm",
+          "checked": "2026-10-26"
         }
       ]
     },

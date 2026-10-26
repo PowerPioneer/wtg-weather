@@ -13,28 +13,24 @@
           "status": "limited",
           "months": [
             12,
-            1
+            1,
+            2
           ],
-          "reason": "the haziest weeks: dust off the Sahara cuts visibility sharply, and humidity drops far enough to be uncomfortable"
+          "reason": "the harmattan blows especially in December, January and February: its dust haze can severely limit visibility for days, and humidity can drop low enough to cause nosebleeds"
         },
         {
           "status": "open",
           "months": [
             11,
-            2,
             3
           ],
-          "reason": "the harmattan runs from late November to mid-March — dry, cool mornings and hazy skies, and the peak of the West African dry season"
+          "reason": "the edges of the harmattan season, which runs from late November to mid-March: dry, with hazy skies when the dust is up"
         }
       ],
       "sources": [
         {
           "url": "https://en.wikipedia.org/wiki/Harmattan",
-          "checked": "2026-08-28"
-        },
-        {
-          "url": "https://www.britannica.com/science/harmattan",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -84,11 +80,11 @@
         {
           "status": "best",
           "months": [
+            6,
             7,
-            8,
-            9
+            8
           ],
-          "reason": "rainy season: the herds move north into the bush around Kouré, about 80 km south-east of Niamey"
+          "reason": "the rainy season, early June to early September around Niamey, when the herd moves north into the bush around Kouré, about 80 km south-east of Niamey"
         }
       ],
       "sources": [
@@ -98,6 +94,10 @@
         },
         {
           "url": "https://www.csmonitor.com/2007/0111/p20s01-sten.html",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Niamey",
           "checked": "2026-10-26"
         }
       ]

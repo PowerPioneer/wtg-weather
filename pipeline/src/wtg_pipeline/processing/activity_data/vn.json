@@ -11,7 +11,7 @@
         "VN-03"
       ],
       "status": "open",
-      "note": "the terraces are there all year; the gold is a few weeks before each harvest",
+      "note": "the terraces are there all year; the gold comes with the harvest",
       "windows": [
         {
           "status": "best",
@@ -19,7 +19,7 @@
             9,
             10
           ],
-          "reason": "the ripe-rice season, when the fields turn from green to gold. Sa Pa peaks roughly 25 August to 15 September; Hoang Su Phi in Ha Giang runs later, about 20 September to 20 October"
+          "reason": "the harvest, when the terraces turn yellow (September–October); Sa Pa is best just before, from mid-August to early September"
         },
         {
           "status": "open",
@@ -28,17 +28,17 @@
             4,
             5
           ],
-          "reason": "the ploughing season, when the flooded terraces mirror the sky — the other photograph people come for"
+          "reason": "the watering season, which runs from March to May in Hoang Su Phi"
         }
       ],
       "sources": [
         {
           "url": "https://www.vietnamcoracle.com/rice-terraces-of-northern-vietnam/",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://vietnam.travel/things-to-do/vietnam-rice-terraces",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
@@ -58,7 +58,7 @@
             7,
             8
           ],
-          "reason": "typhoon season in the Gulf of Tonkin; sailings are cancelled at short notice when a storm tracks in"
+          "reason": "the north's peak typhoon-risk months; Ha Long Bay cruises are routinely suspended when typhoon warnings are issued"
         },
         {
           "status": "best",
@@ -66,17 +66,17 @@
             10,
             11
           ],
-          "reason": "the typhoon risk has passed and the weather has settled"
+          "reason": "late September through November is generally a more reliable window for cruises than the height of summer"
         }
       ],
       "sources": [
         {
-          "url": "https://localvietnam.com/regions/north-vietnam/north-vietnam-september-weather/",
-          "checked": "2026-08-28"
+          "url": "https://www.asiatouradvisor.com/get-inspired/typhoon-season-vietnam/",
+          "checked": "2026-10-26"
         },
         {
           "url": "https://www.tnktravel.com/blogs/northern-vietnam-weather-in-september-what-to-expect-and-where-to-go",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         }
       ]
     },
