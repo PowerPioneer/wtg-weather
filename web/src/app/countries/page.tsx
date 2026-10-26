@@ -7,7 +7,7 @@ import { routableCountries } from "@/lib/country-routes";
 import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  // The root layout templates this as "%s · Atlas Weather", so the suffix
+  // The root layout templates this as "%s · Where to Go for Great Weather", so the suffix
   // is not repeated here.
   title: "Every country",
   description:

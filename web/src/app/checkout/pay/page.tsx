@@ -4,7 +4,7 @@ import { PageFooter, PageHeader } from "@/components/layout";
 import { PaddlePaymentLink } from "@/components/upgrade/paddle-payment-link";
 
 export const metadata: Metadata = {
-  // The root layout's template appends "· Atlas Weather" already.
+  // The root layout's template appends "· Where to Go for Great Weather" already.
   title: "Opening checkout",
   robots: { index: false, follow: false },
 };

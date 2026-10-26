@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const trip = await getSharedTrip(token);
   if (!trip) return { title: "Trip not found", robots: { index: false } };
   return {
-    title: `${trip.title} · Atlas Weather`,
+    title: trip.title,
     description: describeTrip(trip),
     openGraph: { title: trip.title, description: describeTrip(trip), type: "article" },
     // Not indexed: the owner shared a link with particular people, not with

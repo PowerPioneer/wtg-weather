@@ -6,7 +6,7 @@ import { scoreLabel } from "@/lib/scoring";
 export const runtime = "nodejs";
 export const contentType = "image/png";
 export const size = { width: 1200, height: 630 };
-export const alt = "Atlas Weather — shared trip";
+export const alt = "Where to Go for Great Weather — shared trip";
 
 /**
  * OG card for a shared trip.
@@ -154,7 +154,7 @@ export default async function OG({ params }: { params: Promise<{ token: string }
             >
               ☀
             </div>
-            <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Atlas Weather</span>
+            <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Where to Go for Great Weather</span>
           </div>
           <span>ERA5 climate · 5-gov safety</span>
         </div>

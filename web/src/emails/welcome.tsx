@@ -19,6 +19,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { POSTAL_ADDRESS, SITE_NAME } from "../lib/brand";
+
 export type WelcomeEmailProps = {
   /** Used in the greeting. Falls back to "there" if missing so we never send "Welcome, ,". */
   firstName?: string;
@@ -39,13 +41,13 @@ export default function WelcomeEmail({
       <Body style={body}>
         <Container style={container}>
           <Section style={masthead}>
-            <span style={brandName}>Atlas Weather</span>
+            <span style={brandName}>{SITE_NAME}</span>
           </Section>
 
           <Section style={headingSection}>
-            <Text style={h1}>Welcome to Atlas Weather, {firstName}.</Text>
+            <Text style={h1}>Welcome to {SITE_NAME}, {firstName}.</Text>
             <Text style={lede}>
-              You&apos;ve joined <strong style={emphasis}>Atlas Weather Free</strong>. No cards,
+              You&apos;ve joined <strong style={emphasis}>the free plan</strong>. No cards,
               no trials — just a practical tool for finding destinations with the weather you
               actually want.
             </Text>
@@ -81,19 +83,18 @@ export default function WelcomeEmail({
               something is confusing, broken, or missing, just hit reply.
             </Text>
             <Text style={signName}>— Elena</Text>
-            <Text style={signRole}>Product · Atlas Weather</Text>
+            <Text style={signRole}>Product · {SITE_NAME}</Text>
           </Section>
 
           <Section style={footer}>
             <Text style={footerText}>
-              You&apos;re getting this because you just created an Atlas Weather account.{" "}
+              You&apos;re getting this because you just created an account.{" "}
               <Link href="https://wheretogoforgreatweather.com/account" style={footerLink}>
                 Unsubscribe
               </Link>{" "}
               from product updates (we&apos;ll still send security emails).
               <br />
-              Atlas Weather · wheretogoforgreatweather.com · 2261 Market Street #4242, San
-              Francisco, CA 94114
+              {SITE_NAME} · wheretogoforgreatweather.com · {POSTAL_ADDRESS}
             </Text>
           </Section>
         </Container>

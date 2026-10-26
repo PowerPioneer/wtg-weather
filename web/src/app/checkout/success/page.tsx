@@ -5,7 +5,7 @@ import { CheckoutSuccess } from "@/components/upgrade/checkout-success";
 import { getEntitlement, getSessionServer } from "@/lib/session";
 
 export const metadata: Metadata = {
-  title: "Subscription activating · Atlas Weather",
+  title: "Subscription activating",
   robots: { index: false, follow: false },
 };
 

@@ -10,7 +10,7 @@ import {
 } from "@/lib/session";
 
 export const metadata = {
-  title: "Set up your account · Atlas Weather",
+  title: "Set up your account",
   robots: { index: false, follow: false },
 };
 

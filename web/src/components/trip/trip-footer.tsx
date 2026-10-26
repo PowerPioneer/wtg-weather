@@ -19,7 +19,7 @@ export function TripFooter({ monthName }: { monthName: string | null }) {
           Climate · ERA5 10-year daily climatology · Safety · highest of 6
           government advisories
         </div>
-        <div>Atlas Weather</div>
+        <div>Where to Go for Great Weather</div>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ import type {
 } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Account · Atlas Weather",
+  title: "Account",
   description: "Manage your trips, favourites, alerts, and billing.",
   robots: { index: false },
 };
