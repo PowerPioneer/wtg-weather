@@ -143,7 +143,14 @@ export type RegionRow = {
    * rather than rendered empty.
    */
   activities?: readonly string[];
+  /** The best of `scores` — the region's verdict in its strongest month. */
   score: number;
+  /**
+   * The verdict per month, January first, as bucket centroids (see
+   * `BUCKET_SCORES`). Absent on a bundle published before the field existed;
+   * the region × month table then shows those cells as "No data".
+   */
+  scores?: Monthly;
   tl: Monthly;      // °C mean
   /** mm / day. Absent on a region the pipeline has no rainfall for. */
   rl?: Monthly;

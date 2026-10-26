@@ -52,6 +52,7 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
                 "name": "Cusco",
                 "slug": "cusco",
                 "score": 90,
+                "scores": [60, 60, 75, 90, 90, 90, 90, 90, 90, 75, 60, 60],
                 "tl": _series(13.0),
                 "rl": _series(1.5),
                 "sl": _series(7.2),
@@ -127,6 +128,20 @@ async def test_index_lists_published_countries(api: AsyncClient) -> None:
     assert res.json() == [
         {"slug": "peru", "name": "Peru", "iso2": "PE", "region": "South America"}
     ]
+
+
+@pytest.mark.asyncio
+async def test_region_monthly_scores_survive_the_response_model(api: AsyncClient) -> None:
+    """The response model filters the payload; an undeclared field vanishes.
+
+    Lima's row is a bundle published before `scores` existed, and has to keep
+    serving rather than 500 the page.
+    """
+    res = await api.get("/v1/countries/peru")
+    assert res.status_code == 200
+    cusco, lima = res.json()["regions"]
+    assert cusco["scores"] == [60, 60, 75, 90, 90, 90, 90, 90, 90, 75, 60, 60]
+    assert lima["scores"] is None
 
 
 @pytest.mark.asyncio

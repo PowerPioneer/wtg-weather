@@ -253,6 +253,22 @@ def test_regions_carry_their_own_rain_and_sun(
     assert cusco["slug"] == "cusco"
 
 
+def test_regions_carry_a_verdict_per_month(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Twelve bucket centroids per region, of which `score` is the best.
+
+    The region × month table on the country page reads these. Pinning `score`
+    to their max keeps the two from describing different rules.
+    """
+    entries, _skipped = _build(monkeypatch)
+    for region in entries["peru"]["regions"]:
+        scores = region["scores"]
+        assert len(scores) == 12
+        assert set(scores) <= {25, 60, 75, 90}
+        assert region["score"] == max(scores)
+
+
 def test_regions_carry_the_admin1_code_the_tiles_use(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

@@ -924,6 +924,7 @@ def build_payloads(
         region_rows: list[dict[str, object]] = []
         for region, slug in sorted(zip(regions, slugs), key=lambda pair: str(pair[0]["name"])):
             region_climate: PolygonClimate = region["climate"]  # type: ignore[assignment]
+            region_scores = region_climate.scores()
             # Which curated activities name *this* subdivision. Resolved here,
             # against the ISO-3166-2 code Natural Earth carries, so the web
             # never has to know that code exists — it just gets a list of ids
@@ -945,7 +946,13 @@ def build_payloads(
                     # slug the same way; the slug above is de-duplicated, so
                     # deriving it from a name alone is ambiguous by design.
                     "code": region["code"],
-                    "score": max(region_climate.scores()),
+                    "score": max(region_scores),
+                    # The month-by-month verdicts `score` is the best of. The
+                    # best month alone said "Perfect" for nearly every region
+                    # of a tropical country, which answers nothing; the
+                    # country page's region × month table reads these instead
+                    # and shows *when* each region is good.
+                    "scores": region_scores,
                     **_region_advisory(
                         levels_here,
                         str(region.get("iso3166_2", "")),

@@ -36,6 +36,19 @@ const MONTH_LABELS = [
 
 const PERU_RAIN: Monthly = [148, 168, 142, 72, 28, 12, 8, 12, 28, 62, 88, 118];
 
+/**
+ * Placeholder month-by-month verdicts for the region table: the sierra's
+ * May–September dry season for the cool regions, a flatter year for the warm
+ * coast and jungle. Shaped like the pipeline's output, not computed from it.
+ */
+const SIERRA_SCORES: Monthly = [60, 60, 60, 75, 90, 90, 90, 90, 90, 75, 60, 60];
+const LOWLAND_SCORES: Monthly = [60, 60, 60, 60, 75, 75, 75, 75, 75, 60, 60, 25];
+
+function withMockScores(region: RegionRow): RegionRow {
+  const annualMean = region.tl.reduce((sum, t) => sum + t, 0) / 12;
+  return { ...region, scores: annualMean < 20 ? SIERRA_SCORES : LOWLAND_SCORES };
+}
+
 const PERU: CountryData = {
   slug: "peru",
   name: "Peru",
@@ -65,7 +78,7 @@ const PERU: CountryData = {
     wBandLow: [5.6, 5.9, 6.1, 5.7, 5.4, 5.6, 5.8, 6.2, 6.5, 6.3, 6.0, 5.8],
     wBandHigh: [17.3, 18.4, 18.9, 17.7, 16.7, 17.2, 18.0, 19.0, 20.1, 19.6, 18.5, 17.8],
   },
-  regions: [
+  regions: ([
     { name: "Amazonas", score: 71, tl: [26, 26, 26, 26, 25, 24, 24, 25, 26, 26, 26, 26] },
     { name: "Áncash", score: 84, tl: [19, 19, 19, 19, 18, 17, 17, 17, 18, 19, 19, 19] },
     { name: "Apurímac", score: 88, tl: [15, 15, 15, 15, 13, 12, 11, 12, 14, 15, 15, 15] },
@@ -91,7 +104,7 @@ const PERU: CountryData = {
     { name: "Tacna", score: 87, tl: [19, 19, 19, 18, 16, 14, 14, 14, 15, 16, 17, 18] },
     { name: "Tumbes", score: 73, tl: [26, 27, 27, 26, 25, 24, 23, 23, 23, 24, 25, 26] },
     { name: "Ucayali", score: 66, tl: [26, 26, 26, 26, 25, 24, 23, 24, 25, 26, 26, 26], activities: ["amazon-high-water", "amazon-jungle-walking"] },
-  ],
+  ] satisfies RegionRow[]).map(withMockScores),
   advisories: {
     combined: { level: 2, label: "Exercise increased caution" },
     lastUpdated: "2026-04-18",
