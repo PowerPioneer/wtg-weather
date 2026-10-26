@@ -54,6 +54,7 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
                 "score": 90,
                 "scores": [60, 60, 75, 90, 90, 90, 90, 90, 90, 75, 60, 60],
                 "tl": _series(13.0),
+                "tn": _series(2.0),
                 "rl": _series(1.5),
                 "sl": _series(7.2),
                 "advisory": {"level": 4, "label": "Do not travel", "code": "PE-CUS"},
@@ -142,6 +143,9 @@ async def test_region_monthly_scores_survive_the_response_model(api: AsyncClient
     cusco, lima = res.json()["regions"]
     assert cusco["scores"] == [60, 60, 75, 90, 90, 90, 90, 90, 90, 75, 60, 60]
     assert lima["scores"] is None
+    # The night low the scores were built from rides along, optionally.
+    assert cusco["tn"][0] == 2.0
+    assert lima["tn"] is None
 
 
 @pytest.mark.asyncio

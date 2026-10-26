@@ -177,7 +177,15 @@ export type RegionRow = {
    * the region × month table then shows those cells as "No data".
    */
   scores?: Monthly;
-  tl: Monthly;      // °C mean
+  /** °C, mean daily maximum — the daytime high, like the country's `tMax`. */
+  tl: Monthly;
+  /**
+   * °C, mean daily minimum — the overnight low. The scoring rule judges nights
+   * too, so a region scored without this disagrees with `scores` (and with the
+   * map) wherever nights are warm: a Caribbean island read as a perfect match
+   * by day and only acceptable by the full rule. Absent on an older bundle.
+   */
+  tn?: Monthly;
   /** mm / day. Absent on a region the pipeline has no rainfall for. */
   rl?: Monthly;
   /** hr / day. Absent on a region the pipeline has no sunshine for. */

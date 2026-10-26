@@ -512,6 +512,8 @@ class RegionRow(BaseModel):
     # the same back-compat reason as `code`.
     scores: list[int] | None = None
     tl: list[float]
+    # The overnight low; optional for the same back-compat reason as `code`.
+    tn: list[float] | None = None
     rl: list[float]
     sl: list[float]
 

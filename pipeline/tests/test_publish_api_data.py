@@ -269,6 +269,21 @@ def test_regions_carry_a_verdict_per_month(
         assert region["score"] == max(scores)
 
 
+def test_regions_carry_the_night_low_their_scores_were_built_from(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`scores` judges nights as well as days, so the night series ships too.
+
+    Without it the region page could only rescore on daytime highs and
+    disagreed with the region table and the map for every warm-night place.
+    """
+    entries, _skipped = _build(monkeypatch)
+    cusco = next(r for r in entries["peru"]["regions"] if r["name"] == "Cusco")
+    # A 19 °C 24-hour mean with a 10 K diurnal range: 24 °C days, 14 °C nights.
+    assert cusco["tl"][0] == pytest.approx(24.0, abs=0.01)
+    assert cusco["tn"][0] == pytest.approx(14.0, abs=0.01)
+
+
 def test_regions_carry_the_admin1_code_the_tiles_use(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

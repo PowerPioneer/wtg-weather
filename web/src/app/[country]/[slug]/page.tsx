@@ -346,11 +346,13 @@ function RegionClimate({
   country: CountryData;
   region: RegionRow;
 }) {
-  const toMonths = (values: readonly number[]): MonthDatum[] =>
-    values.map((value, month) => ({ month, value }));
+  const toMonths = (values: readonly number[], low?: readonly number[]): MonthDatum[] =>
+    values.map((value, month) => ({ month, value, low: low?.[month] }));
 
   const charts: { kind: ClimateChartKind; months: MonthDatum[] }[] = [
-    { kind: "temp", months: toMonths(region.tl) },
+    // Days in red and, where the bundle has them, nights in blue — the pair
+    // the country chart draws and the score is judged on.
+    { kind: "temp", months: toMonths(region.tl, region.tn) },
   ];
   if (region.rl) {
     charts.push({ kind: "rain", months: toMonths(rainDayToMonth(region.rl)) });
@@ -510,6 +512,7 @@ function MonthScoreTable({
     slug,
     name: MONTH_NAMES[slug],
     t: region.tl[i],
+    tn: region.tn?.[i],
     score: estimateRegionMonthScore(country, region, i),
   }));
   return (
@@ -535,7 +538,14 @@ function MonthScoreTable({
                     {r.name}
                   </div>
                   <div className="mt-1 font-mono text-[11px] text-text-muted">
-                    <Temperature value={r.t} /> mean
+                    {/* A daytime high, not a mean: `tl` is the mean daily maximum. */}
+                    <Temperature value={r.t} /> by day
+                    {r.tn != null ? (
+                      <>
+                        {" · "}
+                        <Temperature value={r.tn} /> at night
+                      </>
+                    ) : null}
                   </div>
                 </div>
                 <ScoreBadge score={r.score} size="sm" />
