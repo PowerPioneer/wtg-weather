@@ -191,10 +191,12 @@ describe("preference scoring — parity with the pipeline", () => {
   });
 
   it("scores a sticky tropical night against the place", () => {
-    // The case the split exists for: a 30 °C day with a 27 °C night averaged
-    // to 28.5 °C, which the old single-mean rule called a perfect match.
+    // The case the split exists for: a 30 °C day with a 28 °C night averaged
+    // to 29 °C, which the old single-mean rule called a perfect match. A 26 °C
+    // Caribbean night is in the buffer of the 24 °C ceiling: a good option.
     expect(scoreBucket({ t: 30, tmin: 17, r: 1, s: 8 })).toBe(3);
-    expect(scoreBucket({ t: 30, tmin: 27, r: 1, s: 8 })).toBe(1);
+    expect(scoreBucket({ t: 30, tmin: 26, r: 1, s: 8 })).toBe(2);
+    expect(scoreBucket({ t: 30, tmin: 28, r: 1, s: 8 })).toBe(1);
   });
 
   it("scores on the boundary the same way Python's <= does", () => {

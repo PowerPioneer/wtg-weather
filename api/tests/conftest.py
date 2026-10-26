@@ -150,7 +150,7 @@ class PublishedBundle:
         name: str = "Peru",
         iso2: str = "PE",
         temp: list[float] | float = 26.0,
-        # The overnight low, scored against its own fixed 12-22 band. Separate
+        # The overnight low, scored against its own fixed 12-24 band. Separate
         # from `temp` because they used to be the same value, which quietly
         # published a country whose nights were as hot as its days — once
         # temperature split into a day/night pair that is a hard miss on the

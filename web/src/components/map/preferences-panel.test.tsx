@@ -39,7 +39,7 @@ describe("PreferencesPanel", () => {
   it("shows the current preferences as readable values", () => {
     renderPanel();
     expect(screen.getByText("22°C – 30°C")).toBeInTheDocument();
-    expect(screen.getByText("12°C – 22°C")).toBeInTheDocument();
+    expect(screen.getByText("12°C – 24°C")).toBeInTheDocument();
     expect(screen.getByText("6.0 h")).toBeInTheDocument();
     // Rain and safety read as words, with the numeric band in brackets — the
     // whole point of the level controls.
