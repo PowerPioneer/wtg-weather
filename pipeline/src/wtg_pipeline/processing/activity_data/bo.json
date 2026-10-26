@@ -1,6 +1,6 @@
 {
   "iso2": "BO",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "salar-de-uyuni",
@@ -55,6 +55,73 @@
         {
           "url": "https://www.salardeuyuni.com/best-time-to-visit-the-uyuni-salt-flats/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "oruro-carnival",
+      "name": "Carnival of Oruro",
+      "kind": "festival",
+      "regions": [
+        "BO-O"
+      ],
+      "status": "not-on",
+      "note": "tied to Lent, so the dates move each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "ten days of carnival from the Friday before Ash Wednesday, usually in February"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in late-Easter years the carnival runs into early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnaval_de_Oruro",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/carnival-of-oruro-00003",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "alasitas",
+      "name": "Alasitas fair, La Paz",
+      "kind": "festival",
+      "regions": [
+        "BO-L"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "the fair of miniatures opens in La Paz on 24 January"
+        },
+        {
+          "status": "open",
+          "months": [
+            2
+          ],
+          "reason": "the fair runs for about a month after its 24 January opening"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Alasita",
+          "checked": "2026-10-26"
         }
       ]
     }

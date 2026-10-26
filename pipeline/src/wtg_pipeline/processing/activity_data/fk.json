@@ -1,0 +1,97 @@
+{
+  "iso2": "FK",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "volunteer-point",
+      "name": "King penguins at Volunteer Point",
+      "kind": "wildlife",
+      "status": "open",
+      "note": "king and gentoo penguins are resident all year; access crosses private land and is usually allowed when the ground is dry",
+      "windows": [],
+      "sources": [
+        {
+          "url": "https://www.falklandislands.com/things-to-do/penguins",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Volunteer_Point",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "magellanic-penguins-fk",
+      "name": "Magellanic penguin burrows",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "Magellanic penguins are summer residents, returning to their burrows in September to breed"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the season ends as the chicks leave in late February or March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.falklandislands.com/things-to-do/penguins",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Magellanic_penguin",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "expedition-cruises-fk",
+      "name": "Expedition-cruise season",
+      "kind": "tour",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2
+          ],
+          "reason": "the best months for weather and wildlife, with penguins nesting and chicks hatching"
+        },
+        {
+          "status": "open",
+          "months": [
+            10,
+            3
+          ],
+          "reason": "the shoulders of a cruise season that runs from late October to late March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.quarkexpeditions.com/blog/best-time-to-visit-the-falkland-islands",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.coolantarctica.com/Travel/falkland_islands.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

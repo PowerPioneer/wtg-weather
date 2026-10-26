@@ -1,6 +1,6 @@
 {
   "iso2": "BR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "pantanal-jaguars",
@@ -79,6 +79,153 @@
         {
           "url": "https://www.responsibletravel.com/holidays/brazil/travel-guide/best-time-to-visit-brazil",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "lencois-maranhenses",
+      "name": "Lençóis Maranhenses lagoons",
+      "kind": "site",
+      "regions": [
+        "BR-MA"
+      ],
+      "status": "open",
+      "note": "the dunes are there all year; what changes is how much rainwater the lagoons between them hold",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "reason": "the lagoons between the dunes are at their fullest after the January-June rains"
+        },
+        {
+          "status": "open",
+          "months": [
+            9
+          ],
+          "reason": "still holding water, though the windy August starts drying some lagoons out"
+        },
+        {
+          "status": "limited",
+          "months": [
+            11,
+            12,
+            1
+          ],
+          "reason": "low water at the height of the dry season, when many lagoons may be dry"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.bahia.ws/en/Lencois-Maranhenses-when-to-go/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.journeylatinamerica.com/destinations/brazil/places-to-visit/north-coast-natal-fortaleza-and-sao-luis/when-to-go",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "parintins",
+      "name": "Parintins Folklore Festival",
+      "kind": "festival",
+      "regions": [
+        "BR-AM"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            6
+          ],
+          "reason": "three nights of rival boi-bumba performances by Garantido and Caprichoso on the last weekend of June"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Parintins_Folklore_Festival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.insightguides.com/inspire-me/blog/boi-bumba",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "abrolhos-whales",
+      "name": "Humpback whales at Abrolhos",
+      "kind": "wildlife",
+      "regions": [
+        "BR-BA"
+      ],
+      "status": "not-on",
+      "note": "the whales spend the rest of the year on their Antarctic feeding grounds",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9
+          ],
+          "reason": "peak whale-watching months, with numbers on the Abrolhos Bank peaking in early September"
+        },
+        {
+          "status": "open",
+          "months": [
+            7,
+            10,
+            11
+          ],
+          "reason": "humpbacks arrive to breed and calve from July and are gone by late November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://lajamjournal.org/index.php/lajam/article/view/171",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://bahia.ws/en/guia-turismo-viagem-costa-das-baleias/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "noronha-diving",
+      "name": "Diving at Fernando de Noronha",
+      "kind": "dive",
+      "regions": [
+        "BR-PE"
+      ],
+      "status": "open",
+      "note": "diving runs all year in 28C water; operators pick whichever side of the island is calmer",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "reason": "clearest water of the year, with visibility that can pass 30 metres"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://blog.padi.com/the-best-time-of-year-to-dive-in-brazil/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.divernet.com/world-dives/noronha-an-atlantic-diving-hotspot/",
+          "checked": "2026-10-26"
         }
       ]
     }

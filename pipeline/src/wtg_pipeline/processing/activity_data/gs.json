@@ -1,0 +1,135 @@
+{
+  "iso2": "GS",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "gs-expedition-season",
+      "name": "Expedition voyages to South Georgia",
+      "kind": "tour",
+      "status": "closed",
+      "note": "visitors arrive only by expedition ship or yacht, in the southern summer",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3
+          ],
+          "reason": "expedition ships call from late October to late March, and Grytviken's museum opens for the summer"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.coolantarctica.com/Travel/south_georgia_south_sandwich_islands.php",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Grytviken",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gs-king-penguins",
+      "name": "King penguin colonies",
+      "kind": "wildlife",
+      "status": "closed",
+      "note": "the colonies are occupied all year, but visitors can only reach them on the summer expedition voyages",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            10,
+            11,
+            12
+          ],
+          "reason": "last year's downy brown chicks are still in the colonies; the last have left by December"
+        },
+        {
+          "status": "open",
+          "months": [
+            1,
+            2,
+            3
+          ],
+          "reason": "eggs laid by the early breeders in November hatch from mid-January"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.coolantarctica.com/Antarctica%20fact%20file/wildlife/King-penguins.php",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.coolantarctica.com/Travel/south_georgia_south_sandwich_islands.php",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gs-elephant-seals",
+      "name": "Elephant seal breeding beaches",
+      "kind": "wildlife",
+      "status": "not-on",
+      "note": "later in the summer the fur seals take over the beaches and many elephant seals are pushed off",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11
+          ],
+          "reason": "early season: bulls fight for harems on the beaches and newborn pups and weaners appear"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://poseidonexpeditions.com/blog/the-seasons-of-south-georgia/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nomadasaurus.com/best-time-to-visit-south-georgia-island/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "gs-fur-seals",
+      "name": "Antarctic fur seals and pups",
+      "kind": "wildlife",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            12,
+            1
+          ],
+          "reason": "breeding season: fur seals pack the beaches in their millions, but aggressive bulls often stop shore landings"
+        },
+        {
+          "status": "best",
+          "months": [
+            2,
+            3
+          ],
+          "reason": "late season: the adults leave the beaches to their curious pups"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://poseidonexpeditions.com/blog/the-seasons-of-south-georgia/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.nomadasaurus.com/best-time-to-visit-south-georgia-island/",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}

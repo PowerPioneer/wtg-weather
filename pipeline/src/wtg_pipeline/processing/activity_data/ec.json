@@ -1,6 +1,6 @@
 {
   "iso2": "EC",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "galapagos",
@@ -68,6 +68,37 @@
         {
           "url": "https://wwhandbook.iwc.int/en/country-profiles/ecuador",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "mama-negra",
+      "name": "Mama Negra, Latacunga",
+      "kind": "festival",
+      "regions": [
+        "EC-X"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "held at the end of September in honour of the Virgen de la Merced"
+        },
+        {
+          "status": "best",
+          "months": [
+            11
+          ],
+          "reason": "held a second time in November for the anniversary of Latacunga's independence"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Mama_Negra",
+          "checked": "2026-10-26"
         }
       ]
     }

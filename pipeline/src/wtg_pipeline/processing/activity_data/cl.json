@@ -1,6 +1,6 @@
 {
   "iso2": "CL",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "w-trek",
@@ -49,6 +49,159 @@
         {
           "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "andes-ski",
+      "name": "Skiing near Santiago (Valle Nevado, Portillo)",
+      "kind": "ski",
+      "regions": [
+        "CL-RM",
+        "CL-VS"
+      ],
+      "status": "closed",
+      "note": "winter-only ski resorts in the high Andes above Santiago",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "the Andean ski season, which opens in June, conditions permitting"
+        },
+        {
+          "status": "open",
+          "months": [
+            10
+          ],
+          "reason": "the tail of the season: Valle Nevado runs into October, while Portillo usually closes early in the month"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Valle_Nevado",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Portillo,_Chile",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "tapati",
+      "name": "Tapati Rapa Nui festival, Easter Island",
+      "kind": "festival",
+      "regions": [
+        "CL-VS"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "a two-week festival of Rapa Nui culture, held around the beginning of February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Easter_Island",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "fiestas-patrias",
+      "name": "Fiestas Patrias",
+      "kind": "festival",
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9
+          ],
+          "reason": "national holidays on 18 and 19 September: fondas, rodeos, cueca and the great military parade in Santiago"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Fiestas_Patrias_(Chile)",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "flowering-desert",
+      "name": "The flowering desert (desierto florido)",
+      "kind": "season",
+      "regions": [
+        "CL-AT"
+      ],
+      "status": "not-on",
+      "note": "not an annual event: the bloom needs a year of unusually heavy rain, often linked to El Niño",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "in a wet year the desert between Vallenar and Copiapó blooms from September to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Flowering_desert",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "carretera-austral",
+      "name": "Driving the Carretera Austral",
+      "kind": "drive",
+      "regions": [
+        "CL-AI"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the season for the route, with roads open and buses running"
+        },
+        {
+          "status": "limited",
+          "months": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the off-season: some roads become impassable in autumn and winter and bus routes usually stop"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
+          "checked": "2026-10-26"
         }
       ]
     }

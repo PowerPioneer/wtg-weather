@@ -1,6 +1,6 @@
 {
   "iso2": "AR",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "perito-moreno",
@@ -59,6 +59,208 @@
         {
           "url": "https://www.jacadatravel.com/latin-america/brazil/travel-guides/when-is-the-best-time-to-visit-brazil/",
           "checked": "2026-08-28"
+        }
+      ]
+    },
+    {
+      "id": "valdes-whales",
+      "name": "Southern right whales, Península Valdés",
+      "kind": "wildlife",
+      "regions": [
+        "AR-U"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the peak months, with the most whales in the gulfs and the best boat excursions"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            11,
+            12
+          ],
+          "reason": "the official whale season: southern right whales gather here to breed and calve from June to December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.argentina.travel/en/news/southern-right-whale-in-argentina-when-and-where-to-see-them-in-their-natural-habitat",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.classadventuretravel.com/when-to-see-wildlife-in-peninsula-valdes/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "punta-tombo",
+      "name": "Magellanic penguins at Punta Tombo",
+      "kind": "wildlife",
+      "regions": [
+        "AR-U"
+      ],
+      "status": "closed",
+      "note": "the reserve closes from April to August, while the penguins are away at sea",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            9,
+            10,
+            11
+          ],
+          "reason": "the penguins return from September to reclaim their nests and lay eggs"
+        },
+        {
+          "status": "best",
+          "months": [
+            12,
+            1,
+            2
+          ],
+          "reason": "the chicks are growing and the colony is at its most active"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "young penguins take to the sea and the colony starts to disperse"
+        },
+        {
+          "status": "limited",
+          "months": [
+            4
+          ],
+          "reason": "the reserve stays open only into early April, by which time most penguins have left"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://talesfromthelens.com/visit-punta-tombo-magellanic-penguins/",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.princess.com/shore-excursions/puerto-madryn-argentina/best-of-puerto-madryn-punta-tombo-reserve",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.classadventuretravel.com/when-to-see-wildlife-in-peninsula-valdes/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "vendimia",
+      "name": "Fiesta Nacional de la Vendimia",
+      "kind": "festival",
+      "regions": [
+        "AR-M"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            3
+          ],
+          "reason": "Mendoza's harvest festival peaks in the first week of March with the queens' parade and the Carrusel"
+        },
+        {
+          "status": "open",
+          "months": [
+            2
+          ],
+          "reason": "the blessing of the fruit opens the programme on the last Sunday of February"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Fiesta_Nacional_de_la_Vendimia",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.argentina.travel/sobre-argentina/eventos/fiesta-nacional-de-la-vendimia",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "el-chalten",
+      "name": "Hiking at El Chaltén (Fitz Roy)",
+      "kind": "hike",
+      "regions": [
+        "AR-Z"
+      ],
+      "status": "open",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            10,
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "the summer hiking season, with long days suited to self-guided trekking"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "reason": "winter: short days, most tour facilities close and self-guided hiking is not allowed, so go with a guide"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://worldlyadventurer.com/best-time-to-visit-patagonia/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "las-lenas",
+      "name": "Skiing at Las Leñas",
+      "kind": "ski",
+      "regions": [
+        "AR-M"
+      ],
+      "status": "closed",
+      "note": "a winter-only ski resort in the Mendoza Andes",
+      "windows": [
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reason": "the season usually runs mid-June to mid-October, though some recent seasons ended in mid-September"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Las_Le%C3%B1as",
+          "checked": "2026-10-26"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "iso2": "UY",
-  "reviewed": "2026-08-28",
+  "reviewed": "2026-10-26",
   "activities": [
     {
       "id": "punta-del-este",
@@ -20,18 +20,18 @@
           "reason": "the days begin to cool and the town quiets down after the summer peak"
         },
         {
-          "status": "limited",
+          "status": "open",
           "months": [
             1,
             2
           ],
-          "reason": "very hot through the middle of the day, and the busiest weeks of the year"
+          "reason": "high summer: the town is at its busiest and very hot in the middle of the day"
         }
       ],
       "sources": [
         {
           "url": "https://www.celebritycruises.com/blog/punta-del-este",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
         },
         {
           "url": "https://en.wikipedia.org/wiki/Punta_del_Este",
@@ -64,7 +64,45 @@
       "sources": [
         {
           "url": "https://www.celebritycruises.com/blog/punta-del-este",
-          "checked": "2026-08-28"
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "montevideo-carnival",
+      "name": "Carnival in Montevideo",
+      "kind": "festival",
+      "regions": [
+        "UY-MO"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "the heart of a carnival lasting more than 40 days, with candombe drum parades"
+        },
+        {
+          "status": "open",
+          "months": [
+            1
+          ],
+          "reason": "the carnival generally opens towards the end of January"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "the carnival season runs on until mid-March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Carnival_in_Uruguay",
+          "checked": "2026-10-26"
         }
       ]
     }

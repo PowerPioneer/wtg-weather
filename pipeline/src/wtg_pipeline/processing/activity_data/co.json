@@ -1,0 +1,232 @@
+{
+  "iso2": "CO",
+  "reviewed": "2026-10-26",
+  "activities": [
+    {
+      "id": "tayrona",
+      "name": "Tayrona National Park",
+      "kind": "site",
+      "regions": [
+        "CO-MAG"
+      ],
+      "status": "open",
+      "note": "open most of the year, but shut three times a year by agreement with the Sierra Nevada's four indigenous peoples",
+      "windows": [
+        {
+          "status": "limited",
+          "months": [
+            2
+          ],
+          "reason": "the park closes 1-15 February so the territory can rest, reopening on the 16th"
+        },
+        {
+          "status": "limited",
+          "months": [
+            6
+          ],
+          "reason": "the park closes 1-15 June for the territory's rest and indigenous spiritual activities"
+        },
+        {
+          "status": "limited",
+          "months": [
+            10
+          ],
+          "reason": "the park closes from 19 October to 2 November for the territory's rest"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.parquesnacionales.gov.co/nuestros-parques/pnn-tayrona/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "barranquilla-carnival",
+      "name": "Barranquilla Carnival",
+      "kind": "festival",
+      "regions": [
+        "CO-ATL"
+      ],
+      "status": "not-on",
+      "note": "tied to Lent, so the dates move each year",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            2
+          ],
+          "reason": "four days of carnival before Ash Wednesday, which usually falls in February"
+        },
+        {
+          "status": "open",
+          "months": [
+            3
+          ],
+          "reason": "in years with a late Easter the carnival runs in early March"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Barranquilla%27s_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/carnival-of-barranquilla-00051",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cano-cristales",
+      "name": "Caño Cristales",
+      "kind": "site",
+      "regions": [
+        "CO-MET"
+      ],
+      "status": "limited",
+      "note": "the river's famous colour comes from plants that only show it part of the year; daily entry is capped, so check for places early",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reason": "the riverbed plants turn red from around late June or July through November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Ca%C3%B1o_Cristales",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://www.parquesnacionales.gov.co/nuestros-parques/pnn-sierra-de-la-macarena/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "feria-de-las-flores",
+      "name": "Feria de las Flores, Medellín",
+      "kind": "festival",
+      "regions": [
+        "CO-ANT"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            8
+          ],
+          "reason": "Medellín's flower festival, held in August since 1958 to mark Antioquia's independence"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Feria_de_las_Flores",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "bahia-malaga-whales",
+      "name": "Humpback whales at Bahía Málaga",
+      "kind": "wildlife",
+      "regions": [
+        "CO-VAC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            9,
+            10
+          ],
+          "reason": "the months with the highest density of humpbacks in the bay"
+        },
+        {
+          "status": "open",
+          "months": [
+            6,
+            7,
+            8,
+            11
+          ],
+          "reason": "humpbacks are present in the Uramba Bahía Málaga park from June to November"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.parquesnacionales.gov.co/nuestros-parques/pnn-uramba-bahia-malaga/",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "pasto-carnival",
+      "name": "Blacks and Whites' Carnival, Pasto",
+      "kind": "festival",
+      "regions": [
+        "CO-NAR"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            1
+          ],
+          "reason": "the carnival's main days fall in the first week of January"
+        },
+        {
+          "status": "open",
+          "months": [
+            12
+          ],
+          "reason": "the wider celebration begins on 28 December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Blacks_and_Whites%27_Carnival",
+          "checked": "2026-10-26"
+        },
+        {
+          "url": "https://ich.unesco.org/en/RL/carnaval-de-negros-y-blancos-00287",
+          "checked": "2026-10-26"
+        }
+      ]
+    },
+    {
+      "id": "cali-fair",
+      "name": "Cali Fair",
+      "kind": "festival",
+      "regions": [
+        "CO-VAC"
+      ],
+      "status": "not-on",
+      "windows": [
+        {
+          "status": "best",
+          "months": [
+            12
+          ],
+          "reason": "Cali's fair runs from 25 to 30 December"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Cali_Fair",
+          "checked": "2026-10-26"
+        }
+      ]
+    }
+  ]
+}
