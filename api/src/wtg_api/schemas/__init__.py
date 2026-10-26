@@ -489,6 +489,9 @@ class RegionRow(BaseModel):
     # so a bundle published before this field existed must keep serving.
     advisory: RegionAdvisory | None = None
     score: int
+    # One verdict per month, January first; `score` is their max. Optional for
+    # the same back-compat reason as `code`.
+    scores: list[int] | None = None
     tl: list[float]
     rl: list[float]
     sl: list[float]

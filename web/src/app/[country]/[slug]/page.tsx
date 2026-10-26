@@ -15,7 +15,7 @@ import {
   MonthPager,
   MonthStats,
   PlanCta,
-  RegionsGrid,
+  RegionMonthTable,
   RelatedCountries,
   RegionAdvisoryNotice,
   SafetySection,
@@ -212,7 +212,7 @@ function MonthView({ country, month }: { country: CountryData; month: MonthSlug 
           </Link>
         </div>
         <ActivitiesSection country={country} monthIdx={idx} monthName={monthName} />
-        <RegionsGrid country={country} currentMonthIdx={idx} />
+        <RegionMonthTable country={country} currentMonthIdx={idx} />
         <SafetySection advisories={country.advisories} countryName={country.name} />
         <ClimateGrid country={country} />
         <MonthPager country={country} month={month} />

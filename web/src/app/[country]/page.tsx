@@ -9,7 +9,7 @@ import {
   CountryHero,
   MonthAccordion,
   PlanCta,
-  RegionsGrid,
+  RegionMonthTable,
   RelatedCountries,
   SafetySection,
 } from "@/components/country";
@@ -75,7 +75,7 @@ export default async function CountryPage({
         <BestMonths country={data} />
         <ClimateGrid country={data} />
         <ActivitiesSection country={data} />
-        <RegionsGrid country={data} />
+        <RegionMonthTable country={data} />
         <SafetySection advisories={data.advisories} countryName={data.name} />
         <MonthAccordion country={data} />
         <RelatedCountries country={data} />
