@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 
+import { OgBrandMark } from "@/components/og/brand-mark";
 import { getRegion } from "@/lib/api-client";
 import { MONTH_NAMES, isMonthSlug, monthIndex } from "@/lib/months";
 import {
@@ -118,11 +119,9 @@ function Footer() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#E0C98A",
-            fontWeight: 700,
           }}
         >
-          ☀
+          <OgBrandMark />
         </div>
         <span style={{ color: "#0F1B2D", fontWeight: 600 }}>Where to Go for Great Weather</span>
       </div>
