@@ -36,9 +36,15 @@ export async function GET(request: Request): Promise<Response> {
 
   if (!verified) return fail("unavailable");
   // The API answers 400 for a token that is invalid, already used, or past its
-  // 15 minutes. It does not distinguish them, and neither should we: telling a
-  // visitor which one it was tells an attacker the same thing.
-  if (!verified.ok) return fail("expired");
+  // 15 minutes, and 422 for one too short to be a token at all. It does not
+  // distinguish them, and neither should we: telling a visitor which one it
+  // was tells an attacker the same thing.
+  //
+  // Anything else is the API failing, not the link — and must not say so. On
+  // 2026-10-27 a full disk took Postgres down, every verify answered 500, and
+  // visitors were told their minute-old link had expired.
+  if (verified.status === 400 || verified.status === 422) return fail("expired");
+  if (!verified.ok) return fail("unavailable");
 
   const setCookie = verified.headers.get("set-cookie");
   if (!setCookie) return fail("unavailable");
