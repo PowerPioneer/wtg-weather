@@ -12,8 +12,44 @@ from wtg_api.config import Settings
 
 _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 _IP_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
+# Magic-link, invite and unsubscribe links all carry a bearer token as
+# `?token=`. A magic-link token is also the recipient's address in base64, so
+# the email regex above never sees it.
+_QUERY_TOKEN_RE = re.compile(r"((?:^|[?&])token=)[^&#\s\"]*")
 
 logger = logging.getLogger(__name__)
+
+
+def redact_query_tokens(text: str) -> str:
+    return _QUERY_TOKEN_RE.sub(r"\1[redacted]", text)
+
+
+class QueryTokenFilter(logging.Filter):
+    """Redacts `?token=` from uvicorn's access line before it is formatted.
+
+    The line is built from `record.args` (client, method, full path with query,
+    HTTP version, status), so the path argument is rewritten rather than the
+    message.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(
+                redact_query_tokens(arg) if isinstance(arg, str) else arg
+                for arg in record.args
+            )
+        return True
+
+
+def install_log_redaction() -> None:
+    """Attach `QueryTokenFilter` to uvicorn's access logger, once.
+
+    Called from `create_app`, which uvicorn imports after configuring logging,
+    so the filter survives its `dictConfig`.
+    """
+    access = logging.getLogger("uvicorn.access")
+    if not any(isinstance(f, QueryTokenFilter) for f in access.filters):
+        access.addFilter(QueryTokenFilter())
 
 
 def _scrub(value: object) -> object:
@@ -40,6 +76,10 @@ def _before_send(event: dict, _hint: dict) -> dict | None:
         if isinstance(headers, dict):
             for k in ("authorization", "cookie", "x-forwarded-for"):
                 headers.pop(k, None)
+        for k in ("url", "query_string"):
+            value = event["request"].get(k)
+            if isinstance(value, str):
+                event["request"][k] = redact_query_tokens(value)
     if "extra" in event:
         event["extra"] = _scrub(event["extra"])  # type: ignore[assignment]
     if "breadcrumbs" in event and "values" in event["breadcrumbs"]:
@@ -61,6 +101,8 @@ def init_sentry(settings: Settings) -> bool:
         traces_sample_rate=settings.glitchtip_traces_sample_rate,
         send_default_pii=False,
         before_send=_before_send,
+        # Transactions carry the same `request` block, query string included.
+        before_send_transaction=_before_send,
         integrations=[
             StarletteIntegration(),
             FastApiIntegration(),
