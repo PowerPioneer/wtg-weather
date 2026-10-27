@@ -48,7 +48,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
   const error = errorKey ? ERROR_COPY[errorKey] : undefined;
 
   return (
-    <div className="flex w-full max-w-[480px] flex-col gap-5">
+    // Same width as `AuthCard`, so the hint line and the error notice share
+    // its edges rather than overhanging it on the right.
+    <div className="flex w-full max-w-[440px] flex-col gap-5">
       {/*
         No "create an account" link, because there is no such flow: the magic
         link creates the user on first use (`magic_link_verify` in the API).
