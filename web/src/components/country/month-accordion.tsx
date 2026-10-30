@@ -6,10 +6,12 @@ import type { CountryData } from "@/lib/types";
 import { estimateMonthScore } from "@/lib/country-derive";
 
 /**
- * Twelve-month accordion — one <details> per month. Uses native <details> so
- * it works with zero client JS (accessibility requirement for SSR pages).
- * Each row carries a jump-link into `/[country]/[month]` so the same data
- * is both expandable inline and linkable out.
+ * Twelve months in order, each row a link to `/[country]/[month]`.
+ *
+ * This used to be an accordion: each row opened onto the same sentence it
+ * already showed, plus a link. Opening it told the reader nothing new, so the
+ * row now *is* the link, and the "+" stays as its affordance. Plain anchors,
+ * so it works with zero client JS, as SSR pages must.
  */
 export function MonthAccordion({ country }: { country: CountryData }) {
   return (
@@ -52,47 +54,34 @@ function MonthRow({
 
   return (
     <li>
-      <details className="group bg-surface">
-        <summary className="flex cursor-pointer select-none items-center gap-4 px-5 py-4 hover:bg-surface-2">
-          <div className="min-w-[72px] font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted">
-            {short3}
+      <Link
+        href={`/${country.slug}/${slug}`}
+        className="group flex items-center gap-4 bg-surface px-5 py-4 hover:bg-surface-2 focus-visible:bg-surface-2"
+      >
+        <div className="min-w-[72px] font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted">
+          {short3}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-baseline gap-3">
+            <span className="font-display text-[20px] font-medium text-text group-hover:underline">
+              {name}
+            </span>
+            <span className="font-mono text-[11.5px] text-text-muted">
+              <Temperature value={t} digits={1} /> ·{" "}
+              <RainfallMonthly value={r} /> · {s.toFixed(1)} hr/day
+            </span>
           </div>
-          <div className="flex-1">
-            <div className="flex items-baseline gap-3">
-              <span className="font-display text-[20px] font-medium text-text">{name}</span>
-              <span className="font-mono text-[11.5px] text-text-muted">
-                <Temperature value={t} digits={1} /> ·{" "}
-                <RainfallMonthly value={r} /> · {s.toFixed(1)} hr/day
-              </span>
-            </div>
-            <p className="mt-0.5 line-clamp-1 text-[13px] text-text-muted">
-              <UnitText>{note}</UnitText>
-            </p>
-          </div>
-          <ScoreBadge score={score} size="sm" />
-          <span
-            aria-hidden="true"
-            className="ml-2 text-text-subtle transition-transform group-open:rotate-45"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </span>
-        </summary>
-        <div className="border-t border-border bg-background px-5 py-4">
-          <p className="max-w-[680px] text-[14px] leading-[1.55] text-text">
+          <p className="mt-0.5 line-clamp-1 text-[13px] text-text-muted">
             <UnitText>{note}</UnitText>
           </p>
-          <div className="mt-3">
-            <Link
-              href={`/${country.slug}/${slug}`}
-              className="font-mono text-[12px] text-text-link hover:underline"
-            >
-              Open the {name} page →
-            </Link>
-          </div>
         </div>
-      </details>
+        <ScoreBadge score={score} size="sm" />
+        <span aria-hidden="true" className="ml-2 text-text-subtle group-hover:text-text">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        </span>
+      </Link>
     </li>
   );
 }
