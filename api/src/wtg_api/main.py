@@ -20,12 +20,13 @@ from wtg_api.routers import (
     trips,
     users,
 )
-from wtg_api.services.observability import init_sentry
+from wtg_api.services.observability import init_sentry, install_log_redaction
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
     init_sentry(settings)
+    install_log_redaction()
 
     app = FastAPI(title="wtg-api", version=__version__)
 

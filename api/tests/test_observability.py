@@ -1,7 +1,58 @@
 from __future__ import annotations
 
+import logging
+
+import pytest
+
 from wtg_api.config import Settings
+from wtg_api.main import create_app
 from wtg_api.services.observability import _before_send, _scrub, init_sentry
+
+# A real magic-link token: its first segment is the recipient's address in
+# base64, so a logged token is a logged email as well as a live credential.
+_TOKEN = "eyJlbWFpbCI6InBlcnNvbkBleGFtcGxlLmNvbSJ9.auBL2w.1ofujKR8kEsnz6YfXiNbleUmZck"
+
+
+def test_access_log_redacts_query_tokens(caplog: pytest.LogCaptureFixture) -> None:
+    """Uvicorn's access line carries the full path, query string included.
+
+    Found on 2026-10-27, reading the logs of a sign-in outage: every
+    `/api/auth/verify` line held the token in clear.
+    """
+    create_app()
+    with caplog.at_level(logging.INFO, logger="uvicorn.access"):
+        # Uvicorn's own format and argument order (`httptools_impl.py`).
+        logging.getLogger("uvicorn.access").info(
+            '%s - "%s %s HTTP/%s" %d',
+            "172.19.0.8:44262",
+            "GET",
+            f"/api/auth/verify?token={_TOKEN}&next=%2Faccount",
+            "1.1",
+            500,
+        )
+    line = caplog.records[-1].getMessage()
+    assert _TOKEN not in line
+    assert "/api/auth/verify?token=[redacted]&next=%2Faccount" in line
+
+
+def test_access_log_redaction_installed_once() -> None:
+    create_app()
+    create_app()
+    access = logging.getLogger("uvicorn.access")
+    assert len([f for f in access.filters if type(f).__name__ == "QueryTokenFilter"]) == 1
+
+
+def test_before_send_redacts_query_tokens() -> None:
+    event: dict = {
+        "request": {
+            "url": f"https://wheretogoforgreatweather.com/api/auth/verify?token={_TOKEN}",
+            "query_string": f"token={_TOKEN}",
+        },
+    }
+    out = _before_send(event, {})
+    assert out is not None
+    assert _TOKEN not in str(out)
+    assert out["request"]["query_string"] == "token=[redacted]"
 
 
 def test_scrub_redacts_email_and_ip() -> None:

@@ -54,6 +54,20 @@ describe("/login/verify redirects", () => {
     expect(res.headers.get("location")).toBe(`${SITE_URL}/login?error=expired`);
   });
 
+  // On 2026-10-27 a full disk took Postgres down, every verify answered 500,
+  // and visitors were told their minute-old link had expired.
+  it("reports an API failure as unavailable, not as an expired link", async () => {
+    apiAnswers(new Response(null, { status: 500 }));
+    const res = await GET(new Request(`${INTERNAL}?token=t`));
+    expect(res.headers.get("location")).toBe(`${SITE_URL}/login?error=unavailable`);
+  });
+
+  it("treats a malformed token the API rejects as an invalid link", async () => {
+    apiAnswers(new Response(null, { status: 422 }));
+    const res = await GET(new Request(`${INTERNAL}?token=t`));
+    expect(res.headers.get("location")).toBe(`${SITE_URL}/login?error=expired`);
+  });
+
   it("sends a missing token back to the public login page", async () => {
     const res = await GET(new Request(INTERNAL));
     expect(res.headers.get("location")).toBe(`${SITE_URL}/login?error=missing`);
