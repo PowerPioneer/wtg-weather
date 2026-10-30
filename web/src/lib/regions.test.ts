@@ -26,9 +26,17 @@ const BONAIRE: RegionRow = {
 
 describe("regionMonthScore", () => {
   it("judges the nights, as the pipeline and the map do", () => {
-    // Days in range, nights 26 °C against a 22 °C ceiling plus 3 °C buffer:
-    // a hard miss on temperature, so "Acceptable", not "Perfect match".
-    expect(regionMonthScore(COUNTRY, BONAIRE, 0)).toBe(BUCKET_SCORES[1]);
+    // Days in range, nights 28 °C against the 24 °C default ceiling plus its
+    // 3 °C buffer: a hard miss on temperature, so "Acceptable", not "Perfect
+    // match" — the days alone would have made it one.
+    expect(regionMonthScore(COUNTRY, { ...BONAIRE, tn: twelve(28) }, 0)).toBe(BUCKET_SCORES[1]);
+  });
+
+  it("lets Caribbean nights fall in the buffer rather than miss", () => {
+    // 26 °C sits between the 24 °C ceiling and 27 °C: "Good option". At the
+    // old 22 °C ceiling it was a hard miss, which rated every Caribbean island
+    // "Acceptable" all year — the reason the default moved (#26).
+    expect(regionMonthScore(COUNTRY, BONAIRE, 0)).toBe(BUCKET_SCORES[2]);
   });
 
   it("gives the same place a perfect match when its nights are mild", () => {
