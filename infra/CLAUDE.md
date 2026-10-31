@@ -551,7 +551,41 @@ then can cache one copy per archive safely. The API signs in bunny's format
 once `BUNNY_TOKEN_KEY` is set, and `/api/tiles/verify` accepts three
 credentials so nothing breaks or opens up in between (`routers/tiles.py`).
 
-Do these **in this order**. Each step is safe to stop after.
+**State: live since 2026-10-31.** Steps 1–4 and 6 done; step 5 deliberately
+skipped (see there). Production has `BUNNY_TOKEN_KEY` set and
+`TILE_ORIGIN_SECRET` unset, and that is the intended configuration. Results of
+step 4 on the AMS edge, all through `cdn.`:
+
+| Request | Answer |
+|---|---|
+| fresh signed URL | `206`, `CDN-Cache: HIT` |
+| no query, free or premium | `403` from bunny |
+| mangled `token` | `403` |
+| old `exp`/`sig` | `403` |
+| free token presented for `premium.pmtiles` | `403` |
+| **expired** but correctly signed, object in the edge cache | `403` — checked before the cache |
+| signed premium, object not cached | `206`, `MISS`; the origin log shows `/api/tiles/verify?token=…` answered 204 |
+
+The last row is the one the docs leave open: **bunny forwards the token to the
+origin on a miss**, so the origin keeps checking every request that reaches
+it with no extra configuration.
+
+To sign a test URL without the key leaving the container (a negative TTL gives
+an expired one):
+
+```bash
+docker compose exec -T api python -c "from wtg_api.config import get_settings as g; \
+from wtg_api.services.signing import sign_bunny; \
+print(sign_bunny('/_tiles/free.pmtiles', g().bunny_token_key, 120).url)"
+```
+
+**Rotating the key** is steps 2–4 again: generate a new key in bunny, put it in
+`.env`, `--force-recreate api` within a minute or two — every URL signed with
+the old key fails at the edge from the moment bunny switches, until the tab
+re-signs (≤15 min), so do it at a quiet hour.
+
+The original procedure, kept for a rebuild of the zone. Do these **in this
+order**. Each step is safe to stop after.
 
 1. **Deploy the code.** With both new variables empty, behaviour is unchanged.
 2. **Switch the signer.** In bunny: pull zone → Security → Token
@@ -573,14 +607,18 @@ Do these **in this order**. Each step is safe to stop after.
    **Rollback:** toggle Token Authentication off. Step 2's URLs keep working.
    A `403` on the freshly signed URL means our token does not match bunny's
    formula (`services/signing.py::sign_bunny`) — roll back and compare.
-5. **Protect the origin.** bunny's docs do not say whether it forwards the
-   token to the origin once it checks it, and the origin must not depend on
-   that. Generate a secret (`openssl rand -hex 32`), add a bunny Edge Rule
-   *Set Request Header* `X-Wtg-Origin-Auth: <secret>` for all requests, put the
-   same value in `.env` as `TILE_ORIGIN_SECRET` and
-   `docker compose up -d --force-recreate api`. **Never before step 4:** the
-   header is accepted without a token, and before the edge checks tokens it
-   would let bunny fetch premium for anyone.
+5. **Origin header — only if bunny stops forwarding the token.** Skipped on
+   2026-10-31, because bunny forwards it (table above): the origin already
+   checks every miss, and the header would only add a second credential that
+   opens every archive at the origin without a token. The sign you need it is
+   premium tiles failing while free still works — premium is rarely in the edge
+   cache, so it misses — with `/api/tiles/verify` answering 403 to requests
+   that carry no `token`. Then: generate a secret (`openssl rand -hex 32`), add
+   a bunny Edge Rule *Set Request Header* `X-Wtg-Origin-Auth: <secret>` for all
+   requests, put the same value in `.env` as `TILE_ORIGIN_SECRET` and
+   `docker compose up -d --force-recreate api`. **Never while Token
+   Authentication is off:** the header is accepted without a token, so bunny
+   would fetch premium for anyone.
 6. Re-run step 4's checks with the cache warm, and the map signed in as free
    and as premium.
 
