@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
     return [...LEGACY_REDIRECTS];
   },
   images: {
+    // 85 for the country hero photo, the page's largest image: at the default
+    // 75 a JPEG re-encoded to AVIF went visibly soft on a high-density screen.
+    qualities: [75, 85],
     remotePatterns: [
       {
         protocol: "https",

@@ -5,7 +5,7 @@ usage (from the repo root):
     uv run --no-project --with pillow python web/scripts/fetch_place_photos.py [--force]
 
 Each entry names a Wikimedia Commons file and its 1600px thumbnail. This
-fetches the thumbnail, fits it inside 1280×960 (twice the hero's widest CSS size) and writes a progressive JPEG
+fetches the thumbnail, fits it inside 1440×1080 at JPEG quality 82 (enough for the hero at 2× and a phone at 3×) and writes a progressive JPEG
 to `public/places/<iso2>.jpg`, which `next/image` then serves as AVIF/WebP at
 the sizes the hero asks for. Files already on disk are left alone unless
 `--force` is passed, so re-running after adding one country fetches one photo.
@@ -33,8 +33,8 @@ WEB = Path(__file__).resolve().parents[1]
 MANIFEST = WEB / "src" / "lib" / "place-photos.json"
 OUT = WEB / "public" / "places"
 USER_AGENT = "WTGWeatherPhotoFetch/1.0 (https://wheretogoforgreatweather.com)"
-MAX_SIZE = (1280, 960)
-QUALITY = 70
+MAX_SIZE = (1440, 1080)
+QUALITY = 82
 
 
 def fetch(url: str) -> bytes:
