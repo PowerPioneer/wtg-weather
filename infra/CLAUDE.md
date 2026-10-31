@@ -536,6 +536,57 @@ secret, use `--force-recreate` on every service that reads it. A rotated
 revoked one, which surfaces as a 502 from `/api/paddle/checkout-url` and
 nowhere else.
 
+## Tile signing at the edge
+
+**Why.** Measured 2026-10-31: the bunny pull zone keys its cache on the path
+alone and checks nothing, so `exp`/`sig` protected only cache *misses*. Free
+tiles came back `206 HIT` with a bogus signature and with none. Premium
+answered 403 only because no edge held a copy; every premium request was going
+to the origin, and an edge that cached it would have served it to anyone.
+(`REBUILD_PLAN.md` says the zone varies by query string. The live zone does
+not.)
+
+**The fix** is bunny's own Token Authentication: the edge checks the URL, and
+then can cache one copy per archive safely. The API signs in bunny's format
+once `BUNNY_TOKEN_KEY` is set, and `/api/tiles/verify` accepts three
+credentials so nothing breaks or opens up in between (`routers/tiles.py`).
+
+Do these **in this order**. Each step is safe to stop after.
+
+1. **Deploy the code.** With both new variables empty, behaviour is unchanged.
+2. **Switch the signer.** In bunny: pull zone → Security → Token
+   Authentication, copy the *URL Token Authentication Key* (do not enable it
+   yet). Put it in `.env` as `BUNNY_TOKEN_KEY`, then
+   `docker compose up -d --force-recreate api`. URLs now carry
+   `token`/`expires`; the edge still lets them through and the origin checks
+   them itself. Check the map loads, signed in and out.
+3. **Wait 15 minutes.** Open tabs still hold `exp`/`sig` URLs, which the edge
+   will refuse once it enforces; each tab re-signs within 15 minutes.
+4. **Enable Token Authentication** in bunny. Then check, against a URL from
+   `GET /api/tiles/url?tier=free`:
+   - the signed URL with `-r 0-15` → `206`;
+   - the same path with no query, and with a mangled `token` → `403`;
+   - an *expired* signed URL for an object the edge holds (`CDN-Cache: HIT` a
+     moment earlier) → `403`. bunny's docs do not say whether the check runs
+     before a cache hit; this is the check that it does.
+
+   **Rollback:** toggle Token Authentication off. Step 2's URLs keep working.
+   A `403` on the freshly signed URL means our token does not match bunny's
+   formula (`services/signing.py::sign_bunny`) — roll back and compare.
+5. **Protect the origin.** bunny's docs do not say whether it forwards the
+   token to the origin once it checks it, and the origin must not depend on
+   that. Generate a secret (`openssl rand -hex 32`), add a bunny Edge Rule
+   *Set Request Header* `X-Wtg-Origin-Auth: <secret>` for all requests, put the
+   same value in `.env` as `TILE_ORIGIN_SECRET` and
+   `docker compose up -d --force-recreate api`. **Never before step 4:** the
+   header is accepted without a token, and before the edge checks tokens it
+   would let bunny fetch premium for anyone.
+6. Re-run step 4's checks with the cache warm, and the map signed in as free
+   and as premium.
+
+The origin still accepts `exp`/`sig`, which stays harmless: it is a valid
+credential the API issues to no one any more.
+
 ## Rules
 
 - Never expose Postgres, Redis, GlitchTip, or Plausible ports on the

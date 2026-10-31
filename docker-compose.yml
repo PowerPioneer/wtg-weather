@@ -67,6 +67,10 @@ services:
       REDIS_URL: redis://redis:6379/0
       SESSION_SECRET: ${SESSION_SECRET}
       TILE_SIGNING_SECRET: ${TILE_SIGNING_SECRET}
+      # Edge-checked tile signing — both empty until the cutover in
+      # `infra/CLAUDE.md` § "Tile signing at the edge", and set in that order.
+      BUNNY_TOKEN_KEY: ${BUNNY_TOKEN_KEY:-}
+      TILE_ORIGIN_SECRET: ${TILE_ORIGIN_SECRET:-}
       PADDLE_WEBHOOK_SECRET: ${PADDLE_WEBHOOK_SECRET}
       # The rest of the Paddle configuration. Root `.env` only *interpolates*
       # into this file — a variable reaches the container solely because it is

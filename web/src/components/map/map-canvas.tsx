@@ -21,7 +21,7 @@ import {
   buildMapStyle,
   buildSelectionFilter,
 } from "@/lib/map-style";
-import { registerPmtilesProtocol } from "@/lib/pmtiles";
+import { archiveKey, bindSignedArchive, registerPmtilesProtocol } from "@/lib/pmtiles";
 import type { DisplayModeId } from "@/lib/display-modes";
 import { DISPLAY_MODES } from "@/lib/display-modes";
 import { DEFAULT_PREFERENCES, type WeatherPreferences } from "@/lib/scoring";
@@ -78,10 +78,24 @@ function MapCanvasImpl({
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
-  // Which URL pair the live style was built from, so a re-render that did not
-  // change them does not trigger a pointless restyle.
+  // The style names each archive by its stable key — the signed URL without
+  // its query — so a re-issued signature is not a different source. Only the
+  // archive's *availability* (premium appearing or lapsing) restyles; a new
+  // signature is handed to the archive by `bindSignedArchive` below and is
+  // invisible to MapLibre (see `lib/pmtiles.ts`).
+  const freeArchive = freeTilesUrl ? archiveKey(freeTilesUrl) : null;
+  const premiumArchive = premiumTilesUrl ? archiveKey(premiumTilesUrl) : null;
+  // Which archive pair the live style was built from, so a re-render that did
+  // not change them does not trigger a pointless restyle.
   const appliedUrlsRef = useRef<string | null>(null);
-  const urlKey = `${freeTilesUrl ?? ""}|${premiumTilesUrl ?? ""}`;
+  const urlKey = `${freeArchive ?? ""}|${premiumArchive ?? ""}`;
+
+  // Declared before the construction effect so it runs first: the archive must
+  // be registered under its key before the first style asks for it.
+  useEffect(() => {
+    if (freeTilesUrl) bindSignedArchive(freeTilesUrl);
+    if (premiumTilesUrl) bindSignedArchive(premiumTilesUrl);
+  }, [freeTilesUrl, premiumTilesUrl]);
   const [styleReady, setStyleReady] = useState(false);
   const [hasPremiumLayer, setHasPremiumLayer] = useState(false);
   const [hoverId, setHoverId] = useState<string | number | null>(null);
@@ -102,15 +116,15 @@ function MapCanvasImpl({
   const hasTiles = freeTilesUrl != null;
 
   useEffect(() => {
-    if (!containerRef.current || !freeTilesUrl) return;
+    if (!containerRef.current || !freeArchive) return;
     registerPmtilesProtocol();
     appliedUrlsRef.current = urlKey;
 
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: buildMapStyle({
-        freeTilesUrl,
-        premiumTilesUrl,
+        freeTilesUrl: freeArchive,
+        premiumTilesUrl: premiumArchive,
         mode,
         month,
         preferences,
@@ -118,7 +132,7 @@ function MapCanvasImpl({
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: MIN_ZOOM,
-      maxZoom: premiumTilesUrl ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM,
+      maxZoom: premiumArchive ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM,
       attributionControl: { compact: true },
       dragRotate: false,
       pitchWithRotate: false,
@@ -160,23 +174,29 @@ function MapCanvasImpl({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasTiles]);
 
-  // Swap the style in place when a signed URL is re-issued, or when premium
-  // entitlement appears or lapses. `setStyle` preserves the camera, so this is
-  // invisible to the user beyond the tiles reloading.
+  // Swap the style in place when premium entitlement appears or lapses — not
+  // when a signature is re-issued, which only re-points the archive. `setStyle`
+  // preserves the camera, so this is invisible beyond the tiles reloading.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !freeTilesUrl) return;
+    if (!map || !freeArchive) return;
     // Already applied at construction — mode/month/preference changes must not
     // restyle, or a slider drag would tear down and refetch every tile.
     if (appliedUrlsRef.current === urlKey) return;
     appliedUrlsRef.current = urlKey;
 
     setStyleReady(false);
-    map.setMaxZoom(premiumTilesUrl ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM);
+    map.setMaxZoom(premiumArchive ? PREMIUM_MAX_ZOOM : FREE_MAX_ZOOM);
     map.setStyle(
-      buildMapStyle({ freeTilesUrl, premiumTilesUrl, mode, month, preferences }),
+      buildMapStyle({
+        freeTilesUrl: freeArchive,
+        premiumTilesUrl: premiumArchive,
+        mode,
+        month,
+        preferences,
+      }),
     );
-  }, [urlKey, freeTilesUrl, premiumTilesUrl, mode, month, preferences]);
+  }, [urlKey, freeArchive, premiumArchive, mode, month, preferences]);
 
   // Live paint updates — mode, month, preferences.
   useEffect(() => {
@@ -227,7 +247,7 @@ function MapCanvasImpl({
     }
 
     const onZoom = () => {
-      if (!premiumTilesUrl && map.getZoom() > FREE_MAX_ZOOM - 0.01) {
+      if (!premiumArchive && map.getZoom() > FREE_MAX_ZOOM - 0.01) {
         // Clamp and notify the page, which shows the upgrade popover.
         map.setZoom(FREE_MAX_ZOOM);
         onPremiumZoomBlocked?.();
@@ -248,7 +268,7 @@ function MapCanvasImpl({
     };
   }, [
     styleReady,
-    premiumTilesUrl,
+    premiumArchive,
     onFeatureSelect,
     onFeatureHover,
     onPremiumZoomBlocked,

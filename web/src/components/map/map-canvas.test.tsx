@@ -94,7 +94,17 @@ vi.mock("maplibre-gl", () => {
   };
 });
 
-vi.mock("@/lib/pmtiles", () => ({ registerPmtilesProtocol: () => {} }));
+/** Every signed URL handed to `bindSignedArchive`, in order. */
+const bound: string[] = [];
+
+vi.mock("@/lib/pmtiles", () => ({
+  registerPmtilesProtocol: () => {},
+  archiveKey: (url: string) => url.split("?", 1)[0],
+  bindSignedArchive: (url: string) => {
+    bound.push(url);
+    return url.split("?", 1)[0];
+  },
+}));
 
 const { MapCanvas } = await import("./map-canvas");
 
@@ -125,24 +135,28 @@ describe("MapCanvas tile-URL handling", () => {
     expect(FakeMap.instances[0].removed).toBe(false);
   });
 
-  it("swaps the style in place rather than rebuilding the camera", () => {
+  it("re-points the archive instead of restyling when a signature is re-issued", () => {
+    // A restyle swapped in a new source, and pmtiles — keying by URL —
+    // refetched the header, directories and every visible tile each time.
     const { rerender } = render(
       <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={null} mode="preferences" month={4} />,
     );
     const map = FakeMap.instances[0];
-    expect(map.setStyleCalls).toHaveLength(0);
+    expect(bound.at(-1)).toBe(FREE_A);
 
     rerender(
       <MapCanvas freeTilesUrl={FREE_B} premiumTilesUrl={null} mode="preferences" month={4} />,
     );
 
-    expect(map.setStyleCalls).toHaveLength(1);
-    expect(JSON.stringify(map.setStyleCalls[0])).toContain("sig=bbb");
-    // `setStyle` leaves the camera alone; a style carrying its own centre or
-    // zoom would defeat that, so the builder must not emit one.
-    const style = map.setStyleCalls[0] as Record<string, unknown>;
-    expect(style.center).toBeUndefined();
-    expect(style.zoom).toBeUndefined();
+    expect(map.setStyleCalls).toHaveLength(0);
+    expect(bound.at(-1)).toBe(FREE_B);
+  });
+
+  it("names archives by their stable key, never by a signature", () => {
+    render(<MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={null} mode="preferences" month={4} />);
+    const style = JSON.stringify(FakeMap.instances[0].opts.style);
+    expect(style).toContain("pmtiles://https://cdn.test/free.pmtiles");
+    expect(style).not.toContain("sig=");
   });
 
   it("does not restyle when only the month or mode changes", () => {
@@ -173,6 +187,26 @@ describe("MapCanvas tile-URL handling", () => {
     expect(FakeMap.instances).toHaveLength(1);
     expect(map.setStyleCalls).toHaveLength(1);
     expect(map.maxZoomCalls).toEqual([9]);
+    // `setStyle` leaves the camera alone; a style carrying its own centre or
+    // zoom would defeat that, so the builder must not emit one.
+    const style = map.setStyleCalls[0] as Record<string, unknown>;
+    expect(style.center).toBeUndefined();
+    expect(style.zoom).toBeUndefined();
+  });
+
+  it("does not restyle when the premium signature is re-issued", () => {
+    const PREMIUM_B = "https://cdn.test/premium.pmtiles?exp=2000&sig=ddd";
+    const { rerender } = render(
+      <MapCanvas freeTilesUrl={FREE_A} premiumTilesUrl={PREMIUM} mode="preferences" month={4} />,
+    );
+    const map = FakeMap.instances[0];
+
+    rerender(
+      <MapCanvas freeTilesUrl={FREE_B} premiumTilesUrl={PREMIUM_B} mode="preferences" month={4} />,
+    );
+
+    expect(map.setStyleCalls).toHaveLength(0);
+    expect(bound.slice(-2)).toEqual([FREE_B, PREMIUM_B]);
   });
 
   it("reports hovered features with their pointer position, and clears on leave", () => {
@@ -208,8 +242,8 @@ describe("MapCanvas tile-URL handling", () => {
 
   it("outlines the selected polygon, and re-applies the outline after a restyle", () => {
     // A style swap rebuilds every layer with its default "match nothing"
-    // filter, so the outline has to be re-applied or a re-signed tile URL
-    // would silently drop the selection the user is looking at.
+    // filter, so the outline has to be re-applied or premium arriving (or
+    // lapsing) mid-session would silently drop the selection on screen.
     const { rerender } = render(
       <MapCanvas
         freeTilesUrl={FREE_A}
@@ -233,13 +267,14 @@ describe("MapCanvas tile-URL handling", () => {
     map.filters = [];
     rerender(
       <MapCanvas
-        freeTilesUrl={FREE_B}
-        premiumTilesUrl={null}
+        freeTilesUrl={FREE_A}
+        premiumTilesUrl={PREMIUM}
         mode="preferences"
         month={4}
         selectedFeatureId="GEO"
       />,
     );
+    expect(map.setStyleCalls).toHaveLength(1);
     act(() => map.emitStyleLoad());
     expect(
       map.filters.some(([, filter]) => JSON.stringify(filter).includes("GEO")),

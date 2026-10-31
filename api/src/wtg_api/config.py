@@ -92,6 +92,18 @@ class Settings(BaseSettings):
     # `wtgweather` (zone names must be ≥4 chars, hence not `wtg`). Override
     # per-environment via `CDN_URL`.
     cdn_url: str = "https://cdn.wheretogoforgreatweather.com"
+    # bunny.net Token Authentication key (pull zone → Security). When set, tile
+    # URLs are signed in bunny's own format and the **edge** checks them, so a
+    # pull zone that ignores the query string can cache one copy per archive.
+    # Empty keeps the original `exp`/`sig` scheme, which only the origin can
+    # check — see `routers/tiles.py` for the cutover order.
+    bunny_token_key: str = ""
+    # Shared secret bunny adds to its origin requests (an Edge Rule "Set Request
+    # Header" of `X-Wtg-Origin-Auth`). Once the edge checks tokens, this is how
+    # the origin knows a request came through it. Empty disables the check —
+    # set it only after Token Authentication is on, or the origin would serve
+    # anything bunny asked for.
+    tile_origin_secret: str = ""
     public_web_origin: str = "http://localhost:3000"
     # Where `/api/*` is reachable from the public internet. In production Caddy
     # fronts both the web app and `/api/*` on the same hostname, so this tracks
