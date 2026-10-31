@@ -361,7 +361,7 @@ async def test_a_token_signed_for_another_purpose_is_refused(
     client.cookies.clear()
     r = await client.post(
         "/api/invites/accept",
-        json={"token": issue_magic_link_token(f"agent@example.com|{invitation_id}")},
+        json={"token": issue_magic_link_token(f"agent@example.com|{invitation_id}", uuid.uuid4())},
     )
     assert r.status_code == 404
 

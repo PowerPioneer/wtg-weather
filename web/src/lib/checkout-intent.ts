@@ -7,7 +7,7 @@ import "server-only";
  * nothing survives it: the link the API mails carries a token and nothing
  * else, so a `?next=` on `/login` is gone by the time the session exists. This
  * cookie is the one thing that does survive, set when `/upgrade` turns an
- * anonymous visitor away and read once by `/login/verify`.
+ * anonymous visitor away and read once by `/login/confirm`.
  *
  * Deliberately **not** a URL. A cookie holding a redirect target is an open
  * redirect waiting for someone to set it to another origin; this holds a plan

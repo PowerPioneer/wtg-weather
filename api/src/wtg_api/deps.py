@@ -22,7 +22,12 @@ async def optional_user(
     payload = read_session(request)
     if payload is None:
         return None
-    return await session.get(User, payload.user_id)
+    user = await session.get(User, payload.user_id)
+    # A cookie from before the user's last "sign out everywhere" is still
+    # correctly signed and inside its 30 days; the version is what revokes it.
+    if user is None or user.session_version != payload.session_version:
+        return None
+    return user
 
 
 async def current_user(user: User | None = Depends(optional_user)) -> User:

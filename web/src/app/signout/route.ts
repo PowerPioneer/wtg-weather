@@ -35,7 +35,14 @@ export async function POST(request: Request): Promise<Response> {
 
   if (!session) return response;
 
-  const cleared = await fetch(`${INTERNAL_API_URL}/api/auth/logout`, {
+  // `scope=all` is the "Sign out everywhere" button in account settings: the
+  // API revokes every session this user holds, not just this browser's. A
+  // cross-site form cannot trigger it — the SameSite=Lax cookie is not sent on
+  // a cross-site POST, so it arrives here with no session and stops above.
+  const form = await request.formData().catch(() => null);
+  const endpoint = form?.get("scope") === "all" ? "logout-all" : "logout";
+
+  const cleared = await fetch(`${INTERNAL_API_URL}/api/auth/${endpoint}`, {
     method: "POST",
     headers: { cookie: session },
     cache: "no-store",

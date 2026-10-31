@@ -52,7 +52,7 @@ export function MagicLinkForm({ defaultEmail = "" }: MagicLinkFormProps) {
     setStatus("error");
     setError(
       result === "rate-limited"
-        ? "Too many requests. Wait a minute and try again."
+        ? "Too many sign-in links requested. Use the newest one in your inbox, or try again in 15 minutes."
         : "That email doesn't look right. Double-check and resend.",
     );
   }

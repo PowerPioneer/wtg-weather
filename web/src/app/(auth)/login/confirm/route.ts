@@ -1,32 +1,34 @@
 /**
- * The other end of the magic link.
+ * The other end of the magic link — the button on `/login/verify` posts here.
  *
  * `POST /api/auth/magic-link` mails a link to `{public_web_origin}/login/verify
  * ?token=…` — a **web** route, because Caddy sends everything but `/api/*` to
- * Next. That route did not exist, so every magic link ever sent landed on a
- * 404 and nobody could finish signing in. The API half was written and tested;
- * the two halves had simply never been joined.
+ * Next. That page only renders a "Sign in" button; this handler is what spends
+ * the link, because links are single-use and mail scanners open every link in
+ * a message (see `verify/page.tsx`). Scanners do not submit forms.
  *
- * This is a route handler rather than a page so the token never reaches the
- * browser's JS and the session cookie is minted in a single server-side hop:
- * we hand the token to the API, take the `Set-Cookie` it answers with, and
- * redirect. A page would have to expose the token to a client component to do
- * the same call from the browser.
+ * A route handler so the token never reaches the browser's JS and the session
+ * cookie is minted in a single server-side hop: we hand the token to the API,
+ * take the `Set-Cookie` it answers with, and redirect.
  */
 
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import { CHECKOUT_INTENT_COOKIE, parseIntent } from "@/lib/checkout-intent";
-import { INTERNAL_API_URL } from "@/lib/env";
+import { INTERNAL_API_URL, SITE_URL } from "@/lib/env";
 import { checkoutPath } from "@/lib/paddle";
 import { siteUrl } from "@/lib/site-url";
 
 /** Where a successful sign-in lands when nothing else was asked for. */
 const LANDING = "/account";
 
-export async function GET(request: Request): Promise<Response> {
-  const token = new URL(request.url).searchParams.get("token");
+export async function POST(request: Request): Promise<Response> {
+  if (isCrossSite(request)) return fail("missing");
+
+  const form = await request.formData().catch(() => null);
+  const raw = form?.get("token");
+  const token = typeof raw === "string" ? raw : null;
   if (!token) return fail("missing");
 
   const verified = await fetch(
@@ -62,6 +64,35 @@ export async function GET(request: Request): Promise<Response> {
   response.headers.append("set-cookie", setCookie);
   if (intent) response.cookies.delete(CHECKOUT_INTENT_COOKIE);
   return response;
+}
+
+/**
+ * Login CSRF: another site must not be able to post *its* token here and sign
+ * the visitor into the attacker's account. A browser names the origin of a
+ * cross-site form post, and cannot be made to lie about the host it is posting
+ * to — so the post is ours when the two agree.
+ *
+ * Compared by host, not against SITE_URL alone: SITE_URL defaults to the
+ * production origin, so a dev server or an e2e stack would refuse its own form.
+ * Hosts rather than origins because Caddy terminates TLS — Next sees `http`.
+ * An absent or `"null"` Origin is let through: older browsers and strict
+ * referrer policies withhold it, and the token itself is still the credential.
+ */
+function isCrossSite(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin || origin === "null") return false;
+  let host: string;
+  try {
+    host = new URL(origin).host;
+  } catch {
+    return true;
+  }
+  const ours = [
+    new URL(SITE_URL).host,
+    request.headers.get("x-forwarded-host"),
+    request.headers.get("host"),
+  ];
+  return !ours.includes(host);
 }
 
 function fail(reason: string): Response {

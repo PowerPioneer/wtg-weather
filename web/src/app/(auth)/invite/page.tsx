@@ -111,8 +111,8 @@ export default async function InvitePage({
         A plain form post, so accepting works with JavaScript off. The route
         handler behind it does the whole exchange server-side — the token goes
         to the API and the session cookie comes back — which also keeps the
-        token out of the browser's JS entirely, the same reason
-        `/login/verify` is a route handler.
+        token out of the browser's JS entirely — the same shape as the magic
+        link's `/login/verify` page posting to `/login/confirm`.
       */}
       <form method="post" action="/invite/accept">
         <input type="hidden" name="token" value={token} />

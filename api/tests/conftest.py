@@ -257,7 +257,7 @@ def login(client: AsyncClient, user: User) -> None:
     from fastapi import Response
 
     response = Response()
-    issue_session(response, user.id)
+    issue_session(response, user.id, user.session_version)
     cookie_header = response.headers.get("set-cookie", "")
     # Extract `wtg_session=<value>`
     token = cookie_header.split(";", 1)[0].split("=", 1)[1]

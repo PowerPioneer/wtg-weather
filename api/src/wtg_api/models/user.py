@@ -49,6 +49,14 @@ class User(Base, TimestampMixin):
         DateTime(timezone=True), nullable=True
     )
 
+    #: Stamped into every session cookie as `sv`; a cookie whose `sv` differs is
+    #: refused. Sessions are otherwise stateless signed cookies, so this one
+    #: integer is the only way to revoke them: "sign out everywhere" increments
+    #: it and every cookie issued before that moment stops working at once.
+    session_version: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
+
     memberships: Mapped[list[Membership]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )

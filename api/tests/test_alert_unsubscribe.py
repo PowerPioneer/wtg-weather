@@ -68,7 +68,7 @@ def test_a_session_cookie_is_not_an_unsubscribe_token() -> None:
     from wtg_api.services.sessions import issue_session
 
     response = Response()
-    issue_session(response, uuid.uuid4())
+    issue_session(response, uuid.uuid4(), 0)
     cookie = response.headers["set-cookie"].split(";", 1)[0].split("=", 1)[1]
     assert read_unsubscribe_token(cookie).user_id is None
 
