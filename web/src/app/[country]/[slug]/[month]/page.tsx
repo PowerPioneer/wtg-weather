@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ClimateChart } from "@/components/charts";
+import { ClimateChart, type ClimateChartKind, type MonthDatum } from "@/components/charts";
 import {
   ActivitiesSection,
   PlanCta,
@@ -12,7 +12,7 @@ import {
 } from "@/components/country";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
-import { Temperature, TemperatureDelta } from "@/components/units";
+import { RainfallMonthly, Temperature, TemperatureDelta } from "@/components/units";
 import { getRegion } from "@/lib/api-client";
 import {
   MONTH_NAMES,
@@ -22,8 +22,10 @@ import {
   monthIndex,
   nextMonth,
   previousMonth,
+  rainDayToMonth,
   type MonthSlug,
 } from "@/lib/months";
+import { scoreLabel } from "@/lib/scoring";
 import {
   estimateRegionMonthScore,
   regionBestMonthIndices,
@@ -89,14 +91,23 @@ export default async function RegionMonthPage({
     .join(" · ");
 
   const narrative = buildNarrative({
-    regionName: reg.name,
+    region: reg,
+    monthIdx: idx,
     countryName: data.name,
     monthName,
     rank,
     tempDelta,
   });
 
-  const months = reg.tl.map((v, i) => ({ month: i, value: v }));
+  // The same three charts the region page draws — days with nights beneath,
+  // rainfall, sunshine. This page used to chart temperature alone.
+  const toMonths = (values: readonly number[], low?: readonly number[]): MonthDatum[] =>
+    values.map((value, month) => ({ month, value, low: low?.[month] }));
+  const charts: { kind: ClimateChartKind; months: MonthDatum[] }[] = [
+    { kind: "temp", months: toMonths(reg.tl, reg.tn) },
+  ];
+  if (reg.rl) charts.push({ kind: "rain", months: toMonths(rainDayToMonth(reg.rl)) });
+  if (reg.sl) charts.push({ kind: "sun", months: toMonths(reg.sl) });
 
   return (
     <>
@@ -158,17 +169,23 @@ export default async function RegionMonthPage({
           <div className="mx-auto w-full max-w-[1280px] px-6 py-12 md:px-12">
             <div className="mb-6">
               <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-text-muted">
-                12-month temperature · {reg.name}
+                12-month climate · {reg.name}
               </div>
               <h2 className="mt-1 font-display text-[28px] font-medium leading-[1.2] text-text">
                 {monthName} in context
               </h2>
             </div>
-            <ClimateChart
-              kind="temp"
-              months={months}
-              context={`${reg.name}, ${data.name} — ${monthName}`}
-            />
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {charts.map((c) => (
+                <ClimateChart
+                  key={c.kind}
+                  kind={c.kind}
+                  months={c.months}
+                  context={`${reg.name}, ${data.name} — ${monthName}`}
+                  compact
+                />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -228,8 +245,8 @@ function RegionMonthHero({
               <dd className="text-text">{rank} of 12</dd>
             </div>
             <div className="flex gap-2">
-              <dt className="text-text-subtle">Score</dt>
-              <dd className="text-text">{score}/100</dd>
+              <dt className="text-text-subtle">Match</dt>
+              <dd className="text-text">{scoreLabel(score)}</dd>
             </div>
           </dl>
         </div>
@@ -240,8 +257,9 @@ function RegionMonthHero({
               <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted">
                 {monthName} match
               </div>
+              {/* The word, never the 0–100 number: see `score-badge.tsx`. */}
               <div className="mt-1 font-display text-[18px] font-medium text-text">
-                {score}/100
+                {scoreLabel(score)}
               </div>
               <p className="mt-1 max-w-[220px] text-[12px] text-text-muted">
                 Free-tier default preferences.
@@ -268,6 +286,9 @@ function RegionMonthStats({
   bestMonths: string;
 }) {
   const temp = region.tl[monthIdx];
+  const night = region.tn?.[monthIdx];
+  const rainMonth = region.rl ? rainDayToMonth(region.rl)[monthIdx] : undefined;
+  const sun = region.sl?.[monthIdx];
   const deltaNote =
     tempDelta === 0 ? (
       "same as yearly mean"
@@ -279,10 +300,19 @@ function RegionMonthStats({
     );
   const cards: { label: string; value: ReactNode; note?: ReactNode }[] = [
     {
-      label: "Temperature",
+      label: "By day",
       value: <Temperature value={temp} />,
       note: deltaNote,
     },
+    ...(night != null
+      ? [{ label: "At night", value: <Temperature value={night} />, note: "mean daily minimum" }]
+      : []),
+    ...(rainMonth != null
+      ? [{ label: "Rainfall", value: <RainfallMonthly value={rainMonth} />, note: "for the month" }]
+      : []),
+    ...(sun != null
+      ? [{ label: "Sunshine", value: `${sun.toFixed(1)} h`, note: "per day" }]
+      : []),
     { label: "Month rank", value: `${rank} of 12`, note: `for ${region.name}` },
     { label: "Best months", value: bestMonths, note: "highest regional score" },
   ];
@@ -384,18 +414,24 @@ function RegionMonthPagerCard({
 }
 
 function buildNarrative({
-  regionName,
+  region,
+  monthIdx,
   countryName,
   monthName,
   rank,
   tempDelta,
 }: {
-  regionName: string;
+  region: RegionRow;
+  monthIdx: number;
   countryName: string;
   monthName: string;
   rank: number;
   tempDelta: number;
 }): ReactNode {
+  const regionName = region.name;
+  const night = region.tn?.[monthIdx];
+  const rainMonth = region.rl ? rainDayToMonth(region.rl)[monthIdx] : undefined;
+  const sun = region.sl?.[monthIdx];
   const rankPhrase =
     rank <= 3
       ? `one of the strongest months for ${regionName}`
@@ -415,8 +451,20 @@ function buildNarrative({
     );
   return (
     <>
-      {monthName} is {rankPhrase} inside {countryName}, with {tempPhrase}. The
-      safety bulletins below apply.
+      {monthName} is {rankPhrase} inside {countryName}, with {tempPhrase}.{" "}
+      Expect days around <Temperature value={region.tl[monthIdx]} />
+      {night != null ? (
+        <>
+          {" "}and nights near <Temperature value={night} />
+        </>
+      ) : null}
+      {rainMonth != null ? (
+        <>
+          , about <RainfallMonthly value={rainMonth} /> of rain over the month
+        </>
+      ) : null}
+      {sun != null ? <>{` and ${sun.toFixed(1)} hours of sun a day`}</> : null}.
+      The safety bulletins below apply.
     </>
   );
 }

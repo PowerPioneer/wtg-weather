@@ -104,7 +104,13 @@ function HeroPhoto({ photo, iso2 }: { photo: PlacePhoto; iso2: string }) {
         alt={photo.alt}
         fill
         preload
-        sizes="(min-width: 1280px) 540px, (min-width: 768px) 45vw, 100vw"
+        quality={85}
+        // Not the panel's width: from `md` up the panel is portrait and
+        // `object-cover` fills it by *height*, so a 3:2 landscape photo is
+        // drawn about 1.5× the panel's height wide and cropped. Asking for the
+        // panel's width (it used to say 45vw) fetched a variant two-thirds too
+        // narrow and stretched it — the softness people saw.
+        sizes="(min-width: 768px) 900px, 100vw"
         className="object-cover"
       />
       {/* A scrim, so the credit stays legible over a bright sky or snow. */}

@@ -275,3 +275,14 @@ def test_measurements_use_the_shapes_the_web_converts_for_imperial_readers() -> 
     assert re.search(r"\d+–\d+ °C", text)
     assert re.search(r"\d+ mm", text)
     assert "°F" not in text and "inches" not in text
+
+
+def test_a_region_says_how_its_season_differs_from_the_country() -> None:
+    """The reason to read a region page: its window is not the national one."""
+    text = build_intro(name="Cusco", climate=DRY_SEASON, parent=("Peru", [1, 2, 3]))
+    assert "Across Peru as a whole, the best months are January–March." in text
+
+
+def test_a_region_on_the_national_calendar_does_not_repeat_it() -> None:
+    text = build_intro(name="Cusco", climate=DRY_SEASON, parent=("Peru", [5, 6, 7, 8, 9]))
+    assert "as a whole" not in text

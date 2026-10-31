@@ -12,6 +12,7 @@
 
 import type { CountryRef } from "./countries";
 import { PERU_ACTIVITIES } from "./mock-activities";
+import { preferenceScore } from "./scoring";
 import type {
   CountryData,
   Monthly,
@@ -36,17 +37,22 @@ const MONTH_LABELS = [
 
 const PERU_RAIN: Monthly = [148, 168, 142, 72, 28, 12, 8, 12, 28, 62, 88, 118];
 
-/**
- * Placeholder month-by-month verdicts for the region table: the sierra's
- * May–September dry season for the cool regions, a flatter year for the warm
- * coast and jungle. Shaped like the pipeline's output, not computed from it.
- */
-const SIERRA_SCORES: Monthly = [60, 60, 60, 75, 90, 90, 90, 90, 90, 75, 60, 60];
-const LOWLAND_SCORES: Monthly = [60, 60, 60, 60, 75, 75, 75, 75, 75, 60, 60, 25];
-
 function withMockScores(region: RegionRow): RegionRow {
   const annualMean = region.tl.reduce((sum, t) => sum + t, 0) / 12;
-  return { ...region, scores: annualMean < 20 ? SIERRA_SCORES : LOWLAND_SCORES };
+  const sierra = annualMean < 20;
+  // Placeholder nights, rain and sun in the pipeline's shape, so a mock region
+  // page draws the same four series a real one does.
+  const each = (f: (t: number, i: number) => number) =>
+    region.tl.map((t, i) => Math.round(f(t, i) * 10) / 10) as unknown as Monthly;
+  const tn = region.tn ?? each((t) => t - (sierra ? 12 : 8));
+  const rl = region.rl ?? perDay(PERU_RAIN);
+  const sl = region.sl ?? each((_, i) => (sierra ? 6.5 : 5) + (i >= 4 && i <= 8 ? 1.5 : 0));
+  // Scored by the real rule from those series, as the pipeline scores a real
+  // region, so the mock region table and the mock region page agree.
+  const scores = region.tl.map(
+    (t, i) => preferenceScore({ t, tmin: tn[i], r: rl[i], s: sl[i] }) ?? 25,
+  ) as unknown as Monthly;
+  return { ...region, scores, score: Math.max(...scores), tn, rl, sl };
 }
 
 const PERU: CountryData = {

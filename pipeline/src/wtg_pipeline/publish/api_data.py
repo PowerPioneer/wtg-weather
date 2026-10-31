@@ -101,6 +101,7 @@ from wtg_pipeline.processing.country_registry import (
 from wtg_pipeline.processing.country_rules import SUPPRESSED_COUNTRIES
 from wtg_pipeline.processing.scoring import DEFAULT_PREFERENCES, polygon_score
 from wtg_pipeline.publish.intro import MonthlyClimate, build_intro
+from wtg_pipeline.publish.intro import best_months as intro_best_months
 from wtg_pipeline.sources import geoboundaries
 from wtg_pipeline.tiles.build_geojson import (
     FREE_SOURCE_VARIABLES,
@@ -838,11 +839,12 @@ def build_payloads(
             # never has to know that code exists — it just gets a list of ids
             # it already has the items for. An unscoped activity is deliberately
             # absent: "Peru has an Amazon" is not a fact about Arequipa.
-            region_activities = (
-                [a.id for a in curated.for_region([str(region.get("iso3166_2", ""))])]
+            scoped = (
+                curated.for_region([str(region.get("iso3166_2", ""))])
                 if curated is not None
-                else []
+                else ()
             )
+            region_activities = [a.id for a in scoped]
             region_rows.append(
                 {
                     "name": region["name"],
@@ -865,6 +867,27 @@ def build_payloads(
                         levels_here,
                         str(region.get("iso3166_2", "")),
                         country_level=country_advisory_level,
+                    ),
+                    # The region page's intro: the country intro's generator over
+                    # the region's own climate and the activities that name it,
+                    # plus how its season differs from the country's.
+                    "summary": build_intro(
+                        name=str(region["name"]),
+                        climate=MonthlyClimate(
+                            t_max=region_climate.t_max,
+                            t_min=region_climate.t_min,
+                            rain_day=region_climate.rain_day,
+                            sun=region_climate.sun,
+                            scores=region_scores,
+                        ),
+                        curated=(
+                            activity_data.CountryActivities(
+                                iso2=curated.iso2, reviewed=curated.reviewed, activities=scoped
+                            )
+                            if scoped and curated is not None
+                            else None
+                        ),
+                        parent=(entry.name, intro_best_months(scores)),
                     ),
                     "tl": region_climate.t,
                     # The overnight low beside the daytime high. Without it the

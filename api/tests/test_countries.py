@@ -53,6 +53,7 @@ def _country_payload(slug: str, name: str, iso2: str) -> dict:
                 "slug": "cusco",
                 "score": 90,
                 "scores": [60, 60, 75, 90, 90, 90, 90, 90, 90, 75, 60, 60],
+                "summary": "The best time to visit Cusco is May–September.",
                 "tl": _series(13.0),
                 "tn": _series(2.0),
                 "rl": _series(1.5),
@@ -146,6 +147,8 @@ async def test_region_monthly_scores_survive_the_response_model(api: AsyncClient
     # The night low the scores were built from rides along, optionally.
     assert cusco["tn"][0] == 2.0
     assert lima["tn"] is None
+    assert cusco["summary"] == "The best time to visit Cusco is May–September."
+    assert lima["summary"] is None
 
 
 @pytest.mark.asyncio

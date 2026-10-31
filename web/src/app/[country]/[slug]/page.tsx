@@ -24,6 +24,7 @@ import { FavouriteButton } from "@/components/favourite/favourite-button";
 import { PageFooter, PageHeader } from "@/components/layout";
 import { ScoreBadge } from "@/components/match";
 import {
+  RainfallMonthly,
   Temperature,
   TemperatureDelta,
   TemperatureRange,
@@ -441,8 +442,19 @@ function RegionHero({
             </span>
           </h1>
           <p className="max-w-[560px] font-display text-[17px] leading-[1.55] text-text-muted">
-            Regional slice of {country.name} with its own temperature profile.
-            Best months here: <span className="text-text">{bestLabel}</span>.
+            {/*
+              Written by the pipeline from this region's own series and the
+              activities that name it (`publish/intro.py`). An older bundle has
+              none, and the one-line description is the fallback.
+            */}
+            {region.summary ? (
+              <UnitText>{region.summary}</UnitText>
+            ) : (
+              <>
+                Regional slice of {country.name} with its own temperature profile.
+                Best months here: <span className="text-text">{bestLabel}</span>.
+              </>
+            )}
           </p>
           <dl className="grid max-w-[520px] grid-cols-2 gap-x-6 gap-y-2 font-mono text-[12px] text-text-muted">
             <div className="flex gap-2">
@@ -513,6 +525,8 @@ function MonthScoreTable({
     name: MONTH_NAMES[slug],
     t: region.tl[i],
     tn: region.tn?.[i],
+    rain: region.rl ? rainDayToMonth(region.rl)[i] : undefined,
+    sun: region.sl?.[i],
     score: estimateRegionMonthScore(country, region, i),
   }));
   return (
@@ -546,6 +560,12 @@ function MonthScoreTable({
                         <Temperature value={r.tn} /> at night
                       </>
                     ) : null}
+                  </div>
+                  {/* Rain and sun as well: the score is judged on all four. */}
+                  <div className="mt-0.5 font-mono text-[11px] text-text-muted">
+                    {r.rain != null ? <RainfallMonthly value={r.rain} /> : null}
+                    {r.rain != null && r.sun != null ? " · " : null}
+                    {r.sun != null ? `${r.sun.toFixed(1)} h sun` : null}
                   </div>
                 </div>
                 <ScoreBadge score={r.score} size="sm" />

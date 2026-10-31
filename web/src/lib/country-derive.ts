@@ -17,9 +17,16 @@ import type { CountryData } from "./types";
 
 /**
  * National match score for one month, 0–100, or `null` when the country
- * carries no series for it. The three inputs are the three the rule consults;
- * rainfall is read from `rDay` because the rule is expressed in mm/day and
- * `r` is the same series scaled up to a monthly total for display.
+ * carries no series for it. Rainfall is read from `rDay` because the rule is
+ * expressed in mm/day and `r` is the same series scaled up to a monthly total
+ * for display.
+ *
+ * Days *and* nights. This passed the daytime high alone until 2026-10, so the
+ * month list, the month pages, the month landing pages and compare all scored
+ * a different rule from the pipeline's best months, intro, region table and
+ * map — a warm-night country could read "Perfect" in the month list beneath
+ * an intro calling the same month "only a good option". `regionMonthScore`
+ * had the same defect and the same fix.
  */
 export function monthScore(
   country: CountryData,
@@ -28,7 +35,7 @@ export function monthScore(
 ): number | null {
   const c = country.climate;
   return preferenceScore(
-    { t: c.t[monthIdx], r: c.rDay[monthIdx], s: c.s[monthIdx] },
+    { t: c.t[monthIdx], tmin: c.tMin[monthIdx], r: c.rDay[monthIdx], s: c.s[monthIdx] },
     prefs,
   );
 }

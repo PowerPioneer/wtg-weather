@@ -470,12 +470,25 @@ def build_intro(
     climate: MonthlyClimate,
     curated: CountryActivities | None = None,
     from_regions: bool = False,
+    parent: tuple[str, Sequence[int]] | None = None,
 ) -> str:
-    """The intro paragraph: when to go, the rest of the year, then what to do."""
+    """The intro paragraph: when to go, the rest of the year, then what to do.
+
+    ``parent`` is ``(country name, its best months)`` for a region's intro.
+    When the region's season differs from the country's, it says so — that
+    difference is the reason to read a region page at all.
+    """
     sentences = [_when_to_go(name, climate)]
     rest = _rest_of_year(climate)
     if rest:
         sentences.append(rest)
+    if parent is not None:
+        country, national = parent
+        if national and set(national) != set(best_months(climate.scores)):
+            sentences.append(
+                f"Across {with_article(country)} as a whole, the best months are "
+                f"{format_month_run(sorted(national))}."
+            )
     sentences.extend(_activity_sentences(curated))
     if from_regions:
         sentences.append(

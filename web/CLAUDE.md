@@ -31,7 +31,11 @@ pnpm dev
   (0-3) and map to colours. Recomputing score on preference change
   happens client-side by updating style paint expressions — no re-fetch.
 - **Scoring** lives in `lib/scoring.ts`. Pure functions, unit-tested,
-  shared between the map paint expressions and the SSR pages.
+  shared between the map paint expressions and the SSR pages. **Every caller
+  passes the night (`tmin`) as well as the day.** `monthScore` and
+  `regionMonthScore` both used to pass the daytime high alone, so 9.4% of
+  country-months (75 countries) read differently in the month list than in the
+  intro, the region table and the map, which all judge both.
 - **The 0–100 score is never rendered.** It is how the rule, the paint
   expression and every sort order work, and it stops there: the rule has four
   outcomes, not a hundred (the four values are bucket centroids), so a numeral
@@ -99,7 +103,8 @@ pnpm dev
 - **Country hero photos** are curated like the activities dataset: one
   Wikimedia Commons photo per country in `lib/place-photos.json` (file,
   place, alt, author, licence, source), the sized JPEG committed under
-  `public/places/<iso2>.jpg`. `place-photos.test.ts` refuses NC/ND/GFDL-only
+  `public/places/<iso2>.jpg` (1440×1080, JPEG q82; served at `quality={85}`,
+  which `next.config.ts` lists in `images.qualities`). `place-photos.test.ts` refuses NC/ND/GFDL-only
   licences and orphans. The hero prints place, author, licence and a link to
   the Commons page — CC BY/BY-SA require it — and is preloaded, since it is the
   page's LCP element (it shows on phones too, above the title). To add or swap
