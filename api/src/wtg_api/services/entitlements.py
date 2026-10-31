@@ -1,7 +1,9 @@
 """Resolve a user's effective plan by looking at their memberships.
 
-In production this is wrapped by a 60s Redis cache; the cache layer is
-deliberately a thin decorator so unit tests can exercise the pure resolver.
+Uncached: every call reads the memberships fresh, so a plan change from a
+Paddle webhook or a removed seat applies on the next request. (Earlier docs
+promised a 60-second Redis cache here; it was never built, and at one
+indexed join per request it is not needed.)
 """
 
 from __future__ import annotations

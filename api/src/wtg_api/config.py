@@ -151,8 +151,12 @@ class Settings(BaseSettings):
     paddle_price_agency_starter: str = "pri_sandbox_agency_starter"
     paddle_price_agency_pro: str = "pri_sandbox_agency_pro"
 
+    # Enforced by `middleware/rate_limit.py`: per client IP when signed out,
+    # per user when signed in. "memory" keeps counts in-process (tests, a dev
+    # box with no Redis); production counts in Redis so workers share them.
     rate_limit_anonymous: str = "100/minute"
     rate_limit_authenticated: str = "600/minute"
+    rate_limit_storage: Literal["redis", "memory"] = "redis"
 
     glitchtip_dsn: str = ""
     glitchtip_traces_sample_rate: float = 0.0

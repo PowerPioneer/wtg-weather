@@ -24,12 +24,13 @@ import { fetchMe } from "@/lib/api-client";
 import { getEntitlement } from "@/lib/session-user";
 import { CHECKOUT_RETURN_COPY } from "./copy";
 
-/** How often to ask. Comfortably inside the 60s entitlement cache window. */
+/** How often to ask. The plan flips as soon as Paddle's webhook lands — the
+ * API does not cache entitlements — so this mostly waits on webhook delivery. */
 const POLL_INTERVAL_MS = 3_000;
 /**
- * When to stop and say so. Webhook delivery plus a 60s cache means ~75s is the
- * realistic worst case; 120s gives that room and then admits defeat rather
- * than polling somebody's browser indefinitely.
+ * When to stop and say so. Webhook delivery is usually seconds but Paddle
+ * retries on failure; 120s gives a slow delivery room and then admits defeat
+ * rather than polling somebody's browser indefinitely.
  */
 const POLL_DEADLINE_MS = 120_000;
 
