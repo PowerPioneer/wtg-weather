@@ -511,6 +511,9 @@ class RegionRow(BaseModel):
     # One verdict per month, January first; `score` is their max. Optional for
     # the same back-compat reason as `code`.
     scores: list[int] | None = None
+    # The region page's generated intro. Optional: an older bundle has none,
+    # and the page falls back to its one-line description.
+    summary: str | None = None
     tl: list[float]
     # The overnight low; optional for the same back-compat reason as `code`.
     tn: list[float] | None = None

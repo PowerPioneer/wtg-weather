@@ -177,6 +177,12 @@ export type RegionRow = {
    * the region × month table then shows those cells as "No data".
    */
   scores?: Monthly;
+  /**
+   * The region page's intro, written by the pipeline (`publish/intro.py`) from
+   * this region's series and the activities that name it. Absent on an older
+   * bundle; the page then falls back to a one-line description.
+   */
+  summary?: string;
   /** °C, mean daily maximum — the daytime high, like the country's `tMax`. */
   tl: Monthly;
   /**

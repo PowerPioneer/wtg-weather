@@ -648,3 +648,14 @@ def test_the_collapse_guard_can_be_overridden(tmp_path, monkeypatch) -> None:
 def test_a_first_publish_has_nothing_to_compare_against(tmp_path) -> None:
     """No index yet is not evidence the new bundle is wrong."""
     api_data.assert_publishable({"peru": {}}, base_dir=tmp_path)
+
+
+def test_each_region_carries_its_own_intro(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Region pages used to say only "Regional slice of Peru with its own
+    temperature profile". The pipeline now writes each one an intro from the
+    region's own series, the same generator the country intro uses."""
+    entries, _skipped = _build(monkeypatch)
+    for region in entries["peru"]["regions"]:
+        summary = region["summary"]
+        assert region["name"] in summary
+        assert "warm, dry and sunny weather" in summary

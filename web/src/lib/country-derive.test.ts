@@ -31,12 +31,22 @@ function country(overrides: Partial<CountryData["climate"]>): CountryData {
 }
 
 describe("monthScore", () => {
+  it("judges the nights, as the pipeline's best months and the map do", () => {
+    // A 29 °C day with a 26 °C night: in the buffer of the 24 °C ceiling, so
+    // a good option. Scored on the day alone it read as a perfect match.
+    const balmy = country({ t: series(29), tMin: series(26), rDay: series(1), s: series(8) });
+    expect(monthScore(balmy, 0)).toBe(75);
+    const mild = country({ t: series(29), tMin: series(20), rDay: series(1), s: series(8) });
+    expect(monthScore(mild, 0)).toBe(90);
+  });
+
   it("is preferenceScore over the country's own series", () => {
     for (let i = 0; i < 12; i++) {
       expect(monthScore(PERU, i)).toBe(
         preferenceScore(
           {
             t: PERU.climate.t[i],
+            tmin: PERU.climate.tMin[i],
             r: PERU.climate.rDay[i],
             s: PERU.climate.s[i],
           },
@@ -52,6 +62,7 @@ describe("monthScore", () => {
     // 22× outside the buffer and drag every wet-ish country to "Avoid".
     const wet = country({
       t: series(22),
+      tMin: series(15),
       s: series(7),
       r: series(60),
       rDay: series(1.9),
@@ -62,6 +73,7 @@ describe("monthScore", () => {
   it("returns null when the country carries no usable series", () => {
     const blank = country({
       t: series(Number.NaN),
+      tMin: series(Number.NaN),
       rDay: series(Number.NaN),
       s: series(Number.NaN),
     });
@@ -76,7 +88,7 @@ describe("monthRank", () => {
   it("breaks ties toward the earlier month", () => {
     // The rule buckets rather than grades, so every month of a flat country
     // scores identically and ties are the common case, not the edge case.
-    const flat = country({ t: series(22), rDay: series(1), s: series(7) });
+    const flat = country({ t: series(22), tMin: series(15), rDay: series(1), s: series(7) });
     expect(monthRank(flat, 0)).toBe(1);
     expect(monthRank(flat, 11)).toBe(12);
   });
