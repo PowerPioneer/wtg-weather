@@ -37,6 +37,7 @@ from html import escape
 from pathlib import Path
 
 from wtg_api.config import get_settings
+from wtg_api.services.alert_scoring import score_label
 from wtg_api.services.email import EmailMessage
 
 logger = logging.getLogger(__name__)
@@ -140,10 +141,12 @@ def build_message(
         {
             "place": place,
             "month": month,
-            "score": str(score),
+            # The word, not the number: the e-mail follows the site's rule that
+            # the 0–100 score is never rendered (`web/CLAUDE.md`).
+            "score": score_label(score),
             # An alert that has never been scored has no previous run to print.
-            # "—" rather than "0", which would read as a measurement.
-            "previous_score": "—" if previous_score is None else str(previous_score),
+            # "—" rather than a word, which would read as a measurement.
+            "previous_score": "—" if previous_score is None else score_label(previous_score),
             "place_url": f"{web}{place_path}",
             "manage_url": f"{web}/account?s=alerts",
             "unsubscribe_url": unsubscribe_url,

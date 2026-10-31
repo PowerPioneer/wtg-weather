@@ -48,9 +48,12 @@ export type AlertEmailProps = {
   place: string;
   /** Month name, e.g. "April". */
   month: string;
-  /** 0–100 match score, already formatted. */
+  /**
+   * The match as one of the four words — "Perfect match", "Good option",
+   * "Acceptable", "Avoid" — never the 0–100 number behind it (`web/CLAUDE.md`).
+   */
   score: string;
-  /** The previous run's score, already formatted. */
+  /** The previous run's word, or "—" for an alert never scored before. */
   previousScore: string;
   /** Country/month page for the alert's place. */
   placeUrl: string;
@@ -110,12 +113,9 @@ export default function AlertEmail({
 
           <Section style={scoreWrap}>
             <div style={matched ? scoreBoxMatched : scoreBoxStopped}>
-              <Text style={scoreKey}>Match score</Text>
-              <Text style={matched ? scoreValueMatched : scoreValueStopped}>
-                {score}
-                <span style={scoreOutOf}>/100</span>
-              </Text>
-              <Text style={scoreValueMuted}>Previous run: {previousScore}/100</Text>
+              <Text style={scoreKey}>Match</Text>
+              <Text style={matched ? scoreValueMatched : scoreValueStopped}>{score}</Text>
+              <Text style={scoreValueMuted}>Previous run: {previousScore}</Text>
             </div>
           </Section>
 
@@ -157,8 +157,8 @@ AlertEmail.PreviewProps = {
   matched: true,
   place: "Peru",
   month: "April",
-  score: "90",
-  previousScore: "60",
+  score: "Perfect match",
+  previousScore: "Acceptable",
   placeUrl: "https://wheretogoforgreatweather.com/peru/april",
   manageUrl: "https://wheretogoforgreatweather.com/account?s=alerts",
   unsubscribeUrl:
@@ -276,12 +276,6 @@ const scoreValueMuted: React.CSSProperties = {
   fontFamily: mono,
   fontSize: 11,
   color: MUTED,
-};
-const scoreOutOf: React.CSSProperties = {
-  fontFamily: mono,
-  fontSize: 11,
-  color: MUTED,
-  marginLeft: 2,
 };
 
 const ctaWrap: React.CSSProperties = { padding: "22px 36px 28px" };

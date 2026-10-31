@@ -79,6 +79,22 @@ SUN_LIMITS = (0.0, SUN_MAX)
 BUCKET_SCORES: tuple[int, int, int, int] = (25, 60, 75, 90)
 
 
+def score_label(score: int) -> str:
+    """The word a 0–100 score is shown as — `scoreLabel` in the web's `scoring.ts`.
+
+    The number is never shown to anyone: the rule has four outcomes, and the
+    four values above are bucket centroids, so "75/100" claimed a precision the
+    score does not have. Same thresholds as the web's `scoreBin`.
+    """
+    if score >= 85:
+        return "Perfect match"
+    if score >= 70:
+        return "Good option"
+    if score >= 50:
+        return "Acceptable"
+    return "Avoid"
+
+
 @dataclass(frozen=True)
 class WeatherPreferences:
     #: The *daytime* band, scored against the bundle's `t` / `tMax`.

@@ -20,6 +20,7 @@ import pytest
 
 from wtg_api.config import get_settings
 from wtg_api.services import alert_email
+from wtg_api.services.alert_scoring import score_label
 from wtg_api.services.alert_email import (
     MATCHED,
     STOPPED,
@@ -37,8 +38,8 @@ FIXTURES = Path(__file__).parent / "fixtures" / "emails"
 PREVIEW_VALUES = {
     "place": "Peru",
     "month": "April",
-    "score": "90",
-    "previous_score": "60",
+    "score": "Perfect match",
+    "previous_score": "Acceptable",
     "place_url": "https://wheretogoforgreatweather.com/peru/april",
     "manage_url": "https://wheretogoforgreatweather.com/account?s=alerts",
     "unsubscribe_url": (
@@ -153,7 +154,30 @@ def test_stopped_matching_uses_the_other_template() -> None:
 def test_an_alert_with_no_previous_score_prints_a_dash_not_a_zero() -> None:
     """0 is not a score the scorer can produce; printing it would be a claim."""
     message = _message(previous_score=None)
-    assert "Previous run: —/100" in message.text
+    assert "Previous run: —" in message.text
+
+
+def test_the_score_is_sent_as_a_word_never_a_number() -> None:
+    """`web/CLAUDE.md`: the 0–100 score is never rendered — not on a page, and
+    not in a customer's inbox. The rule has four outcomes; "90/100" claimed a
+    precision it does not have."""
+    message = _message(score=90, previous_score=60)
+    # React separates adjacent text nodes with `<!-- -->` in the HTML part.
+    for part in (message.text, message.html.replace("<!-- -->", "")):
+        assert "Perfect match" in part
+        assert "Previous run: Acceptable" in part
+        assert "/100" not in part
+        assert not re.search(r"(?<![\w.])90(?![\w.])", part)
+
+
+@pytest.mark.parametrize(
+    ("score", "word"),
+    [(90, "Perfect match"), (85, "Perfect match"), (75, "Good option"), (70, "Good option"),
+     (60, "Acceptable"), (50, "Acceptable"), (25, "Avoid")],
+)
+def test_score_words_use_the_web_thresholds(score: int, word: str) -> None:
+    """Same bins as `scoreBin` in the web's `scoring.ts`."""
+    assert score_label(score) == word
 
 
 def test_both_a_text_and_an_html_part_are_produced() -> None:

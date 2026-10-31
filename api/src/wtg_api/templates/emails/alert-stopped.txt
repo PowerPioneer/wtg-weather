@@ -6,11 +6,11 @@ Weather alert
 
 This week's recomputed climate scores put it back under the line you set. Nothing is wrong with the alert — it stays active and we'll write again if it recovers.
 
-Match score
+Match
 
-{{score}}/100
+{{score}}
 
-Previous run: {{previous_score}}/100
+Previous run: {{previous_score}}
 
 See {{month}} in {{place}} → {{place_url}}
 
