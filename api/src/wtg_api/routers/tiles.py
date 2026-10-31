@@ -9,11 +9,37 @@ then serves the file from disk only on 204.
 
 Caddy forwards:
 - `X-Original-URI` — the original path, e.g. `/premium.pmtiles`
-- query params `exp` and `sig`
+- the original query string (`exp`/`sig`, or bunny's `token`/`expires`)
+- every original request header, including bunny's `X-Wtg-Origin-Auth`
+
+Two signing schemes, chosen by whether `BUNNY_TOKEN_KEY` is set:
+
+- **origin-checked** (`exp`/`sig`, the original): only this API can verify it,
+  and only on a cache miss. Measured 2026-10-31, the pull zone keys its cache
+  on the path alone and checks nothing: free tiles came back `206 HIT` with a
+  bogus signature and with none. Premium was closed only because no edge held
+  a copy, so every premium request went to the origin — and any edge that did
+  cache it would have served it to anyone.
+- **edge-checked** (bunny Token Authentication, `token`/`expires`): bunny
+  refuses a bad or expired URL itself, and can cache one copy per archive.
+
+`/verify` therefore accepts three credentials, so the switch can happen with
+no window in which tiles either fail or go unprotected:
+
+1. `exp`/`sig` — the original scheme, kept for URLs issued before the switch.
+2. bunny's `token`/`expires`, re-checked here — covers the period after
+   `BUNNY_TOKEN_KEY` is set but before the edge enforces it. bunny forwards the
+   requesting URL's query string on a miss (it is how `exp`/`sig` reach us).
+3. the `X-Wtg-Origin-Auth` header equal to `TILE_ORIGIN_SECRET` — bunny's own
+   origin requests, once the edge checks tokens and no longer needs to forward
+   them. Never configure the secret before the edge enforces tokens.
+
+The operator's order is in `infra/CLAUDE.md` § "Tile signing at the edge".
 """
 
 from __future__ import annotations
 
+import hmac
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
@@ -24,9 +50,12 @@ from wtg_api.deps import db_session, optional_user
 from wtg_api.models import User
 from wtg_api.schemas import SignedTileURLResponse
 from wtg_api.services.entitlements import resolve
-from wtg_api.services.signing import sign_path, verify
+from wtg_api.services.signing import sign_bunny, sign_path, verify, verify_bunny
 
 router = APIRouter(prefix="/api/tiles", tags=["tiles"])
+
+#: Header bunny's Edge Rule adds to every request it sends to the origin.
+ORIGIN_AUTH_HEADER = "x-wtg-origin-auth"
 
 
 @router.get("/url", response_model=SignedTileURLResponse)
@@ -52,12 +81,15 @@ async def get_tile_url(
     # `/_tiles/*` tile-serving route — without it, the request falls
     # through to `route /*` (Next.js) and 502s.
     path = f"/{tier}.pmtiles"
-    signed = sign_path(path, s.tile_signing_secret, s.tile_signature_ttl_seconds)
-    return SignedTileURLResponse(
-        url=f"{s.cdn_url}/_tiles{signed.url}",
-        expires_at=signed.expires_at,
-        tier=tier,
-    )
+    if s.bunny_token_key:
+        # bunny signs the path the visitor requests, prefix included, and signs
+        # every query parameter — so this URL carries `token`/`expires` only.
+        signed = sign_bunny(f"/_tiles{path}", s.bunny_token_key, s.tile_signature_ttl_seconds)
+        url = f"{s.cdn_url}{signed.url}"
+    else:
+        signed = sign_path(path, s.tile_signing_secret, s.tile_signature_ttl_seconds)
+        url = f"{s.cdn_url}/_tiles{signed.url}"
+    return SignedTileURLResponse(url=url, expires_at=signed.expires_at, tier=tier)
 
 
 @router.get("/verify")
@@ -65,19 +97,31 @@ async def verify_tile(
     request: Request,
     exp: str | None = Query(None),
     sig: str | None = Query(None),
+    token: str | None = Query(None),
+    expires: str | None = Query(None),
 ) -> Response:
     # Caddy forwards the original path via `X-Original-URI`; the path may still
     # include the query string, so strip it.
     original = request.headers.get("x-original-uri") or request.url.path
-    path = original.split("?", 1)[0]
-    # Caddy reverse-proxies `/_tiles/premium.pmtiles` → here; the signed
-    # CDN path is `/premium.pmtiles`, so strip any `/_tiles` prefix.
-    if path.startswith("/_tiles"):
-        path = path[len("/_tiles") :]
-    if not path.startswith("/"):
-        path = "/" + path
+    cdn_path = original.split("?", 1)[0]
+    if not cdn_path.startswith("/"):
+        cdn_path = "/" + cdn_path
+    # The original scheme signs the bare path (`/premium.pmtiles`); bunny signs
+    # the path it was asked for (`/_tiles/premium.pmtiles`).
+    path = cdn_path[len("/_tiles") :] if cdn_path.startswith("/_tiles/") else cdn_path
 
     s = get_settings()
-    if verify(path, exp, sig, s.tile_signing_secret):
+    from_cdn = request.headers.get(ORIGIN_AUTH_HEADER)
+    if (
+        verify(path, exp, sig, s.tile_signing_secret)
+        or verify_bunny(cdn_path, token, expires, s.bunny_token_key)
+        # Empty secret = check disabled. Without that guard an empty header
+        # would equal an unset secret and open the archive to anyone.
+        or (
+            bool(s.tile_origin_secret)
+            and from_cdn is not None
+            and hmac.compare_digest(from_cdn, s.tile_origin_secret)
+        )
+    ):
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     raise HTTPException(status.HTTP_403_FORBIDDEN, "invalid tile signature")
