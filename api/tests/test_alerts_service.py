@@ -365,8 +365,9 @@ async def test_the_email_reports_the_previous_run_s_score(sessionmaker) -> None:
     async with sessionmaker() as session:
         await run_weekly(session, inbox, FixedScorer(MATCHING))
 
-    assert "Previous run: 25/100" in inbox.sent[0].text
-    assert "90" in inbox.sent[0].text
+    # Words, not numbers: 25 is "Avoid", the new 90 "Perfect match".
+    assert "Previous run: Avoid" in inbox.sent[0].text
+    assert "Perfect match" in inbox.sent[0].text
 
 
 @pytest.mark.asyncio

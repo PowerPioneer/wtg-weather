@@ -85,8 +85,8 @@ export const ALERT_PLACEHOLDERS = {
 export const ALERT_PREVIEW_VALUES = {
   place: "Peru",
   month: "April",
-  score: "90",
-  previousScore: "60",
+  score: "Perfect match",
+  previousScore: "Acceptable",
   placeUrl: "https://wheretogoforgreatweather.com/peru/april",
   manageUrl: "https://wheretogoforgreatweather.com/account?s=alerts",
   unsubscribeUrl:

@@ -6,11 +6,11 @@ Peru in April no longer matches.
 
 This week's recomputed climate scores put it back under the line you set. Nothing is wrong with the alert — it stays active and we'll write again if it recovers.
 
-Match score
+Match
 
-90/100
+Perfect match
 
-Previous run: 60/100
+Previous run: Acceptable
 
 See April in Peru → https://wheretogoforgreatweather.com/peru/april
 
