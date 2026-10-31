@@ -39,6 +39,15 @@ class Settings(BaseSettings):
 
     tile_signature_ttl_seconds: int = 15 * 60
     magic_link_ttl_seconds: int = 15 * 60
+    # Each magic-link request is an email from our domain to an address the
+    # caller chose, so it is throttled twice. Per address, over one link's
+    # lifetime: enough for "it didn't arrive, send another", not enough to
+    # flood somebody's inbox. Per client IP, over an hour: generous because an
+    # office or a mobile carrier's NAT puts many people behind one address, but
+    # a ceiling on anyone spraying links at a list of strangers.
+    magic_link_max_per_email: int = 3
+    magic_link_max_per_ip: int = 20
+    magic_link_ip_window_seconds: int = 3600
     # Longer than a magic link because an invitation is addressed to somebody
     # who may not be at their desk, and shorter than a session because it is
     # still a bearer credential for a mailbox. Enforced twice — on the token's

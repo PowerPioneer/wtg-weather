@@ -151,7 +151,7 @@ async def accept_invitation(
     invitation.accepted_user_id = user.id
     await session.commit()
 
-    issue_session(response, user.id)
+    issue_session(response, user.id, user.session_version)
     logger.info(
         "invite.accepted to=%s org=%s role=%s",
         redact_email(invitation.email),

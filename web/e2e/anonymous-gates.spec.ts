@@ -48,6 +48,9 @@ test("an expired magic link explains itself instead of 404ing", async ({ page })
   // an explanation rather than a dead end.
   const response = await page.goto("/login/verify?token=definitely-not-valid");
   expect(response?.status()).toBeLessThan(400);
+  // Opening the link spends nothing (scanners open links); pressing does.
+  await expect(page).toHaveURL(/\/login\/verify/);
+  await page.getByRole("button", { name: /^sign in/i }).click();
   await expect(page).toHaveURL(/\/login\?error=/);
   await expect(page.getByRole("alert")).toContainText(/sign-in link|complete sign-in/i);
 });

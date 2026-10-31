@@ -2,7 +2,7 @@
  * `POST /invite/accept` — spend an invitation token.
  *
  * A route handler rather than a client call, for the same reasons
- * `/login/verify` is one: the token never reaches the browser's JavaScript,
+ * `/login/confirm` is one: the token never reaches the browser's JavaScript,
  * the session cookie is minted in a single server-side hop, and the whole
  * thing works with JS off because the page behind it is a plain form post.
  *

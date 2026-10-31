@@ -10,7 +10,7 @@ import { siteUrl } from "./site-url";
  * Route handlers must not build an absolute URL against `request.url` (or
  * `nextUrl.origin`): behind Caddy that is the container's bind address, and a
  * redirect to it is `https://0.0.0.0:3000/…`. It shipped twice — `/upgrade`,
- * then `/login/verify`, `/signout` and `/invite/accept` — so every handler is
+ * then `/login/confirm`, `/signout` and `/invite/accept` — so every handler is
  * scanned rather than trusting each to remember.
  */
 

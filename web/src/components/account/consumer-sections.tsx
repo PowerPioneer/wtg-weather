@@ -346,6 +346,25 @@ export function ConsumerSettings({ session }: Props) {
         </SetRow>
 
         <SetRow
+          label="Signed-in devices"
+          hint="Lost a phone, or signed in on a shared computer? This signs out every browser and device, including this one."
+        >
+          {/*
+            A plain form for the same reason as the sidebar's Sign out: it
+            changes state, and it has to work with JS disabled.
+          */}
+          <form action="/signout" method="post">
+            <input type="hidden" name="scope" value="all" />
+            <button
+              type="submit"
+              className="rounded-sm border border-border px-3.5 py-2 text-[12.5px] font-medium text-text hover:bg-surface-2"
+            >
+              Sign out everywhere
+            </button>
+          </form>
+        </SetRow>
+
+        <SetRow
           label="Delete account"
           danger
           hint="Permanently deletes trips, favourites, alerts, and sessions. Active subscriptions are cancelled at end of period via Paddle."

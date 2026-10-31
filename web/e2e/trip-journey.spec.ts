@@ -89,8 +89,11 @@ test.describe("WS-A · trip journey", () => {
     // recipient clicks is this route with this token, which is the part under
     // test.
     await page.goto(`/login/verify?token=${encodeURIComponent(token)}`);
+    // The link only renders a button — mail scanners open links, and links are
+    // single-use — so signing in is the press, not the visit.
+    await page.getByRole("button", { name: /^sign in/i }).click();
 
-    // `/login/verify` takes the API's `Set-Cookie` and redirects here. Landing
+    // `/login/confirm` takes the API's `Set-Cookie` and redirects here. Landing
     // on `/login?error=` instead means the verify hop failed.
     await expect(page).toHaveURL(/\/account$/);
     // The sidebar and the overview both print it; either one proves the session

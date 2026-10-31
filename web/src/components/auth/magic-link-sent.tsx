@@ -29,9 +29,9 @@ export type MagicLinkSentProps = {
 export function MagicLinkSent({ email, next = "/" }: MagicLinkSentProps) {
   const router = useRouter();
   const [cooldown, setCooldown] = useState(RESEND_SECONDS);
-  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
-  );
+  const [resendState, setResendState] = useState<
+    "idle" | "sending" | "sent" | "limited" | "error"
+  >("idle");
 
   // Poll /api/me — the moment FastAPI sees the session cookie, bounce to `next`.
   useEffect(() => {
@@ -68,12 +68,14 @@ export function MagicLinkSent({ email, next = "/" }: MagicLinkSentProps) {
   async function onResend() {
     if (cooldown > 0 || resendState === "sending") return;
     setResendState("sending");
-    const result = await postMagicLink(email);
+    const result = await postMagicLink(email).catch(() => "error" as const);
     if (result === "ok") {
       setResendState("sent");
       setCooldown(RESEND_SECONDS);
     } else {
-      setResendState("error");
+      // The API allows a few links per address per 15 minutes; past that the
+      // earlier links still work, so say so rather than "try again".
+      setResendState(result === "rate-limited" ? "limited" : "error");
     }
   }
 
@@ -148,6 +150,12 @@ export function MagicLinkSent({ email, next = "/" }: MagicLinkSentProps) {
       {resendState === "error" ? (
         <p role="alert" className="mt-2 text-[12px] text-destructive">
           Couldn&apos;t resend just now. Try again in a moment.
+        </p>
+      ) : null}
+      {resendState === "limited" ? (
+        <p role="alert" className="mt-2 text-[12px] text-destructive">
+          That&apos;s several links already. Use the newest one in your inbox, or try again in 15
+          minutes.
         </p>
       ) : null}
     </AuthCard>

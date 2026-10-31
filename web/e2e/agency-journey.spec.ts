@@ -68,6 +68,7 @@ async function signIn(page: Page, email: string): Promise<void> {
   // Only the token travels, not the URL around it: the API builds that from
   // `PUBLIC_WEB_ORIGIN`, which a dev stack does not set.
   await page.goto(`/login/verify?token=${encodeURIComponent(token)}`);
+  await page.getByRole("button", { name: /^sign in/i }).click();
   await expect(page).toHaveURL(/\/account$/);
 }
 

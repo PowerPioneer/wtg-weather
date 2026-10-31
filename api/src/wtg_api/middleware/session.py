@@ -30,5 +30,8 @@ class SlidingSessionMiddleware(BaseHTTPMiddleware):
                 cookie_name.lower().encode() + b"="
             ):
                 return response
-        issue_session(response, payload.user_id)
+        # Re-signs the version the cookie already carried. A revoked cookie is
+        # therefore refreshed *as revoked* — still refused by `optional_user` —
+        # so this middleware cannot resurrect one, and needs no database read.
+        issue_session(response, payload.user_id, payload.session_version)
         return response
