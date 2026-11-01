@@ -77,13 +77,16 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/wtg
       REDIS_URL: redis://redis:6379/0
-      SESSION_SECRET: ${SESSION_SECRET}
-      TILE_SIGNING_SECRET: ${TILE_SIGNING_SECRET}
+      # Required: compose would otherwise pass an unset one through as "", an
+      # HMAC key anyone can sign with. The API also refuses to boot in prod on
+      # an empty, default or short value (`config.py`).
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (openssl rand -hex 32)}
+      TILE_SIGNING_SECRET: ${TILE_SIGNING_SECRET:?set TILE_SIGNING_SECRET in .env (openssl rand -hex 32)}
       # Edge-checked tile signing — both empty until the cutover in
       # `infra/CLAUDE.md` § "Tile signing at the edge", and set in that order.
       BUNNY_TOKEN_KEY: ${BUNNY_TOKEN_KEY:-}
       TILE_ORIGIN_SECRET: ${TILE_ORIGIN_SECRET:-}
-      PADDLE_WEBHOOK_SECRET: ${PADDLE_WEBHOOK_SECRET}
+      PADDLE_WEBHOOK_SECRET: ${PADDLE_WEBHOOK_SECRET:?set PADDLE_WEBHOOK_SECRET in .env}
       # The rest of the Paddle configuration. Root `.env` only *interpolates*
       # into this file — a variable reaches the container solely because it is
       # named here — so these were silently absent while sitting correctly in

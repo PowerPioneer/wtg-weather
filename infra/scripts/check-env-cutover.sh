@@ -56,6 +56,17 @@ if [ -f .env ]; then
   done
 fi
 
+echo "== Signing secrets"
+# The API refuses to boot in prod unless each is at least 32 characters and not
+# the dev default (`api/src/wtg_api/config.py`). Pass/fail only, no length.
+for s in SESSION_SECRET TILE_SIGNING_SECRET PADDLE_WEBHOOK_SECRET; do
+  v=$(val "$s")
+  if [ -z "$v" ]; then bad "$s missing or empty"
+  elif [[ "$v" == dev-*-change-me ]]; then bad "$s is the dev default"
+  elif [ "${#v}" -lt 32 ]; then bad "$s is shorter than 32 characters"
+  else ok "$s strong enough"; fi
+done
+
 echo "== Origins"
 A=https://wheretogoforgreatweather.com
 exact PUBLIC_WEB_ORIGIN "$A"

@@ -24,9 +24,22 @@ _EMAIL_CREDENTIALS: dict[str, tuple[str, ...]] = {
     "scaleway": ("scaleway_secret_key", "scaleway_project_id"),
 }
 
+# The HMAC keys behind sessions, tile URLs and Paddle webhooks. Production
+# refuses to start while any of them is empty, the dev default, or short enough
+# to guess — see `_fail_closed_on_weak_secrets_in_prod`.
+_SIGNING_SECRETS: tuple[str, ...] = (
+    "session_secret",
+    "tile_signing_secret",
+    "paddle_webhook_secret",
+)
+_MIN_SECRET_LENGTH = 32
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=None, extra="ignore")
+    # `hide_input_in_errors`: a failed validation would otherwise print the
+    # whole settings dict — database URL with its password, every secret — into
+    # the container log as the boot traceback.
+    model_config = SettingsConfigDict(env_file=None, extra="ignore", hide_input_in_errors=True)
 
     environment: Literal["dev", "test", "prod"] = "dev"
 
@@ -195,6 +208,35 @@ class Settings(BaseSettings):
                 f"EMAIL_PROVIDER={self.email_provider} requires "
                 f"{', '.join(missing)}. Set them, or set EMAIL_PROVIDER=console "
                 "to log mail deliberately."
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _fail_closed_on_weak_secrets_in_prod(self) -> Settings:
+        """Refuse to boot in production on an empty, default or short secret.
+
+        Each of these is the only thing standing between a stranger and a
+        forged credential. Compose hands an unset `${VAR}` through as `""`, and
+        neither HMAC nor itsdangerous objects to an empty key: a missing
+        `SESSION_SECRET` lets anyone mint a session for any user id, a missing
+        `TILE_SIGNING_SECRET` lets anyone sign premium tile URLs. The dev
+        defaults are in this public repository, so they are no better.
+
+        Names the variable, never the value.
+        """
+        if self.environment != "prod":
+            return self
+        weak = [
+            name.upper()
+            for name in _SIGNING_SECRETS
+            if (value := getattr(self, name)) == type(self).model_fields[name].default
+            or len(value) < _MIN_SECRET_LENGTH
+        ]
+        if weak:
+            raise ValueError(
+                f"ENVIRONMENT=prod requires {', '.join(weak)} to be set to a "
+                f"random value of at least {_MIN_SECRET_LENGTH} characters "
+                "(e.g. `openssl rand -hex 32`), not empty and not the dev default."
             )
         return self
 
