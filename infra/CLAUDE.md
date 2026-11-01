@@ -555,6 +555,44 @@ published ports at all — `docker port wtg-weather-caddy-1` prints nothing and
 Caddy is running and serving; nothing on the host forwards to it. Recover with
 `docker compose up -d --force-recreate caddy`, not a plain `up -d`.
 
+### A pulled Caddyfile is not the one Caddy sees
+
+Compose mounts the Caddyfile as a **single file**
+(`./Caddyfile:/etc/caddy/Caddyfile:ro`). `git pull` does not edit a changed
+file in place: it writes a new one and renames it over the old, which gives it
+a new inode — and a single-file bind mount stays attached to the inode it was
+created with. So after a pull the container keeps reading the **old** file, and
+every check run inside it agrees with the old file:
+
+- `caddy reload --config /etc/caddy/Caddyfile` reports success and reloads the
+  old config;
+- `caddy validate` on that path says "Valid configuration" about the old file.
+
+Hit on 2026-11-01, deploying the security headers: two clean-looking reloads,
+and no headers. Compare before trusting either:
+
+```bash
+sha256sum Caddyfile                                              # host
+docker compose exec -T caddy sha256sum /etc/caddy/Caddyfile      # container
+```
+
+To apply a changed Caddyfile **without downtime**, hand the new file to the
+running Caddy. `caddy reload` adapts whatever path it is given and posts the
+JSON to the admin API, so it does not need to be the mounted one:
+
+```bash
+docker compose run --rm --no-deps -T caddy \
+  caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile   # a fresh container sees the new file
+docker cp Caddyfile wtg-weather-caddy-1:/tmp/Caddyfile
+docker compose exec -T caddy caddy reload --config /tmp/Caddyfile --adapter caddyfile
+```
+
+That sticks: Caddy reads `/etc/caddy/Caddyfile` only at start, and a restart
+or recreate re-binds the mount to the host's current file. The other way is
+`docker compose up -d --force-recreate caddy`, which costs a few seconds of
+the whole site and the tile origin. Mounting the directory instead of the file
+would close this for good, but moves the mount path `Caddyfile.dev` relies on.
+
 ### `.env` changes need the container recreated
 
 Compose injects `.env` at container **create** time. Editing `.env` and running
