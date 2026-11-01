@@ -59,6 +59,8 @@
 #   NO_CACHE               — set to 1 to rebuild without the layer cache, for a
 #                            content-only republish (see above)
 #   ALLOW_UNRENDERED=1     — build anyway if the API cannot be reached
+#   BUILD_CACHE_MAX        — cap on the builder's layer cache after a build,
+#                            default "6gb"; 0 skips the trim
 set -euo pipefail
 
 log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
@@ -163,6 +165,21 @@ else
         log "pre-rendered ${rendered} pages"
     else
         log "pre-rendered ? pages (no build step ran — cached layer reused)"
+    fi
+fi
+
+# ── keep the builder's cache bounded ─────────────────────────────────────
+# The builder is a long-lived container whose state volume keeps every layer
+# of every build. Nothing trimmed it, and it reached 16.6 GB on the data volume
+# by 2026-10-31 — the disk that holds Postgres and has filled before. Cap it at
+# a size that still keeps the dependency layers a normal rebuild reuses.
+# Best-effort: a failed trim must not fail a build that worked.
+BUILD_CACHE_MAX="${BUILD_CACHE_MAX:-6gb}"
+if [[ "$BUILD_CACHE_MAX" != "0" ]]; then
+    if docker buildx prune --builder "$BUILDER_NAME" --force             --max-used-space "$BUILD_CACHE_MAX" >/dev/null 2>&1; then
+        log "builder cache trimmed to at most ${BUILD_CACHE_MAX}"
+    else
+        log "WARNING: could not trim the builder cache — check 'docker buildx du --builder $BUILDER_NAME'"
     fi
 fi
 

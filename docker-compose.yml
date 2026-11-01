@@ -18,6 +18,12 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     logging: *default-logging
+    # Out-of-memory priority. The pipeline runs on this host, outside compose,
+    # and peaks near 12 GB on a 16 GB box (OOM-killed 2026-09-23); with every
+    # container at the default, the kernel was as free to kill Postgres as the
+    # job that caused it. Negative = killed last. Postgres and Caddy are the
+    # site; analytics and error tracking (positive, and memory-capped) go first.
+    oom_score_adj: -900
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -36,6 +42,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     logging: *default-logging
+    oom_score_adj: -500
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -47,6 +54,10 @@ services:
     image: clickhouse/clickhouse-server:24-alpine
     restart: unless-stopped
     logging: *default-logging
+    # Capped well above its ~0.6 GB idle use, so a runaway merge or query cannot
+    # take memory the site needs. ClickHouse sizes its own limits from this.
+    mem_limit: 3g
+    oom_score_adj: 300
     volumes:
       - ch-data:/var/lib/clickhouse
     ulimits:
@@ -62,6 +73,7 @@ services:
     build: ./api
     restart: unless-stopped
     logging: *default-logging
+    oom_score_adj: -500
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/wtg
       REDIS_URL: redis://redis:6379/0
@@ -188,6 +200,7 @@ services:
         NEXT_PUBLIC_PADDLE_ENV: ${NEXT_PUBLIC_PADDLE_ENV}
     restart: unless-stopped
     logging: *default-logging
+    oom_score_adj: -300
     environment:
       INTERNAL_API_URL: http://api:8000
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
@@ -212,6 +225,7 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     logging: *default-logging
+    oom_score_adj: -900
     # Caddy runs as PID 1 and never reaps orphans, so every process the
     # healthcheck spawns was left behind as a zombie. By 2026-08-27 that was
     # 17,025 of them, and the container's pid cgroup was full (17037/17038) —
@@ -257,6 +271,8 @@ services:
     image: glitchtip/glitchtip:latest
     restart: unless-stopped
     logging: *default-logging
+    mem_limit: 1g
+    oom_score_adj: 300
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/glitchtip
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
@@ -286,6 +302,10 @@ services:
     image: glitchtip/glitchtip:latest
     restart: unless-stopped
     logging: *default-logging
+    # ~0.16 GB idle. Capped because it has looped before (Redis MISCONF on a
+    # full disk), and a loop that also grows must not starve the site.
+    mem_limit: 1g
+    oom_score_adj: 300
     command: ./bin/run-celery-with-beat.sh
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/glitchtip
@@ -309,6 +329,8 @@ services:
     image: ghcr.io/plausible/community-edition:latest
     restart: unless-stopped
     logging: *default-logging
+    mem_limit: 1g
+    oom_score_adj: 300
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     environment:
       # Plausible builds every asset, link and form action from this. It still

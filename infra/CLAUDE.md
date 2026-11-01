@@ -92,6 +92,26 @@ restart. It does **not** reach already-rendered pages, which are ISR-cached for
 30 days: a content-only change needs
 `docker compose up -d --force-recreate web`.
 
+### Disk and memory guards
+
+- **Every deploy leaves the previous images dangling** (~3.6 GB per web build).
+  Finish with `docker image prune -f`. Dangling only: rollback is a rebuild at
+  the previous commit, not an old image.
+- **`build-web.sh` caps its builder's layer cache** at `BUILD_CACHE_MAX`
+  (default `6gb`) after each successful build. Untrimmed, the
+  `buildx_buildkit_wtg-internal0_state` volume had reached 16.6 GB of the data
+  volume by 2026-10-31. `docker buildx du --builder wtg-internal` shows it.
+- **Out-of-memory order is set in compose.** The pipeline runs on the host and
+  can take most of the RAM, so the services that *are* the site carry a
+  negative `oom_score_adj` — Postgres and Caddy −900, Redis and the API −500,
+  web −300 — and ClickHouse, GlitchTip and Plausible carry +300 plus a
+  `mem_limit` (3 GB for ClickHouse, 1 GB each otherwise), several times their
+  idle use. The site's own services have no memory cap on purpose: a cap set
+  too low is an outage of its own. Changing either key **recreates** that
+  container, Postgres included — apply it at a quiet hour.
+- Disk-usage alerting is meant to come from CheckMK on a separate server
+  (owner, 2026-11-01), not from a script on this one.
+
 ## The daily-climatology rebuild
 
 Moving the product from ERA5 monthly means onto daily statistics changes what
