@@ -36,7 +36,9 @@
 #   BUNNY_PULL_ZONE_ID   — passed through to rebuild-tiles.sh
 set -euo pipefail
 
-log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*"; }
+# `|| true` for the reason `rebuild-tiles.sh` gives: under `set -e` a failed
+# printf (a full disk) must not be what aborts the run.
+log() { printf '%s %s\n' "$(date --utc +%FT%TZ)" "$*" || true; }
 fail() { log "ERROR: $*" >&2; exit 1; }
 
 UV="${UV:-uv}"
@@ -63,7 +65,17 @@ index_hash() { [[ -f "$INDEX" ]] && sha256sum "$INDEX" | cut -d' ' -f1 || printf
 before="$(index_hash)"
 
 log "stage=download source=all"
-"$UV" run --directory pipeline wtg download advisories --source all
+# Not allowed to abort the run. The CLI exits 1 when *any* government failed,
+# but only after every other one has written its dump — so stopping here under
+# `set -e` threw away five good scrapes and skipped consolidate and publish,
+# the opposite of what `infra/CLAUDE.md` promises for a lone failed source.
+# Carry on with what was scraped (consolidation keeps the failed source's
+# previous dump and `ADVISORY_STALE` warns once it ages), and fail at the end.
+download_failed=0
+if ! "$UV" run --directory pipeline wtg download advisories --source all; then
+    download_failed=1
+    log "WARN: DOWNLOAD_PARTIAL — at least one source failed (named above); continuing with the rest"
+fi
 
 log "stage=consolidate"
 "$UV" run --directory pipeline wtg process advisories
@@ -152,6 +164,10 @@ if [[ "$before" == "$after" && "${FORCE_REBUILD:-0}" != "1" ]]; then
         log "weekly-advisories FAILED — pages published, tiles unchanged, but web is NOT serving"
         exit 1
     fi
+    if [[ "$download_failed" == 1 ]]; then
+        log "weekly-advisories FAILED — pages published, tiles unchanged, but a scrape failed (DOWNLOAD_PARTIAL)"
+        exit 1
+    fi
     log "weekly-advisories OK (pages published, tiles unchanged)"
     exit 0
 fi
@@ -191,6 +207,10 @@ TIERS="$TIERS" ./infra/scripts/rebuild-tiles.sh
 
 if [[ "$web_down" == 1 ]]; then
     log "weekly-advisories FAILED — tiles rebuilt (${TIERS}) but web is NOT serving"
+    exit 1
+fi
+if [[ "$download_failed" == 1 ]]; then
+    log "weekly-advisories FAILED — tiles rebuilt (${TIERS}), but a scrape failed (DOWNLOAD_PARTIAL)"
     exit 1
 fi
 log "weekly-advisories OK (tiles rebuilt: ${TIERS})"
