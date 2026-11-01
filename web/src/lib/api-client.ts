@@ -125,14 +125,35 @@ export async function publicApi<T>(path: string, init: RequestInit = {}): Promis
 }
 
 /**
+ * Share one in-flight request between every caller that asks while it runs.
+ *
+ * Independent components each want the session on mount — on `/map` the
+ * header link, the analytics switch and the map itself all called `/api/me`,
+ * three identical requests in the same millisecond. Only concurrent calls are
+ * merged: once the request settles the next call goes to the network again,
+ * so a poll (checkout success) or a re-check after sign-in still sees fresh
+ * state. Nothing is cached.
+ */
+function sharedInFlight<T>(load: () => Promise<T>): () => Promise<T> {
+  let inFlight: Promise<T> | null = null;
+  return () => {
+    inFlight ??= load().finally(() => {
+      inFlight = null;
+    });
+    return inFlight;
+  };
+}
+
+/**
  * Browser-side `/api/me` fetch. Returns `null` on 401 (unauthenticated) so
  * the `useSession` hook can distinguish "not signed in" from "request failed".
+ * Concurrent callers share one request (`sharedInFlight`).
  *
  * Parsed, not cast: this is the one payload whose shape decides what the UI
  * unlocks, and a cast would let a malformed body through as a `SessionUser`
  * whose `plan` is `undefined`.
  */
-export async function fetchMe(): Promise<SessionUser | null> {
+export const fetchMe: () => Promise<SessionUser | null> = sharedInFlight(async () => {
   const res = await fetch("/api/me", {
     credentials: "same-origin",
     headers: { accept: "application/json" },
@@ -140,7 +161,7 @@ export async function fetchMe(): Promise<SessionUser | null> {
   if (res.status === 401) return null;
   if (!res.ok) throw new Error(`fetchMe failed: ${res.status}`);
   return parseSessionUser(await res.json());
-}
+});
 
 export type TileTier = "free" | "premium";
 
@@ -225,15 +246,26 @@ export type OnboardingPatch = Partial<{
   data: Record<string, unknown>;
 }>;
 
-export async function fetchOnboarding(): Promise<OnboardingState | null> {
-  const res = await fetch("/api/onboarding", {
-    credentials: "same-origin",
-    headers: { accept: "application/json" },
-  });
-  if (res.status === 401) return null;
-  if (!res.ok) throw new Error(`fetchOnboarding failed: ${res.status}`);
-  return (await res.json()) as OnboardingState;
-}
+/**
+ * The signed-in user's onboarding blob, or `null` when nobody is signed in.
+ *
+ * Asks `/api/me` first — usually already in flight, and shared — and only
+ * then the store, so a signed-out visitor never sends a request that can only
+ * answer 401: on `/map` two hooks (the guide and stored preferences) each
+ * used to, for every anonymous page view. Concurrent callers share one request.
+ */
+export const fetchOnboarding: () => Promise<OnboardingState | null> = sharedInFlight(
+  async () => {
+    if ((await fetchMe()) === null) return null;
+    const res = await fetch("/api/onboarding", {
+      credentials: "same-origin",
+      headers: { accept: "application/json" },
+    });
+    if (res.status === 401) return null;
+    if (!res.ok) throw new Error(`fetchOnboarding failed: ${res.status}`);
+    return (await res.json()) as OnboardingState;
+  },
+);
 
 export async function patchOnboarding(
   patch: OnboardingPatch,
