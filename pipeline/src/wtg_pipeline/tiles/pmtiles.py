@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -30,14 +31,26 @@ def convert(mbtiles: Path, pmtiles: Path, *, pmtiles_bin: str = "pmtiles") -> Pa
     if not mbtiles.exists():
         raise FileNotFoundError(mbtiles)
 
+    # Converted beside the target and renamed over it, never written in place.
+    # `pmtiles` is the archive Caddy is serving: deleting it first and
+    # converting into it left the map with a missing, then a growing, file for
+    # the whole conversion — and an OOM kill part-way (the documented failure
+    # mode on this box) left it truncated, past the reach of
+    # `rebuild-tiles.sh`'s rollback, which only runs on failures it sees.
+    # Same directory, so the rename is atomic on the same filesystem.
     pmtiles.parent.mkdir(parents=True, exist_ok=True)
-    if pmtiles.exists():
-        pmtiles.unlink()
-    cmd = [pmtiles_bin, "convert", str(mbtiles), str(pmtiles)]
+    partial = pmtiles.with_name(pmtiles.name + ".tmp")
+    partial.unlink(missing_ok=True)
+    cmd = [pmtiles_bin, "convert", str(mbtiles), str(partial)]
     log.info("running: %s", " ".join(cmd))
-    subprocess.run(cmd, check=True)
-    if not pmtiles.exists():
-        raise RuntimeError(f"pmtiles produced no output at {pmtiles}")
+    try:
+        subprocess.run(cmd, check=True)
+        if not partial.exists():
+            raise RuntimeError(f"pmtiles produced no output at {partial}")
+    except BaseException:
+        partial.unlink(missing_ok=True)
+        raise
+    os.replace(partial, pmtiles)
     return pmtiles
 
 

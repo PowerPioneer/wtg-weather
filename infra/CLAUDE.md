@@ -191,6 +191,15 @@ kill during premium leaves a new `free.pmtiles` on disk beside the previous
 Re-run the one tier with `TIERS=premium ./infra/scripts/rebuild-tiles.sh`
 rather than redoing both; the purge at the end covers the whole zone either way.
 
+The previous `premium.pmtiles` surviving a kill is only guaranteed since
+`tiles/pmtiles.py::convert` became atomic. It used to delete the served archive
+and convert into it, so a kill during *that* step — rather than during the
+GeoJSON build, where the 2026-09-23 one landed — left a truncated archive live,
+past the reach of the script's rollback. It now converts to
+`<tier>.pmtiles.tmp` and renames it over the archive. The cost is that the
+`tiles/` filesystem briefly holds both copies, about 3 GB for premium; a run
+that dies leaves a `.tmp`, which the next run discards.
+
 ### Order
 
 ```bash
