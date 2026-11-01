@@ -342,6 +342,66 @@ async def test_google_unverified_email_cannot_claim_existing_account(
 
 
 @pytest.mark.asyncio
+async def test_google_cannot_relink_an_account_bound_to_another_google_sub(
+    client: AsyncClient, user: User, sessionmaker, monkeypatch
+) -> None:
+    """Same verified address, different Google identity: the account stays
+    with the identity it is linked to, and nobody is signed in."""
+    async with sessionmaker() as session:
+        fresh = await session.get(User, user.id)
+        assert fresh is not None
+        fresh.google_sub = "google-original"
+        await session.commit()
+
+    _fake_google(
+        monkeypatch, {"sub": "google-other", "email": user.email, "email_verified": True}
+    )
+    r = await _google_callback(client)
+    assert r.status_code == 400
+    assert get_settings().session_cookie_name not in r.cookies
+
+    async with sessionmaker() as session:
+        fresh = await session.get(User, user.id)
+        assert fresh is not None
+        assert fresh.google_sub == "google-original"
+
+
+@pytest.mark.asyncio
+async def test_concurrent_first_sign_in_reuses_the_account(
+    client: AsyncClient, mailbox, sessionmaker, monkeypatch
+) -> None:
+    """The second of two simultaneous first sign-ins for one address used to
+    hit the unique email and 500. Reproduce it: the lookup misses, but the
+    other request has already created the account."""
+    token = await _request_link(client, mailbox, "racer@example.com")
+    async with sessionmaker() as session:
+        session.add(User(email="racer@example.com"))
+        await session.commit()
+
+    real = auth_router._user_by_email
+    calls = 0
+
+    async def miss_once(session, email):
+        nonlocal calls
+        calls += 1
+        return None if calls == 1 else await real(session, email)
+
+    monkeypatch.setattr(auth_router, "_user_by_email", miss_once)
+    r = await client.get("/api/auth/verify", params={"token": token})
+    assert r.status_code == 204
+    assert get_settings().session_cookie_name in r.cookies
+
+    async with sessionmaker() as session:
+        users = (
+            await session.execute(select(User).where(User.email == "racer@example.com"))
+        ).scalars().all()
+        assert len(users) == 1
+        # Still spent: the savepoint rolled back the insert, not the link.
+        spent = (await session.execute(select(MagicLinkToken))).scalars().all()
+        assert all(row.used_at is not None for row in spent)
+
+
+@pytest.mark.asyncio
 async def test_google_verified_email_signs_in(
     client: AsyncClient, user: User, monkeypatch
 ) -> None:

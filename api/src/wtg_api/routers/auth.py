@@ -23,6 +23,7 @@ from urllib.parse import urlencode
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
 from sqlalchemy import ColumnElement, delete, func, select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wtg_api.config import get_settings
@@ -61,6 +62,10 @@ def _client_ip(request: Request) -> str | None:
         if last:
             return last
     return request.client.host if request.client else None
+
+
+async def _user_by_email(session: AsyncSession, email: str) -> User | None:
+    return (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
 
 
 async def _issued_since(
@@ -174,10 +179,19 @@ async def magic_link_verify(
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "invalid or expired token")
 
     email = claim.email
-    user = (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
+    user = await _user_by_email(session, email)
     if user is None:
-        user = User(email=email)
-        session.add(user)
+        # Two links for one new address, opened together, both get here; the
+        # second insert hits the unique email. A savepoint keeps the link just
+        # spent above, and the account the other request made is the one.
+        try:
+            async with session.begin_nested():
+                user = User(email=email)
+                session.add(user)
+        except IntegrityError:
+            user = await _user_by_email(session, email)
+            if user is None:  # pragma: no cover — the conflict was this row
+                raise
     await session.commit()
     await session.refresh(user)
 
@@ -298,7 +312,17 @@ async def google_callback(
         await session.execute(select(User).where(User.google_sub == google_sub))
     ).scalar_one_or_none()
     if user is None:
-        user = (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
+        user = await _user_by_email(session, email)
+        # Found by address, but already linked to a *different* Google account:
+        # refuse rather than re-point it. Overwriting would silently unlink the
+        # account's owner from their own Google sign-in, and hand the account
+        # to whichever Google identity last presented this address (Workspace
+        # admins can reassign one).
+        if user is not None and user.google_sub not in (None, google_sub):
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "this account is linked to a different Google account",
+            )
     if user is None:
         user = User(email=email, name=info.get("name"), google_sub=google_sub)
         session.add(user)
