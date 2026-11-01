@@ -27,15 +27,29 @@ import { useCallback, useRef, useState } from "react";
 
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import {
+  CheckoutAlreadySubscribed,
   CheckoutSignInRequired,
   CheckoutUnavailable,
   checkoutPath,
+  isAgencyPlan,
   openCheckout,
   requestCheckout,
+  requestPlanChange,
   type PaddlePlan,
 } from "@/lib/paddle";
 
-export type CheckoutStatus = "idle" | "pending" | "signin" | "error";
+/**
+ * `confirm`: the agency already pays, so this is a plan change on the card on
+ * file rather than a checkout — the next `start` (with `confirmed`) makes it.
+ * `changed`: Paddle accepted it; the plan moves when its webhook lands.
+ */
+export type CheckoutStatus =
+  | "idle"
+  | "pending"
+  | "signin"
+  | "confirm"
+  | "changed"
+  | "error";
 
 export type StartCheckoutInput = {
   plan: PaddlePlan;
@@ -44,6 +58,12 @@ export type StartCheckoutInput = {
   source: string;
   /** Extra analytics properties, e.g. the locked feature that prompted it. */
   properties?: Record<string, string | number | boolean>;
+  /**
+   * The visitor has confirmed a plan change for an agency that already pays
+   * (status `confirm`): change the existing subscription instead of opening a
+   * checkout, which would start a second one billing alongside it.
+   */
+  confirmed?: boolean;
 };
 
 export type UseCheckout = {
@@ -75,13 +95,27 @@ export function useCheckout(): UseCheckout {
     setStatus("pending");
     setError(null);
 
-    trackEvent(ANALYTICS_EVENTS.upgradeClick, {
-      source: input.source,
-      plan: input.plan,
-      ...(input.properties ?? {}),
-    });
+    const agencyChange =
+      isAgencyPlan(input.plan) && input.organizationId !== undefined
+        ? { plan: input.plan, organizationId: input.organizationId }
+        : null;
+
+    // Once per intent: the confirming click is the same upgrade, not another.
+    if (!input.confirmed) {
+      trackEvent(ANALYTICS_EVENTS.upgradeClick, {
+        source: input.source,
+        plan: input.plan,
+        ...(input.properties ?? {}),
+      });
+    }
 
     try {
+      if (input.confirmed && agencyChange) {
+        await requestPlanChange(agencyChange);
+        inFlight.current = false;
+        setStatus("changed");
+        return;
+      }
       const checkout = await requestCheckout({
         plan: input.plan,
         organizationId: input.organizationId,
@@ -101,6 +135,13 @@ export function useCheckout(): UseCheckout {
         if (typeof window !== "undefined") {
           window.location.assign(`/login?next=${encodeURIComponent(next)}`);
         }
+        return;
+      }
+      if (err instanceof CheckoutAlreadySubscribed && agencyChange) {
+        // The agency already pays: offer a plan change on that subscription
+        // rather than a second checkout. Nothing is charged until confirmed.
+        inFlight.current = false;
+        setStatus("confirm");
         return;
       }
       inFlight.current = false;

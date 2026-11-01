@@ -615,6 +615,27 @@ class PaddleCheckoutRequest(BaseModel):
     organization_id: uuid.UUID | None = None
 
 
+class PaddlePlanChangeRequest(BaseModel):
+    """Move an agency's existing subscription to another self-serve plan.
+
+    Agency plans only: a consumer has one plan to be on, and Enterprise is sold
+    by conversation rather than by price id.
+    """
+
+    plan: Literal["agency_starter", "agency_pro"]
+    organization_id: uuid.UUID
+
+
+class PaddlePlanChangeResponse(BaseModel):
+    """Paddle accepted the change. The organization's plan moves when the
+    `subscription.updated` webhook arrives, not when this returns."""
+
+    plan: str
+    #: "immediately" for an upgrade (the prorated difference is charged now);
+    #: "next_billing_period" for a downgrade (no refund mid-period).
+    billed: Literal["immediately", "next_billing_period"]
+
+
 class PaddlePricesResponse(BaseModel):
     """The price ids the pricing page previews, keyed by plan.
 

@@ -91,6 +91,40 @@ async def test_valid_signature_activates_plan(
 
 
 @pytest.mark.asyncio
+async def test_plan_change_arrives_as_an_update_to_the_same_subscription(
+    client: AsyncClient, sessionmaker, premium_user
+) -> None:
+    """What `/api/paddle/change-plan` causes: Paddle re-sends the subscription
+    with the merged `custom_data`, and that alone moves plan and seats."""
+    _user, org = premium_user
+    async with sessionmaker() as session:
+        fresh = await session.get(Organization, org.id)
+        assert fresh is not None
+        fresh.plan = Plan.agency_starter
+        fresh.seat_cap = 3
+        fresh.paddle_subscription_id = "sub_123"
+        await session.commit()
+
+    event = _event("evt_change_1", "subscription.updated", org.id, plan="agency_pro")
+    event["data"]["status"] = "active"
+    body = json.dumps(event).encode()
+    header = build_signature_header(body, get_settings().paddle_webhook_secret)
+    r = await client.post(
+        "/api/webhooks/paddle",
+        content=body,
+        headers={"Paddle-Signature": header, "Content-Type": "application/json"},
+    )
+    assert r.status_code == 200
+
+    async with sessionmaker() as session:
+        refreshed = await session.get(Organization, org.id)
+        assert refreshed is not None
+        assert refreshed.plan == Plan.agency_pro
+        assert refreshed.seat_cap == 10
+        assert refreshed.paddle_subscription_id == "sub_123"
+
+
+@pytest.mark.asyncio
 async def test_cancel_reverts_to_free(
     client: AsyncClient, sessionmaker, premium_user
 ) -> None:
