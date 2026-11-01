@@ -272,60 +272,64 @@ export function ConsumerAlerts({ account }: Props) {
   );
 }
 
+/**
+ * Where account changes that have no self-service flow yet are handled — the
+ * same address `/privacy` and `/contact` give for erasure and corrections.
+ */
+const ACCOUNT_EMAIL = "powerpioneer@pm.me";
+
+function accountMailto(subject: string): string {
+  return `mailto:${ACCOUNT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+}
+
+/**
+ * Account settings. Every control here does what it says.
+ *
+ * This section used to carry four that did nothing: "Change email",
+ * "Connect Google"/"Disconnect" (shown by *plan*, which has nothing to do with
+ * Google), a four-language picker for a site that is English-only, and
+ * "Delete my account", plus a "Verified · Last magic link sent today" line
+ * printed to everyone. There is no self-service flow behind any of them yet,
+ * so the email change and the deletion say how they are actually done — by
+ * email, as `/privacy` promises — and the rest are gone. Owner's call,
+ * 2026-11-01; self-service deletion is on the backlog in DEVELOPMENT_PLAN.md.
+ */
 export function ConsumerSettings({ session }: Props) {
-  const isFree = session.plan === "free";
   return (
     <>
       <SectionHead
         eyebrow="Settings"
         title="Account preferences"
-        sub="Authentication is magic-link only. We never store passwords."
+        sub="Sign in with an emailed link or with Google. We never store passwords."
       />
       <div className="rounded-md border border-border bg-surface px-6">
-        <SetRow label="Email" hint="Magic-link sign-in goes here. Changing it requires confirming on both addresses.">
+        <SetRow
+          label="Email"
+          hint="Sign-in links go here. To move your account to another address, email us from this one."
+        >
           <div className="flex items-center gap-2">
             <input
               readOnly
               value={session.email}
+              aria-label="Account email"
               className="flex-1 rounded-sm border border-border bg-[#FCFBF8] px-3 py-2 font-mono text-[12px] text-text"
             />
-            <button
-              type="button"
+            <a
+              href={accountMailto("Change my account email")}
               className="rounded-sm border border-border px-3.5 py-2 text-[12.5px] font-medium text-text hover:bg-surface-2"
             >
-              Change email
-            </button>
-          </div>
-          <div className="mt-2 flex items-center gap-1.5 font-mono text-[11.5px] text-score-perfect">
-            ● Verified · Last magic link sent today
+              Email us to change it
+            </a>
           </div>
         </SetRow>
 
         <SetRow
           label="Google sign-in"
-          hint="Optional. Lets you sign in with Google instead of waiting for a magic link."
+          hint="Nothing to connect. Choose “Continue with Google” on the sign-in page with a Google account that uses this address."
         >
-          <div className="flex items-center justify-between gap-3 rounded-sm border border-border bg-[#FCFBF8] px-3.5 py-2.5 text-[12.5px] text-text">
-            <span>{isFree ? "Not connected" : `Connected as ${session.email}`}</span>
-            <button
-              type="button"
-              className="rounded-sm border border-border bg-white px-3 py-1.5 font-medium hover:bg-surface-2"
-            >
-              {isFree ? "Connect Google" : "Disconnect"}
-            </button>
-          </div>
-        </SetRow>
-
-        <SetRow label="Language" hint="Affects copy in product, alerts, and email.">
-          <select
-            defaultValue="en"
-            className="min-w-[220px] rounded-sm border border-border bg-white px-3 py-2 text-[12.5px]"
-          >
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-            <option value="de">Deutsch</option>
-          </select>
+          <p className="text-[12.5px] leading-[1.5] text-text-muted">
+            Works for {session.email} once Google has verified that address.
+          </p>
         </SetRow>
 
         <SetRow
@@ -367,14 +371,14 @@ export function ConsumerSettings({ session }: Props) {
         <SetRow
           label="Delete account"
           danger
-          hint="Permanently deletes trips, favourites, alerts, and sessions. Active subscriptions are cancelled at end of period via Paddle."
+          hint="Email us from this address. We close the account, erase its trips, favourites, alerts and saved preferences, cancel any subscription, and confirm by reply."
         >
-          <button
-            type="button"
-            className="rounded-sm border border-border px-3.5 py-2 text-[12.5px] font-medium text-destructive hover:bg-surface-2"
+          <a
+            href={accountMailto("Delete my account")}
+            className="inline-block rounded-sm border border-border px-3.5 py-2 text-[12.5px] font-medium text-destructive hover:bg-surface-2"
           >
-            Delete my account
-          </button>
+            Email us to delete it
+          </a>
         </SetRow>
       </div>
     </>
