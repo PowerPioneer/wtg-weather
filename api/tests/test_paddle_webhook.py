@@ -192,6 +192,20 @@ async def test_replayed_event_is_idempotent(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("body", [b"[]", b'"x"', b"42", b"null"])
+async def test_signed_non_object_payload_is_400_not_500(
+    client: AsyncClient, body: bytes
+) -> None:
+    header = build_signature_header(body, get_settings().paddle_webhook_secret)
+    r = await client.post(
+        "/api/webhooks/paddle",
+        content=body,
+        headers={"Paddle-Signature": header, "Content-Type": "application/json"},
+    )
+    assert r.status_code == 400
+
+
+@pytest.mark.asyncio
 async def test_missing_event_id_rejected(
     client: AsyncClient, premium_user
 ) -> None:

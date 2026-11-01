@@ -9,8 +9,11 @@ the code below is arranged around:
 - The session issued is for the **invitation's** email, never for whoever
   happens to be signed in. A forwarded link therefore cannot attach the seat to
   the wrong person; it signs the opener in as the invitee or not at all.
-- Single use. `accepted_at` is set in the same transaction as the membership,
-  so a replayed token meets 409 rather than a second seat.
+- Single use. `accepted_at` is set by a conditional UPDATE in the same
+  transaction as the membership, so a replayed token — or a second request
+  racing the first — meets 409 rather than a second seat or a 500.
+- Accepts into one organization are serialised on its row, so two of them
+  cannot both take the last seat.
 - Revoked and unknown invitations answer alike (404). A revoked link must look
   like it never existed.
 - The seat cap is re-checked here, not just at invite time: a plan can be
@@ -29,7 +32,7 @@ import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wtg_api.deps import db_session
@@ -113,7 +116,16 @@ async def accept_invitation(
     session: AsyncSession = Depends(db_session),
 ) -> InvitationAccepted:
     invitation = await _resolve(session, payload.token)
-    org = await session.get(Organization, invitation.organization_id)
+    # Locked for the rest of the transaction, so accepts into one organization
+    # take turns. The seat check below reads a count and acts on it; two
+    # accepts reading it at once could both find the last seat free.
+    org = (
+        await session.execute(
+            select(Organization)
+            .where(Organization.id == invitation.organization_id)
+            .with_for_update()
+        )
+    ).scalar_one_or_none()
     if org is None:  # pragma: no cover — FK guarantees it
         raise HTTPException(status.HTTP_404_NOT_FOUND, "invitation not found")
 
@@ -122,6 +134,23 @@ async def accept_invitation(
     # seats being counted, and it is about to become a membership.
     if usage.members >= org.seat_cap:
         raise HTTPException(status.HTTP_409_CONFLICT, SEAT_CAP_DETAIL)
+
+    # Spend the token with a conditional UPDATE, as `auth.magic_link_verify`
+    # does, rather than trusting `_resolve`'s read: two requests with one link
+    # can both read it unspent, and the loser used to reach the membership
+    # insert and fail there with a 500.
+    spent = await session.execute(
+        update(Invitation)
+        .where(
+            Invitation.id == invitation.id,
+            Invitation.accepted_at.is_(None),
+            Invitation.revoked_at.is_(None),
+        )
+        .values(accepted_at=datetime.now(timezone.utc))
+    )
+    if spent.rowcount != 1:
+        await session.rollback()
+        raise HTTPException(status.HTTP_409_CONFLICT, SPENT_DETAIL)
 
     user = (
         await session.execute(select(User).where(User.email == invitation.email))
@@ -147,7 +176,6 @@ async def accept_invitation(
             Membership(user_id=user.id, organization_id=org.id, role=invitation.role)
         )
 
-    invitation.accepted_at = datetime.now(timezone.utc)
     invitation.accepted_user_id = user.id
     await session.commit()
 

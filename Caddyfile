@@ -79,6 +79,24 @@
 wheretogoforgreatweather.com {
     encode zstd gzip
 
+    # Baseline response headers for the one public origin. None existed before
+    # 2026-11-01, in Caddy or in Next. Deliberately modest:
+    # - HSTS at one day and without includeSubDomains or preload, so a
+    #   mistake costs a day, not a year. Raise it once the apex has served
+    #   HTTPS cleanly for a while.
+    # - CSP carries frame-ancestors only. That blocks clickjacking of sign-in
+    #   and checkout, and nothing here frames the site. A full policy has to
+    #   allow Paddle.js, Plausible, GlitchTip and MapLibre's blob workers, so
+    #   it ships separately, starting as Report-Only.
+    # Site-level, so the tile route gets them too. All of them are harmless on
+    # a range response.
+    header {
+        Strict-Transport-Security "max-age=86400"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Content-Security-Policy "frame-ancestors 'none'"
+    }
+
     import tiles
 
     route /api/* {

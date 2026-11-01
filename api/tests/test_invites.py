@@ -20,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from httpx import AsyncClient
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import set_committed_value
 
 from tests.conftest import login
 from wtg_api.models import Invitation, Membership, Organization, Role, User
@@ -265,6 +266,48 @@ async def test_a_token_works_once(client: AsyncClient, agency, outbox) -> None:
     r = await client.post("/api/invites/accept", json={"token": token})
     assert r.status_code == 409
     assert r.json()["detail"] == "invitation already accepted"
+
+
+@pytest.mark.asyncio
+async def test_a_racing_second_accept_is_409_not_500(
+    client: AsyncClient, agency, outbox, sessionmaker, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Two requests with one link can both pass the read in `_resolve` before
+    either writes. Reproduce the loser: it reads the invitation as unspent, but
+    the winner has already accepted it. The conditional UPDATE must turn that
+    into the same 409 a replay gets — not a duplicate-membership 500."""
+    from wtg_api.routers import invites as invites_router
+
+    owner, org = agency
+    login(client, owner)
+    await invite(client, org.id, "racer@example.com")
+    token = token_from(outbox)
+    client.cookies.clear()
+    assert (await client.post("/api/invites/accept", json={"token": token})).status_code == 200
+
+    async def stale_read(session, _token):
+        row = (
+            await session.execute(
+                select(Invitation).where(Invitation.email == "racer@example.com")
+            )
+        ).scalar_one()
+        # What the loser read, before the winner committed — in memory only.
+        # A plain assignment would be autoflushed and un-accept it for real.
+        set_committed_value(row, "accepted_at", None)
+        return row
+
+    monkeypatch.setattr(invites_router, "_resolve", stale_read)
+    client.cookies.clear()
+    r = await client.post("/api/invites/accept", json={"token": token})
+    assert r.status_code == 409
+    assert r.json()["detail"] == "invitation already accepted"
+    assert "set-cookie" not in r.headers
+
+    async with sessionmaker() as session:
+        members = (
+            await session.execute(select(Membership).where(Membership.organization_id == org.id))
+        ).scalars().all()
+        assert len(members) == 2  # the owner and the one accepted agent
 
 
 @pytest.mark.asyncio

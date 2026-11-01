@@ -229,6 +229,10 @@ async def paddle_webhook(
         raise HTTPException(status.HTTP_403_FORBIDDEN, "invalid signature")
 
     payload = await request.json()
+    # Signed is not the same as well-formed: a verified body that is JSON but
+    # not an object used to reach `.get` and 500, which Paddle retries.
+    if not isinstance(payload, dict):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "payload is not an object")
     event_id = payload.get("event_id")
     event_type = payload.get("event_type") or ""
     if not isinstance(event_id, str) or not event_id:
