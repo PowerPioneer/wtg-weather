@@ -72,7 +72,16 @@ export function UpgradeButton({
             return;
           }
           event.preventDefault();
-          void checkout.start({ plan, organizationId, source, properties });
+          // Done: Paddle has the change and the webhook will move the plan.
+          // A third click must not send it again.
+          if (checkout.status === "changed") return;
+          void checkout.start({
+            plan,
+            organizationId,
+            source,
+            properties,
+            confirmed: checkout.status === "confirm",
+          });
         }}
         className={cn(
           checkout.pending && "pointer-events-none opacity-80",
@@ -83,7 +92,11 @@ export function UpgradeButton({
           ? CHECKOUT_COPY.pending
           : checkout.status === "signin"
             ? CHECKOUT_COPY.signIn
-            : label}
+            : checkout.status === "confirm"
+              ? CHECKOUT_COPY.confirmChange
+              : checkout.status === "changed"
+                ? CHECKOUT_COPY.changed
+                : label}
       </a>
       {checkout.error ? (
         <p

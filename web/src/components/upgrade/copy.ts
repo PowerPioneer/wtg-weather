@@ -90,6 +90,12 @@ export const CHECKOUT_COPY = {
   error: "Couldn't open checkout. Try again in a moment.",
   /** Shown while we bounce an anonymous visitor through sign-in. */
   signIn: "Sign in to continue…",
+  /**
+   * An agency that already pays is changing plan on the card on file — no
+   * checkout opens, so the confirming click is the purchase and has to say so.
+   */
+  confirmChange: "Confirm plan change · prorated →",
+  changed: "Plan change requested — refresh in a minute",
   sandboxNote: "Sandbox Paddle · no real charges in dev",
 } as const;
 

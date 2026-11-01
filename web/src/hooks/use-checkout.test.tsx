@@ -16,6 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  */
 
 const requestCheckout = vi.fn();
+const requestPlanChange = vi.fn();
 const openCheckout = vi.fn();
 const trackEvent = vi.fn();
 
@@ -30,12 +31,15 @@ vi.mock("@/lib/paddle", async () => {
   return {
     ...actual,
     requestCheckout: (input: unknown) => requestCheckout(input),
+    requestPlanChange: (input: unknown) => requestPlanChange(input),
     openCheckout: (checkout: unknown) => openCheckout(checkout),
   };
 });
 
 const { useCheckout } = await import("./use-checkout");
-const { CheckoutSignInRequired } = await import("@/lib/paddle");
+const { CheckoutAlreadySubscribed, CheckoutSignInRequired } = await import(
+  "@/lib/paddle"
+);
 
 const assign = vi.fn();
 
@@ -48,6 +52,7 @@ beforeEach(() => {
 
 afterEach(() => {
   requestCheckout.mockReset();
+  requestPlanChange.mockReset();
   openCheckout.mockReset();
   trackEvent.mockReset();
   assign.mockReset();
@@ -206,5 +211,70 @@ describe("useCheckout", () => {
       plan: "consumer_premium",
       feature: "admin2",
     });
+  });
+
+  describe("an agency that already pays", () => {
+    const input = {
+      plan: "agency_pro" as const,
+      organizationId: "org-1",
+      source: "account_billing_agency",
+    };
+
+    it("asks to confirm a plan change instead of opening a second checkout", async () => {
+      requestCheckout.mockRejectedValue(new CheckoutAlreadySubscribed());
+
+      const { result } = renderHook(() => useCheckout());
+      await act(async () => {
+        await result.current.start(input);
+      });
+
+      expect(result.current.status).toBe("confirm");
+      expect(result.current.error).toBeNull();
+      expect(openCheckout).not.toHaveBeenCalled();
+      // Nothing is charged until the visitor confirms.
+      expect(requestPlanChange).not.toHaveBeenCalled();
+    });
+
+    it("changes the existing subscription once confirmed", async () => {
+      requestPlanChange.mockResolvedValue({ plan: "agency_pro", billed: "immediately" });
+
+      const { result } = renderHook(() => useCheckout());
+      await act(async () => {
+        await result.current.start({ ...input, confirmed: true });
+      });
+
+      expect(requestPlanChange).toHaveBeenCalledWith({
+        plan: "agency_pro",
+        organizationId: "org-1",
+      });
+      expect(requestCheckout).not.toHaveBeenCalled();
+      expect(result.current.status).toBe("changed");
+      // The confirming click is the same intent, not a second upgrade click.
+      expect(trackEvent).not.toHaveBeenCalled();
+    });
+
+    it("reports a refused change as an error", async () => {
+      requestPlanChange.mockRejectedValue(new Error("requestPlanChange(agency_pro) failed: 502"));
+
+      const { result } = renderHook(() => useCheckout());
+      await act(async () => {
+        await result.current.start({ ...input, confirmed: true });
+      });
+
+      expect(result.current.status).toBe("error");
+      expect(result.current.error).toBe("checkout-failed");
+    });
+  });
+
+  it("treats an already-subscribed consumer as an error, not a plan change", async () => {
+    requestCheckout.mockRejectedValue(new CheckoutAlreadySubscribed());
+
+    const { result } = renderHook(() => useCheckout());
+    await act(async () => {
+      await result.current.start({ plan: "consumer_premium", source: "pricing" });
+    });
+
+    expect(result.current.status).toBe("error");
+    expect(requestPlanChange).not.toHaveBeenCalled();
   });
 });

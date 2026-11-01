@@ -12,9 +12,13 @@ transaction created by the API. This endpoint used to assemble
 *Classic* and cannot take a `pri_` price — it had never been exercised against
 Paddle, and the tests pinned the broken shape.
 
-Security: only authenticated users may create a transaction, and a forged
-`organization_id` is rejected if the caller has no membership in it. That check
-is the whole point of minting server-side. `custom_data` — `plan`, `user_id`,
+Security: only authenticated users may create a transaction. An agency plan
+must name an agency the caller owns or administers; a consumer plan may name no
+organization but the caller's own personal one; and an organization that is
+already subscribed gets 409, because a second checkout is a second subscription
+billing alongside the first. Those checks are the whole point of minting
+server-side. Plan changes go through `/change-plan`, which updates the existing
+subscription in place. `custom_data` — `plan`, `user_id`,
 `organization_id` — is attached here, inside a request authenticated by our
 API key, so the browser can neither see nor alter it. That matters more than it
 looks: `routers/paddle.py::_extract_plan` reads the plan straight out of
@@ -33,21 +37,32 @@ from typing import Any
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wtg_api.config import get_settings
 from wtg_api.deps import current_user, db_session
-from wtg_api.models import Membership, Plan, User
+from wtg_api.models import AGENCY_PLANS, DEFAULT_SEAT_CAP, Plan, User
 from wtg_api.schemas import (
     PaddleCheckoutRequest,
     PaddleCheckoutResponse,
+    PaddlePlanChangeRequest,
+    PaddlePlanChangeResponse,
     PaddlePricesResponse,
 )
+from wtg_api.services.billing import find_personal_organization, managed_agency_organization
+from wtg_api.services.invites import seat_usage
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/paddle", tags=["paddle"])
+
+#: Machine-readable 409 code. The web turns it into a plan change rather than
+#: an error (`web/src/lib/paddle.ts`).
+ALREADY_SUBSCRIBED = "already_subscribed"
+
+#: The self-serve agency ladder, cheapest first. Enterprise is not on it: it is
+#: sold by conversation, with no price id to move to or from.
+_AGENCY_LADDER = (Plan.agency_starter, Plan.agency_pro)
 
 
 def _price_for(plan: Plan) -> str | None:
@@ -87,8 +102,13 @@ async def prices() -> PaddlePricesResponse:
 # Paddle's own formatted amounts, cached in-process. Prices change roughly
 # never, the pricing page is public and cacheable, and asking Paddle on every
 # render would put an outbound HTTP call in front of an anonymous page.
-_PRICE_CACHE: dict[str, tuple[float, dict[str, str]]] = {}
+#
+# Failures are cached too, for less time. Uncached, a Paddle outage turned
+# every anonymous `/api/paddle/prices` into an outbound call with a 10-second
+# timeout — work any visitor could trigger at will.
+_PRICE_CACHE: dict[str, tuple[float, dict[str, str]]] = {}  # key -> (expires, value)
 _PRICE_CACHE_TTL = 300.0
+_PRICE_FAILURE_TTL = 60.0
 
 
 async def _formatted_base_prices(
@@ -106,9 +126,22 @@ async def _formatted_base_prices(
 
     key = "|".join(sorted(price_ids.values()))
     hit = _PRICE_CACHE.get(key)
-    if hit and (time.monotonic() - hit[0]) < _PRICE_CACHE_TTL:
+    if hit and time.monotonic() < hit[0]:
         return hit[1]
 
+    fetched = await _fetch_formatted_prices(
+        api_base=api_base, api_key=api_key, price_ids=price_ids
+    )
+    ttl = _PRICE_CACHE_TTL if fetched is not None else _PRICE_FAILURE_TTL
+    out = fetched or {}
+    _PRICE_CACHE[key] = (time.monotonic() + ttl, out)
+    return out
+
+
+async def _fetch_formatted_prices(
+    *, api_base: str, api_key: str, price_ids: dict[str, str]
+) -> dict[str, str] | None:
+    """One `/pricing-preview` call. None when Paddle failed or answered nonsense."""
     body = {
         "items": [{"price_id": pid, "quantity": 1} for pid in price_ids.values()]
     }
@@ -124,20 +157,20 @@ async def _formatted_base_prices(
             )
     except httpx.HTTPError:
         logger.warning("paddle.pricing_preview.transport_error")
-        return {}
+        return None
 
     if res.status_code >= 400:
         logger.warning(
             "paddle.pricing_preview.rejected", extra={"status": res.status_code}
         )
-        return {}
+        return None
 
     payload = res.json()
     data = payload.get("data") if isinstance(payload, dict) else None
     details = data.get("details") if isinstance(data, dict) else None
     line_items = details.get("line_items") if isinstance(details, dict) else None
     if not isinstance(line_items, list):
-        return {}
+        return None
 
     by_price: dict[str, str] = {}
     for item in line_items:
@@ -150,11 +183,9 @@ async def _formatted_base_prices(
         if isinstance(pid, str) and isinstance(total, str):
             by_price[pid] = total
 
-    out = {
+    return {
         plan: by_price[pid] for plan, pid in price_ids.items() if pid in by_price
     }
-    _PRICE_CACHE[key] = (time.monotonic(), out)
-    return out
 
 
 @router.post("/checkout-url", response_model=PaddleCheckoutResponse)
@@ -170,20 +201,43 @@ async def checkout_url(
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "unsupported plan")
 
     org_id: uuid.UUID | None = None
-    if payload.organization_id is not None:
-        membership = (
-            await session.execute(
-                select(Membership).where(
-                    Membership.user_id == user.id,
-                    Membership.organization_id == payload.organization_id,
-                )
+    if plan in AGENCY_PLANS:
+        # Seats attach to an agency, so an agency plan names one — and only an
+        # owner or admin may buy for it. Without the org the webhook would fall
+        # back to the buyer's personal organization and put agency seats there.
+        if payload.organization_id is None:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, "agency plans need an organization"
             )
-        ).scalar_one_or_none()
-        if membership is None:
+        target = await managed_agency_organization(
+            session, user, payload.organization_id
+        )
+        if target is None:
             raise HTTPException(
                 status.HTTP_403_FORBIDDEN, "no access to that organization"
             )
-        org_id = payload.organization_id
+        org_id = target.id
+    else:
+        # A consumer plan lands on the buyer's own personal organization, which
+        # the webhook finds from `user_id`. Naming any other organization here
+        # is how a Premium checkout used to overwrite an agency's plan.
+        target = await find_personal_organization(session, user.id)
+        if payload.organization_id is not None and (
+            target is None or target.id != payload.organization_id
+        ):
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "consumer plans cannot be bought for an organization",
+            )
+
+    # A second checkout for an organization already paying would create a
+    # second subscription: the webhook re-points the org at the new one and the
+    # old one keeps billing. Changing plan is `/change-plan`.
+    if target is not None and target.paddle_subscription_id is not None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            {"code": ALREADY_SUBSCRIBED, "message": "already subscribed — change plan instead"},
+        )
 
     # Same keys the webhook reads back. `user_id` is what resolves a consumer
     # checkout to a personal organization; `organization_id` short-circuits
@@ -230,6 +284,138 @@ async def checkout_url(
         sandbox=s.paddle_sandbox,
         plan=plan.value,
     )
+
+
+@router.post("/change-plan", response_model=PaddlePlanChangeResponse)
+async def change_plan(
+    payload: PaddlePlanChangeRequest,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(db_session),
+) -> PaddlePlanChangeResponse:
+    """Move an agency's subscription to another plan, in place.
+
+    The organization row is not written here. Paddle answers the update with a
+    `subscription.updated` webhook carrying the merged `custom_data`, and that
+    is what moves `plan` and `seat_cap` — the same path every other plan
+    change takes, so there is one writer.
+    """
+    s = get_settings()
+    plan = Plan(payload.plan)
+    org = await managed_agency_organization(session, user, payload.organization_id)
+    if org is None:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "no access to that organization")
+    if org.paddle_subscription_id is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "no subscription to change — check out instead")
+    if org.plan not in _AGENCY_LADDER:
+        raise HTTPException(status.HTTP_409_CONFLICT, "this plan is changed by contacting us")
+    if org.plan == plan:
+        raise HTTPException(status.HTTP_409_CONFLICT, "already on that plan")
+
+    usage = await seat_usage(session, org.id, org.seat_cap)
+    if usage.members > DEFAULT_SEAT_CAP[plan]:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"{usage.members} members is more than that plan's {DEFAULT_SEAT_CAP[plan]} seats",
+        )
+
+    price_id = _price_for(plan)
+    if not s.paddle_api_key or price_id is None:
+        raise HTTPException(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            "paddle is not configured in this environment",
+        )
+
+    # An upgrade charges the prorated difference now; a downgrade waits for the
+    # renewal rather than refunding mid-period. With Paddle's default
+    # `on_payment_failure: prevent_change`, a declined card leaves the
+    # subscription on its old plan and Paddle answers with an error.
+    upgrade = _AGENCY_LADDER.index(plan) > _AGENCY_LADDER.index(org.plan)
+    proration = "prorated_immediately" if upgrade else "prorated_next_billing_period"
+
+    ok = await _update_subscription(
+        api_base=s.paddle_api_base_url,
+        api_key=s.paddle_api_key,
+        subscription_id=org.paddle_subscription_id,
+        price_id=price_id,
+        plan=plan,
+        proration_billing_mode=proration,
+    )
+    if not ok:
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "could not change the plan right now")
+
+    logger.info(
+        "paddle.subscription.change_requested organization_id=%s from=%s to=%s",
+        org.id,
+        org.plan.value,
+        plan.value,
+    )
+    return PaddlePlanChangeResponse(
+        plan=plan.value,
+        billed="immediately" if upgrade else "next_billing_period",
+    )
+
+
+async def _update_subscription(
+    *,
+    api_base: str,
+    api_key: str,
+    subscription_id: str,
+    price_id: str,
+    plan: Plan,
+    proration_billing_mode: str,
+) -> bool:
+    """Swap the subscription's single item for `price_id`, and its plan label.
+
+    `items` is a full replacement, which is what a one-item plan change wants;
+    appending would bill both plans. `custom_data` is replaced whole too, so the
+    current one is read first and only `plan` changed in it — the webhook's
+    `_extract_plan` reads `custom_data["plan"]` before the price, and would
+    otherwise put the old plan straight back.
+    """
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    url = f"{api_base}/subscriptions/{subscription_id}"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            current = await http.get(url, headers=headers)
+            if current.status_code >= 400:
+                logger.warning(
+                    "paddle.subscription.read_rejected status=%s code=%s",
+                    current.status_code,
+                    _paddle_error_code(current),
+                )
+                return False
+            data = current.json().get("data")
+            existing = data.get("custom_data") if isinstance(data, dict) else None
+            custom_data = dict(existing) if isinstance(existing, dict) else {}
+            custom_data["plan"] = plan.value
+
+            res = await http.patch(
+                url,
+                json={
+                    "items": [{"price_id": price_id, "quantity": 1}],
+                    "proration_billing_mode": proration_billing_mode,
+                    "custom_data": custom_data,
+                },
+                headers=headers,
+            )
+    except httpx.HTTPError:
+        logger.warning("paddle.subscription.transport_error")
+        return False
+
+    if res.status_code >= 400:
+        # Paddle's code says which of our settings is wrong, or that the card
+        # was declined (the change is then not applied). No customer data.
+        logger.warning(
+            "paddle.subscription.update_rejected status=%s code=%s detail=%s",
+            res.status_code,
+            _paddle_error_code(res),
+            _paddle_error_detail(res),
+        )
+        return False
+    return True
 
 
 def _paddle_error(res: httpx.Response) -> dict[str, Any]:

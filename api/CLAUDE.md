@@ -31,6 +31,16 @@ uv run uvicorn wtg_api.main:app --reload
   stay server-side: `routers/paddle.py::_extract_plan` trusts
   `custom_data["plan"]` over the price, so a client that could set it would buy
   the cheapest price and claim the dearest plan.
+- **One subscription per organization.** An agency plan must name an agency
+  the caller owns or administers (`services.billing.managed_agency_organization`);
+  a consumer plan may name no organization but the caller's personal one. An
+  organization that already has a `paddle_subscription_id` gets 409
+  `already_subscribed` from checkout, because a second checkout is a second
+  subscription and nothing cancels the first. Plan changes go through
+  `/api/paddle/change-plan`, which `PATCH`es the existing subscription (upgrade
+  `prorated_immediately`, downgrade `prorated_next_billing_period`) with its
+  `custom_data` re-read and only `plan` changed — and writes nothing itself:
+  the `subscription.updated` webhook moves the org's plan, as for every change.
 - **Email**: `services.email` picks one provider from `EMAIL_PROVIDER` and
   falls back to `ConsoleEmail` whenever the matching credential is missing —
   so a misconfigured production box prints magic links to its own logs rather

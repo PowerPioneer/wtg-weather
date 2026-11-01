@@ -7,7 +7,8 @@ import pytest
 from httpx import AsyncClient
 
 from tests.conftest import login
-from wtg_api.models import Organization, User
+from wtg_api.models import Membership, Organization, Role, User
+from wtg_api.services.billing import ensure_personal_organization
 
 TXN = "txn_01hv8zt3q9m2xk4c7wbn6yrfda"
 CUSTOMER = "ctm_01hv8zt3q9m2xk4c7wbn6yrfdb"
@@ -218,6 +219,157 @@ async def test_checkout_paddle_failure_is_502(
         "/api/paddle/checkout-url", json={"plan": "consumer_premium"}
     )
     assert r.status_code == 502
+
+
+async def _member(sessionmaker, org: Organization, role: Role) -> User:
+    async with sessionmaker() as session:
+        member = User(email=f"{role.value}-{uuid.uuid4().hex[:8]}@example.com")
+        session.add(member)
+        await session.flush()
+        session.add(Membership(user_id=member.id, organization_id=org.id, role=role))
+        await session.commit()
+        await session.refresh(member)
+        return member
+
+
+async def _set_subscription(sessionmaker, org_id: uuid.UUID, sub: str) -> None:
+    async with sessionmaker() as session:
+        fresh = await session.get(Organization, org_id)
+        assert fresh is not None
+        fresh.paddle_subscription_id = sub
+        await session.commit()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("role", [Role.agent, Role.member])
+async def test_checkout_refuses_an_agent_buying_for_the_agency(
+    client: AsyncClient,
+    sessionmaker,
+    agency: tuple[User, Organization],
+    paddle_api: dict[str, Any],
+    role: Role,
+) -> None:
+    """Billing belongs to owners and admins, as `billable_organization` says."""
+    _owner, org = agency
+    login(client, await _member(sessionmaker, org, role))
+    r = await client.post(
+        "/api/paddle/checkout-url",
+        json={"plan": "agency_pro", "organization_id": str(org.id)},
+    )
+    assert r.status_code == 403
+    assert sent_nothing(paddle_api)
+
+
+@pytest.mark.asyncio
+async def test_checkout_admin_may_buy_for_the_agency(
+    client: AsyncClient,
+    sessionmaker,
+    agency: tuple[User, Organization],
+    paddle_api: dict[str, Any],
+) -> None:
+    _owner, org = agency
+    login(client, await _member(sessionmaker, org, Role.admin))
+    r = await client.post(
+        "/api/paddle/checkout-url",
+        json={"plan": "agency_pro", "organization_id": str(org.id)},
+    )
+    assert r.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_checkout_refuses_a_consumer_plan_for_an_agency(
+    client: AsyncClient, agency: tuple[User, Organization], paddle_api: dict[str, Any]
+) -> None:
+    """A €2.99 Premium checkout naming an agency would have downgraded it:
+    the webhook trusts `custom_data["plan"]` and sets it on that org."""
+    owner, org = agency
+    login(client, owner)
+    r = await client.post(
+        "/api/paddle/checkout-url",
+        json={"plan": "consumer_premium", "organization_id": str(org.id)},
+    )
+    assert r.status_code == 400
+    assert sent_nothing(paddle_api)
+
+
+@pytest.mark.asyncio
+async def test_checkout_refuses_an_agency_plan_without_an_agency(
+    client: AsyncClient, user: User, sessionmaker, paddle_api: dict[str, Any]
+) -> None:
+    """Neither with no org (it would land on the personal org) nor naming the
+    personal org itself — a personal organization is never an agency."""
+    login(client, user)
+    r = await client.post("/api/paddle/checkout-url", json={"plan": "agency_pro"})
+    assert r.status_code == 400
+
+    async with sessionmaker() as session:
+        personal = await ensure_personal_organization(session, user)
+        await session.commit()
+    r = await client.post(
+        "/api/paddle/checkout-url",
+        json={"plan": "agency_pro", "organization_id": str(personal.id)},
+    )
+    assert r.status_code == 403
+    assert sent_nothing(paddle_api)
+
+
+@pytest.mark.asyncio
+async def test_checkout_refuses_an_agency_already_subscribed(
+    client: AsyncClient,
+    sessionmaker,
+    agency: tuple[User, Organization],
+    paddle_api: dict[str, Any],
+) -> None:
+    """A second checkout is a second subscription: the webhook re-points the
+    org at the new one and nothing cancels the old one, so it bills twice."""
+    owner, org = agency
+    await _set_subscription(sessionmaker, org.id, "sub_existing")
+    login(client, owner)
+    r = await client.post(
+        "/api/paddle/checkout-url",
+        json={"plan": "agency_pro", "organization_id": str(org.id)},
+    )
+    assert r.status_code == 409
+    assert r.json()["detail"]["code"] == "already_subscribed"
+    assert sent_nothing(paddle_api)
+
+
+@pytest.mark.asyncio
+async def test_checkout_refuses_a_consumer_already_subscribed(
+    client: AsyncClient, user: User, sessionmaker, paddle_api: dict[str, Any]
+) -> None:
+    async with sessionmaker() as session:
+        personal = await ensure_personal_organization(session, user)
+        personal.paddle_subscription_id = "sub_consumer"
+        await session.commit()
+    login(client, user)
+    r = await client.post(
+        "/api/paddle/checkout-url", json={"plan": "consumer_premium"}
+    )
+    assert r.status_code == 409
+    assert sent_nothing(paddle_api)
+
+
+@pytest.mark.asyncio
+async def test_price_preview_failure_is_cached_briefly(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A Paddle outage must not cost one outbound call per anonymous request."""
+    from wtg_api.routers import paddle_checkout
+
+    calls = 0
+
+    async def failing(**_: Any) -> None:
+        nonlocal calls
+        calls += 1
+        return None
+
+    monkeypatch.setattr(paddle_checkout, "_fetch_formatted_prices", failing)
+    monkeypatch.setattr(paddle_checkout, "_PRICE_CACHE", {})
+    args = {"api_base": "https://p", "api_key": "k", "price_ids": {"a": "pri_a"}}
+    assert await paddle_checkout._formatted_base_prices(**args) == {}
+    assert await paddle_checkout._formatted_base_prices(**args) == {}
+    assert calls == 1
 
 
 def sent_nothing(captured: dict[str, Any]) -> bool:

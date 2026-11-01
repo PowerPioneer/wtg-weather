@@ -35,6 +35,39 @@ from wtg_api.models import (
 )
 
 
+def manages_billing(role: Role) -> bool:
+    """Whether this role may buy, change or manage an agency's subscription.
+
+    An agent sees the agency's clients, not its card — and must not be able to
+    re-point its subscription either, which a checkout or a plan change does.
+    """
+    return role in (Role.owner, Role.admin)
+
+
+async def managed_agency_organization(
+    session: AsyncSession, user: User, org_id: uuid.UUID
+) -> Organization | None:
+    """The agency `org_id`, if `user` may manage its billing; otherwise None.
+
+    None covers every refusal alike — not a member, an agent rather than an
+    owner or admin, or a personal organization (which is never an agency) — so
+    a caller cannot use the answer to probe which organization ids exist.
+    """
+    row = (
+        await session.execute(
+            select(Organization, Membership.role)
+            .join(Membership, Membership.organization_id == Organization.id)
+            .where(Membership.user_id == user.id, Organization.id == org_id)
+        )
+    ).first()
+    if row is None:
+        return None
+    org, role = row
+    if org.personal_user_id is not None or not manages_billing(role):
+        return None
+    return org
+
+
 async def find_personal_organization(
     session: AsyncSession, user_id: uuid.UUID
 ) -> Organization | None:
@@ -115,7 +148,7 @@ async def billable_organization(
     for org, role in rows:
         if org.personal_user_id == user.id:
             personal = org
-        if org.plan in AGENCY_PLANS and role not in (Role.owner, Role.admin):
+        if org.plan in AGENCY_PLANS and not manages_billing(role):
             continue
         candidates.append(org)
 

@@ -94,6 +94,74 @@ export class CheckoutMisconfigured extends Error {
   }
 }
 
+/**
+ * Thrown when the organization already has a subscription.
+ *
+ * A second checkout would be a second subscription billing alongside the
+ * first, so the API refuses with 409 `already_subscribed`. For an agency that
+ * is the cue to change the existing subscription's plan instead
+ * (`requestPlanChange`); `useCheckout` asks the visitor to confirm first.
+ */
+export class CheckoutAlreadySubscribed extends Error {
+  constructor() {
+    super("organization already has a subscription");
+    this.name = "CheckoutAlreadySubscribed";
+  }
+}
+
+function isAlreadySubscribed(body: unknown): boolean {
+  if (typeof body !== "object" || body === null) return false;
+  const detail = (body as { detail?: unknown }).detail;
+  return (
+    typeof detail === "object" &&
+    detail !== null &&
+    (detail as { code?: unknown }).code === "already_subscribed"
+  );
+}
+
+export type AgencyPlan = Extract<PaddlePlan, "agency_starter" | "agency_pro">;
+
+export function isAgencyPlan(plan: PaddlePlan): plan is AgencyPlan {
+  return plan === "agency_starter" || plan === "agency_pro";
+}
+
+export type PlanChange = {
+  plan: AgencyPlan;
+  /** "immediately" for an upgrade, "next_billing_period" for a downgrade. */
+  billed: "immediately" | "next_billing_period";
+};
+
+/**
+ * Move an agency's existing subscription to `plan`, prorated.
+ *
+ * Paddle charges an upgrade's difference to the card on file now and holds a
+ * downgrade for the renewal. The organization's plan moves when Paddle's
+ * webhook reaches the API, so a page reload a moment later shows it.
+ */
+export async function requestPlanChange(input: {
+  plan: AgencyPlan;
+  organizationId: string;
+}): Promise<PlanChange> {
+  const res = await fetch("/api/paddle/change-plan", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      plan: input.plan,
+      organization_id: input.organizationId,
+    }),
+  });
+  if (res.status === 401) throw new CheckoutSignInRequired();
+  if (!res.ok) {
+    throw new Error(`requestPlanChange(${input.plan}) failed: ${res.status}`);
+  }
+  const body = (await res.json()) as { plan: AgencyPlan; billed: PlanChange["billed"] };
+  return { plan: body.plan, billed: body.billed };
+}
+
 export type RequestCheckoutInput = {
   plan: PaddlePlan;
   /** Agency plans only — pass the org the seats should be assigned to. */
@@ -116,6 +184,9 @@ export async function requestCheckout(
     }),
   });
   if (res.status === 401) throw new CheckoutSignInRequired();
+  if (res.status === 409 && isAlreadySubscribed(await res.json().catch(() => null))) {
+    throw new CheckoutAlreadySubscribed();
+  }
   if (!res.ok) {
     throw new Error(`requestCheckout(${input.plan}) failed: ${res.status}`);
   }
