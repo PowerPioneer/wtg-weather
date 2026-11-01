@@ -10,6 +10,7 @@ os.environ.setdefault("TILE_SIGNING_SECRET", "test-tile-signing-secret")
 os.environ.setdefault("PADDLE_WEBHOOK_SECRET", "test-paddle-webhook-secret")
 os.environ.setdefault("EMAIL_PROVIDER", "console")
 os.environ.setdefault("GOOGLE_CLIENT_ID", "")
+os.environ.setdefault("RATE_LIMIT_STORAGE", "memory")
 
 import asyncio
 import json
@@ -262,6 +263,17 @@ def login(client: AsyncClient, user: User) -> None:
     # Extract `wtg_session=<value>`
     token = cookie_header.split(";", 1)[0].split("=", 1)[1]
     client.cookies.set(s.session_cookie_name, token)
+
+
+@pytest.fixture(autouse=True)
+def _fresh_rate_limits():
+    """Request counts are module state; one test's traffic must not spend
+    another's allowance."""
+    from wtg_api.middleware import rate_limit
+
+    rate_limit.reset_store()
+    yield
+    rate_limit.reset_store()
 
 
 @pytest.fixture(autouse=True)

@@ -6,9 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  *
  * The subscription is not active when this page loads: Paddle redirects the
  * browser and posts the webhook separately, and `/api/me` keeps answering with
- * the old plan for up to 60 more seconds because entitlements are cached in
- * Redis for that long. Everything below is about not looking broken during
- * that window, and about the window actually ending.
+ * the old plan until that webhook lands (entitlements are not cached, so it
+ * flips on the next poll after). Everything below is about not looking broken
+ * during that window, and about the window actually ending.
  *
  * The acceptance criterion this pins is "within ~60s without a reload loop".
  */

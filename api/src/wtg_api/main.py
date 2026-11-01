@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 
 from wtg_api import __version__
 from wtg_api.config import get_settings
-from wtg_api.middleware import SlidingSessionMiddleware, install_cors
+from wtg_api.middleware import RateLimitMiddleware, SlidingSessionMiddleware, install_cors
 from wtg_api.routers import (
     alerts_unsubscribe,
     auth,
@@ -32,6 +32,8 @@ def create_app() -> FastAPI:
 
     install_cors(app)
     app.add_middleware(SlidingSessionMiddleware)
+    # Outermost, so a throttled request is answered before anything else runs.
+    app.add_middleware(RateLimitMiddleware)
 
     @app.get("/api/health")
     async def health() -> dict[str, str]:

@@ -43,8 +43,12 @@ uv run uvicorn wtg_api.main:app --reload
   mail and which fails invisibly when dropped. Scaleway's handling of it is
   **unverified**; confirm with a real send before the first alert run.
 
-- **Entitlements**: all protected routes pass through `services.entitlements`
-  which resolves `(user, plan)` and caches for 60 seconds in Redis.
+- **Entitlements**: all protected routes pass through `services.entitlements`,
+  which resolves `(user, plan)` from the database on **every** request. There
+  is no cache, deliberately: the lookup is one indexed join, and without a
+  cache an upgrade, a cancellation or a revoked seat takes effect on the very
+  next request rather than up to a minute later. (Earlier docs promised a
+  60-second Redis cache that was never built.)
 - **Country data**: `/v1/countries*` serves the pipeline's
   `wtg publish api-data` bundle from a read-only bind mount
   (`COUNTRY_DATA_DIR`, `/srv/wtg-data` in compose), via
@@ -72,8 +76,13 @@ uv run uvicorn wtg_api.main:app --reload
 - Any endpoint touching money, auth, or tile signing must have a test
   that exercises the failure path (forged signature, expired session,
   missing entitlement, double-spend).
-- Rate limits: 100 req/min anonymous, 600 req/min authenticated,
-  implemented with `slowapi` + Redis.
+- Rate limits: 100 req/min per client IP signed out, 600 req/min per user
+  signed in, as fixed windows in Redis (`middleware/rate_limit.py`, no
+  slowapi). Only requests that came through Caddy count — no
+  `X-Forwarded-For` means the web container rendering pages, which must not
+  share one bucket — and `/api/tiles/verify`, `/api/webhooks/*` and
+  `/api/health` are exempt. Fails **open** if Redis is unreachable. The
+  magic-link throttle in `routers/auth.py` is separate and stricter.
 - CORS: only `https://wheretogoforgreatweather.com` and
   `https://v2.wheretogoforgreatweather.com` in prod; `localhost:3000` in dev.
 
